@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Editor — OutreachNest (private)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--leaf:#1c7a4d;--leaf-deep:#0f5c38;--gold:#c8912f;--paper:#f6f4ec;--ink:#0f1e18;--line:#e2ddce;--muted:#57635c}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;padding:30px 20px}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-size:28px;margin-bottom:6px}
+  .sub{color:var(--muted);margin-bottom:24px;font-size:15px}
+  .box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:20px}
+  label{display:block;font-weight:600;font-size:14px;margin:16px 0 6px}
+  label:first-child{margin-top:0}
+  input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:15px;background:var(--paper)}
+  textarea{min-height:120px;resize:vertical}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .btn{background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;border:none;padding:14px 24px;border-radius:11px;font-weight:600;font-size:15px;cursor:pointer;margin-top:20px;width:100%}
+  .btn:hover{opacity:.92}
+  .para-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+  .para-row select{width:130px;flex-shrink:0}
+  .para-row textarea{min-height:60px}
+  .del{background:#f3e0e0;border:none;color:#a33;border-radius:8px;padding:0 14px;cursor:pointer;font-size:18px;flex-shrink:0;height:44px}
+  .add-para{background:var(--paper);border:1px dashed var(--line);color:var(--leaf-deep);padding:10px;border-radius:10px;cursor:pointer;width:100%;font-weight:600;font-size:14px}
+  #output{display:none;margin-top:20px}
+  #code{width:100%;min-height:220px;font-family:monospace;font-size:12.5px;background:#0f1e18;color:#a9d9bf;border-radius:10px;padding:16px;border:none}
+  .copy-btn{background:var(--gold);color:#3a2a06;border:none;padding:12px 20px;border-radius:10px;font-weight:600;cursor:pointer;margin-top:12px}
+  .steps{background:#eef4f0;border-radius:12px;padding:18px 20px;margin-top:14px;font-size:14px}
+  .steps b{color:var(--leaf-deep)}
+  .steps ol{margin:8px 0 0 18px}
+  .steps li{margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📝 Blog Editor</h1>
+  <p class="sub">Fill this form to create a new blog post. No coding needed — it generates the code for you.</p>
+
+  <div class="box">
+    <label>Blog title</label>
+    <input id="title" placeholder="e.g. 5 Solar Marketing Tips That Actually Work">
+
+    <label>Category</label>
+    <input id="cat" placeholder="e.g. Solar, Electrical, Outreach">
+
+    <label>Short summary (shows on blog card)</label>
+    <textarea id="excerpt" placeholder="One or two sentences describing the post..."></textarea>
+
+    <label>Icon (emoji) &amp; colour</label>
+    <div style="display:flex;gap:10px">
+      <input id="icon" placeholder="☀️" style="width:90px" value="📄">
+      <select id="cover">
+        <option value="g1">Green–Gold</option>
+        <option value="g2">Green–Mint</option>
+        <option value="g3">Gold–Green</option>
+        <option value="g4">Green–Gold 2</option>
+        <option value="g5">Purple–Mint</option>
+        <option value="g6">Warm–Gold</option>
+      </select>
+      <input id="read" placeholder="5 min read" value="5 min read" style="width:150px">
+    </div>
+
+    <label>Article content</label>
+    <p class="hint">Add sections one by one. Use "Heading" for a sub-title and "Paragraph" for text.</p>
+    <div id="paras"></div>
+    <button class="add-para" onclick="addPara()">+ Add section</button>
+
+    <button class="btn" onclick="generate()">✨ Generate blog code</button>
+  </div>
+
+  <div id="output" class="box">
+    <label>✅ Your blog code (copy this):</label>
+    <textarea id="code" readonly></textarea>
+    <button class="copy-btn" onclick="copyCode()">📋 Copy code</button>
+    <div class="steps">
+      <b>Now do this:</b>
+      <ol>
+        <li>Open the file <b>posts.js</b> in your website folder.</li>
+        <li>Find the line <b>window.POSTS = [</b> near the top.</li>
+        <li>Paste the copied code <b>right after that line</b> (so your new post shows first).</li>
+        <li>Save the file and re-upload it to your host (or drag the whole folder to Netlify again).</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<script>
+function addPara(type){
+  const div=document.createElement('div');
+  div.className='para-row';
+  div.innerHTML=`
+    <select><option value="p">Paragraph</option><option value="h3">Heading</option></select>
+    <textarea placeholder="Write here..."></textarea>
+    <button class="del" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('paras').appendChild(div);
+}
+// start with 2 sections
+addPara(); addPara();
+
+function slugify(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50);}
+
+function generate(){
+  const title=document.getElementById('title').value.trim();
+  const cat=document.getElementById('cat').value.trim();
+  const excerpt=document.getElementById('excerpt').value.trim();
+  const icon=document.getElementById('icon').value.trim()||'📄';
+  const cover=document.getElementById('cover').value;
+  const read=document.getElementById('read').value.trim()||'5 min read';
+  if(!title){alert('Please add a title');return;}
+  let content='';
+  document.querySelectorAll('#paras .para-row').forEach(row=>{
+    const type=row.querySelector('select').value;
+    const txt=row.querySelector('textarea').value.trim();
+    if(!txt)return;
+    if(type==='h3')content+=`    <h3>${txt}</h3>\n`;
+    else content+=`    <p>${txt}</p>\n`;
+  });
+  const slug=slugify(title);
+  const date=new Date().toLocaleString('en-US',{month:'long',year:'numeric'});
+  const code=`  {
+    slug:"${slug}",
+    cat:"${cat}", cover:"${cover}", icon:"${icon}",
+    title:"${title.replace(/"/g,'\\"')}",
+    author:"OutreachNest", date:"${date}", read:"${read}",
+    excerpt:"${excerpt.replace(/"/g,'\\"')}",
+    content:\`${content.trim()}\`
+  },`;
+  document.getElementById('code').value=code;
+  document.getElementById('output').style.display='block';
+  document.getElementById('output').scrollIntoView({behavior:'smooth'});
+}
+function copyCode(){
+  const c=document.getElementById('code');
+  c.select();document.execCommand('copy');
+  event.target.textContent='✅ Copied!';
+  setTimeout(()=>event.target.textContent='📋 Copy code',1600);
+}
+</script>
+</body>
+</html>

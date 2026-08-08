@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — OutreachNest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .article-wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  .art-head{padding:56px 0 0}
+  .art-head .back{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:14px;font-weight:600;margin-bottom:26px}
+  .art-head .back:hover{color:var(--leaf-deep)}
+  .art-head .cat{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--gold)}
+  .art-head h1{font-size:clamp(30px,4.6vw,46px);margin:14px 0 16px;max-width:22ch}
+  .art-head .amet{font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:center;padding-bottom:26px;border-bottom:1px solid var(--line)}
+  .art-head .amet .dot{width:4px;height:4px;border-radius:50%;background:#ccc}
+  .art-cover{height:230px;border-radius:18px;margin:30px 0;display:flex;align-items:center;justify-content:center;font-size:70px}
+  .art-body{padding-bottom:20px}
+  .art-body p{color:#2c3830;font-size:17.5px;margin-bottom:20px;line-height:1.8}
+  .art-body h3{font-size:24px;margin:32px 0 12px;color:var(--ink)}
+  .art-body ul{margin:0 0 20px 22px;color:#2c3830}
+  .art-body li{margin-bottom:9px;font-size:17px;line-height:1.7}
+  .art-cta{margin:40px 0 0;padding:34px;background:var(--leaf-soft);border:1px solid var(--line);border-radius:20px;text-align:center}
+  .art-cta h3{font-size:22px;margin-bottom:10px}
+  .art-cta p{color:var(--muted);margin-bottom:18px}
+</style>
+<script>window.PAGE_KEY='blog';</script>
+</head>
+<body>
+<div id="nav-holder"></div>
+
+<div class="article-wrap">
+  <div class="art-head">
+    <a class="back" href="blog.html">← Back to blog</a>
+    <div class="cat" id="aCat"></div>
+    <h1 id="aTitle"></h1>
+    <div class="amet"><span id="aAuthor"></span><span class="dot"></span><span id="aDate"></span><span class="dot"></span><span id="aRead"></span></div>
+  </div>
+  <div class="art-cover" id="aCover"></div>
+  <div class="art-body" id="aBody"></div>
+  <div class="art-cta">
+    <h3>Want results like this for your brand?</h3>
+    <p>Tell us your niche and we'll send back available sites with full metrics.</p>
+    <a class="btn btn-gold" data-email href="#">Get in touch →</a>
+  </div>
+</div>
+
+<div id="footer-holder"></div>
+<script src="posts.js"></script>
+<script src="main.js"></script>
+<script>
+  function getParam(n){return new URLSearchParams(location.search).get(n);}
+  const slug=getParam('p');
+  const post=window.POSTS.find(x=>x.slug===slug) || window.POSTS[0];
+  document.title = post.title + " — OutreachNest";
+  document.getElementById('aCat').textContent=post.cat;
+  document.getElementById('aTitle').textContent=post.title;
+  document.getElementById('aAuthor').textContent=post.author;
+  document.getElementById('aDate').textContent=post.date;
+  document.getElementById('aRead').textContent=post.read;
+  const cover=document.getElementById('aCover');
+  cover.className='art-cover '+post.cover; cover.textContent=post.icon;
+  document.getElementById('aBody').innerHTML=post.content;
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — OutreachNest</title>
+<meta name="description" content="Get in touch with OutreachNest for niche guest posts, verified B2B leads, and content writing.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>window.PAGE_KEY='contact';</script>
+<style>
+  .wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#fff;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:700;margin-top:10px;transition:transform .18s,box-shadow .18s}
+  .wa-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -10px rgba(37,211,102,.6)}
+</style>
+</head>
+<body>
+<div id="nav-holder"></div>
+
+<header class="page-head">
+  <div class="glow"></div>
+  <div class="wrap">
+    <span class="tag">Get in touch</span>
+    <h1>Let's grow your reach the right way</h1>
+    <p>Tell us your niche and target keyword, and we'll send back available sites with full metrics — no obligation, no pressure.</p>
+  </div>
+</header>
+
+<section style="padding-top:40px;padding-bottom:40px">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-card reveal">
+        <form id="cform" onsubmit="return sendForm(event)">
+          <div class="field"><label>Your name</label><input type="text" id="f-name" required placeholder="Jane Smith"></div>
+          <div class="field"><label>Email</label><input type="email" id="f-email" required placeholder="jane@company.com"></div>
+          <div class="field"><label>What do you need?</label>
+            <select id="f-service">
+              <option>Guest posts</option>
+              <option>Verified lead list</option>
+              <option>Content writing</option>
+              <option>OutreachNest Finder license</option>
+              <option>Not sure yet</option>
+            </select></div>
+          <div class="field"><label>Your niche / target</label><input type="text" id="f-niche" placeholder="e.g. solar installation, US"></div>
+          <div class="field"><label>Message</label><textarea id="f-msg" placeholder="Tell us a bit about your goals..."></textarea></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send message →</button>
+        </form>
+      </div>
+      <div class="reveal">
+        <div class="info-block">
+          <div class="il">WhatsApp (Fastest)</div>
+          <div class="iv">
+            <a class="wa-btn" data-whatsapp href="#" target="_blank">💬 <span data-whatsapp></span></a>
+          </div>
+        </div>
+        <div class="info-block"><div class="il">Email us</div><div class="iv"><a data-email href="#"></a></div></div>
+        <div class="info-block"><div class="il">Response time</div><div class="iv">Within 1 business day</div></div>
+        <div class="info-block"><div class="il">Location</div><div class="iv" style="font-family:'Inter';font-weight:500;font-size:15px;color:var(--muted)">Wapda Town Phase-2, Multan, Pakistan</div></div>
+        <div class="info-block"><div class="il">No obligation</div><div class="iv" style="font-family:'Inter';font-weight:400;font-size:15px;color:var(--muted)">We'll share available sites and pricing first. You decide what fits.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-holder"></div>
+<script src="main.js"></script>
+<script>
+  function sendForm(e){
+    e.preventDefault();
+    const name=document.getElementById('f-name').value;
+    const email=document.getElementById('f-email').value;
+    const service=document.getElementById('f-service').value;
+    const niche=document.getElementById('f-niche').value;
+    const msg=document.getElementById('f-msg').value;
+    const subject=encodeURIComponent(`New inquiry: ${service}`);
+    const body=encodeURIComponent(`Name: ${name}\nEmail: ${email}\nService: ${service}\nNiche/Target: ${niche}\n\nMessage:\n${msg}`);
+    window.location.href=`mailto:${EMAIL}?subject=${subject}&body=${body}`;
+    return false;
+  }
+</script>
+</body>
+</html>

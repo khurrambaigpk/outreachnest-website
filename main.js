@@ -2,7 +2,7 @@
 const EMAIL     = "queries@getoutreachnest.com";
 const WHATSAPP  = "923006321406";   // international format, no +
 const ADDRESS   = "Wapda Town Phase-2, Multan, Pakistan";
-const DOWNLOAD_URL = "https://github.com/khurrambaigpk/outreachnest-app/releases/download/v12.19.7/Setup_OutreachNestFinder_V12.19.7.zip";
+const DOWNLOAD_URL = "https://github.com/khurrambaigpk/Outreachnest-releases/releases/download/v12.19.7/Setup_OutreachNestFinder_V12.19.7.exe";
 
 // Prices — change here to update all pages
 const PRICES = {

@@ -6,7 +6,7 @@ const DOWNLOAD_URL = "https://github.com/khurrambaigpk/Outreachnest-releases/rel
 
 // Prices — change here to update all pages
 const PRICES = {
-  trial:    { label: "Free Trial",  price: "FREE",  dur: "1 Day",    days: 1  },
+  trial:    { label: "Free Trial",  price: "FREE",  dur: "3 Days",   days: 3  },
   monthly:  { label: "Monthly",     price: "$15",   dur: "30 Days",  days: 30 },
   halfyear: { label: "6-Month",     price: "$29",   dur: "180 Days", days: 180},
   annual:   { label: "Annual",      price: "$49",   dur: "365 Days", days: 365},

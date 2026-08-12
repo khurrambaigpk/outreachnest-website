@@ -9,6 +9,20 @@
   :root{--leaf:#1c7a4d;--leaf-deep:#0f5c38;--gold:#c8912f;--paper:#f6f4ec;--ink:#0f1e18;--line:#e2ddce;--muted:#57635c}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;padding:30px 20px}
+
+  /* ── Login Gate ── */
+  #login-gate{position:fixed;inset:0;background:var(--paper);z-index:9999;display:flex;align-items:center;justify-content:center}
+  .login-box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+  .login-box h2{font-size:22px;margin-bottom:6px}
+  .login-box p{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .login-box input{width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;background:var(--paper);margin-bottom:12px;text-align:center;letter-spacing:2px}
+  .login-box input:focus{outline:2px solid var(--leaf);border-color:var(--leaf)}
+  .login-btn{width:100%;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;border:none;padding:14px;border-radius:11px;font-weight:600;font-size:15px;cursor:pointer}
+  .login-btn:hover{opacity:.92}
+  .login-error{color:#c0392b;font-size:13px;margin-top:10px;display:none}
+  .lock-icon{font-size:40px;margin-bottom:16px}
+  #admin-content{display:none}
+</style>
   .wrap{max-width:820px;margin:0 auto}
   h1{font-size:28px;margin-bottom:6px}
   .sub{color:var(--muted);margin-bottom:24px;font-size:15px}
@@ -35,6 +49,21 @@
 </style>
 </head>
 <body>
+
+<!-- ── Login Gate ── -->
+<div id="login-gate">
+  <div class="login-box">
+    <div class="lock-icon">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter your password to continue</p>
+    <input type="password" id="pwd-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkLogin()">
+    <button class="login-btn" onclick="checkLogin()">Unlock →</button>
+    <div class="login-error" id="login-error">❌ Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- ── Admin Content (hidden until login) ── -->
+<div id="admin-content">
 <div class="wrap">
   <h1>📝 Blog Editor</h1>
   <p class="sub">Fill this form to create a new blog post. No coding needed — it generates the code for you.</p>
@@ -138,6 +167,43 @@ function copyCode(){
   event.target.textContent='✅ Copied!';
   setTimeout(()=>event.target.textContent='📋 Copy code',1600);
 }
+</script>
+</div><!-- end wrap -->
+</div><!-- end admin-content -->
+
+<script>
+// ── Password Protection ──
+const ADMIN_PASS = "Staticpen@1986"; // Change this to your password
+const SESSION_KEY = "on_admin_auth";
+
+function checkLogin() {
+  const pwd = document.getElementById('pwd-input').value;
+  const err = document.getElementById('login-error');
+  if (pwd === ADMIN_PASS) {
+    // Save session for 8 hours
+    const expiry = Date.now() + (8 * 60 * 60 * 1000);
+    sessionStorage.setItem(SESSION_KEY, expiry);
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+    err.style.display = 'none';
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+    // Lock for 3 seconds after wrong password
+    document.querySelector('.login-btn').disabled = true;
+    setTimeout(() => document.querySelector('.login-btn').disabled = false, 3000);
+  }
+}
+
+// Check existing session
+(function() {
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (saved && Date.now() < parseInt(saved)) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+  }
+})();
 </script>
 </body>
 </html>

@@ -1,6 +1,28 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"how-to-check-da-pa-dr-without-paying-for-tools",
+    cat:"SEO Tools, Link Building", cover:"g1", icon:"🎯",
+    title:"How to Check DA, PA & DR Without Paying for Tools",
+    author:"OutreachNest", date:"August 2026", read:"5 min read",
+    excerpt:"Learn how SEO freelancers can check Domain Authority, Page Authority, and Domain Rating for free using smart tools — and how to do it at scale in minutes.",
+    content:`<h3>The Problem Every SEO Freelancer Knows</h3>
+    <p>You have a list of 50 websites. You need DA, PA, DR, and Spam Score for each one before you pitch a guest post or sell a link. You open Moz, Ahrefs, and Semrush one by one. Twenty minutes later, you have checked maybe 10 sites — and your eyes hurt. This is the daily reality for thousands of SEO freelancers and link builders worldwide. The tools exist, but manually checking each site one by one is a massive time drain.</p>
+    <h3>What Is DA, PA, and DR — And Why Do They Matter?</h3>
+    <p>Domain Authority (DA) is a score developed by Moz that predicts how well a website will rank on search engines. Page Authority (PA) measures the ranking strength of a single page. Domain Rating (DR) is Ahrefs' version of DA — it measures the strength of a website's backlink profile on a scale of 0 to 100. For SEO professionals, these three numbers are the foundation of every link building decision. A site with DA 40+, DR 35+, and low Spam Score is a quality prospect. A site with DA 10 and Spam Score 60% is a waste of time and money.</p>
+    <h3>The Free Method: Moz and Semrush Chrome Extensions</h3>
+    <p>Here is the good news — you do not need to buy any paid subscription to check DA and PA. Moz offers a free Chrome extension called MozBar that shows DA and PA directly on any website you visit. Semrush also offers a free Chrome extension that displays domain metrics. Ahrefs has a paid Chrome extension, but even its free tier shows basic DR data. The problem is not access to data — the problem is speed. Checking 100 sites manually using these extensions would take hours.</p>
+    <h3>The Smart Method: Automate It With OutreachNest Finder</h3>
+    <p>OutreachNest Finder is a Windows desktop tool built specifically for SEO freelancers and link building agencies. It connects directly to your installed Chrome extensions — including free Moz, Semrush, and paid Ahrefs — through a one-time setup in Chrome's extension manager. Once configured, the software automatically opens websites, extracts DA, PA, DR, Spam Score, backlinks count, and reference ranks — all without you clicking anything. You simply enter your niche keyword, set your filters, and let it run. The result? 1,000 prospects with full SEO metrics in minutes, not days.</p>
+    <h3>What Data Does It Extract Automatically?</h3>
+    <p>Beyond DA, PA, and DR, OutreachNest Finder pulls a complete data profile from every website it visits. This includes do-follow and no-follow link counts, verified email addresses, social media profile links, and physical business addresses. All of this is extracted automatically from Google, Bing, and other search engines. Every result is saved into your niche profile and synced to a Google Sheet — automatically created for you — using Google's JSON API. No duplicate entries are ever added thanks to the built-in deduplication system.</p>
+    <h3>Built-In Outreach Campaign Manager</h3>
+    <p>Finding prospects is only half the job. OutreachNest Finder also includes a built-in outreach campaign manager. You can create email templates with custom subject lines and body text, stored directly against each niche profile. When you are ready to reach out, your data is already organized. Export your full campaign data to CSV or Excel with one click, or let the Google Sheets integration keep everything updated automatically in real time.</p>
+    <h3>Who Should Use This Tool?</h3>
+    <p>OutreachNest Finder is built for SEO freelancers doing guest posting and link building, boutique SEO agencies managing multiple client niches, and in-house SEO teams that need to scale their prospecting without hiring more staff. If you currently spend several hours every week manually checking website metrics, this tool will reduce that workload by 80 percent. Less time on data collection means more time on actual outreach and results.</p>
+    <h3>Try It Free for 3 Days</h3>
+    <p>OutreachNest Finder offers a 3-day free trial with no credit card required. Download it, run it on your Windows PC, and experience the difference yourself. Visit getoutreachnest.com to get started today.</p>`
+  },
     slug:"spot-real-guest-post-site",
     cat:"Guest Posting", cover:"g1", icon:"🌱",
     title:"How to Spot a Real Guest-Post Site (and Avoid PBNs)",

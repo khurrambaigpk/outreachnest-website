@@ -1,6 +1,31 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"how-to-build-1-000-link-building-prospects-in-minu",
+    cat:"Link Building, SEO Tools", cover:"g1", icon:"📄",
+    title:"How to Build 1,000 Link Building Prospects in Minutes",
+    author:"OutreachNest", date:"August 2026", read:"5 min read",
+    excerpt:"Most SEO freelancers spend days building prospect lists manually. Here is how to collect 1,000 qualified link building prospects — with full SEO metrics — in minutes, not days.",
+    content:`<h3>Why Prospect Building Takes So Long</h3>
+    <p>Ask any SEO freelancer what takes the most time in their day, and the answer is almost always the same — finding prospects. You search Google for niche keywords, open each site one by one, check the DA, check the DR, look for a contact email, check the spam score, and then decide if the site is even worth reaching out to. For one prospect, this takes three to five minutes. For a list of 200 prospects, you are looking at ten to fifteen hours of work. Multiply that across multiple clients and multiple niches, and prospect building becomes a full-time job on its own.</p>
+    <h3>The Traditional Way vs The Smart Way</h3>
+    <p>The traditional method relies on manual Google searches, copy-pasting URLs into Moz or Ahrefs, and building spreadsheets by hand. It is slow, repetitive, and drains mental energy fast. The smart method uses automation — letting software do the searching, the visiting, the metric checking, and the data recording — while you focus on strategy and outreach. The difference in output is not marginal. It is the difference between 20 prospects per day and 1,000 prospects in a single session.</p>
+    <h3>How OutreachNest Finder Builds Your Prospect List</h3>
+    <p>OutreachNest Finder works by connecting to Google, Bing, and other search engines automatically. You enter a niche keyword — for example, "fitness blog write for us" or "digital marketing guest post" — and the software takes over. It opens each search result, visits the website, extracts the SEO metrics using your installed Chrome extensions, and records everything into your niche profile. No clicking, no copy-pasting, no manual checking. The software does it all while you do something else.</p>
+    <h3>What Gets Collected for Each Prospect</h3>
+    <p>For every website in your prospect list, OutreachNest Finder automatically collects Domain Authority, Page Authority, Domain Rating, backlink count, spam score, and reference ranks. It also extracts verified email addresses, social media profile links, do-follow and no-follow link counts, and physical business addresses where available. Every piece of data is stored against your niche profile and synced to a Google Sheet automatically. By the time your session ends, you have a fully populated, ready-to-use prospect database — with zero manual data entry.</p>
+    <h3>Search Modes That Match Your Workflow</h3>
+    <p>OutreachNest Finder gives you three search modes to match different prospecting strategies. Classical Niche Profile mode lets you save a niche permanently and run it repeatedly over time, always appending new results without duplicating existing entries. Search Words mode lets you run quick keyword-based searches for fast prospecting. Trigger Words mode adds smart filtering so you only collect sites that match specific criteria — like sites that accept guest posts or have contact forms. Each mode serves a different purpose, and you can switch between them based on the campaign you are running.</p>
+    <h3>Built-In Deduplication — No Wasted Effort</h3>
+    <p>One of the biggest problems with manual prospecting is accidentally adding the same site twice across different sessions or campaigns. OutreachNest Finder solves this automatically. Every niche profile has built-in deduplication — if a site already exists in your Google Sheet, it will never be added again, no matter how many times you run the same search. This keeps your data clean, your lists accurate, and your outreach efficient.</p>
+    <h3>From Prospect to Outreach in One Tool</h3>
+    <p>Once your prospect list is ready, OutreachNest Finder's built-in outreach campaign manager lets you move straight into action. Create email templates with custom subject lines and body text, store them against each niche profile, and export your full campaign data to CSV or Excel whenever you need it. The entire workflow — from keyword to contact list to outreach template — lives inside one tool. No switching between five different apps, no importing and exporting between platforms.</p>
+    <h3>How Much Time Will You Actually Save?</h3>
+    <p>Based on average manual prospecting speeds, a freelancer building a list of 200 prospects by hand spends roughly eight to ten hours collecting data. With OutreachNest Finder, the same list takes under thirty minutes. For a list of 1,000 prospects, the manual approach would take several days. OutreachNest Finder handles it in a single session. That is an 80 percent reduction in time spent on data collection — time that goes back into client communication, content creation, and actual outreach work.</p>
+    <h3>Start Your Free Trial Today</h3>
+    <p>OutreachNest Finder is available for Windows with a 3-day free trial — no credit card required. Download it from getoutreachnest.com, enter your first niche keyword, and see how many prospects you can collect before your morning coffee is finished.</p>`
+  },
+  {
     slug:"how-to-check-da-pa-dr-without-paying-for-tools",
     cat:"SEO Tools, Link Building", cover:"g1", icon:"🎯",
     title:"How to Check DA, PA & DR Without Paying for Tools",

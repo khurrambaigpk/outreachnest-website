@@ -23,6 +23,7 @@ window.POSTS = [
     <h3>Try It Free for 3 Days</h3>
     <p>OutreachNest Finder offers a 3-day free trial with no credit card required. Download it, run it on your Windows PC, and experience the difference yourself. Visit getoutreachnest.com to get started today.</p>`
   },
+  {
     slug:"spot-real-guest-post-site",
     cat:"Guest Posting", cover:"g1", icon:"🌱",
     title:"How to Spot a Real Guest-Post Site (and Avoid PBNs)",

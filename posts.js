@@ -1,6 +1,26 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"how-to-turn-your-lead-list-into-a-live-google-shee",
+    cat:"Lead Generation, Automation, Google Sheets", cover:"g3", icon:"📊",
+    title:"How to Turn Your Lead List Into a Live Google Sheet (Automatically)",
+    author:"OutreachNest", date:"August 2026", read:"5 min read",
+    excerpt:"Manually copying leads into a spreadsheet wastes hours every week. Here's how to have every lead — with full contact and SEO data — land in a live Google Sheet the moment it's found.",
+    content:`<p>Most freelancers and agencies still manage leads the same way: copy a website from a search result, paste it into a spreadsheet, go back and manually check the email, DA, and traffic, then repeat a hundred times. It works, but it eats hours that could go into actual outreach. A live, automatically-updating Google Sheet removes that entire manual step.</p>
+    <h3>Why a Spreadsheet Beats a Random List of Tabs</h3>
+    <p>A spreadsheet isn't just storage — it's the single place your whole workflow runs from. Sorting by Domain Authority, filtering out sites with a high spam score, tracking which prospects have already been contacted, and sharing the list with a client or teammate all become trivial once everything lives in one structured sheet instead of scattered browser tabs and screenshots.</p>
+    <h3>How Automatic Sync Actually Works</h3>
+    <p>OutreachNest Finder connects directly to Google Sheets through Google's own API. Once you authorize it — a one-time setup — every lead the software finds is written straight into a sheet it creates and maintains for you, with over 30 columns covering company name, website, verified email, WhatsApp number, phone, Domain Authority, Domain Rating, traffic estimate, spam score, and more. There's no export step and no copy-paste; the sheet updates while the search is still running.</p>
+    <h3>Built-In Deduplication Keeps It Clean</h3>
+    <p>Running the same niche search twice is common — maybe you're expanding a campaign or re-checking for new sites. Without deduplication, that means duplicate rows and wasted outreach on people you've already contacted. OutreachNest Finder checks the existing sheet before adding anything new, so re-running a search only ever appends genuinely new prospects.</p>
+    <h3>One Sheet Per Niche, Organized Automatically</h3>
+    <p>If you work across multiple niches — solar, electrical, e-commerce, whatever your client base looks like — each niche profile keeps its own dedicated sheet. That means no mixing unrelated leads together, and no manual sorting after the fact. Opening the sheet for a specific niche always shows exactly what belongs there.</p>
+    <h3>From Sheet to Sent Email</h3>
+    <p>Once the sheet is populated, it becomes the source for outreach too. OutreachNest Finder's campaign manager works directly from the same lead data, so there's no second export needed — filter the sheet down to your best prospects, then launch a templated outreach campaign against exactly that list.</p>
+    <h3>Try It Yourself</h3>
+    <p>If you're still building lead lists by hand, this one change alone will save hours every week. Download OutreachNest Finder free for 3 days at getoutreachnest.com — no credit card required — connect your Google account, and watch your first sheet fill itself in.</p>`
+  },
+  {
     slug:"why-whatsapp-outreach-gets-higher-response-rates-t",
     cat:"Outreach, Lead Generation, WhatsApp", cover:"g2", icon:"💬",
     title:"Why WhatsApp Outreach Gets Higher Response Rates Than Email",

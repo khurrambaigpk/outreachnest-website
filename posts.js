@@ -1,6 +1,28 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"how-agencies-manage-10-niches-without-losing-track",
+    cat:"Lead Generation, Agency Workflow, Organization", cover:"g5", icon:"🗂️",
+    title:"How Agencies Manage 10+ Niches Without Losing Track",
+    author:"OutreachNest", date:"August 2026", read:"5 min read",
+    excerpt:"Running outreach across multiple industries at once usually turns into chaos — mixed lists, duplicate contacts, forgotten follow-ups. Here's the system that keeps it organized.",
+    content:`<p>An agency running outreach for five clients across five different industries faces a problem a single-niche freelancer never sees: everything starts blending together. Solar leads end up mixed with electrical contractors, a follow-up meant for one client gets sent using another client's template, and nobody can say for certain which list is current. The fix isn't working harder — it's separating niches from the start so they never have a chance to mix.</p>
+    <h3>One Profile Per Niche, Not One Giant List</h3>
+    <p>The single biggest mistake is keeping every lead in one long spreadsheet with a "category" column to sort by later. Sorting after the fact is where things get missed. A dedicated niche profile — its own saved keywords, its own search settings, its own contact list — keeps every campaign boxed off from every other one automatically, instead of relying on someone remembering to filter correctly.</p>
+    <h3>Switching Context in One Click</h3>
+    <p>With OutreachNest Finder, each niche profile remembers everything about that campaign — the keywords that work, the search engines used, and the filters applied. Moving from a solar campaign to an electrical one is a matter of switching profiles, not rebuilding a search from scratch or double-checking old settings.</p>
+    <h3>Separate Sheets Prevent Cross-Contamination</h3>
+    <p>Every niche profile syncs to its own Google Sheet, so a solar lead can never accidentally land in the electrical contractor list. When a client asks for their current lead count or wants to see the data directly, there's one clean sheet to share — not a filtered view of a much bigger, messier one.</p>
+    <h3>Deduplication Works Within Each Niche</h3>
+    <p>Because each niche has its own dataset, deduplication stays accurate too. Running the same search again only appends genuinely new sites within that niche — it won't accidentally skip a lead just because a similarly-named company showed up in an unrelated campaign.</p>
+    <h3>Templates That Match the Audience</h3>
+    <p>A solar company and an electronics repair shop don't respond to the same pitch. Keeping outreach templates tied to their specific niche profile means every campaign speaks the right language automatically, instead of someone having to remember which template goes with which client before hitting send.</p>
+    <h3>Scale Without the Chaos</h3>
+    <p>Agencies that grow past two or three niches almost always hit an organization wall before they hit a results wall. Building the separation in from day one — one profile, one sheet, one template set per niche — means adding a tenth niche is no harder than adding the second.</p>
+    <h3>Set It Up Once</h3>
+    <p>Download OutreachNest Finder free for 3 days at getoutreachnest.com — no credit card required — and create a dedicated niche profile for every industry you serve. Ten minutes of setup now saves hours of untangling later.</p>`
+  },
+  {
     slug:"how-to-turn-your-lead-list-into-a-live-google-shee",
     cat:"Lead Generation, Automation, Google Sheets", cover:"g3", icon:"📊",
     title:"How to Turn Your Lead List Into a Live Google Sheet (Automatically)",

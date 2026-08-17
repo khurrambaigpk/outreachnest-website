@@ -41,10 +41,16 @@
   #output{display:none;margin-top:20px}
   #code{width:100%;min-height:220px;font-family:monospace;font-size:12.5px;background:#0f1e18;color:#a9d9bf;border-radius:10px;padding:16px;border:none}
   .copy-btn{background:var(--gold);color:#3a2a06;border:none;padding:12px 20px;border-radius:10px;font-weight:600;cursor:pointer;margin-top:12px}
+  .publish-btn{background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:600;cursor:pointer;margin-top:12px;margin-left:10px}
   .steps{background:#eef4f0;border-radius:12px;padding:18px 20px;margin-top:14px;font-size:14px}
   .steps b{color:var(--leaf-deep)}
   .steps ol{margin:8px 0 0 18px}
   .steps li{margin-bottom:6px}
+  .gh-row{display:flex;gap:10px;margin-top:10px}
+  .gh-row input{flex:1}
+  .gh-row button{width:auto;margin-top:0;padding:12px 18px;white-space:nowrap}
+  .gh-remove{background:#f3e0e0!important;color:#a33!important;background-image:none!important}
+  #ghStatus{margin-top:10px;font-weight:600;font-size:13.5px}
 </style>
 </head>
 <body>
@@ -66,6 +72,17 @@
 <div class="wrap">
   <h1>📝 Blog Editor</h1>
   <p class="sub">Fill this form to create a new blog post. No coding needed — it generates the code for you.</p>
+
+  <div class="box" id="ghBox">
+    <label>🔗 GitHub Auto-Publish (optional)</label>
+    <p class="hint">Save your GitHub token once — it's stored only in this browser and is never sent anywhere except directly to GitHub. After that, "Publish to GitHub" will push new posts to <b>posts.js</b> automatically, no manual copy-paste needed.</p>
+    <div class="gh-row">
+      <input type="password" id="ghTokenInput" placeholder="Paste your GitHub token here (ghp_... or github_pat_...)">
+      <button class="btn" onclick="saveGhToken()">Save token</button>
+      <button class="btn gh-remove" onclick="clearGhToken()">Remove</button>
+    </div>
+    <p id="ghTokenStatus" class="hint"></p>
+  </div>
 
   <div class="box">
     <label>Blog title</label>
@@ -100,16 +117,18 @@
   </div>
 
   <div id="output" class="box">
-    <label>✅ Your blog code (copy this):</label>
+    <label>✅ Your blog code:</label>
     <textarea id="code" readonly></textarea>
     <button class="copy-btn" onclick="copyCode()">📋 Copy code</button>
+    <button class="publish-btn" onclick="publishToGitHub()">🚀 Publish to GitHub</button>
+    <p id="ghStatus"></p>
     <div class="steps">
-      <b>Now do this:</b>
+      <b>Prefer to do it manually instead?</b>
       <ol>
-        <li>Open the file <b>posts.js</b> in your website folder.</li>
+        <li>Open the file <b>posts.js</b> in your website folder (or on GitHub).</li>
         <li>Find the line <b>window.POSTS = [</b> near the top.</li>
         <li>Paste the copied code <b>right after that line</b> (so your new post shows first).</li>
-        <li>Save the file and re-upload it to your host (or drag the whole folder to Netlify again).</li>
+        <li>Save and commit/re-upload the file.</li>
       </ol>
     </div>
   </div>
@@ -157,6 +176,7 @@ function generate(){
     content:\`${content.trim()}\`
   },`;
   document.getElementById('code').value=code;
+  document.getElementById('ghStatus').textContent='';
   document.getElementById('output').style.display='block';
   document.getElementById('output').scrollIntoView({behavior:'smooth'});
 }
@@ -165,6 +185,103 @@ function copyCode(){
   c.select();document.execCommand('copy');
   event.target.textContent='✅ Copied!';
   setTimeout(()=>event.target.textContent='📋 Copy code',1600);
+}
+
+// ── GitHub Auto-Publish ──
+const GH_OWNER='khurrambaigpk';
+const GH_REPO='outreachnest-website';
+const GH_BRANCH='main';
+const GH_FILE='posts.js';
+const GH_TOKEN_KEY='on_admin_gh_token';
+
+function b64EncodeUnicode(str){
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,(m,p1)=>String.fromCharCode('0x'+p1)));
+}
+function b64DecodeUnicode(str){
+  return decodeURIComponent(atob(str.replace(/\n/g,'')).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
+
+function saveGhToken(){
+  const val=document.getElementById('ghTokenInput').value.trim();
+  if(!val){alert('Please paste your GitHub token first.');return;}
+  localStorage.setItem(GH_TOKEN_KEY,val);
+  document.getElementById('ghTokenInput').value='';
+  updateGhTokenStatus();
+}
+function clearGhToken(){
+  localStorage.removeItem(GH_TOKEN_KEY);
+  updateGhTokenStatus();
+}
+function updateGhTokenStatus(){
+  const has=!!localStorage.getItem(GH_TOKEN_KEY);
+  const el=document.getElementById('ghTokenStatus');
+  el.textContent = has ? '✅ Token saved in this browser — ready to publish.' : '⚠️ No token saved yet — add one to enable one-click publish.';
+  el.style.color = has ? 'var(--leaf-deep)' : '#a33';
+}
+updateGhTokenStatus();
+
+async function publishToGitHub(){
+  const token=localStorage.getItem(GH_TOKEN_KEY);
+  const statusEl=document.getElementById('ghStatus');
+  const codeSnippet=document.getElementById('code').value;
+
+  if(!codeSnippet){alert('Click "Generate blog code" first.');return;}
+  if(!token){
+    alert('Please save your GitHub token in the box above first.');
+    document.getElementById('ghTokenInput').focus();
+    return;
+  }
+
+  const apiBase=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+  const headers={
+    'Authorization':`Bearer ${token}`,
+    'Accept':'application/vnd.github+json'
+  };
+
+  statusEl.style.color='var(--muted)';
+  statusEl.textContent='⏳ Fetching current posts.js from GitHub...';
+
+  try{
+    const getRes=await fetch(`${apiBase}?ref=${GH_BRANCH}`,{headers});
+    if(!getRes.ok){
+      throw new Error(`Could not read posts.js (HTTP ${getRes.status}). Check your token has write access to ${GH_REPO}.`);
+    }
+    const fileData=await getRes.json();
+    const sha=fileData.sha;
+    const currentContent=b64DecodeUnicode(fileData.content);
+
+    const marker='window.POSTS = [';
+    const idx=currentContent.indexOf(marker);
+    if(idx===-1){
+      throw new Error('Could not find "window.POSTS = [" in posts.js — file format may have changed.');
+    }
+    const insertAt=idx+marker.length;
+    const newContent=currentContent.slice(0,insertAt)+'\n'+codeSnippet+currentContent.slice(insertAt);
+
+    statusEl.textContent='⏳ Publishing to GitHub...';
+
+    const putRes=await fetch(apiBase,{
+      method:'PUT',
+      headers:{...headers,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        message:`Add new blog post: ${document.getElementById('title').value.trim()}`,
+        content:b64EncodeUnicode(newContent),
+        sha:sha,
+        branch:GH_BRANCH
+      })
+    });
+    if(!putRes.ok){
+      const errBody=await putRes.text();
+      throw new Error(`Publish failed (HTTP ${putRes.status}): ${errBody.slice(0,200)}`);
+    }
+    const putData=await putRes.json();
+    const shortSha=(putData.commit && putData.commit.sha) ? putData.commit.sha.slice(0,8) : '';
+    statusEl.style.color='var(--leaf-deep)';
+    statusEl.textContent=`✅ Published! Commit ${shortSha} — your new post will be live on the site within a minute or two.`;
+  }catch(err){
+    statusEl.style.color='#c0392b';
+    statusEl.textContent='❌ '+err.message;
+  }
 }
 </script>
 </div><!-- end wrap -->

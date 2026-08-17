@@ -1,5 +1,27 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
+  {
+    slug:"outreachnest-finder-features-guide-everything-the-",
+    cat:"Product, Features, Lead Generation", cover:"g1", icon:"📘",
+    title:"OutreachNest Finder Features Guide: Everything the App Can Do",
+    author:"OutreachNest", date:"August 2026", read:"6 min read",
+    excerpt:"A complete walkthrough of every OutreachNest Finder feature — from 4-engine lead search to email outreach campaigns — so you know exactly what the app can do for you.",
+    content:`<p>OutreachNest Finder is a Windows desktop app built for one job: helping you find real leads — websites, emails, WhatsApp numbers, and contact details — across the web, and turning that into an organized outreach pipeline. Here's a look at every major feature.</p>
+    <h3>1. 4-Engine Lead Search</h3>
+    <p>Most lead-finding tools search one engine at a time. OutreachNest Finder searches Google, Bing, Yahoo, and DuckDuckGo simultaneously for the keywords and niches you give it, then merges the results into a single clean list — avoiding the blocks that single-engine scrapers run into, and surfacing sites that show up on one engine but not another.</p>
+    <h3>2. Email, WhatsApp & Phone Extraction</h3>
+    <p>Once the search finds a website, OutreachNest Finder automatically visits it and pulls out email addresses, WhatsApp numbers (including click-to-chat links), and phone numbers — no need to open a single site yourself. The app does the digging and hands you a ready contact list.</p>
+    <h3>3. SEO Metrics via Chrome Bridge</h3>
+    <p>For outreach that depends on site quality — guest posting, link building, partnerships — knowing a domain's authority matters. The Chrome Bridge integration pulls in Domain Authority (DA), Page Authority (PA), Ahrefs Domain Rank (DR), estimated traffic, and Moz/Spam Score data — right next to each lead, so you can filter out low-quality sites in seconds.</p>
+    <h3>4. Google Sheets & Excel Export</h3>
+    <p>Every lead you collect can be pushed straight into Google Sheets (with a 30+ column layout covering email, phone, WhatsApp, and SEO metrics) or exported to CSV/Excel for any CRM. Duplicate entries are automatically skipped, so re-running a search never clutters your sheet with repeats.</p>
+    <h3>5. Niche Profile Manager</h3>
+    <p>If you work across multiple industries — say, solar installers one week and electricians the next — you can save unlimited niche profiles. Each one remembers its own keywords and settings, so switching between campaigns takes one click instead of re-typing everything.</p>
+    <h3>6. Email Outreach Campaigns</h3>
+    <p>Once you have a lead list, the built-in campaign manager lets you create reusable email templates, schedule sends instead of blasting everything at once, and track which emails have gone out — keeping the whole workflow inside one app instead of juggling five different tools.</p>
+    <h3>7. Plans & Free Trial</h3>
+    <p>All plans unlock every feature above — the only difference is duration. Free Trial: 3 days, full access, no credit card needed. Monthly: $15/month. 6-Month: $29. Annual: $49/year (best value). Download the free trial and start finding leads in minutes.</p>`
+  },
     {
     slug:"how-to-find-seo-clients-fast-in-2026",
     cat:"SEO, Freelancing", cover:"g1", icon:"💼",

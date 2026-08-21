@@ -1,6 +1,21 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"finding-electrical-contractors-and-panel-builders-",
+    cat:"Electrical", cover:"g1", icon:"⚡",
+    title:"Finding Electrical Contractors and Panel Builders for Outreach — Fast",
+    author:"OutreachNest", date:"August 2026", read:"4 min read",
+    excerpt:"Search residential, commercial, and industrial electricians, panel builders, and electrical maintenance companies — with emails, phone numbers, and SEO metrics pulled automatically.",
+    content:`<p>The electrical trade covers a wide range of businesses — from a two-person residential electrician outfit to a large industrial maintenance contractor running control panels for factories. If your outreach or lead-gen work touches this space, targeting the right segment matters as much as finding contacts at all.</p>
+    <p>OutreachNest Finder splits the electrical niche into the categories that actually matter for outreach: residential electricians, commercial electricians and general electrical contractors, electrical panel builders (switchgear, control panels, distribution boards, MCC panels), industrial electricians and electrical maintenance providers, and emergency electrician services. You can search one category at a time for a focused list, or run several together if you're casting a wider net across a region.</p>
+    <h3>Why this saves hours, not minutes</h3>
+    <p>A typical manual workflow for this kind of B2B outreach looks like: search Google, open ten tabs, check each site for a contact page, copy the email if there is one, then separately check Moz or Ahrefs for the domain's authority before deciding if it's worth contacting. OutreachNest Finder collapses all of that into one pass — search, extract, check metrics, and log to Google Sheets happen together, across four search engines at once instead of just Google. For panel builders and industrial electrical contractors specifically, company websites are often thin on contact info beyond a phone number — OutreachNest Finder captures whatever is actually on the page (email, WhatsApp, or phone), so you're not stuck with dead ends.</p>
+    <h3>Outreach that doesn't read like a mail blast</h3>
+    <p>Electrical contractors get pitched constantly by suppliers and marketing agencies, so generic outreach tends to get ignored. The built-in campaign manager lets you build a template referencing the specific service category (for example, "I noticed you specialize in commercial panel installation...") and track opens/replies, so you can see which angle is actually working before you scale it up.</p>
+    <h3>Get started</h3>
+    <p>Whether you're building a lead list for a client in the electrical trade or doing SEO outreach for an electrical services brand, the free 3-day trial gives you enough runway to test a real search and see the data quality firsthand. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+  },
+  {
     slug:"how-to-find-solar-guest-post-sites-and-leads-in-mi",
     cat:"Solar", cover:"g1", icon:"☀️",
     title:"How to Find Solar Guest Post Sites and Leads in Minutes (Not Days)",

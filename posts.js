@@ -1,6 +1,21 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"sourcing-leads-in-industrial-automation-plc-scada-",
+    cat:"Automation", cover:"g4", icon:"🤖",
+    title:"Sourcing Leads in Industrial Automation: PLC, SCADA, and Instrumentation Companies",
+    author:"OutreachNest", date:"August 2026", read:"4 min read",
+    excerpt:"Find PLC automation firms, SCADA integrators, instrumentation companies, and calibration services — with verified contact info and SEO metrics, automatically.",
+    content:`<p>Industrial automation is a technical, high-value B2B niche — the kind of space where a single qualified lead (a systems integrator, a calibration lab, an instrumentation supplier) can be worth far more than a hundred generic contacts in a broader industry. That also means it's a niche where sloppy, generic searching wastes a lot of time chasing companies that don't actually fit.</p>
+    <p>OutreachNest Finder's Industrial Automation profile is built around the categories that define this space: PLC automation (Siemens, Allen-Bradley, and general PLC programming), SCADA and HMI system integrators, instrumentation and process control (transmitters, sensors), calibration services and calibration labs, lab equipment repair, electrical control panel builders, industrial maintenance providers, and sensor suppliers. Because these are narrower, more technical categories than something like "electrician" or "solar installer," search precision matters more here — which is exactly why OutreachNest Finder queries four engines at once instead of relying on Google alone. Different engines surface different regional and smaller B2B sites that don't always rank on Google's first few pages.</p>
+    <h3>SEO metrics that actually matter for B2B</h3>
+    <p>For outreach or link-building in a technical niche like this, raw traffic numbers are often less useful than knowing a site's Domain Rating or Page Authority, since many strong industrial B2B sites have modest traffic but solid authority. OutreachNest Finder pulls DA, PA, DR, traffic, and spam score for every result via your Moz, Semrush, or Ahrefs Chrome extensions, so you can prioritize by authority rather than by traffic alone.</p>
+    <h3>Everything organized, nothing duplicated</h3>
+    <p>Save a dedicated niche profile for Industrial Automation (or build your own from these categories), and every search syncs to its own tab in Google Sheets with built-in deduplication — so running the same search again next quarter adds only what's new.</p>
+    <h3>Try a real search</h3>
+    <p>If you're doing B2B outreach, partnership scouting, or link-building in industrial automation and instrumentation, the free 3-day trial (no credit card) is enough to test the categories above on a real target list. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+  },
+  {
     slug:"finding-electrical-contractors-and-panel-builders-",
     cat:"Electrical", cover:"g1", icon:"⚡",
     title:"Finding Electrical Contractors and Panel Builders for Outreach — Fast",

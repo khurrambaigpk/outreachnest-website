@@ -1,6 +1,23 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"finding-electronics-and-appliance-repair-businesse",
+    cat:"Electronics Repair", cover:"g6", icon:"🔧",
+    title:"Finding Electronics and Appliance Repair Businesses for Outreach at Scale",
+    author:"OutreachNest", date:"August 2026", read:"4 min read",
+    excerpt:"Search appliance, TV, laptop, mobile, UPS, and CCTV repair businesses plus electronics parts suppliers — with contact info and SEO metrics pulled automatically.",
+    content:`<p>The electronics and appliance repair space is huge, hyper-local, and fragmented — thousands of small repair shops across categories like appliance repair, TV repair, laptop repair, mobile repair, UPS/inverter repair, CCTV repair, and electronics parts suppliers. That fragmentation is exactly what makes manual outreach research so slow: there's no single directory that covers all of it well, so most people end up doing dozens of narrow Google searches one category and one city at a time.</p>
+    <p>OutreachNest Finder's Electronics Repair categories are built to match how this niche is actually structured: appliance repair (washing machines, refrigerators, dryers, ovens), TV repair, laptop repair, mobile repair, UPS and inverter repair, CCTV repair, and electronics parts suppliers.</p>
+    <h3>Search four engines, not one</h3>
+    <p>Local repair businesses are notoriously under-indexed on Google alone — a lot of them rely on Bing, Yahoo, or local directories more than you'd expect. Searching Google, Bing, Yahoo, and DuckDuckGo simultaneously surfaces businesses that a Google-only search would simply miss, which matters a lot when the whole point is coverage across a fragmented market.</p>
+    <h3>From search result to usable contact, automatically</h3>
+    <p>For every business found, the app visits the site and extracts whatever contact info is actually listed — email, WhatsApp number, or phone — so you're not manually opening each site to hunt for a "Contact Us" page. If you're checking site quality for link-building or partnership purposes, DA/PA/DR and spam score come along automatically via your existing Moz, Semrush, or Ahrefs Chrome extensions.</p>
+    <h3>Built for volume without duplicate work</h3>
+    <p>Because this niche often means running many searches across categories and cities, the built-in deduplication matters more here than almost anywhere else — it stops the same repair shop from showing up five times across five overlapping searches. Everything lands in a live Google Sheet you can filter, sort, and export to CSV/Excel whenever you need to.</p>
+    <h3>Start your first search</h3>
+    <p>Whether you're building a local business lead list, doing SEO outreach for a repair-industry client, or sourcing partners for an electronics parts supplier, the free 3-day trial (no credit card required) is enough to test a real category and city combination. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+  },
+  {
     slug:"sourcing-leads-in-industrial-automation-plc-scada-",
     cat:"Automation", cover:"g4", icon:"🤖",
     title:"Sourcing Leads in Industrial Automation: PLC, SCADA, and Instrumentation Companies",

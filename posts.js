@@ -1,6 +1,22 @@
 // ===== Blog posts — original content. Add new posts to this array. =====
 window.POSTS = [
   {
+    slug:"how-to-find-solar-guest-post-sites-and-leads-in-mi",
+    cat:"Solar", cover:"g1", icon:"☀️",
+    title:"How to Find Solar Guest Post Sites and Leads in Minutes (Not Days)",
+    author:"OutreachNest", date:"August 2026", read:"4 min read",
+    excerpt:"Short summary: Find solar blogs, installers, and inverter/battery sites for guest posts or leads — with DA, PA, DR and verified emails pulled automatically by OutreachNest Finder.",
+    content:`<p>If you work in solar — as an SEO freelancer building links for a solar client, an installer looking for local leads, or an agency running outreach for a renewable energy brand — you already know the pain. Solar is a crowded, fast-growing niche, and finding the right sites and contacts means hours of manual Googling, checking Domain Authority one tab at a time, and hunting for an email address that usually isn't even on the page. OutreachNest Finder was built to cut that process down from days to minutes.</p>
+    <h3>What it searches for in the solar niche</h3>
+    <p>Instead of guessing at search terms, OutreachNest Finder comes with solar-specific categories already built in, so you can target exactly the type of site or business you need — solar blogs and "write for us" / guest post sites, solar installers and PV contractors, solar inverter and battery/UPS repair services, solar distributors, wholesalers, and manufacturers, and solar energy consultants. Pick one (or all) of these, add your target country, and the app queries Google, Bing, Yahoo, and DuckDuckGo simultaneously — so you're not limited to whatever Google alone decides to show you.</p>
+    <h3>From a name to a full contact card, automatically</h3>
+    <p>For every result, OutreachNest Finder visits the site and pulls out the email address, WhatsApp number, or phone number if one is listed — no manual copy-pasting. If you have Moz, Semrush, or Ahrefs running in Chrome, it also captures Domain Authority, Page Authority, Domain Rating, traffic estimate, and spam score for each site, so you can filter out low-quality domains before you ever send an email. Every result flows straight into a live Google Sheet, with automatic deduplication — so if you re-run the same search next month to find fresh solar sites, you won't get the same 40 rows again.</p>
+    <h3>Built-in outreach for solar guest posts and partnerships</h3>
+    <p>Once you have your list, the built-in outreach manager lets you write a template, personalize it with each site's name, and track what's been sent — all without leaving the app. For solar guest post pitches specifically, keeping the message short and specific (mention the site by name, suggest a topic) gets noticeably better reply rates than a generic "I'd like to write for you.</p>
+    <h3>Try it on your next solar campaign</h3>
+    <p>If you're building links, generating installer leads, or scouting partnership opportunities in solar, OutreachNest Finder's free 3-day trial (no credit card needed) is enough to run a full search and see the quality of results for yourself. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+  },
+  {
     slug:"how-agencies-manage-10-niches-without-losing-track",
     cat:"Lead Generation, Agency Workflow, Organization", cover:"g5", icon:"🗂️",
     title:"How Agencies Manage 10+ Niches Without Losing Track",

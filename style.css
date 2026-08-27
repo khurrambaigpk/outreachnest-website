@@ -1,16 +1,16 @@
 :root{
-  --ink:#0f1e18;
-  --paper:#f6f4ec;
-  --paper-2:#efece1;
-  --card:#ffffff;
-  --leaf:#1c7a4d;
-  --leaf-deep:#0f5c38;
-  --leaf-soft:#e6f1ea;
-  --gold:#c8912f;
-  --gold-bright:#e0aa42;
-  --line:#e2ddce;
-  --muted:#57635c;
-  --shadow:0 20px 50px -24px rgba(15,92,56,.45);
+--ink:#0f1e18;
+--paper:#f6f4ec;
+--paper-2:#efece1;
+--card:#ffffff;
+--leaf:#1c7a4d;
+--leaf-deep:#0f5c38;
+--leaf-soft:#e6f1ea;
+--gold:#c8912f;
+--gold-bright:#e0aa42;
+--line:#e2ddce;
+--muted:#57635c;
+--shadow:0 20px 50px -24px rgba(15,92,56,.45);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -195,12 +195,12 @@ footer{border-top:1px solid var(--line);padding:48px 0 40px;margin-top:88px}
 
 /* Animated gradient hero background */
 .hero::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,rgba(28,122,77,.04) 0%,rgba(200,145,47,.06) 50%,rgba(28,122,77,.04) 100%);
-  z-index:-1;
-  animation:heroShift 8s ease-in-out infinite alternate;
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,rgba(28,122,77,.04) 0%,rgba(200,145,47,.06) 50%,rgba(28,122,77,.04) 100%);
+z-index:-1;
+animation:heroShift 8s ease-in-out infinite alternate;
 }
 @keyframes heroShift{from{opacity:.5}to{opacity:1}}
 
@@ -241,3 +241,7 @@ footer{border-top:1px solid var(--line);padding:48px 0 40px;margin-top:88px}
 /* Better footer social */
 .foot-social a{transition:transform .16s,opacity .16s}
 .foot-social a:hover{transform:translateY(-2px);opacity:.9}
+
+/* Fix: .foot-col a{display:block} was unintentionally overriding the footer brand logo link,
+   collapsing .logo-mark (the colored icon box) to 0 width and dimming the OutreachNest text to var(--muted). */
+.foot-about a.logo{display:flex;color:var(--ink)}

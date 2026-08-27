@@ -1,5 +1,8 @@
 name = "outreachnest-website"
 compatibility_date = "2026-08-15"
+main = "_worker.js"
 
 [assets]
 directory = "./"
+binding = "ASSETS"
+run_worker_first = ["/admin", "/admin.html"]

@@ -84,11 +84,14 @@ function injectShared(active){
   if(nh) nh.innerHTML = buildNav(active);
   if(fh) fh.innerHTML = buildFooter();
   document.querySelectorAll('[data-email]').forEach(el=>{
-    el.textContent = EMAIL;
+    // Only replace text on empty, childless placeholders (e.g. <span data-email></span>).
+    // Elements that already have their own icon/children (e.g. the mail-pill button) or
+    // their own static label (e.g. "Get in touch →") must keep that content untouched.
+    if(!el.children.length && !el.textContent.trim()) el.textContent = EMAIL;
     if(el.tagName==='A') el.href = "mailto:"+EMAIL;
   });
   document.querySelectorAll('[data-whatsapp]').forEach(el=>{
-    el.textContent = "+"+WHATSAPP;
+    if(!el.children.length && !el.textContent.trim()) el.textContent = "+"+WHATSAPP;
     if(el.tagName==='A') el.href = "https://wa.me/"+WHATSAPP;
   });
   document.querySelectorAll('[data-download]').forEach(el=>{

@@ -3,52 +3,158 @@
 // two paths before Cloudflare's normal static-file serving kicks in; every other page on the site
 // bypasses this file entirely and is served exactly as before, unchanged.
 //
-// This replaces the earlier attempt at functions/_middleware.js, which only works for the
-// separate "Cloudflare Pages" product — this site deploys as a Worker with a static-assets
-// binding instead, which needs this different file + a wrangler.toml `main` entry to run any
-// custom code at all. functions/_middleware.js can be deleted later; it is inert either way.
+// v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
+// Why: browsers cache Basic Auth credentials at the PROCESS level (until Chrome is fully quit,
+// not just when a window/tab is closed), so there was no way to make "close the window -> log out
+// again" work while using Basic Auth. This version shows its own login form, and on success sets
+// a signed, HttpOnly session cookie with NO Max-Age — a "session cookie", which browsers clear
+// when the whole browser is closed (not just one tab/window) — plus an absolute 8-hour cap baked
+// into the token itself as a backstop, in case a browser's session-restore feature keeps cookies
+// around longer than expected.
 //
-// To change the password later: edit ADMIN_USER / ADMIN_PASS below, keep this in sync with
-// admin.html's own ADMIN_PASS constant if you want both layers to match, then re-upload this
-// file the same way as any other website file.
+// To change the password later: edit ADMIN_USER / ADMIN_PASS below, then re-upload this file the
+// same way as any other website file. To force everyone to log in again immediately (e.g. after a
+// password change), also change SESSION_SECRET to any new random string — that instantly
+// invalidates every previously-issued session cookie.
 
 const ADMIN_USER = "mariyam";
 const ADMIN_PASS = "Nest2026!Falcon91";
+const SESSION_SECRET = "on-8f3k2m9x7q1z5w4v6t0r8y2u3i7o1p9a4s6d";
+const SESSION_MAX_AGE_SECONDS = 8 * 60 * 60; // 8-hour absolute cap, defense-in-depth
+const COOKIE_NAME = "on_admin_session";
 
-function unauthorized() {
-  return new Response("Authentication required.", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="OutreachNest Admin", charset="UTF-8"',
-      "Content-Type": "text/plain; charset=UTF-8",
-    },
-  });
+async function hmacSign(message, secret) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function makeSessionToken() {
+  const expiry = Date.now() + SESSION_MAX_AGE_SECONDS * 1000;
+  const sig = await hmacSign(String(expiry), SESSION_SECRET);
+  return `${expiry}.${sig}`;
+}
+
+async function verifySessionToken(token) {
+  if (!token) return false;
+  const parts = token.split(".");
+  if (parts.length !== 2) return false;
+  const [expiryStr, sig] = parts;
+  if (!/^[0-9]+$/.test(expiryStr)) return false;
+  const expected = await hmacSign(expiryStr, SESSION_SECRET);
+  if (sig !== expected) return false;
+  return Date.now() < parseInt(expiryStr, 10);
+}
+
+function getCookie(request, name) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const match = cookieHeader.match(new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function loginPageHtml(showError) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — OutreachNest</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#faf8f3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:20px}
+.box{background:#fff;border:1px solid #e4ddd0;border-radius:14px;padding:36px 32px;max-width:340px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.06);text-align:center}
+.lock{font-size:38px;margin-bottom:10px}
+h1{font-size:22px;margin:0 0 6px;color:#16261f}
+p{color:#6b6459;font-size:13.5px;margin:0 0 20px}
+input{width:100%;padding:12px 14px;margin-bottom:12px;border:1px solid #d8d0c0;border-radius:8px;font-size:14px}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:#1f4d3a;color:#fff;font-weight:600;font-size:14.5px;cursor:pointer}
+button:hover{background:#173c2d}
+.err{background:#fbe9e9;color:#a33;border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="box">
+<div class="lock">🔐</div>
+<h1>Admin Access</h1>
+<p>OutreachNest Blog Editor</p>
+${showError ? '<div class="err">❌ Incorrect username or password.</div>' : ""}
+<form method="POST">
+<input type="text" name="username" placeholder="Username" autocomplete="username" required autofocus>
+<input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+<button type="submit">Unlock →</button>
+</form>
+</div>
+</body>
+</html>`;
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
 
-    if (url.pathname === "/admin" || url.pathname === "/admin.html") {
-      const authHeader = request.headers.get("Authorization") || "";
-      let ok = false;
-      if (authHeader.startsWith("Basic ")) {
-        try {
-          const decoded = atob(authHeader.slice(6));
-          const sep = decoded.indexOf(":");
-          const user = sep === -1 ? decoded : decoded.slice(0, sep);
-          const pass = sep === -1 ? "" : decoded.slice(sep + 1);
-          ok = user === ADMIN_USER && pass === ADMIN_PASS;
-        } catch (e) {
-          ok = false;
-        }
-      }
-      if (!ok) {
-        return unauthorized();
-      }
+    if (!isAdminPath) {
+      return env.ASSETS.fetch(request);
     }
 
-    // Every other request (and an authenticated /admin request) is served normally.
+    // Logout: clear the cookie and show the login form again.
+    if (url.searchParams.get("logout") === "1") {
+      return new Response(loginPageHtml(false), {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html; charset=UTF-8",
+          "Set-Cookie": `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`,
+        },
+      });
+    }
+
+    // Login form submission.
+    if (request.method === "POST") {
+      let user = "", pass = "";
+      try {
+        const form = await request.formData();
+        user = form.get("username") || "";
+        pass = form.get("password") || "";
+      } catch (e) {
+        // fall through with empty creds -> treated as wrong password
+      }
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        const token = await makeSessionToken();
+        // No Max-Age/Expires on purpose: this makes it a "session cookie" that browsers
+        // clear when the browser is fully closed, not just when a tab/window is closed.
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: url.pathname,
+            "Set-Cookie": `${COOKIE_NAME}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+          },
+        });
+      }
+
+      return new Response(loginPageHtml(true), {
+        status: 401,
+        headers: { "Content-Type": "text/html; charset=UTF-8" },
+      });
+    }
+
+    // Normal page view: check the session cookie.
+    const token = getCookie(request, COOKIE_NAME);
+    const valid = await verifySessionToken(token);
+    if (!valid) {
+      return new Response(loginPageHtml(false), {
+        status: 401,
+        headers: { "Content-Type": "text/html; charset=UTF-8" },
+      });
+    }
+
     return env.ASSETS.fetch(request);
   },
 };

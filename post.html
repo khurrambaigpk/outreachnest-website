@@ -15,6 +15,7 @@
 <meta name="twitter:title" content="Blog — OutreachNest">
 <meta name="twitter:description" content="Practical insights on guest posting, lead generation, outreach, and SEO from the OutreachNest team.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
+<meta name="description" content="Practical insights on guest posting, lead generation, outreach, and SEO from the OutreachNest team.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -74,6 +75,17 @@ document.getElementById('aRead').textContent=post.read;
 const cover=document.getElementById('aCover');
 cover.className='art-cover '+post.cover; cover.textContent=post.icon;
 document.getElementById('aBody').innerHTML=post.content;
+
+// Per-post SEO tags: without this every article shared the same canonical URL/description,
+// which told search engines all 21 posts were duplicates of one page.
+const postUrl = 'https://getoutreachnest.com/post.html?p=' + post.slug;
+document.querySelector('link[rel="canonical"]').setAttribute('href', postUrl);
+document.querySelector('meta[name="description"]').setAttribute('content', post.excerpt);
+document.querySelector('meta[property="og:title"]').setAttribute('content', post.title + ' — OutreachNest');
+document.querySelector('meta[property="og:description"]').setAttribute('content', post.excerpt);
+document.querySelector('meta[property="og:url"]').setAttribute('content', postUrl);
+document.querySelector('meta[name="twitter:title"]').setAttribute('content', post.title + ' — OutreachNest');
+document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.excerpt);
 </script>
 </body>
 </html>

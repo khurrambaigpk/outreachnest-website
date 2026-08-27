@@ -124,6 +124,14 @@ textarea{min-height:120px;resize:vertical}
 </div>
 
 <script>
+// Actively end the server-side login session when this tab/window is closed, instead of only
+// relying on the browser's own "session cookie" clearing behavior (some Chrome setups keep
+// running in the background after every window closes, which can delay that). See _worker.js
+// v3 notes for the full explanation.
+window.addEventListener('pagehide', function() {
+  navigator.sendBeacon('/admin?logout=1');
+});
+
 function addPara(type){
 const div=document.createElement('div');
 div.className='para-row';

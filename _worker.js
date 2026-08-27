@@ -7,20 +7,32 @@
 // Why: browsers cache Basic Auth credentials at the PROCESS level (until Chrome is fully quit,
 // not just when a window/tab is closed), so there was no way to make "close the window -> log out
 // again" work while using Basic Auth. This version shows its own login form, and on success sets
-// a signed, HttpOnly session cookie with NO Max-Age — a "session cookie", which browsers clear
-// when the whole browser is closed (not just one tab/window) — plus an absolute 8-hour cap baked
-// into the token itself as a backstop, in case a browser's session-restore feature keeps cookies
-// around longer than expected.
+// a signed, HttpOnly session cookie with NO Max-Age — a "session cookie", which browsers are
+// SUPPOSED to clear when the whole browser is closed.
+//
+// v3 (27 Aug 2026) — two more layers, because relying on the browser alone to clear a "session
+// cookie" turned out to be unreliable: some Chrome setups keep running in the background after
+// every window is closed (see chrome://settings/system -> "Continue running background apps"),
+// which keeps the cookie alive too.
+//   1. SESSION_MAX_AGE_SECONDS shortened from 8 hours to 2 hours — an absolute cap enforced by
+//      THIS SERVER (checked on every request, independent of what the browser does), so a
+//      forgotten-open tab automatically needs a fresh login again after 2 hours no matter what.
+//   2. admin.html now sends an explicit logout signal (navigator.sendBeacon) when its page is
+//      being closed/hidden (the `pagehide` event) — this actively asks the server to invalidate
+//      the session the moment the tab/window closes, instead of passively hoping the browser's
+//      session-cookie behavior kicks in. Between the two, "close the window" now reliably logs
+//      out even on a Chrome setup that keeps a background process alive.
 //
 // To change the password later: edit ADMIN_USER / ADMIN_PASS below, then re-upload this file the
 // same way as any other website file. To force everyone to log in again immediately (e.g. after a
 // password change), also change SESSION_SECRET to any new random string — that instantly
-// invalidates every previously-issued session cookie.
+// invalidates every previously-issued session cookie. To change how long an open tab stays logged
+// in before it's forced to re-login, change SESSION_MAX_AGE_SECONDS below.
 
 const ADMIN_USER = "mariyam";
 const ADMIN_PASS = "Nest2026!Falcon91";
 const SESSION_SECRET = "on-8f3k2m9x7q1z5w4v6t0r8y2u3i7o1p9a4s6d";
-const SESSION_MAX_AGE_SECONDS = 8 * 60 * 60; // 8-hour absolute cap, defense-in-depth
+const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60; // 2-hour absolute cap, enforced server-side regardless of browser cookie behavior
 const COOKIE_NAME = "on_admin_session";
 
 async function hmacSign(message, secret) {
@@ -128,8 +140,10 @@ export default {
 
       if (user === ADMIN_USER && pass === ADMIN_PASS) {
         const token = await makeSessionToken();
-        // No Max-Age/Expires on purpose: this makes it a "session cookie" that browsers
-        // clear when the browser is fully closed, not just when a tab/window is closed.
+        // No Max-Age/Expires on purpose: this makes it a "session cookie" that browsers are
+        // supposed to clear when the browser is fully closed. admin.html's pagehide beacon
+        // (see v3 note above) backs this up with an active logout on tab/window close, and
+        // SESSION_MAX_AGE_SECONDS caps how long it can live either way.
         return new Response(null, {
           status: 302,
           headers: {

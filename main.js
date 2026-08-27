@@ -1,77 +1,80 @@
 // ===== SITE CONFIG — change here, updates everywhere =====
-const EMAIL     = "queries@getoutreachnest.com";
-const WHATSAPP  = "923006321406";   // international format, no +
-const ADDRESS   = "Multan, Punjab Pakistan";
+const EMAIL = "queries@getoutreachnest.com";
+const WHATSAPP = "923006321406"; // international format, no +
+const ADDRESS = "Multan, Punjab Pakistan";
 const DOWNLOAD_URL = "https://mariyamk5.gumroad.com/l/outreachnest-finder";
 
 // Prices — change here to update all pages
 const PRICES = {
-  trial:    { label: "Free Trial",  price: "FREE",  dur: "3 Days",   days: 3  },
-  monthly:  { label: "Monthly",     price: "$15",   dur: "30 Days",  days: 30 },
-  halfyear: { label: "6-Month",     price: "$29",   dur: "180 Days", days: 180},
-  annual:   { label: "Annual",      price: "$49",   dur: "365 Days", days: 365},
+  trial: { label: "Free Trial", price: "FREE", dur: "3 Days", days: 3 },
+  monthly: { label: "Monthly", price: "$15", dur: "30 Days", days: 30 },
+  halfyear: { label: "6-Month", price: "$29", dur: "180 Days", days: 180},
+  annual: { label: "Annual", price: "$49", dur: "365 Days", days: 365},
 };
 
 // Payment details
 const PAYMENT = {
-  bank:     "Allied Bank",
-  iban:     "PK48ABPA0010101916170010",
-  account:  "10650010101916170010",
-  branch:   "1065",
+  bank: "Allied Bank",
+  iban: "PK48ABPA0010101916170010",
+  account: "10650010101916170010",
+  branch: "1065",
   jazzcash: "03317319333",
-  name:     "Mariyam Riaz",
+  name: "Mariyam Riaz",
 };
 
 function buildNav(active){
   const links = [
-    {href:"index.html",    label:"Home",     key:"home"},
+    {href:"index.html", label:"Home", key:"home"},
     {href:"services.html", label:"Services", key:"services"},
-    {href:"niches.html",   label:"Niches",   key:"niches"},
+    {href:"niches.html", label:"Niches", key:"niches"},
     {href:"download.html", label:"Download", key:"download"},
-    {href:"blog.html",     label:"Blog",     key:"blog"},
+    {href:"blog.html", label:"Blog", key:"blog"},
   ];
-  const items  = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
+  const items = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   return `<nav><div class="wrap nav-inner">
-    <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
-    <div class="nav-links">${items}<a href="contact.html" class="nav-cta">Get in touch</a></div>
-    <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
+  <div class="nav-links">${items}<a href="contact.html" class="nav-cta">Get in touch</a></div>
+  <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
   <div class="mobile-menu" id="mobile-menu">${mItems}<a href="contact.html" class="m-cta">Get in touch</a></div></nav>`;
 }
 
 function buildFooter(){
   return `<footer><div class="wrap">
-    <div class="foot-grid">
-      <div class="foot-col foot-about">
-        <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
-        <p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p>
-        <div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <a href="https://wa.me/${WHATSAPP}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a>
-          <a href="mailto:${EMAIL}" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a>
-        </div>
-      </div>
-      <div class="foot-col"><h4>Services</h4>
-        <a href="services.html">Guest posts</a>
-        <a href="services.html">Lead lists</a>
-        <a href="services.html">Content writing</a>
-        <a href="download.html">Download Finder</a>
-      </div>
-      <div class="foot-col"><h4>Company</h4>
-        <a href="niches.html">Niches</a>
-        <a href="blog.html">Blog</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <div class="foot-col"><h4>Contact</h4>
-        <a href="mailto:${EMAIL}">${EMAIL}</a>
-        <a href="https://wa.me/${WHATSAPP}" target="_blank">+${WHATSAPP}</a>
-        <p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5">${ADDRESS}</p>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <p>© 2026 OutreachNest. All rights reserved.</p>
-      <p>Real outreach for technical niches.</p>
-    </div>
+  <div class="foot-grid">
+  <div class="foot-col foot-about">
+  <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
+  <p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p>
+  <div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+  <a href="https://wa.me/${WHATSAPP}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a>
+  <a href="mailto:${EMAIL}" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a>
+  <a href="https://facebook.com/OutreachNestFinder" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">📘 Facebook</a>
+  <a href="https://x.com/MariyamRiagclo" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#000000;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">🐦 Twitter/X</a>
+  <a href="https://www.linkedin.com/in/mariyam-riaz-1b93a8431" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#0A66C2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💼 LinkedIn</a>
+  </div>
+  </div>
+  <div class="foot-col"><h4>Services</h4>
+  <a href="services.html">Guest posts</a>
+  <a href="services.html">Lead lists</a>
+  <a href="services.html">Content writing</a>
+  <a href="download.html">Download Finder</a>
+  </div>
+  <div class="foot-col"><h4>Company</h4>
+  <a href="niches.html">Niches</a>
+  <a href="blog.html">Blog</a>
+  <a href="contact.html">Contact</a>
+  </div>
+  <div class="foot-col"><h4>Contact</h4>
+  <a href="mailto:${EMAIL}">${EMAIL}</a>
+  <a href="https://wa.me/${WHATSAPP}" target="_blank">+${WHATSAPP}</a>
+  <p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5">${ADDRESS}</p>
+  </div>
+  </div>
+  <div class="foot-bottom">
+  <p>© 2026 OutreachNest. All rights reserved.</p>
+  <p>Real outreach for technical niches.</p>
+  </div>
   </div></footer>`;
 }
 

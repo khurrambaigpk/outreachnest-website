@@ -1,7 +1,7 @@
 // ===== SITE CONFIG — change here, updates everywhere =====
 const EMAIL     = "queries@getoutreachnest.com";
 const WHATSAPP  = "923006321406";   // international format, no +
-const ADDRESS   = "Wapda Town Phase-2, Multan, Pakistan";
+const ADDRESS   = "Multan, Punjab Pakistan";
 const DOWNLOAD_URL = "https://mariyamk5.gumroad.com/l/outreachnest-finder";
 
 // Prices — change here to update all pages

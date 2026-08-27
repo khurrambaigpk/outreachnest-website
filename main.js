@@ -2,7 +2,7 @@
 const EMAIL = "queries@getoutreachnest.com";
 const WHATSAPP = "923006321406"; // international format, no +
 const ADDRESS = "Multan, Punjab Pakistan";
-const DOWNLOAD_URL = "https://mariyamk5.gumroad.com/l/outreachnest-finder";
+const DOWNLOAD_URL = "https://mariyamk5.gumroad.com/l/outreachnest-finder?price=0";
 
 // Prices — change here to update all pages
 const PRICES = {

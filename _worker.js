@@ -45,6 +45,21 @@ const COOKIE_NAME = "on_admin_session";
 // ── Activation system config ────────────────────────────────────────────────
 const GUMROAD_PRODUCT_ID = "BZVGpilp2DHoSlq47Zlcjg=="; // "OutreachNest Finder — Multi-Engine Lead Finder" product's API product_id (NOT the URL permalink)
 const LICENSE_SECRET = "ON_MASTER_2025_KhurramBaig_ABL_SecretKey_8x7z"; // must match _LICENSE_SECRET in vendor_finder_windows_app.py exactly
+
+// ── Ed25519 hardening (added 28 Aug 2026) ───────────────────────────────────
+// Every key generated from here on also carries an Ed25519 signature, made
+// with the PRIVATE key below. Only the updated .exe (which ships the matching
+// PUBLIC key, never this private one) can verify it — older, already-installed
+// customer copies simply never look past byte 14 and keep validating via the
+// unchanged HMAC-only path, so nothing breaks for anyone already using the app.
+// This PRIVATE key must NEVER go anywhere except here and Mariyam's private
+// keygen tool on her own PC — never into the app, never anywhere public.
+const ED25519_PRIVATE_KEY_HEX = "94985d37de5845bde4df86379e11635477ed39c96fc7ac0abf2aff175cb9efce";
+// Ed25519 private keys import into Web Crypto only via PKCS8 (raw format is
+// public-key-only for this algorithm) — this is a fixed 16-byte DER prefix
+// (RFC 8410) in front of the 32 raw private-key bytes.
+const ED25519_PKCS8_PREFIX_HEX = "302e020100300506032b657004220420";
+
 const PLAN_IDS = { annual: 1, trial7: 3, halfyear: 4, monthly: 5 };
 const TRIAL_DAYS_FALLBACK = 3; // used only if the live admin_settings.json fetch fails
 const ADMIN_SETTINGS_URL = "https://raw.githubusercontent.com/khurrambaigpk/outreachnest-settings/main/admin_settings.json";
@@ -144,6 +159,24 @@ async function sha256Bytes(strOrBytes) {
   return new Uint8Array(digest);
 }
 
+function hexToBytes(hex) {
+  const out = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16);
+  return out;
+}
+
+let _ed25519PrivateKeyCache = null;
+async function getEd25519PrivateKey() {
+  if (_ed25519PrivateKeyCache) return _ed25519PrivateKeyCache;
+  const prefix = hexToBytes(ED25519_PKCS8_PREFIX_HEX);
+  const rawPriv = hexToBytes(ED25519_PRIVATE_KEY_HEX);
+  const pkcs8 = new Uint8Array(prefix.length + rawPriv.length);
+  pkcs8.set(prefix, 0);
+  pkcs8.set(rawPriv, prefix.length);
+  _ed25519PrivateKeyCache = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
+  return _ed25519PrivateKeyCache;
+}
+
 async function generateActivationKey(plan, days, uidInt, hwidStr) {
   const planId = PLAN_IDS[plan];
   if (planId === undefined) throw new Error("unknown plan: " + plan);
@@ -176,9 +209,17 @@ async function generateActivationKey(plan, days, uidInt, hwidStr) {
   const sigFull = new Uint8Array(await crypto.subtle.sign("HMAC", key, payload));
   const sig = sigFull.slice(0, 4);
 
-  const raw = new Uint8Array(14);
+  // Ed25519 signature over the same 10-byte payload (see "Ed25519 hardening"
+  // note above) — appended after the legacy 14 bytes. Old app copies never
+  // read past byte 14, so this is fully backward compatible; updated app
+  // copies verify this too for real forgery resistance.
+  const edPrivKey = await getEd25519PrivateKey();
+  const edSig = new Uint8Array(await crypto.subtle.sign({ name: "Ed25519" }, edPrivKey, payload));
+
+  const raw = new Uint8Array(10 + 4 + 64);
   raw.set(payload, 0);
   raw.set(sig, 10);
+  raw.set(edSig, 14);
 
   const b32 = base32Encode(raw);
   const groups = [];
@@ -309,7 +350,7 @@ async function handleActivate(request, env) {
 
   const purchase = gumroadData.purchase || {};
   if (purchase.refunded || purchase.disputed || purchase.chargebacked) {
-  return jsonResponse(
+    return jsonResponse(
       { success: false, error: "This purchase is no longer valid (refunded or disputed). Contact queries@getoutreachnest.com if this is a mistake." },
       400
     );

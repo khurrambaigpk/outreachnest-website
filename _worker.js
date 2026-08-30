@@ -44,7 +44,7 @@ const COOKIE_NAME = "on_admin_session";
 
 // ── Activation system config ────────────────────────────────────────────────
 const GUMROAD_PRODUCT_ID = "BZVGpilp2DHoSlq47Zlcjg=="; // "OutreachNest Finder — Multi-Engine Lead Finder" product's API product_id (NOT the URL permalink)
-const LICENSE_SECRET = "ON_MASTER_2025_KhurramBaig_ABL_SecretKey_8x7z"; // must match _LICENSE_SECRET in vendor_finder_windows_app.py exactly
+const LICENSE_SECRET = "ON_MASTER_2026_OutreachNest_60e77519e1b796a6_SecretKey"; // must match _LICENSE_SECRET in vendor_finder_windows_app.py exactly — rotated here 30 Aug 2026 to match the app-side rotation done in V12.19.23 (this Worker file had been missed until now)
 
 // ── Ed25519 hardening (added 28 Aug 2026) ───────────────────────────────────
 // Every key generated from here on also carries an Ed25519 signature, made

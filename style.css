@@ -18,7 +18,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--paper);lin
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;line-height:1.08;letter-spacing:-0.015em}
 a{text-decoration:none;color:inherit}
-section{padding:84px 0}
+section{padding:56px 0}
 
 /* NAV */
 nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
@@ -49,7 +49,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.82);backdrop-
 .page-head p{color:var(--muted);font-size:18.5px;max-width:56ch}
 
 /* SEC HEAD */
-.sec-head{max-width:58ch;margin-bottom:48px}
+.sec-head{max-width:58ch;margin-bottom:32px}
 .sec-head.center{margin-inline:auto;text-align:center}
 .tag{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);display:inline-flex;align-items:center;gap:8px}
 .tag::before{content:"";width:22px;height:2px;background:var(--gold-bright);border-radius:2px}
@@ -58,7 +58,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.82);backdrop-
 .sec-head p{color:var(--muted);font-size:17.5px}
 
 /* CARDS */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px 30px;transition:box-shadow .22s,transform .22s,border-color .22s;position:relative;overflow:hidden}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--leaf),var(--gold-bright));transform:scaleX(0);transform-origin:left;transition:transform .3s}
 .card:hover{box-shadow:var(--shadow);transform:translateY(-4px);border-color:transparent}
@@ -131,7 +131,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.82);backdrop-
 .mail-pill .em{font-family:'Fraunces',serif;font-size:19px;color:var(--leaf-deep);font-weight:600}
 
 /* FOOTER */
-footer{border-top:1px solid var(--line);padding:48px 0 40px;margin-top:88px}
+footer{border-top:1px solid var(--line);padding:40px 0 32px;margin-top:48px}
 .foot-grid{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:28px;margin-bottom:32px}
 .foot-col h4{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);margin-bottom:14px;font-family:'Inter',sans-serif;font-weight:700}
 .foot-col a{display:block;color:var(--muted);font-size:14.5px;margin-bottom:9px}
@@ -142,7 +142,7 @@ footer{border-top:1px solid var(--line);padding:48px 0 40px;margin-top:88px}
 .foot-bottom p{color:var(--muted);font-size:13.5px}
 
 /* HERO (home) */
-.hero{position:relative;padding:96px 0 84px}
+.hero{position:relative;padding:64px 0 52px}
 .hero-glow{position:absolute;top:-140px;right:-120px;width:520px;height:520px;background:radial-gradient(circle,rgba(224,170,66,.22),transparent 62%);z-index:-1;filter:blur(6px)}
 .hero-glow.two{top:120px;left:-160px;background:radial-gradient(circle,rgba(28,122,77,.18),transparent 62%)}
 .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--leaf-deep);background:var(--leaf-soft);padding:7px 16px;border-radius:100px;margin-bottom:28px;border:1px solid rgba(28,122,77,.15)}
@@ -216,7 +216,7 @@ animation:heroShift 8s ease-in-out infinite alternate;
 .hero-stats .stat::after{content:"";position:absolute;bottom:-8px;left:0;width:28px;height:3px;background:linear-gradient(90deg,var(--gold-bright),transparent);border-radius:2px}
 
 /* Trust badges */
-.trust-row{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:32px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 48px}
+.trust-row{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 24px}
 .trust-item{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--muted)}
 .trust-item span{font-size:20px}
 

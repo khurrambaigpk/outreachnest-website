@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Article — OutreachNest</title>
-<link rel="canonical" href="https://getoutreachnest.com/post.html" />
+<link rel="canonical" href="https://getoutreachnest.com/post" />
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OutreachNest">
 <meta property="og:title" content="Blog — OutreachNest">
 <meta property="og:description" content="Practical insights on guest posting, lead generation, outreach, and SEO from the OutreachNest team.">
 <meta property="og:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
-<meta property="og:url" content="https://getoutreachnest.com/post.html">
+<meta property="og:url" content="https://getoutreachnest.com/post">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Blog — OutreachNest">
 <meta name="twitter:description" content="Practical insights on guest posting, lead generation, outreach, and SEO from the OutreachNest team.">
@@ -78,7 +78,7 @@ document.getElementById('aBody').innerHTML=post.content;
 
 // Per-post SEO tags: without this every article shared the same canonical URL/description,
 // which told search engines all 21 posts were duplicates of one page.
-const postUrl = 'https://getoutreachnest.com/post.html?p=' + post.slug;
+const postUrl = 'https://getoutreachnest.com/post?p=' + post.slug;
 document.querySelector('link[rel="canonical"]').setAttribute('href', postUrl);
 document.querySelector('meta[name="description"]').setAttribute('content', post.excerpt);
 document.querySelector('meta[property="og:title"]').setAttribute('content', post.title + ' — OutreachNest');

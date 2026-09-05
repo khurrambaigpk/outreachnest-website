@@ -290,7 +290,7 @@ const gridIdx=blogFile.content.indexOf(gridMarker);
 if(gridIdx===-1){
 throw new Error('Could not find the blog grid in blog.html — file format may have changed.');
 }
-const cardHtml=`<a class="post reveal" href="post.html?p=${slug}"><div class="cover ${cover}">${icon}</div><div class="body"><div class="cat">${escapeHtml(cat)}</div><h3>${escapeHtml(title)}</h3><div class="excerpt">${escapeHtml(excerpt)}</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>${escapeHtml(read)}</span></div></div></a>`;
+const cardHtml=`<a class="post reveal" href="/post?p=${slug}"><div class="cover ${cover}">${icon}</div><div class="body"><div class="cat">${escapeHtml(cat)}</div><h3>${escapeHtml(title)}</h3><div class="excerpt">${escapeHtml(excerpt)}</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>${escapeHtml(read)}</span></div></div></a>`;
 const gridInsertAt=gridIdx+gridMarker.length;
 const newBlogContent=blogFile.content.slice(0,gridInsertAt)+cardHtml+blogFile.content.slice(gridInsertAt);
 await githubPutFile(blogFile.apiBase, headers, newBlogContent, blogFile.sha, `Add "${title}" to blog.html grid`, 'blog.html');
@@ -303,7 +303,7 @@ const urlsetIdx=sitemapFile.content.indexOf(urlsetMarker);
 if(urlsetIdx===-1){
 throw new Error('Could not find <urlset> in sitemap.xml — file format may have changed.');
 }
-const urlEntry=`<url><loc>https://getoutreachnest.com/post.html?p=${slug}</loc><priority>0.6</priority></url>`;
+const urlEntry=`<url><loc>https://getoutreachnest.com/post?p=${slug}</loc><priority>0.6</priority></url>`;
 const urlsetInsertAt=urlsetIdx+urlsetMarker.length;
 const newSitemapContent=sitemapFile.content.slice(0,urlsetInsertAt)+'\n'+urlEntry+sitemapFile.content.slice(urlsetInsertAt);
 await githubPutFile(sitemapFile.apiBase, headers, newSitemapContent, sitemapFile.sha, `Add "${title}" to sitemap.xml`, 'sitemap.xml');

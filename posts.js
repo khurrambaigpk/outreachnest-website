@@ -33,7 +33,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <h3>Built for volume without duplicate work</h3>
     <p>Because this niche often means running many searches across categories and cities, the built-in deduplication matters more here than almost anywhere else — it stops the same repair shop from showing up five times across five overlapping searches. Everything lands in a live Google Sheet you can filter, sort, and export to CSV/Excel whenever you need to.</p>
     <h3>Start your first search</h3>
-    <p>Whether you're building a local business lead list, doing SEO outreach for a repair-industry client, or sourcing partners for an electronics parts supplier, the free 3-day trial (no credit card required) is enough to test a real category and city combination. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+    <p>Whether you're building a local business lead list, doing SEO outreach for a repair-industry client, or sourcing partners for an electronics parts supplier, the free 3-day trial (no credit card required) is enough to test a real category and city combination. Download OutreachNest Finder free: https://getoutreachnest.com/download</p>`
   },
   {
     slug:"sourcing-leads-in-industrial-automation-plc-scada-",
@@ -48,7 +48,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <h3>Everything organized, nothing duplicated</h3>
     <p>Save a dedicated niche profile for Industrial Automation (or build your own from these categories), and every search syncs to its own tab in Google Sheets with built-in deduplication — so running the same search again next quarter adds only what's new.</p>
     <h3>Try a real search</h3>
-    <p>If you're doing B2B outreach, partnership scouting, or link-building in industrial automation and instrumentation, the free 3-day trial (no credit card) is enough to test the categories above on a real target list. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+    <p>If you're doing B2B outreach, partnership scouting, or link-building in industrial automation and instrumentation, the free 3-day trial (no credit card) is enough to test the categories above on a real target list. Download OutreachNest Finder free: https://getoutreachnest.com/download</p>`
   },
   {
     slug:"finding-electrical-contractors-and-panel-builders-",
@@ -63,7 +63,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <h3>Outreach that doesn't read like a mail blast</h3>
     <p>Electrical contractors get pitched constantly by suppliers and marketing agencies, so generic outreach tends to get ignored. The built-in campaign manager lets you build a template referencing the specific service category (for example, "I noticed you specialize in commercial panel installation...") and track opens/replies, so you can see which angle is actually working before you scale it up.</p>
     <h3>Get started</h3>
-    <p>Whether you're building a lead list for a client in the electrical trade or doing SEO outreach for an electrical services brand, the free 3-day trial gives you enough runway to test a real search and see the data quality firsthand. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+    <p>Whether you're building a lead list for a client in the electrical trade or doing SEO outreach for an electrical services brand, the free 3-day trial gives you enough runway to test a real search and see the data quality firsthand. Download OutreachNest Finder free: https://getoutreachnest.com/download</p>`
   },
   {
     slug:"how-to-find-solar-guest-post-sites-and-leads-in-mi",
@@ -79,7 +79,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <h3>Built-in outreach for solar guest posts and partnerships</h3>
     <p>Once you have your list, the built-in outreach manager lets you write a template, personalize it with each site's name, and track what's been sent — all without leaving the app. For solar guest post pitches specifically, keeping the message short and specific (mention the site by name, suggest a topic) gets noticeably better reply rates than a generic "I'd like to write for you.</p>
     <h3>Try it on your next solar campaign</h3>
-    <p>If you're building links, generating installer leads, or scouting partnership opportunities in solar, OutreachNest Finder's free 3-day trial (no credit card needed) is enough to run a full search and see the quality of results for yourself. Download OutreachNest Finder free: https://getoutreachnest.com/download.html</p>`
+    <p>If you're building links, generating installer leads, or scouting partnership opportunities in solar, OutreachNest Finder's free 3-day trial (no credit card needed) is enough to run a full search and see the quality of results for yourself. Download OutreachNest Finder free: https://getoutreachnest.com/download</p>`
   },
   {
     slug:"how-agencies-manage-10-niches-without-losing-track",

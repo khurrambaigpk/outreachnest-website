@@ -250,6 +250,13 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
 // Handle /post?p=SLUG — fetch the post.html template from ASSETS and inject
 // per-post metadata before returning it to the visitor (or crawler).
 async function handlePostPage(request, env, slug) {
+  // Check Cloudflare's edge cache first — avoids Worker invocation entirely on a
+  // cache hit, eliminating cold-start latency for AI crawlers and repeat visitors.
+  const cache = caches.default;
+  const cacheKey = new Request(request.url, { method: "GET" });
+  const cachedResp = await cache.match(cacheKey);
+  if (cachedResp) return cachedResp;
+
   // Fetch the static post.html template (without the query string, which is
   // irrelevant to static-file serving — Cloudflare Pages maps /post → post.html).
   const templateUrl = new URL(request.url);
@@ -281,15 +288,20 @@ async function handlePostPage(request, env, slug) {
   // Pass meta.title (without " — OutreachNest") as the H1 text — cleaner heading
   const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title);
 
-  return new Response(modified, {
+  const response = new Response(modified, {
     status: 200,
     headers: {
       "Content-Type": "text/html; charset=UTF-8",
-      // Cache for 5 minutes at the edge — short enough to pick up template changes,
-      // long enough to help with crawl budget and repeated visits.
-      "Cache-Control": "public, max-age=300, s-maxage=300",
+      // 1-hour browser cache, 24-hour CDN edge cache — long enough to serve AI
+      // crawlers from cache instantly, short enough to pick up post additions.
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
     },
   });
+
+  // Store processed HTML in Cloudflare's edge cache so subsequent requests skip
+  // the Worker entirely — eliminates TTFB spikes from cold starts.
+  await cache.put(cacheKey, response.clone());
+  return response;
 }
 
 async function hmacSign(message, secret) {

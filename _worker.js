@@ -35,6 +35,14 @@
 //          rejected and pointed to the paid plans (Monthly/Half-Yearly/Annual, still handled
 //          manually via WhatsApp payment-proof, unchanged) instead of getting a free key. The
 //          SAME license_key reinstalling on the SAME PC still works exactly as before (idempotent).
+// v5 (Sep 2026) — server-side per-post meta injection for /post?p=SLUG:
+//   Problem this solves: blog posts use a single post.html template whose <title>, <meta
+//   name="description">, <link rel="canonical">, and OG/Twitter tags are all generic in the
+//   static HTML. JavaScript updates them per-post after render, but static crawlers (Ahrefs raw
+//   HTML mode, Facebook/Twitter OG bots, some Googlebot passes) see the generic values — causing
+//   22 duplicate-title and duplicate-description errors in Ahrefs Site Audit. This interceptor
+//   replaces those tags server-side before the response leaves Cloudflare, so every blog post
+//   has unique, correct metadata in its raw HTML, before any JavaScript runs.
 
 const ADMIN_USER = "mariyam";
 const ADMIN_PASS = "Nest2026!Falcon91";
@@ -67,6 +75,202 @@ const RATE_LIMIT_MAX_PER_HOUR = 15;
 const LICENSE_KEY_RE = /^[0-9A-F]{8}-[0-9A-F]{8}-[0-9A-F]{8}-[0-9A-F]{8}$/i;
 const HWID_RE = /^[0-9A-F]{16}$/i;
 const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+// ── Per-post metadata for server-side injection ──────────────────────────────
+// Keyed by the slug that appears after /post?p= in the URL.
+// title: the post's unique page title (the " — OutreachNest" suffix is appended automatically).
+// desc:  the meta description (keep under 160 chars for Ahrefs/Google).
+const POSTS_META = {
+  "the-awkward-truth-about-cold-outreach-nobody-tells": {
+    title: "The Awkward Truth About Cold Outreach Nobody Tells You",
+    desc: "Most cold outreach doesn't fail because people didn't try hard enough. Find out what actually goes wrong — and how to fix your approach.",
+  },
+  "finding-electronics-and-appliance-repair-businesse": {
+    title: "Finding Electronics and Appliance Repair Businesses for Outreach at Scale",
+    desc: "Search appliance, TV, laptop, mobile, UPS, and CCTV repair businesses across cities using OutreachNest Finder's multi-engine search.",
+  },
+  "sourcing-leads-in-industrial-automation-plc-scada-": {
+    title: "Sourcing Leads in Industrial Automation: PLC, SCADA, and Instrumentation Companies",
+    desc: "Find PLC automation firms, SCADA integrators, and instrumentation suppliers for link building or direct outreach at scale.",
+  },
+  "finding-electrical-contractors-and-panel-builders-": {
+    title: "Finding Electrical Contractors and Panel Builders for Outreach — Fast",
+    desc: "Search residential, commercial, and industrial electricians, panel builders, and switchgear firms in bulk with OutreachNest Finder.",
+  },
+  "how-to-find-solar-guest-post-sites-and-leads-in-mi": {
+    title: "How to Find Solar Guest Post Sites and Leads in Minutes (Not Days)",
+    desc: "Find solar blogs, installers, and inverter or battery sites for guest posts and lead outreach — in minutes, not days.",
+  },
+  "how-agencies-manage-10-niches-without-losing-track": {
+    title: "How Agencies Manage 10+ Niches Without Losing Track",
+    desc: "Running outreach across multiple industries at once usually turns into chaos. Here's how agencies stay organized using niche profiles.",
+  },
+  "how-to-turn-your-lead-list-into-a-live-google-shee": {
+    title: "How to Turn Your Lead List Into a Live Google Sheet (Automatically)",
+    desc: "Manually copying leads into a spreadsheet wastes hours every week. Learn how OutreachNest Finder auto-exports leads to Google Sheets.",
+  },
+  "why-whatsapp-outreach-gets-higher-response-rates-t": {
+    title: "Why WhatsApp Outreach Gets Higher Response Rates Than Email",
+    desc: "Cold email open rates keep falling, but WhatsApp messages get read within minutes. Here's how to use WhatsApp for effective outreach.",
+  },
+  "outreachnest-finder-features-guide-everything-the-": {
+    title: "OutreachNest Finder Features Guide: Everything the App Can Do",
+    desc: "A complete walkthrough of every OutreachNest Finder feature — 4-engine search, email extraction, SEO metrics, Google Sheets export, and more.",
+  },
+  "how-to-find-seo-clients-fast-in-2026": {
+    title: "How to Find SEO Clients Fast in 2026",
+    desc: "Finding SEO clients does not have to be slow or expensive. Here's a repeatable system for finding and closing new clients fast in 2026.",
+  },
+  "how-to-build-1-000-link-building-prospects-in-minu": {
+    title: "How to Build 1,000 Link Building Prospects in Minutes",
+    desc: "Most SEO freelancers spend days building prospect lists manually. Here's how to build 1,000+ link building prospects in minutes.",
+  },
+  "how-to-check-da-pa-dr-without-paying-for-tools": {
+    title: "How to Check DA, PA & DR Without Paying for Tools",
+    desc: "Learn how SEO freelancers check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest Finder's Chrome Bridge.",
+  },
+  "spot-real-guest-post-site": {
+    title: "How to Spot a Real Guest-Post Site (and Avoid PBNs)",
+    desc: "Not every site that says 'write for us' is worth your link. Here's how to tell real guest post sites from PBNs and link farms.",
+  },
+  "b2b-lead-list-worth-buying": {
+    title: "What Makes a B2B Lead List Actually Worth Buying",
+    desc: "Most lead lists are stale and full of dead emails. Here's what separates a lead list worth paying for from a waste of money.",
+  },
+  "solar-niche-goldmine": {
+    title: "Why the Solar Niche Is a Goldmine for Link Building",
+    desc: "Solar is booming, competitive, and full of companies that spend on SEO. Here's why it's one of the best niches for link builders.",
+  },
+  "cold-email-that-gets-replies": {
+    title: "Cold Email That Gets Replies: A Simple Framework",
+    desc: "Long, salesy emails get ignored. Short, specific, human ones get replies. Here's the simple cold email framework that actually works.",
+  },
+  "warm-up-new-email-domain": {
+    title: "Warming Up a New Email Domain the Right Way",
+    desc: "Send from a brand-new domain too fast and you land in spam. Here's how to warm up a new email domain properly before outreach.",
+  },
+  "choosing-solar-installer-guide": {
+    title: "How Homeowners Choose a Solar Installer (and Why It Matters for Marketing)",
+    desc: "Understanding how buyers pick a solar company tells you exactly what content and trust signals you need to win more business.",
+  },
+  "electrical-contractors-online-growth": {
+    title: "Why Electrical Contractors Are Underrated Online",
+    desc: "Electrical contractors form one of the largest, most stable B2B markets. Here's how to reach them effectively for outreach.",
+  },
+  "industrial-automation-high-value-niche": {
+    title: "Industrial Automation: Small Audience, High Value",
+    desc: "There aren't many automation companies — but each one is worth serious attention. Here's how to find and reach them for outreach.",
+  },
+  "electronics-repair-steady-demand": {
+    title: "Electronics Repair: A Practical Niche With Steady Demand",
+    desc: "Repair shops rarely chase the spotlight, but steady demand and loyal customers make electronics repair a reliable outreach niche.",
+  },
+  "quality-over-quantity-backlinks": {
+    title: "Why a Few Great Backlinks Beat a Hundred Weak Ones",
+    desc: "More links isn't the goal. Relevant links from trusted, real sites move rankings. Here's how to focus your link building for results.",
+  },
+};
+
+const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
+
+// Escape special HTML characters for safe use inside attribute values and text.
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// Inject per-post metadata into the raw post.html template string.
+// Replaces generic title, canonical, description, and all OG/Twitter tags.
+// If a tag is missing from the template (should not happen, but safe), injects
+// a minimal set before </head> so the response always has correct values.
+function injectPostMeta(html, title, desc, canonical) {
+  const safeTitle = escHtml(title);
+  const safeDesc = escHtml(desc);
+
+  let out = html
+    // <title>
+    .replace(/<title>[^<]*<\/title>/i, `<title>${safeTitle}</title>`)
+    // canonical
+    .replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${canonical}" />`)
+    // meta description
+    .replace(/<meta\s+name="description"[^>]*>/i, `<meta name="description" content="${safeDesc}">`)
+    // OG tags
+    .replace(/<meta\s+property="og:title"[^>]*>/i, `<meta property="og:title" content="${safeTitle}">`)
+    .replace(/<meta\s+property="og:description"[^>]*>/i, `<meta property="og:description" content="${safeDesc}">`)
+    .replace(/<meta\s+property="og:url"[^>]*>/i, `<meta property="og:url" content="${canonical}">`)
+    .replace(/<meta\s+property="og:image"[^>]*>/i, `<meta property="og:image" content="${OG_IMAGE}">`)
+    // Twitter tags
+    .replace(/<meta\s+name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${safeTitle}">`)
+    .replace(/<meta\s+name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${safeDesc}">`)
+    .replace(/<meta\s+name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${OG_IMAGE}">`);
+
+  // Safety net: if canonical tag was missing in template, inject full tag block before </head>
+  if (!out.includes(`href="${canonical}"`)) {
+    const inject = [
+      `<link rel="canonical" href="${canonical}" />`,
+      `<meta name="description" content="${safeDesc}">`,
+      `<meta property="og:type" content="article">`,
+      `<meta property="og:title" content="${safeTitle}">`,
+      `<meta property="og:description" content="${safeDesc}">`,
+      `<meta property="og:url" content="${canonical}">`,
+      `<meta property="og:image" content="${OG_IMAGE}">`,
+      `<meta name="twitter:card" content="summary_large_image">`,
+      `<meta name="twitter:title" content="${safeTitle}">`,
+      `<meta name="twitter:description" content="${safeDesc}">`,
+      `<meta name="twitter:image" content="${OG_IMAGE}">`,
+    ].join("\n");
+    out = out.replace(/<\/head>/i, inject + "\n</head>");
+  }
+
+  return out;
+}
+
+// Handle /post?p=SLUG — fetch the post.html template from ASSETS and inject
+// per-post metadata before returning it to the visitor (or crawler).
+async function handlePostPage(request, env, slug) {
+  // Fetch the static post.html template (without the query string, which is
+  // irrelevant to static-file serving — Cloudflare Pages maps /post → post.html).
+  const templateUrl = new URL(request.url);
+  templateUrl.pathname = "/post";
+  templateUrl.search = "";
+  const assetResp = await env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" }));
+
+  if (!assetResp.ok) {
+    // Template fetch failed — pass through the error response unchanged.
+    return assetResp;
+  }
+
+  const html = await assetResp.text();
+  const meta = POSTS_META[slug];
+
+  if (!meta) {
+    // Unknown slug — serve the unmodified template (JS will handle it on the client).
+    return new Response(html, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=UTF-8",
+        "Cache-Control": "public, max-age=60",
+      },
+    });
+  }
+
+  const fullTitle = meta.title + " — OutreachNest";
+  const canonical = "https://getoutreachnest.com/post?p=" + slug;
+  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical);
+
+  return new Response(modified, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html; charset=UTF-8",
+      // Cache for 5 minutes at the edge — short enough to pick up template changes,
+      // long enough to help with crawl budget and repeated visits.
+      "Cache-Control": "public, max-age=300, s-maxage=300",
+    },
+  });
+}
 
 async function hmacSign(message, secret) {
   const enc = new TextEncoder();
@@ -426,6 +630,21 @@ export default {
 
     if (url.pathname === "/api/activate") {
       return handleActivate(request, env);
+    }
+
+    // ── Blog post pages: inject per-post metadata server-side ──────────────
+    // /post?p=SLUG is the clean-URL pattern for all blog posts. The static
+    // post.html template has generic title/description/canonical for ALL posts;
+    // this intercepts the request and returns a version with correct values
+    // injected for the specific slug before any JavaScript runs, so Ahrefs,
+    // Google, and all social OG bots see unique metadata per post.
+    if (url.pathname === "/post") {
+      const slug = url.searchParams.get("p");
+      if (slug) {
+        return handlePostPage(request, env, slug);
+      }
+      // /post with no ?p= param — serve the raw template (edge case).
+      return env.ASSETS.fetch(request);
     }
 
     const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";

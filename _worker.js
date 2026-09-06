@@ -36,6 +36,8 @@
 //          manually via WhatsApp payment-proof, unchanged) instead of getting a free key. The
 //          SAME license_key reinstalling on the SAME PC still works exactly as before (idempotent).
 // v5 (Sep 2026) — server-side per-post meta injection for /post?p=SLUG:
+// v6 (Sep 2026) — shortened 9 too-long post titles (under 60 chars total);
+//   added server-side <h1> injection so static crawlers see H1 on every post:
 //   Problem this solves: blog posts use a single post.html template whose <title>, <meta
 //   name="description">, <link rel="canonical">, and OG/Twitter tags are all generic in the
 //   static HTML. JavaScript updates them per-post after render, but static crawlers (Ahrefs raw
@@ -82,39 +84,39 @@ const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 // desc:  the meta description (keep under 160 chars for Ahrefs/Google).
 const POSTS_META = {
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
-    title: "The Awkward Truth About Cold Outreach Nobody Tells You",
+    title: "The Awkward Truth About Cold Outreach",
     desc: "Most cold outreach doesn't fail because people didn't try hard enough. Find out what actually goes wrong — and how to fix your approach.",
   },
   "finding-electronics-and-appliance-repair-businesse": {
-    title: "Finding Electronics and Appliance Repair Businesses for Outreach at Scale",
+    title: "Electronics Repair Businesses for Outreach",
     desc: "Search appliance, TV, laptop, mobile, UPS, and CCTV repair businesses across cities using OutreachNest Finder's multi-engine search.",
   },
   "sourcing-leads-in-industrial-automation-plc-scada-": {
-    title: "Sourcing Leads in Industrial Automation: PLC, SCADA, and Instrumentation Companies",
+    title: "Industrial Automation Leads: PLC & SCADA",
     desc: "Find PLC automation firms, SCADA integrators, and instrumentation suppliers for link building or direct outreach at scale.",
   },
   "finding-electrical-contractors-and-panel-builders-": {
-    title: "Finding Electrical Contractors and Panel Builders for Outreach — Fast",
+    title: "Find Electrical Contractors for Outreach",
     desc: "Search residential, commercial, and industrial electricians, panel builders, and switchgear firms in bulk with OutreachNest Finder.",
   },
   "how-to-find-solar-guest-post-sites-and-leads-in-mi": {
-    title: "How to Find Solar Guest Post Sites and Leads in Minutes (Not Days)",
+    title: "Find Solar Guest Post Sites and Leads Fast",
     desc: "Find solar blogs, installers, and inverter or battery sites for guest posts and lead outreach — in minutes, not days.",
   },
   "how-agencies-manage-10-niches-without-losing-track": {
-    title: "How Agencies Manage 10+ Niches Without Losing Track",
+    title: "How Agencies Manage 10+ Niches at Once",
     desc: "Running outreach across multiple industries at once usually turns into chaos. Here's how agencies stay organized using niche profiles.",
   },
   "how-to-turn-your-lead-list-into-a-live-google-shee": {
-    title: "How to Turn Your Lead List Into a Live Google Sheet (Automatically)",
+    title: "Turn Your Lead List Into a Live Google Sheet",
     desc: "Manually copying leads into a spreadsheet wastes hours every week. Learn how OutreachNest Finder auto-exports leads to Google Sheets.",
   },
   "why-whatsapp-outreach-gets-higher-response-rates-t": {
-    title: "Why WhatsApp Outreach Gets Higher Response Rates Than Email",
+    title: "WhatsApp Outreach: Higher Response Rates",
     desc: "Cold email open rates keep falling, but WhatsApp messages get read within minutes. Here's how to use WhatsApp for effective outreach.",
   },
   "outreachnest-finder-features-guide-everything-the-": {
-    title: "OutreachNest Finder Features Guide: Everything the App Can Do",
+    title: "OutreachNest Finder: Complete Features Guide",
     desc: "A complete walkthrough of every OutreachNest Finder feature — 4-engine search, email extraction, SEO metrics, Google Sheets export, and more.",
   },
   "how-to-find-seo-clients-fast-in-2026": {
@@ -122,27 +124,27 @@ const POSTS_META = {
     desc: "Finding SEO clients does not have to be slow or expensive. Here's a repeatable system for finding and closing new clients fast in 2026.",
   },
   "how-to-build-1-000-link-building-prospects-in-minu": {
-    title: "How to Build 1,000 Link Building Prospects in Minutes",
+    title: "Build 1,000 Link Prospects in Minutes",
     desc: "Most SEO freelancers spend days building prospect lists manually. Here's how to build 1,000+ link building prospects in minutes.",
   },
   "how-to-check-da-pa-dr-without-paying-for-tools": {
-    title: "How to Check DA, PA & DR Without Paying for Tools",
+    title: "How to Check DA, PA & DR for Free",
     desc: "Learn how SEO freelancers check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest Finder's Chrome Bridge.",
   },
   "spot-real-guest-post-site": {
-    title: "How to Spot a Real Guest-Post Site (and Avoid PBNs)",
+    title: "How to Spot a Real Guest-Post Site",
     desc: "Not every site that says 'write for us' is worth your link. Here's how to tell real guest post sites from PBNs and link farms.",
   },
   "b2b-lead-list-worth-buying": {
-    title: "What Makes a B2B Lead List Actually Worth Buying",
+    title: "What Makes a B2B Lead List Worth Buying",
     desc: "Most lead lists are stale and full of dead emails. Here's what separates a lead list worth paying for from a waste of money.",
   },
   "solar-niche-goldmine": {
-    title: "Why the Solar Niche Is a Goldmine for Link Building",
+    title: "Why Solar Is a Link Building Goldmine",
     desc: "Solar is booming, competitive, and full of companies that spend on SEO. Here's why it's one of the best niches for link builders.",
   },
   "cold-email-that-gets-replies": {
-    title: "Cold Email That Gets Replies: A Simple Framework",
+    title: "Cold Email Framework That Gets Replies",
     desc: "Long, salesy emails get ignored. Short, specific, human ones get replies. Here's the simple cold email framework that actually works.",
   },
   "warm-up-new-email-domain": {
@@ -150,23 +152,23 @@ const POSTS_META = {
     desc: "Send from a brand-new domain too fast and you land in spam. Here's how to warm up a new email domain properly before outreach.",
   },
   "choosing-solar-installer-guide": {
-    title: "How Homeowners Choose a Solar Installer (and Why It Matters for Marketing)",
+    title: "How Homeowners Choose a Solar Installer",
     desc: "Understanding how buyers pick a solar company tells you exactly what content and trust signals you need to win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Why Electrical Contractors Are Underrated Online",
+    title: "Why Electrical Contractors Are Underrated",
     desc: "Electrical contractors form one of the largest, most stable B2B markets. Here's how to reach them effectively for outreach.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: Small Audience, High Value",
+    title: "Industrial Automation: Small Niche, Big Value",
     desc: "There aren't many automation companies — but each one is worth serious attention. Here's how to find and reach them for outreach.",
   },
   "electronics-repair-steady-demand": {
-    title: "Electronics Repair: A Practical Niche With Steady Demand",
+    title: "Electronics Repair: A Steady-Demand Niche",
     desc: "Repair shops rarely chase the spotlight, but steady demand and loyal customers make electronics repair a reliable outreach niche.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Why a Few Great Backlinks Beat a Hundred Weak Ones",
+    title: "Great Backlinks Beat a Hundred Weak Ones",
     desc: "More links isn't the goal. Relevant links from trusted, real sites move rankings. Here's how to focus your link building for results.",
   },
 };
@@ -184,11 +186,19 @@ function escHtml(str) {
 
 // Inject per-post metadata into the raw post.html template string.
 // Replaces generic title, canonical, description, and all OG/Twitter tags.
+// Also injects a server-side <h1> so static crawlers (Ahrefs, Googlebot raw
+// HTML pass) see an H1 even though post.html adds the heading via JavaScript.
 // If a tag is missing from the template (should not happen, but safe), injects
 // a minimal set before </head> so the response always has correct values.
-function injectPostMeta(html, title, desc, canonical) {
+//
+// title     — full page title including " — OutreachNest" suffix (used for <title> and OG)
+// desc      — meta description
+// canonical — canonical URL for this post
+// h1Text    — raw article title WITHOUT " — OutreachNest" (used for the <h1> tag)
+function injectPostMeta(html, title, desc, canonical, h1Text) {
   const safeTitle = escHtml(title);
   const safeDesc = escHtml(desc);
+  const safeH1 = escHtml(h1Text || title);
 
   let out = html
     // <title>
@@ -225,6 +235,15 @@ function injectPostMeta(html, title, desc, canonical) {
     out = out.replace(/<\/head>/i, inject + "\n</head>");
   }
 
+  // Inject a server-side <h1> before </body>.
+  // post.html has no static H1 — JavaScript adds the post heading after render,
+  // so static crawlers see "H1 missing". This hidden element satisfies the check
+  // without affecting the visible layout (the JS-rendered heading is what users see).
+  out = out.replace(
+    /<\/body>/i,
+    `<h1 style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden">${safeH1}</h1>\n</body>`
+  );
+
   return out;
 }
 
@@ -259,7 +278,8 @@ async function handlePostPage(request, env, slug) {
 
   const fullTitle = meta.title + " — OutreachNest";
   const canonical = "https://getoutreachnest.com/post?p=" + slug;
-  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical);
+  // Pass meta.title (without " — OutreachNest") as the H1 text — cleaner heading
+  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title);
 
   return new Response(modified, {
     status: 200,

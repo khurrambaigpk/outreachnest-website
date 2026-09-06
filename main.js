@@ -24,20 +24,20 @@ const PAYMENT = {
 
 function buildNav(active){
   const links = [
-    {href:"index.html", label:"Home", key:"home"},
-    {href:"services.html", label:"Services", key:"services"},
-    {href:"niches.html", label:"Niches", key:"niches"},
-    {href:"download.html", label:"Download", key:"download"},
-    {href:"blog.html", label:"Blog", key:"blog"},
+    {href:"/", label:"Home", key:"home"},
+    {href:"/services", label:"Services", key:"services"},
+    {href:"/niches", label:"Niches", key:"niches"},
+    {href:"/download", label:"Download", key:"download"},
+    {href:"/blog", label:"Blog", key:"blog"},
   ];
   const items = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   return `<nav><div class="wrap nav-inner">
   <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
-  <div class="nav-links">${items}<a href="contact.html" class="nav-cta">Get in touch</a></div>
+  <div class="nav-links">${items}<a href="/contact" class="nav-cta">Get in touch</a></div>
   <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
-  <div class="mobile-menu" id="mobile-menu">${mItems}<a href="contact.html" class="m-cta">Get in touch</a></div></nav>`;
+  <div class="mobile-menu" id="mobile-menu">${mItems}<a href="/contact" class="m-cta">Get in touch</a></div></nav>`;
 }
 
 function buildFooter(){
@@ -63,7 +63,7 @@ function buildFooter(){
   <div class="foot-col"><h4>Company</h4>
   <a href="niches.html">Niches</a>
   <a href="blog.html">Blog</a>
-  <a href="contact.html">Contact</a>
+  <a href="/contact">Contact</a>
   </div>
   <div class="foot-col"><h4>Contact</h4>
   <a href="mailto:${EMAIL}">${EMAIL}</a>

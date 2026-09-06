@@ -33,7 +33,7 @@ function buildNav(active){
   const items = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   return `<nav><div class="wrap nav-inner">
-  <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
+  <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>
   <div class="nav-links">${items}<a href="/contact" class="nav-cta">Get in touch</a></div>
   <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
@@ -44,7 +44,7 @@ function buildFooter(){
   return `<footer><div class="wrap">
   <div class="foot-grid">
   <div class="foot-col foot-about">
-  <a href="index.html" class="logo"><span class="logo-mark"></span>OutreachNest</a>
+  <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>
   <p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p>
   <div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
   <a href="https://wa.me/${WHATSAPP}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a>
@@ -55,14 +55,14 @@ function buildFooter(){
   </div>
   </div>
   <div class="foot-col"><h4>Services</h4>
-  <a href="services.html">Guest posts</a>
-  <a href="services.html">Lead lists</a>
-  <a href="services.html">Content writing</a>
-  <a href="download.html">Download Finder</a>
+  <a href="/services">Guest posts</a>
+  <a href="/services">Lead lists</a>
+  <a href="/services">Content writing</a>
+  <a href="/download">Download Finder</a>
   </div>
   <div class="foot-col"><h4>Company</h4>
-  <a href="niches.html">Niches</a>
-  <a href="blog.html">Blog</a>
+  <a href="/niches">Niches</a>
+  <a href="/blog">Blog</a>
   <a href="/contact">Contact</a>
   </div>
   <div class="foot-col"><h4>Contact</h4>

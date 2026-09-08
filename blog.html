@@ -16,45 +16,367 @@
 <meta name="twitter:title" content="Guest Posting &amp; SEO Blog — OutreachNest | Link Building Tips">
 <meta name="twitter:description" content="Practical guides on guest posting, link building, cold outreach, and lead generation for SEO professionals. Real tips, no fluff — written by the OutreachNest team.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='blog';</script>
 <style>
+/* ─── Design tokens ─── */
+:root {
+  --bg:         #f6f5f1;
+  --surface:    #ffffff;
+  --text:       #1c1c1e;
+  --text-2:     #52525b;
+  --text-3:     #a1a1aa;
+  --border:     #e4e4e7;
+  --brand:      #2d5a27;
+  --brand-mid:  #3d7a36;
+  --brand-soft: #eaf4e8;
+
+  --solar:       #c2690a;  --solar-bg:  #fff7ed;
+  --elec:        #1d4ed8;  --elec-bg:   #eff6ff;
+  --teal:        #0b7285;  --teal-bg:   #e0f9ff;
+  --guest:       #7c4a0c;  --guest-bg:  #fef3e2;
+  --outreach:    #be185d;  --outreach-bg:#fdf2f8;
+  --seo:         #3730a3;  --seo-bg:    #eef2ff;
+  --deliv:       #92400e;  --deliv-bg:  #fff7ed;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.09), 0 2px 4px rgba(0,0,0,.05);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,.11), 0 4px 8px rgba(0,0,0,.06);
+  --radius:     14px;
+  --radius-sm:  8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:         #111613;
+    --surface:    #1c231e;
+    --text:       #f0f0ec;
+    --text-2:     #a1a89c;
+    --text-3:     #666e62;
+    --border:     #2c3429;
+    --brand-soft: #1a2e18;
+    --solar-bg:   #1e1208;
+    --elec-bg:    #0d1428;
+    --teal-bg:    #061920;
+    --guest-bg:   #1e1208;
+    --outreach-bg:#1e0a13;
+    --seo-bg:     #0e0f2c;
+    --deliv-bg:   #1e1208;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:         #111613;
+  --surface:    #1c231e;
+  --text:       #f0f0ec;
+  --text-2:     #a1a89c;
+  --text-3:     #666e62;
+  --border:     #2c3429;
+  --brand-soft: #1a2e18;
+  --solar-bg:   #1e1208;
+  --elec-bg:    #0d1428;
+  --teal-bg:    #061920;
+  --guest-bg:   #1e1208;
+  --outreach-bg:#1e0a13;
+  --seo-bg:     #0e0f2c;
+  --deliv-bg:   #1e1208;
+}
+
+/* ─── Base overrides ─── */
+body { background: var(--bg); }
+
+/* ─── Cover gradients (g1–g6) ─── */
+.pc-cover.g1 { background: linear-gradient(145deg,#92400e 0%,#d97706 55%,#fbbf24 100%); }
+.pc-cover.g2 { background: linear-gradient(145deg,#831843 0%,#be185d 55%,#f472b6 100%); }
+.pc-cover.g3 { background: linear-gradient(145deg,#14532d 0%,#2d5a27 55%,#4a7c59 100%); }
+.pc-cover.g4 { background: linear-gradient(145deg,#3b0764 0%,#6d28d9 55%,#a78bfa 100%); }
+.pc-cover.g5 { background: linear-gradient(145deg,#7f1d1d 0%,#b91c1c 55%,#f87171 100%); }
+.pc-cover.g6 { background: linear-gradient(145deg,#0c4a6e 0%,#0e7490 55%,#22d3ee 100%); }
+
+/* ─── Category filter pills ─── */
 .cat-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  margin-bottom: 36px;
+  margin-bottom: 40px;
 }
 .cat-tab {
-  background: transparent;
-  border: 1.5px solid var(--leaf-deep, #2d5a27);
-  color: var(--leaf-deep, #2d5a27);
-  padding: 7px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text-2);
+  padding: 7px 16px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  font-family: inherit;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
-  transition: background .18s, color .18s;
+  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+  letter-spacing: .02em;
 }
 .cat-tab:hover {
-  background: var(--leaf-deep, #2d5a27);
-  color: #fff;
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .cat-tab.active {
-  background: var(--leaf-deep, #2d5a27);
+  background: var(--brand);
+  border-color: var(--brand);
   color: #fff;
+  box-shadow: 0 2px 8px rgba(45,90,39,.28);
 }
-.cat-tab[data-cat="Solar"].active       { background: #d97706; border-color: #d97706; }
-.cat-tab[data-cat="Electrical"].active  { background: #1d4ed8; border-color: #1d4ed8; }
-.cat-tab[data-cat="Electronics"].active { background: #0e7490; border-color: #0e7490; }
-.cat-tab[data-cat="Guest"].active       { background: #92400e; border-color: #92400e; }
-.cat-tab[data-cat="Outreach"].active    { background: #be185d; border-color: #be185d; }
-.cat-tab[data-cat="SEO"].active         { background: #1e40af; border-color: #1e40af; }
-.cat-tab[data-cat="Deliverability"].active { background: #b45309; border-color: #b45309; }
+.cat-tab[data-cat="Solar"].active       { background:var(--solar);  border-color:var(--solar);    box-shadow:0 2px 8px rgba(194,105,10,.28); }
+.cat-tab[data-cat="Electrical"].active  { background:var(--elec);   border-color:var(--elec);     box-shadow:0 2px 8px rgba(29,78,216,.28); }
+.cat-tab[data-cat="Electronics"].active { background:var(--teal);   border-color:var(--teal);     box-shadow:0 2px 8px rgba(11,114,133,.28); }
+.cat-tab[data-cat="Guest"].active       { background:var(--guest);  border-color:var(--guest);    box-shadow:0 2px 8px rgba(124,74,12,.28); }
+.cat-tab[data-cat="Outreach"].active    { background:var(--outreach);border-color:var(--outreach);box-shadow:0 2px 8px rgba(190,24,93,.28); }
+.cat-tab[data-cat="SEO"].active         { background:var(--seo);    border-color:var(--seo);      box-shadow:0 2px 8px rgba(55,48,163,.28); }
+.cat-tab[data-cat="Deliverability"].active{ background:var(--deliv);border-color:var(--deliv);    box-shadow:0 2px 8px rgba(146,64,14,.28); }
+
+/* ─── Blog grid ─── */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 64px;
+}
+
+/* ─── Post card ─── */
+.post-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform .2s cubic-bezier(.25,.46,.45,.94), box-shadow .2s;
+  box-shadow: var(--shadow-sm);
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+/* Cover area */
+.pc-cover {
+  position: relative;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pc-icon {
+  font-size: 52px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 10px rgba(0,0,0,.25));
+  transition: transform .2s;
+}
+.post-card:hover .pc-icon { transform: scale(1.08); }
+
+/* New badge */
+.pc-new-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,.95);
+  color: var(--brand);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+/* Card body */
+.pc-body {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 20px;
+  flex: 1;
+  gap: 0;
+}
+
+/* Category pill inside card */
+.pc-pill {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+.pc-pill.p-solar      { background:var(--solar-bg);   color:var(--solar);    }
+.pc-pill.p-elec       { background:var(--elec-bg);    color:var(--elec);     }
+.pc-pill.p-teal       { background:var(--teal-bg);    color:var(--teal);     }
+.pc-pill.p-guest      { background:var(--guest-bg);   color:var(--guest);    }
+.pc-pill.p-outreach   { background:var(--outreach-bg);color:var(--outreach); }
+.pc-pill.p-seo        { background:var(--seo-bg);     color:var(--seo);      }
+.pc-pill.p-deliv      { background:var(--deliv-bg);   color:var(--deliv);    }
+.pc-pill.p-brand      { background:var(--brand-soft); color:var(--brand);    }
+.pc-pill.p-default    { background:var(--bg);         color:var(--text-2);   }
+
+/* Title */
+.pc-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+
+/* Excerpt */
+.pc-excerpt {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+/* Meta */
+.pc-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pc-meta .mdot {
+  width: 3px; height: 3px;
+  background: var(--text-3);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ─── Hero card ─── */
+.post-card.pc-hero {
+  grid-column: span 2;
+  flex-direction: row;
+  min-height: 300px;
+}
+.post-card.pc-hero .pc-cover {
+  width: 42%;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+.post-card.pc-hero .pc-icon {
+  font-size: 72px;
+}
+.pc-hero-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.18);
+  color: rgba(255,255,255,.92);
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.22);
+}
+.post-card.pc-hero .pc-body {
+  padding: 28px 28px 24px;
+  justify-content: center;
+}
+.pc-hero-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.28;
+  color: var(--text);
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+.post-card.pc-hero .pc-excerpt {
+  -webkit-line-clamp: 4;
+  font-size: 14.5px;
+  margin-bottom: 20px;
+}
+.pc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+.pc-read-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap .15s;
+}
+.post-card:hover .pc-read-link { gap: 9px; }
+
+/* ─── Section divider before regular posts ─── */
+.blog-section-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 4px;
+}
+.blog-section-label span {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.blog-section-label::before,
+.blog-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.blog-section-label::before { display: none; }
+
+/* ─── Reveal animation ─── */
+.post-card { opacity: 0; transform: translateY(16px); transition: opacity .4s ease, transform .4s ease, box-shadow .2s, border-color .15s; }
+.post-card.in { opacity: 1; transform: translateY(0); }
+.post-card.pc-hero { transition: opacity .5s ease, transform .5s ease, box-shadow .2s; }
+
+/* ─── Responsive ─── */
+@media (max-width: 860px) {
+  .blog-grid { grid-template-columns: repeat(2, 1fr); }
+  .post-card.pc-hero { grid-column: span 2; flex-direction: column; }
+  .post-card.pc-hero .pc-cover { width: 100%; height: 200px; }
+  .pc-hero-title { font-size: 20px; }
+}
+@media (max-width: 560px) {
+  .blog-grid { grid-template-columns: 1fr; }
+  .post-card.pc-hero { grid-column: span 1; }
+  .pc-hero-title { font-size: 19px; }
+}
 </style>
 </head>
 <body>
@@ -73,7 +395,7 @@
 <div class="wrap">
 
 <div class="cat-filters">
-  <button class="cat-tab active" data-cat="all">All</button>
+  <button class="cat-tab active" data-cat="all">All Posts</button>
   <button class="cat-tab" data-cat="Solar">☀️ Solar</button>
   <button class="cat-tab" data-cat="Electrical">⚡ Electrical</button>
   <button class="cat-tab" data-cat="Electronics">🔧 Electronics Repair</button>
@@ -83,44 +405,112 @@
   <button class="cat-tab" data-cat="Deliverability">🔥 Deliverability</button>
 </div>
 
-<div class="blog-grid" id="blogGrid"><a class="post reveal" href="/post?p=the-awkward-truth-about-cold-outreach-nobody-tells"><div class="cover g5">🎯</div><div class="body"><div class="cat">Outreach, Cold Outreach</div><h3>The Awkward Truth About Cold Outreach Nobody Tells You</h3><div class="excerpt">Most cold outreach doesn't fail because people didn't try hard enough — it fails because it was aimed at everyone, which means it really lands with no one. Here's what actually moves the needle when you're the one hitting send.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>3 min read</span></div></div></a><a class="post reveal" href="/post?p=finding-electronics-and-appliance-repair-businesse"><div class="cover g6">🔧</div><div class="body"><div class="cat">Electronics Repair</div><h3>Finding Electronics and Appliance Repair Businesses for Outreach at Scale</h3><div class="excerpt">Search appliance, TV, laptop, mobile, UPS, and CCTV repair businesses plus electronics parts suppliers — with contact info and SEO metrics pulled automatically.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a><a class="post reveal" href="/post?p=sourcing-leads-in-industrial-automation-plc-scada-"><div class="cover g4">🤖</div><div class="body"><div class="cat">SEO &amp; Tools</div><h3>Sourcing Leads in Industrial Automation: PLC, SCADA, and Instrumentation Companies</h3><div class="excerpt">Find PLC automation firms, SCADA integrators, instrumentation companies, and calibration services — with verified contact info and SEO metrics, automatically.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a><a class="post reveal" href="/post?p=finding-electrical-contractors-and-panel-builders-"><div class="cover g1">⚡</div><div class="body"><div class="cat">Electrical</div><h3>Finding Electrical Contractors and Panel Builders for Outreach — Fast</h3><div class="excerpt">Search residential, commercial, and industrial electricians, panel builders, and electrical maintenance companies — with emails, phone numbers, and SEO metrics pulled automatically.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a><a class="post reveal" href="/post?p=how-to-find-solar-guest-post-sites-and-leads-in-mi"><div class="cover g1">☀️</div><div class="body"><div class="cat">Solar</div><h3>How to Find Solar Guest Post Sites and Leads in Minutes (Not Days)</h3><div class="excerpt">Short summary: Find solar blogs, installers, and inverter/battery sites for guest posts or leads — with DA, PA, DR and verified emails pulled automatically by OutreachNest Finder.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a><a class="post reveal" href="/post?p=how-agencies-manage-10-niches-without-losing-track"><div class="cover g5">🗂️</div><div class="body"><div class="cat">SEO &amp; Tools, Agency Workflow</div><h3>How Agencies Manage 10+ Niches Without Losing Track</h3><div class="excerpt">Running outreach across multiple industries at once usually turns into chaos — mixed lists, duplicate contacts, forgotten follow-ups. Here's the system that keeps it organized.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=how-to-turn-your-lead-list-into-a-live-google-shee"><div class="cover g3">📊</div><div class="body"><div class="cat">SEO &amp; Tools, Google Sheets</div><h3>How to Turn Your Lead List Into a Live Google Sheet (Automatically)</h3><div class="excerpt">Manually copying leads into a spreadsheet wastes hours every week. Here's how to have every lead — with full contact and SEO data — land in a live Google Sheet the moment it's found.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=why-whatsapp-outreach-gets-higher-response-rates-t"><div class="cover g2">💬</div><div class="body"><div class="cat">Outreach, WhatsApp</div><h3>Why WhatsApp Outreach Gets Higher Response Rates Than Email</h3><div class="excerpt">Cold email open rates keep falling, but WhatsApp messages get read within minutes. Here's why WhatsApp outreach works, when to use it, and how to do it without looking spammy.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=outreachnest-finder-features-guide-everything-the-"><div class="cover g1">📘</div><div class="body"><div class="cat">Product, Features, SEO &amp; Tools</div><h3>OutreachNest Finder Features Guide: Everything the App Can Do</h3><div class="excerpt">A complete walkthrough of every OutreachNest Finder feature — from 4-engine lead search to email outreach campaigns — so you know exactly what the app can do for you.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>6 min read</span></div></div></a><a class="post reveal" href="/post?p=how-to-find-seo-clients-fast-in-2026"><div class="cover g1">💼</div><div class="body"><div class="cat">SEO, Freelancing</div><h3>How to Find SEO Clients Fast in 2026</h3><div class="excerpt">Finding SEO clients does not have to be slow or expensive. Here are the most effective methods working right now in 2026 — from cold outreach to community marketing.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=how-to-build-1-000-link-building-prospects-in-minu"><div class="cover g1">🚀</div><div class="body"><div class="cat">Link Building, SEO Tools</div><h3>How to Build 1,000 Link Building Prospects in Minutes</h3><div class="excerpt">Most SEO freelancers spend days building prospect lists manually. Here is how to collect 1,000 qualified link building prospects — with full SEO metrics — in minutes, not days.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=how-to-check-da-pa-dr-without-paying-for-tools"><div class="cover g1">🎯</div><div class="body"><div class="cat">SEO Tools, Link Building</div><h3>How to Check DA, PA &amp; DR Without Paying for Tools</h3><div class="excerpt">Learn how SEO freelancers can check Domain Authority, Page Authority, and Domain Rating for free using smart tools — and how to do it at scale in minutes.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=spot-real-guest-post-site"><div class="cover g1">🌱</div><div class="body"><div class="cat">Guest Posting</div><h3>How to Spot a Real Guest-Post Site (and Avoid PBNs)</h3><div class="excerpt">Not every site that says 'write for us' is worth your link. Here's the checklist we run before recommending any site.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=b2b-lead-list-worth-buying"><div class="cover g2">📇</div><div class="body"><div class="cat">SEO &amp; Tools</div><h3>What Makes a B2B Lead List Actually Worth Buying</h3><div class="excerpt">Most lists are stale and full of dead emails. Here's what separates a useful list from a refund waiting to happen.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a><a class="post reveal" href="/post?p=solar-niche-goldmine"><div class="cover g3">☀️</div><div class="body"><div class="cat">Solar Niche</div><h3>Why the Solar Niche Is a Goldmine for Link Building</h3><div class="excerpt">Solar is booming, competitive, and full of companies that spend on SEO. That makes it a strong niche to build around.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>6 min read</span></div></div></a><a class="post reveal" href="/post?p=cold-email-that-gets-replies"><div class="cover g4">✉️</div><div class="body"><div class="cat">Outreach</div><h3>Cold Email That Gets Replies: A Simple Framework</h3><div class="excerpt">Long, salesy emails get ignored. Short, specific, human ones get replies. Here's the structure that lands.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=warm-up-new-email-domain"><div class="cover g5">🔥</div><div class="body"><div class="cat">Deliverability</div><h3>Warming Up a New Email Domain the Right Way</h3><div class="excerpt">Send from a brand-new domain too fast and you land in spam. Here's how to build a healthy sending reputation first.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=choosing-solar-installer-guide"><div class="cover g3">☀️</div><div class="body"><div class="cat">Solar</div><h3>How Homeowners Choose a Solar Installer (and Why It Matters for Marketing)</h3><div class="excerpt">Understanding how buyers pick a solar company tells you exactly what content and trust signals actually move the needle.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>6 min read</span></div></div></a><a class="post reveal" href="/post?p=electrical-contractors-online-growth"><div class="cover g4">⚡</div><div class="body"><div class="cat">Electrical</div><h3>Why Electrical Contractors Are Underrated Online</h3><div class="excerpt">Electrical contractors quietly form one of the largest, most stable B2B markets — and most of them are barely visible online.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=industrial-automation-high-value-niche"><div class="cover g5">🤖</div><div class="body"><div class="cat">SEO &amp; Tools</div><h3>Industrial Automation: Small Audience, High Value</h3><div class="excerpt">There aren't many automation companies — but each one is worth serious attention. Here's how to think about this niche.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>5 min read</span></div></div></a><a class="post reveal" href="/post?p=electronics-repair-steady-demand"><div class="cover g6">🔧</div><div class="body"><div class="cat">Electronics Repair</div><h3>Electronics Repair: A Practical Niche With Steady Demand</h3><div class="excerpt">Repair shops rarely chase the spotlight, but steady demand and loyal customers make this a quietly reliable niche.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a><a class="post reveal" href="/post?p=quality-over-quantity-backlinks"><div class="cover g6">📈</div><div class="body"><div class="cat">SEO Strategy</div><h3>Why a Few Great Backlinks Beat a Hundred Weak Ones</h3><div class="excerpt">More links isn't the goal. Relevant links from trusted, real sites move rankings. Here's how to think about it.</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>4 min read</span></div></div></a></div>
+<div class="blog-grid" id="blogGrid">
+  <!-- Populated by posts.js + JS below -->
+</div>
+
 </div>
 </section>
 
 <div id="footer-holder"><footer><div class="wrap"><div class="foot-grid"><div class="foot-col foot-about"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p><div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><a href="https://wa.me/923006321406" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a><a href="mailto:queries@getoutreachnest.com" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a><a href="https://facebook.com/OutreachNestFinder" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">📘 Facebook</a><a href="https://x.com/MariyamRiagclo" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#000000;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">🐦 Twitter/X</a><a href="https://www.linkedin.com/in/mariyam-riaz-1b93a8431" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#0A66C2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💼 LinkedIn</a></div></div><div class="foot-col"><h4>Services</h4><a href="/services">Guest posts</a><a href="/services">Lead lists</a><a href="/services">Content writing</a><a href="/download">Download Finder</a></div><div class="foot-col"><h4>Company</h4><a href="/niches">Niches</a><a href="/blog">Blog</a><a href="/contact">Contact</a></div><div class="foot-col"><h4>Contact</h4><a href="mailto:queries@getoutreachnest.com">queries@getoutreachnest.com</a><a href="https://wa.me/923006321406" target="_blank">+923006321406</a><p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5">Multan, Punjab Pakistan</p></div></div><div class="foot-bottom"><p>© 2026 OutreachNest. All rights reserved.</p><p>Real outreach for technical niches.</p></div></div></footer></div>
+
 <script src="posts.js"></script>
 <script src="main.js"></script>
 <script>
-const grid=document.getElementById('blogGrid');
-if(window.POSTS){
-  grid.innerHTML=window.POSTS.map(p=>`
-<a class="post reveal" href="/post?p=${p.slug}" data-cat="${p.cat}">
-<div class="cover ${p.cover}">${p.icon}</div>
-<div class="body">
-<div class="cat">${p.cat}</div>
-<h3>${p.title}</h3>
-<div class="excerpt">${p.excerpt}</div>
-<div class="meta"><span>${p.author}</span><span class="dot"></span><span>${p.read}</span></div>
-</div>
-</a>`).join('');
+// ── Pill class from category string ──────────────────────────────────────────
+function pillClass(cat) {
+  var c = cat.toLowerCase();
+  if (c.indexOf('solar') > -1)       return 'p-solar';
+  if (c.indexOf('electronics') > -1) return 'p-teal';    // before 'electrical'
+  if (c.indexOf('electri') > -1)     return 'p-elec';
+  if (c.indexOf('guest') > -1)       return 'p-guest';
+  if (c.indexOf('outreach') > -1 || c.indexOf('whatsapp') > -1) return 'p-outreach';
+  if (c.indexOf('deliv') > -1)       return 'p-deliv';
+  if (c.indexOf('seo') > -1 || c.indexOf('link') > -1 || c.indexOf('tools') > -1) return 'p-seo';
+  if (c.indexOf('product') > -1)     return 'p-brand';
+  return 'p-default';
 }
 
-// Re-run reveal for newly added cards
-document.querySelectorAll('.reveal:not(.in)').forEach(el=>{
-  const io=new IntersectionObserver((en,ob)=>en.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');ob.unobserve(x.target);}}),{threshold:.12});
-  io.observe(el);
-});
+function primaryCat(cat) {
+  return cat.split(',')[0].trim();
+}
 
-// Category filter
-document.querySelectorAll('.cat-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+// Posts from September 2026 get a "New" badge
+function isNew(date) {
+  return date && date.indexOf('September') > -1;
+}
+
+// ── Build grid HTML ───────────────────────────────────────────────────────────
+var grid = document.getElementById('blogGrid');
+
+if (window.POSTS && window.POSTS.length) {
+  var html = '';
+  window.POSTS.forEach(function(p, i) {
+    var pill   = pillClass(p.cat);
+    var pLabel = primaryCat(p.cat);
+    var newBadge = isNew(p.date) ? '<span class="pc-new-badge">New</span>' : '';
+
+    if (i === 0) {
+      // ── Hero card (first post)
+      html += '<a class="post-card pc-hero" href="/post?p=' + p.slug + '" data-cat="' + p.cat + '">'
+            + '<div class="pc-cover ' + p.cover + '">'
+            +   '<span class="pc-icon">' + p.icon + '</span>'
+            +   '<div class="pc-hero-label">Featured Article</div>'
+            + '</div>'
+            + '<div class="pc-body">'
+            +   '<span class="pc-pill ' + pill + '">' + pLabel + '</span>'
+            +   '<h2 class="pc-hero-title">' + p.title + '</h2>'
+            +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
+            +   '<div class="pc-foot">'
+            +     '<span class="pc-meta"><span>' + p.date + '</span><span class="mdot"></span><span>' + p.read + '</span></span>'
+            +     '<span class="pc-read-link">Read article&nbsp;→</span>'
+            +   '</div>'
+            + '</div>'
+            + '</a>';
+    } else {
+      // ── Regular card
+      html += '<a class="post-card" href="/post?p=' + p.slug + '" data-cat="' + p.cat + '">'
+            + '<div class="pc-cover ' + p.cover + '">'
+            +   newBadge
+            +   '<span class="pc-icon">' + p.icon + '</span>'
+            + '</div>'
+            + '<div class="pc-body">'
+            +   '<span class="pc-pill ' + pill + '">' + pLabel + '</span>'
+            +   '<h3 class="pc-title">' + p.title + '</h3>'
+            +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
+            +   '<div class="pc-meta"><span>' + p.date + '</span><span class="mdot"></span><span>' + p.read + '</span></div>'
+            + '</div>'
+            + '</a>';
+    }
+  });
+  grid.innerHTML = html;
+}
+
+// ── Reveal on scroll ─────────────────────────────────────────────────────────
+var cards = document.querySelectorAll('.post-card');
+var io = new IntersectionObserver(function(entries, observer) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      // stagger delay based on position in row
+      var idx = Array.from(cards).indexOf(entry.target);
+      entry.target.style.transitionDelay = (idx % 3 * 60) + 'ms';
+      entry.target.classList.add('in');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+cards.forEach(function(c) { io.observe(c); });
+
+// ── Category filter ───────────────────────────────────────────────────────────
+document.querySelectorAll('.cat-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
     tab.classList.add('active');
-    const cat=tab.getAttribute('data-cat');
-    document.querySelectorAll('#blogGrid .post').forEach(post=>{
-      const postCat=(post.querySelector('.cat')||post).textContent;
-      const show = cat==='all' || postCat.toLowerCase().includes(cat.toLowerCase());
-      post.style.display = show ? '' : 'none';
+    var cat = tab.getAttribute('data-cat');
+    document.querySelectorAll('#blogGrid .post-card').forEach(function(card) {
+      var cardCat = card.getAttribute('data-cat') || '';
+      var show = cat === 'all' || cardCat.toLowerCase().indexOf(cat.toLowerCase()) > -1;
+      card.style.display = show ? '' : 'none';
     });
   });
 });

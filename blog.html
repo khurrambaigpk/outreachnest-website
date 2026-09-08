@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231c7a4d'/%3E%3Ccircle cx='70' cy='30' r='16' fill='%23e0aa42'/%3E%3C/svg%3E">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1c7a4d">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Guest Posting &amp; SEO Blog — OutreachNest | Link Building Tips</title>
 <meta name="description" content="Practical guides on guest posting, link building, cold outreach, and lead generation for SEO professionals. Real tips, no fluff — written by the OutreachNest team.">
@@ -18,502 +21,740 @@
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='blog';</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "OutreachNest",
+  "url": "https://getoutreachnest.com",
+  "email": "queries@getoutreachnest.com",
+  "telephone": "+923006321406",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Multan",
+    "addressRegion": "Punjab",
+    "addressCountry": "PK"
+  },
+  "sameAs": [
+    "https://facebook.com/OutreachNestFinder",
+    "https://x.com/MariyamRiagclo",
+    "https://www.linkedin.com/in/mariyam-riaz-1b93a8431"
+  ]
+}
+</script>
 <style>
-/* ─── Design tokens ─── */
+/* ── Tokens ───────────────────────────────────────────────────── */
 :root {
-  --bg:         #f6f5f1;
+  --bg:         #f3f2ed;
   --surface:    #ffffff;
-  --text:       #1c1c1e;
+  --surface-2:  #fafaf7;
+  --text:       #18181b;
   --text-2:     #52525b;
   --text-3:     #a1a1aa;
   --border:     #e4e4e7;
-  --brand:      #2d5a27;
-  --brand-mid:  #3d7a36;
-  --brand-soft: #eaf4e8;
+  --brand:      #1c7a4d;
+  --brand-mid:  #2a9460;
+  --brand-deep: #0f5c38;
+  --brand-soft: #e6f4ec;
+  --gold:       #c8912f;
+  --gold-bright:#e0aa42;
 
-  --solar:       #c2690a;  --solar-bg:  #fff7ed;
-  --elec:        #1d4ed8;  --elec-bg:   #eff6ff;
-  --teal:        #0b7285;  --teal-bg:   #e0f9ff;
-  --guest:       #7c4a0c;  --guest-bg:  #fef3e2;
-  --outreach:    #be185d;  --outreach-bg:#fdf2f8;
-  --seo:         #3730a3;  --seo-bg:    #eef2ff;
-  --deliv:       #92400e;  --deliv-bg:  #fff7ed;
+  --solar:      #c2690a; --solar-bg:  #fff7ed;
+  --elec:       #1d4ed8; --elec-bg:   #eff6ff;
+  --teal:       #0b7285; --teal-bg:   #e0f9ff;
+  --guest:      #7c4a0c; --guest-bg:  #fef3e2;
+  --outreach:   #be185d; --outreach-bg:#fdf2f8;
+  --seo:        #3730a3; --seo-bg:    #eef2ff;
+  --deliv:      #b45309; --deliv-bg:  #fffbeb;
+  --automation: #6d28d9; --automation-bg:#f5f3ff;
 
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-  --shadow-md:  0 4px 12px rgba(0,0,0,.09), 0 2px 4px rgba(0,0,0,.05);
-  --shadow-lg:  0 12px 32px rgba(0,0,0,.11), 0 4px 8px rgba(0,0,0,.06);
-  --radius:     14px;
-  --radius-sm:  8px;
+  --sh-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --sh-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+  --sh-lg: 0 16px 40px rgba(0,0,0,.11), 0 4px 8px rgba(0,0,0,.05);
+  --rad: 16px;
+  --rad-sm: 10px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:         #111613;
-    --surface:    #1c231e;
+    --bg:         #0e1410;
+    --surface:    #181f1a;
+    --surface-2:  #1c2420;
     --text:       #f0f0ec;
-    --text-2:     #a1a89c;
-    --text-3:     #666e62;
-    --border:     #2c3429;
-    --brand-soft: #1a2e18;
+    --text-2:     #9ca89c;
+    --text-3:     #5c6860;
+    --border:     #273029;
+    --brand-soft: #162a1e;
     --solar-bg:   #1e1208;
     --elec-bg:    #0d1428;
     --teal-bg:    #061920;
     --guest-bg:   #1e1208;
     --outreach-bg:#1e0a13;
     --seo-bg:     #0e0f2c;
-    --deliv-bg:   #1e1208;
+    --deliv-bg:   #1a1408;
+    --automation-bg:#150f28;
   }
 }
 :root[data-theme="dark"] {
-  --bg:         #111613;
-  --surface:    #1c231e;
+  --bg:         #0e1410;
+  --surface:    #181f1a;
+  --surface-2:  #1c2420;
   --text:       #f0f0ec;
-  --text-2:     #a1a89c;
-  --text-3:     #666e62;
-  --border:     #2c3429;
-  --brand-soft: #1a2e18;
+  --text-2:     #9ca89c;
+  --text-3:     #5c6860;
+  --border:     #273029;
+  --brand-soft: #162a1e;
   --solar-bg:   #1e1208;
   --elec-bg:    #0d1428;
   --teal-bg:    #061920;
   --guest-bg:   #1e1208;
   --outreach-bg:#1e0a13;
   --seo-bg:     #0e0f2c;
-  --deliv-bg:   #1e1208;
+  --deliv-bg:   #1a1408;
+  --automation-bg:#150f28;
 }
 
-/* ─── Base overrides ─── */
-body { background: var(--bg); }
+body { background: var(--bg); color: var(--text); }
 
-/* ─── Cover gradients (g1–g6) ─── */
-.pc-cover.g1 { background: linear-gradient(145deg,#92400e 0%,#d97706 55%,#fbbf24 100%); }
-.pc-cover.g2 { background: linear-gradient(145deg,#831843 0%,#be185d 55%,#f472b6 100%); }
-.pc-cover.g3 { background: linear-gradient(145deg,#14532d 0%,#2d5a27 55%,#4a7c59 100%); }
-.pc-cover.g4 { background: linear-gradient(145deg,#3b0764 0%,#6d28d9 55%,#a78bfa 100%); }
-.pc-cover.g5 { background: linear-gradient(145deg,#7f1d1d 0%,#b91c1c 55%,#f87171 100%); }
-.pc-cover.g6 { background: linear-gradient(145deg,#0c4a6e 0%,#0e7490 55%,#22d3ee 100%); }
+/* ── page-head dark mode fix ─────────────────────────────────── */
+.page-head h1 { color: var(--text); }
+.page-head p  { color: var(--text-2); }
+.page-head .tag { color: var(--gold-bright, #e0aa42); }
 
-/* ─── Category filter pills ─── */
-.cat-filters {
+/* ── Cover gradients ──────────────────────────────────────────── */
+.g1 { background: linear-gradient(145deg,#92400e,#d97706 55%,#fbbf24); }
+.g2 { background: linear-gradient(145deg,#831843,#be185d 55%,#f472b6); }
+.g3 { background: linear-gradient(145deg,#14532d,#1c7a4d 55%,#4a9e6e); }
+.g4 { background: linear-gradient(145deg,#3b0764,#6d28d9 55%,#a78bfa); }
+.g5 { background: linear-gradient(145deg,#7f1d1d,#b91c1c 55%,#f87171); }
+.g6 { background: linear-gradient(145deg,#0c4a6e,#0e7490 55%,#22d3ee); }
+
+/* ── Blog hero ────────────────────────────────────────────────── */
+.blog-hero {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-.cat-tab {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  color: var(--text-2);
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
-  letter-spacing: .02em;
-}
-.cat-tab:hover {
-  background: var(--brand-soft);
-  border-color: var(--brand);
-  color: var(--brand);
-}
-.cat-tab.active {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(45,90,39,.28);
-}
-.cat-tab[data-cat="Solar"].active       { background:var(--solar);  border-color:var(--solar);    box-shadow:0 2px 8px rgba(194,105,10,.28); }
-.cat-tab[data-cat="Electrical"].active  { background:var(--elec);   border-color:var(--elec);     box-shadow:0 2px 8px rgba(29,78,216,.28); }
-.cat-tab[data-cat="Electronics"].active { background:var(--teal);   border-color:var(--teal);     box-shadow:0 2px 8px rgba(11,114,133,.28); }
-.cat-tab[data-cat="Guest"].active       { background:var(--guest);  border-color:var(--guest);    box-shadow:0 2px 8px rgba(124,74,12,.28); }
-.cat-tab[data-cat="Outreach"].active    { background:var(--outreach);border-color:var(--outreach);box-shadow:0 2px 8px rgba(190,24,93,.28); }
-.cat-tab[data-cat="SEO"].active         { background:var(--seo);    border-color:var(--seo);      box-shadow:0 2px 8px rgba(55,48,163,.28); }
-.cat-tab[data-cat="Deliverability"].active{ background:var(--deliv);border-color:var(--deliv);    box-shadow:0 2px 8px rgba(146,64,14,.28); }
-
-/* ─── Blog grid ─── */
-.blog-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 64px;
-}
-
-/* ─── Post card ─── */
-.post-card {
-  display: flex;
-  flex-direction: column;
+  border-radius: var(--rad);
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
+  box-shadow: var(--sh-lg);
+  margin-bottom: 36px;
+  min-height: 340px;
   text-decoration: none;
-  transition: transform .2s cubic-bezier(.25,.46,.45,.94), box-shadow .2s;
-  box-shadow: var(--shadow-sm);
+  transition: transform .22s cubic-bezier(.25,.46,.45,.94), box-shadow .22s;
 }
-.post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  text-decoration: none;
-}
-
-/* Cover area */
-.pc-cover {
-  position: relative;
-  height: 140px;
+.blog-hero:hover { transform: translateY(-4px); box-shadow: 0 24px 56px rgba(0,0,0,.13); text-decoration: none; }
+.bh-visual {
+  width: 46%;
+  flex-shrink: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-}
-.pc-icon {
-  font-size: 52px;
-  line-height: 1;
-  filter: drop-shadow(0 3px 10px rgba(0,0,0,.25));
-  transition: transform .2s;
-}
-.post-card:hover .pc-icon { transform: scale(1.08); }
-
-/* New badge */
-.pc-new-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255,255,255,.95);
-  color: var(--brand);
-  font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 999px;
-}
-
-/* Card body */
-.pc-body {
-  display: flex;
-  flex-direction: column;
-  padding: 18px 20px 20px;
-  flex: 1;
-  gap: 0;
-}
-
-/* Category pill inside card */
-.pc-pill {
-  display: inline-block;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 999px;
-  margin-bottom: 10px;
-  width: fit-content;
-}
-.pc-pill.p-solar      { background:var(--solar-bg);   color:var(--solar);    }
-.pc-pill.p-elec       { background:var(--elec-bg);    color:var(--elec);     }
-.pc-pill.p-teal       { background:var(--teal-bg);    color:var(--teal);     }
-.pc-pill.p-guest      { background:var(--guest-bg);   color:var(--guest);    }
-.pc-pill.p-outreach   { background:var(--outreach-bg);color:var(--outreach); }
-.pc-pill.p-seo        { background:var(--seo-bg);     color:var(--seo);      }
-.pc-pill.p-deliv      { background:var(--deliv-bg);   color:var(--deliv);    }
-.pc-pill.p-brand      { background:var(--brand-soft); color:var(--brand);    }
-.pc-pill.p-default    { background:var(--bg);         color:var(--text-2);   }
-
-/* Title */
-.pc-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--text);
-  margin: 0 0 10px;
-  text-wrap: balance;
-}
-
-/* Excerpt */
-.pc-excerpt {
-  font-family: 'Inter', sans-serif;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--text-2);
-  margin: 0 0 14px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  gap: 14px;
+  position: relative;
   overflow: hidden;
-  flex: 1;
 }
-
-/* Meta */
-.pc-meta {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  color: var(--text-3);
-  font-weight: 500;
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.bh-visual::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.08);
 }
-.pc-meta .mdot {
-  width: 3px; height: 3px;
-  background: var(--text-3);
-  border-radius: 50%;
-  display: inline-block;
+.bh-icon {
+  font-size: 96px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.28));
+  transition: transform .22s;
 }
-
-/* ─── Hero card ─── */
-.post-card.pc-hero {
-  grid-column: span 2;
-  flex-direction: row;
-  min-height: 300px;
-}
-.post-card.pc-hero .pc-cover {
-  width: 42%;
-  height: auto;
-  flex-shrink: 0;
-  border-radius: 0;
-  flex-direction: column;
-  gap: 12px;
-}
-.post-card.pc-hero .pc-icon {
-  font-size: 72px;
-}
-.pc-hero-label {
+.blog-hero:hover .bh-icon { transform: scale(1.07) rotate(-2deg); }
+.bh-label {
+  position: relative;
+  z-index: 1;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  background: rgba(255,255,255,.18);
-  color: rgba(255,255,255,.92);
-  padding: 4px 12px;
+  color: rgba(255,255,255,.9);
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  padding: 5px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(4px);
 }
-.post-card.pc-hero .pc-body {
-  padding: 28px 28px 24px;
+.bh-body {
+  flex: 1;
+  padding: 40px 44px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
-.pc-hero-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 24px;
+.bh-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
   font-weight: 700;
-  line-height: 1.28;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+.bh-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.22;
   color: var(--text);
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   text-wrap: balance;
 }
-.post-card.pc-hero .pc-excerpt {
-  -webkit-line-clamp: 4;
-  font-size: 14.5px;
-  margin-bottom: 20px;
+.bh-excerpt {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-2);
+  margin: 0 0 24px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bh-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bh-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: var(--text-3);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.bh-meta .dot {
+  width: 3px; height: 3px;
+  background: var(--text-3);
+  border-radius: 50%;
+}
+.bh-cta {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap .15s, color .15s;
+}
+.blog-hero:hover .bh-cta { gap: 10px; color: var(--brand-mid); }
+
+/* ── Filters ──────────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.filter-bar h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0 8px 0 0;
+  flex-shrink: 0;
+}
+/* Mobile: horizontal scroll strip */
+@media (max-width: 640px) {
+  .filter-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+    padding-bottom: 6px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    /* fade-out edge hint */
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .cat-pill { flex-shrink: 0; }
+  .pill-count { display: none; }
+}
+.cat-pill {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.cat-pill:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+.cat-pill.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(28,122,77,.3);
+}
+.cat-pill[data-cat="Solar"].active       { background:var(--solar);  border-color:var(--solar); }
+.cat-pill[data-cat="Electrical"].active  { background:var(--elec);   border-color:var(--elec); }
+.cat-pill[data-cat="Electronics"].active { background:var(--teal);   border-color:var(--teal); }
+.cat-pill[data-cat="Guest"].active       { background:var(--guest);  border-color:var(--guest); }
+.cat-pill[data-cat="Outreach"].active    { background:var(--outreach);border-color:var(--outreach); }
+.cat-pill[data-cat="SEO"].active         { background:var(--seo);    border-color:var(--seo); }
+.cat-pill[data-cat="Deliverability"].active{ background:var(--deliv);border-color:var(--deliv); }
+.pill-count {
+  background: rgba(255,255,255,.22);
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+}
+.cat-pill:not(.active) .pill-count {
+  background: var(--bg);
+  color: var(--text-3);
+}
+
+/* ── Blog grid ────────────────────────────────────────────────── */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 80px;
+}
+
+/* ── Post card ────────────────────────────────────────────────── */
+.post-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--sh-sm);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .38s ease, transform .38s ease, box-shadow .2s, border-color .15s;
+}
+.post-card.in { opacity: 1; transform: translateY(0); }
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sh-lg);
+  text-decoration: none;
+  border-color: transparent;
+}
+
+/* Card cover */
+.pc-cover {
+  position: relative;
+  height: 148px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.pc-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.07);
+}
+.pc-icon {
+  font-size: 56px;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.22));
+  transition: transform .22s;
+}
+.post-card:hover .pc-icon { transform: scale(1.1) rotate(-3deg); }
+.pc-new {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  background: rgba(255,255,255,.96);
+  color: var(--brand);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* Card body */
+.pc-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 22px 22px;
+  gap: 0;
+}
+.pc-pill {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 11px;
+  width: fit-content;
+}
+.p-solar      { background:var(--solar-bg);    color:var(--solar);    }
+.p-elec       { background:var(--elec-bg);     color:var(--elec);     }
+.p-teal       { background:var(--teal-bg);     color:var(--teal);     }
+.p-guest      { background:var(--guest-bg);    color:var(--guest);    }
+.p-outreach   { background:var(--outreach-bg); color:var(--outreach); }
+.p-seo        { background:var(--seo-bg);      color:var(--seo);      }
+.p-deliv      { background:var(--deliv-bg);    color:var(--deliv);    }
+.p-automation { background:var(--automation-bg);color:var(--automation);}
+.p-brand      { background:var(--brand-soft);  color:var(--brand);    }
+.p-default    { background:var(--bg);          color:var(--text-3);   }
+
+.pc-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 17.5px;
+  font-weight: 600;
+  line-height: 1.32;
+  color: var(--text);
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+.pc-excerpt {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: var(--text-2);
+  margin: 0 0 16px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .pc-foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
 }
-.pc-read-link {
+.pc-meta {
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--brand);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: gap .15s;
-}
-.post-card:hover .pc-read-link { gap: 9px; }
-
-/* ─── Section divider before regular posts ─── */
-.blog-section-label {
-  grid-column: 1 / -1;
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 8px 0 4px;
+  gap: 6px;
 }
-.blog-section-label span {
+.pc-meta .dot { width:3px;height:3px;background:var(--text-3);border-radius:50%; }
+.pc-arrow {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  transition: transform .15s, color .15s;
+}
+.post-card:hover .pc-arrow { transform: translateX(4px); color: var(--brand-mid); }
+
+/* ── Empty state ──────────────────────────────────────────────── */
+.empty-state {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 80px 24px;
   color: var(--text-3);
-  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
 }
-.blog-section-label::before,
-.blog-section-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-.blog-section-label::before { display: none; }
+.empty-state .empty-icon { font-size: 48px; display: block; margin-bottom: 16px; }
+.empty-state p { font-size: 15px; }
 
-/* ─── Reveal animation ─── */
-.post-card { opacity: 0; transform: translateY(16px); transition: opacity .4s ease, transform .4s ease, box-shadow .2s, border-color .15s; }
-.post-card.in { opacity: 1; transform: translateY(0); }
-.post-card.pc-hero { transition: opacity .5s ease, transform .5s ease, box-shadow .2s; }
-
-/* ─── Responsive ─── */
-@media (max-width: 860px) {
-  .blog-grid { grid-template-columns: repeat(2, 1fr); }
-  .post-card.pc-hero { grid-column: span 2; flex-direction: column; }
-  .post-card.pc-hero .pc-cover { width: 100%; height: 200px; }
-  .pc-hero-title { font-size: 20px; }
+/* ── Stats band ───────────────────────────────────────────────── */
+.blog-stats {
+  background: var(--brand);
+  border-radius: var(--rad);
+  padding: 36px 40px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 80px;
+  flex-wrap: wrap;
 }
-@media (max-width: 560px) {
+.bs-item { text-align: center; }
+.bs-num {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.bs-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: rgba(255,255,255,.75);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .blog-grid { grid-template-columns: repeat(2,1fr); }
+  .blog-hero { flex-direction: column; min-height: auto; }
+  .bh-visual { width: 100%; height: 220px; }
+  .bh-title { font-size: 22px; }
+  .bh-body { padding: 28px 28px 32px; }
+}
+@media (max-width: 580px) {
   .blog-grid { grid-template-columns: 1fr; }
-  .post-card.pc-hero { grid-column: span 1; }
-  .pc-hero-title { font-size: 19px; }
+  .bh-body { padding: 22px 20px 26px; }
+  .bh-title { font-size: 20px; }
+  .blog-stats { padding: 28px 20px; }
+  .bs-num { font-size: 26px; }
+  .filter-bar h2 { display: none; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
 }
 </style>
 </head>
 <body>
-<div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="active">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="active">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
+<div id="nav-holder"></div>
 
 <header class="page-head">
 <div class="glow"></div>
 <div class="wrap">
 <span class="tag">From the nest</span>
 <h1>Insights on links, leads &amp; outreach</h1>
-<p>Practical, no-fluff advice on guest posting, lead generation, deliverability, and SEO — written from real experience.</p>
+<p>Practical, no-fluff guides on guest posting, lead generation, deliverability, and SEO — written from real experience in technical niches.</p>
 </div>
 </header>
 
-<section style="padding-top:40px">
+<section style="padding-top:44px">
 <div class="wrap">
 
-<div class="cat-filters">
-  <button class="cat-tab active" data-cat="all">All Posts</button>
-  <button class="cat-tab" data-cat="Solar">☀️ Solar</button>
-  <button class="cat-tab" data-cat="Electrical">⚡ Electrical</button>
-  <button class="cat-tab" data-cat="Electronics">🔧 Electronics Repair</button>
-  <button class="cat-tab" data-cat="Guest">🌱 Guest Posting</button>
-  <button class="cat-tab" data-cat="Outreach">📨 Outreach</button>
-  <button class="cat-tab" data-cat="SEO">🔗 SEO &amp; Tools</button>
-  <button class="cat-tab" data-cat="Deliverability">🔥 Deliverability</button>
+<!-- Filter bar -->
+<div class="filter-bar" id="filterBar">
+  <h2>Filter:</h2>
+  <button class="cat-pill active" data-cat="all">All Posts <span class="pill-count" id="cnt-all">0</span></button>
+  <button class="cat-pill" data-cat="Solar">☀️ Solar <span class="pill-count" id="cnt-Solar">0</span></button>
+  <button class="cat-pill" data-cat="Electrical">⚡ Electrical <span class="pill-count" id="cnt-Electrical">0</span></button>
+  <button class="cat-pill" data-cat="Electronics">🔧 Electronics <span class="pill-count" id="cnt-Electronics">0</span></button>
+  <button class="cat-pill" data-cat="Guest">🌱 Guest Posting <span class="pill-count" id="cnt-Guest">0</span></button>
+  <button class="cat-pill" data-cat="Outreach">📨 Outreach <span class="pill-count" id="cnt-Outreach">0</span></button>
+  <button class="cat-pill" data-cat="SEO">🔗 SEO &amp; Tools <span class="pill-count" id="cnt-SEO">0</span></button>
+  <button class="cat-pill" data-cat="Deliverability">🔥 Deliverability <span class="pill-count" id="cnt-Deliverability">0</span></button>
 </div>
 
-<div class="blog-grid" id="blogGrid">
-  <!-- Populated by posts.js + JS below -->
+<!-- Hero slot (All view only) -->
+<div id="heroSlot"></div>
+
+<!-- Post grid -->
+<div class="blog-grid" id="blogGrid"></div>
+
+<!-- Stats band -->
+<div class="blog-stats reveal">
+  <div class="bs-item"><div class="bs-num">27+</div><div class="bs-label">Articles published</div></div>
+  <div class="bs-item"><div class="bs-num">7</div><div class="bs-label">Specialist niches</div></div>
+  <div class="bs-item"><div class="bs-num">100%</div><div class="bs-label">Practical, no-fluff</div></div>
+  <div class="bs-item"><div class="bs-num">Free</div><div class="bs-label">Always open access</div></div>
 </div>
 
 </div>
 </section>
 
-<div id="footer-holder"><footer><div class="wrap"><div class="foot-grid"><div class="foot-col foot-about"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p><div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><a href="https://wa.me/923006321406" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a><a href="mailto:queries@getoutreachnest.com" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a><a href="https://facebook.com/OutreachNestFinder" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">📘 Facebook</a><a href="https://x.com/MariyamRiagclo" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#000000;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">🐦 Twitter/X</a><a href="https://www.linkedin.com/in/mariyam-riaz-1b93a8431" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#0A66C2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💼 LinkedIn</a></div></div><div class="foot-col"><h4>Services</h4><a href="/services">Guest posts</a><a href="/services">Lead lists</a><a href="/services">Content writing</a><a href="/download">Download Finder</a></div><div class="foot-col"><h4>Company</h4><a href="/niches">Niches</a><a href="/blog">Blog</a><a href="/contact">Contact</a></div><div class="foot-col"><h4>Contact</h4><a href="mailto:queries@getoutreachnest.com">queries@getoutreachnest.com</a><a href="https://wa.me/923006321406" target="_blank">+923006321406</a><p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5">Multan, Punjab Pakistan</p></div></div><div class="foot-bottom"><p>© 2026 OutreachNest. All rights reserved.</p><p>Real outreach for technical niches.</p></div></div></footer></div>
+<div id="footer-holder"></div>
 
 <script src="posts.js"></script>
 <script src="main.js"></script>
 <script>
-// ── Pill class from category string ──────────────────────────────────────────
+// ── Utilities ──────────────────────────────────────────────────────────────
 function pillClass(cat) {
-  var c = cat.toLowerCase();
-  if (c.indexOf('solar') > -1)       return 'p-solar';
-  if (c.indexOf('electronics') > -1) return 'p-teal';    // before 'electrical'
-  if (c.indexOf('electri') > -1)     return 'p-elec';
-  if (c.indexOf('guest') > -1)       return 'p-guest';
-  if (c.indexOf('outreach') > -1 || c.indexOf('whatsapp') > -1) return 'p-outreach';
-  if (c.indexOf('deliv') > -1)       return 'p-deliv';
-  if (c.indexOf('seo') > -1 || c.indexOf('link') > -1 || c.indexOf('tools') > -1) return 'p-seo';
-  if (c.indexOf('product') > -1)     return 'p-brand';
+  var c = (cat || '').toLowerCase();
+  if (c.indexOf('solar')        > -1) return 'p-solar';
+  if (c.indexOf('electronics')  > -1) return 'p-teal';
+  if (c.indexOf('electri')      > -1) return 'p-elec';
+  if (c.indexOf('guest')        > -1) return 'p-guest';
+  if (c.indexOf('automation')   > -1 || c.indexOf('industrial') > -1) return 'p-automation';
+  if (c.indexOf('outreach')     > -1 || c.indexOf('whatsapp')   > -1 || c.indexOf('cold') > -1) return 'p-outreach';
+  if (c.indexOf('deliv')        > -1) return 'p-deliv';
+  if (c.indexOf('seo')          > -1 || c.indexOf('link')       > -1 || c.indexOf('tools') > -1 || c.indexOf('backlink') > -1) return 'p-seo';
+  if (c.indexOf('product')      > -1 || c.indexOf('brand')      > -1) return 'p-brand';
   return 'p-default';
 }
+function primaryCat(cat) { return (cat || '').split(',')[0].trim(); }
+function isNew(date) { return date && date.indexOf('September') > -1; }
 
-function primaryCat(cat) {
-  return cat.split(',')[0].trim();
+function matchesCat(post, cat) {
+  if (cat === 'all') return true;
+  return (post.cat || '').toLowerCase().indexOf(cat.toLowerCase()) > -1;
 }
 
-// Posts from September 2026 get a "New" badge
-function isNew(date) {
-  return date && date.indexOf('September') > -1;
+// ── Hero HTML ──────────────────────────────────────────────────────────────
+function heroHTML(p) {
+  var pc = pillClass(p.cat);
+  var pl = primaryCat(p.cat);
+  return '<a class="blog-hero" href="/post?p=' + p.slug + '">'
+    + '<div class="bh-visual ' + p.cover + '">'
+    +   '<span class="bh-icon">' + p.icon + '</span>'
+    +   '<div class="bh-label">✦ Featured Article</div>'
+    + '</div>'
+    + '<div class="bh-body">'
+    +   '<span class="bh-pill ' + pc + '">' + pl + '</span>'
+    +   '<h2 class="bh-title">' + p.title + '</h2>'
+    +   '<p class="bh-excerpt">' + p.excerpt + '</p>'
+    +   '<div class="bh-foot">'
+    +     '<span class="bh-meta"><span>' + p.date + '</span><span class="dot"></span><span>' + p.read + '</span></span>'
+    +     '<span class="bh-cta">Read article&nbsp;→</span>'
+    +   '</div>'
+    + '</div>'
+    + '</a>';
 }
 
-// ── Build grid HTML ───────────────────────────────────────────────────────────
+// ── Card HTML ──────────────────────────────────────────────────────────────
+function cardHTML(p) {
+  var pc = pillClass(p.cat);
+  var pl = primaryCat(p.cat);
+  var nb = isNew(p.date) ? '<span class="pc-new">New</span>' : '';
+  return '<a class="post-card" href="/post?p=' + p.slug + '" data-cat="' + p.cat + '">'
+    + '<div class="pc-cover ' + p.cover + '">'
+    +   nb
+    +   '<span class="pc-icon">' + p.icon + '</span>'
+    + '</div>'
+    + '<div class="pc-body">'
+    +   '<span class="pc-pill ' + pc + '">' + pl + '</span>'
+    +   '<h3 class="pc-title">' + p.title + '</h3>'
+    +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
+    +   '<div class="pc-foot">'
+    +     '<span class="pc-meta"><span>' + p.date + '</span><span class="dot"></span><span>' + p.read + '</span></span>'
+    +     '<span class="pc-arrow">→</span>'
+    +   '</div>'
+    + '</div>'
+    + '</a>';
+}
+
+// ── Count posts per category ───────────────────────────────────────────────
+function updateCounts() {
+  if (!window.POSTS) return;
+  var cats = ['all','Solar','Electrical','Electronics','Guest','Outreach','SEO','Deliverability'];
+  cats.forEach(function(cat) {
+    var el = document.getElementById('cnt-' + cat);
+    if (!el) return;
+    var count = cat === 'all' ? window.POSTS.length : window.POSTS.filter(function(p){ return matchesCat(p, cat); }).length;
+    el.textContent = count;
+  });
+}
+
+// ── Render grid ────────────────────────────────────────────────────────────
+var currentCat = 'all';
+var heroSlot = document.getElementById('heroSlot');
 var grid = document.getElementById('blogGrid');
+var revealIO;
 
-if (window.POSTS && window.POSTS.length) {
-  var html = '';
-  window.POSTS.forEach(function(p, i) {
-    var pill   = pillClass(p.cat);
-    var pLabel = primaryCat(p.cat);
-    var newBadge = isNew(p.date) ? '<span class="pc-new-badge">New</span>' : '';
-
-    if (i === 0) {
-      // ── Hero card (first post)
-      html += '<a class="post-card pc-hero" href="/post?p=' + p.slug + '" data-cat="' + p.cat + '">'
-            + '<div class="pc-cover ' + p.cover + '">'
-            +   '<span class="pc-icon">' + p.icon + '</span>'
-            +   '<div class="pc-hero-label">Featured Article</div>'
-            + '</div>'
-            + '<div class="pc-body">'
-            +   '<span class="pc-pill ' + pill + '">' + pLabel + '</span>'
-            +   '<h2 class="pc-hero-title">' + p.title + '</h2>'
-            +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
-            +   '<div class="pc-foot">'
-            +     '<span class="pc-meta"><span>' + p.date + '</span><span class="mdot"></span><span>' + p.read + '</span></span>'
-            +     '<span class="pc-read-link">Read article&nbsp;→</span>'
-            +   '</div>'
-            + '</div>'
-            + '</a>';
-    } else {
-      // ── Regular card
-      html += '<a class="post-card" href="/post?p=' + p.slug + '" data-cat="' + p.cat + '">'
-            + '<div class="pc-cover ' + p.cover + '">'
-            +   newBadge
-            +   '<span class="pc-icon">' + p.icon + '</span>'
-            + '</div>'
-            + '<div class="pc-body">'
-            +   '<span class="pc-pill ' + pill + '">' + pLabel + '</span>'
-            +   '<h3 class="pc-title">' + p.title + '</h3>'
-            +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
-            +   '<div class="pc-meta"><span>' + p.date + '</span><span class="mdot"></span><span>' + p.read + '</span></div>'
-            + '</div>'
-            + '</a>';
-    }
-  });
-  grid.innerHTML = html;
+function setupReveal() {
+  if (revealIO) revealIO.disconnect();
+  var cards = document.querySelectorAll('.post-card');
+  revealIO = new IntersectionObserver(function(entries, obs) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var idx = Array.from(cards).indexOf(entry.target);
+        entry.target.style.transitionDelay = Math.min(idx % 3, 2) * 60 + 'ms';
+        entry.target.classList.add('in');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06 });
+  cards.forEach(function(c) { revealIO.observe(c); });
 }
 
-// ── Reveal on scroll ─────────────────────────────────────────────────────────
-var cards = document.querySelectorAll('.post-card');
-var io = new IntersectionObserver(function(entries, observer) {
-  entries.forEach(function(entry) {
-    if (entry.isIntersecting) {
-      // stagger delay based on position in row
-      var idx = Array.from(cards).indexOf(entry.target);
-      entry.target.style.transitionDelay = (idx % 3 * 60) + 'ms';
-      entry.target.classList.add('in');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.08 });
-cards.forEach(function(c) { io.observe(c); });
+function render(cat) {
+  currentCat = cat;
+  if (!window.POSTS || !window.POSTS.length) return;
 
-// ── Category filter ───────────────────────────────────────────────────────────
-document.querySelectorAll('.cat-tab').forEach(function(tab) {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
-    tab.classList.add('active');
-    var cat = tab.getAttribute('data-cat');
-    document.querySelectorAll('#blogGrid .post-card').forEach(function(card) {
-      var cardCat = card.getAttribute('data-cat') || '';
-      var show = cat === 'all' || cardCat.toLowerCase().indexOf(cat.toLowerCase()) > -1;
-      card.style.display = show ? '' : 'none';
-    });
+  var isAll = cat === 'all';
+  var posts = isAll ? window.POSTS : window.POSTS.filter(function(p){ return matchesCat(p, cat); });
+
+  // Hero slot: show only when "All" is selected
+  if (isAll && posts.length) {
+    heroSlot.innerHTML = heroHTML(posts[0]);
+    heroSlot.style.display = '';
+    // Animate hero in
+    var heroEl = heroSlot.querySelector('.blog-hero');
+    heroEl.style.opacity = '0';
+    heroEl.style.transform = 'translateY(16px)';
+    heroEl.style.transition = 'opacity .45s ease, transform .45s ease, box-shadow .22s';
+    setTimeout(function() {
+      heroEl.style.opacity = '1';
+      heroEl.style.transform = 'translateY(0)';
+    }, 40);
+    posts = posts.slice(1); // remaining posts go to grid
+  } else {
+    heroSlot.innerHTML = '';
+    heroSlot.style.display = 'none';
+  }
+
+  // Build grid
+  if (!posts.length) {
+    grid.innerHTML = '<div class="empty-state"><span class="empty-icon">🔍</span><p>No articles in this category yet — check back soon.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = posts.map(function(p){ return cardHTML(p); }).join('');
+  setupReveal();
+}
+
+// ── Filter clicks ──────────────────────────────────────────────────────────
+document.querySelectorAll('.cat-pill').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-pill').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    render(btn.getAttribute('data-cat'));
   });
 });
+
+// ── Init ───────────────────────────────────────────────────────────────────
+updateCounts();
+render('all');
 </script>
 </body>
 </html>

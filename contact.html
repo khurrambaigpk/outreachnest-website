@@ -2,93 +2,198 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — OutreachNest</title>
-<meta name="description" content="Get in touch with OutreachNest for niche guest posts, verified B2B leads, and content writing.">
 <link rel="canonical" href="https://getoutreachnest.com/contact" />
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OutreachNest">
-<meta property="og:title" content="Contact — OutreachNest">
-<meta property="og:description" content="Get in touch with OutreachNest for niche guest posts, verified B2B leads, and content writing.">
+<meta property="og:title" content="Contact OutreachNest – Guest Posts, Leads &amp; Licensing">
+<meta property="og:description" content="Get in touch with OutreachNest for niche guest posts, verified B2B lead lists, content writing, or OutreachNest Finder licensing.">
 <meta property="og:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
 <meta property="og:url" content="https://getoutreachnest.com/contact">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Contact — OutreachNest">
-<meta name="twitter:description" content="Get in touch with OutreachNest for niche guest posts, verified B2B leads, and content writing.">
+<meta name="twitter:title" content="Contact OutreachNest – Guest Posts, Leads &amp; Licensing">
+<meta name="twitter:description" content="Get in touch with OutreachNest for niche guest posts, verified B2B lead lists, content writing, or OutreachNest Finder licensing.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get in Touch – OutreachNest</title>
+<meta name="description" content="Get in touch with OutreachNest for niche guest posts, verified B2B lead lists, content writing, or OutreachNest Finder licensing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='contact';</script>
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="ZQKYMLdc5E2a0z9MhiU/zg" async></script>
 <style>
-.wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#fff;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:700;margin-top:10px;transition:transform .18s,box-shadow .18s}
-.wa-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -10px rgba(37,211,102,.6)}
+/* Contact layout */
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:48px;align-items:start}
+@media(max-width:760px){.contact-grid{grid-template-columns:1fr}}
+/* Contact channels */
+.channel-list{display:flex;flex-direction:column;gap:14px;margin-bottom:32px}
+.channel{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;text-decoration:none;color:var(--ink);transition:all .2s}
+.channel:hover{border-color:var(--leaf);box-shadow:0 8px 24px -10px rgba(15,92,56,.2);transform:translateX(4px)}
+.ch-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ch-icon.wa{background:#dcfce7}
+.ch-icon.em{background:var(--leaf-soft)}
+.ch-title{font-weight:600;font-size:16px;margin-bottom:2px}
+.ch-sub{font-size:13px;color:var(--muted)}
+.response-box{background:linear-gradient(135deg,#0f1e18,#123024);border-radius:16px;padding:22px 24px;color:#fff;margin-top:8px}
+.response-box h4{font-size:16px;margin-bottom:10px;color:var(--gold-bright)}
+.response-box ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.response-box li{font-size:14px;color:#b9c6bf;display:flex;gap:10px;align-items:flex-start}
+.response-box li::before{content:"→";color:var(--gold-bright);flex-shrink:0}
+/* Contact form */
+.contact-form{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:36px 32px}
+.contact-form h3{font-size:26px;margin-bottom:6px}
+.contact-form .subtitle{color:var(--muted);font-size:15px;margin-bottom:28px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.fg label{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:.02em}
+.fg input,.fg textarea,.fg select{padding:12px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-family:'Inter',sans-serif;background:#fff;color:var(--ink);transition:border-color .18s,box-shadow .18s;width:100%}
+.fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(28,122,77,.1)}
+.fg textarea{resize:vertical;min-height:120px}
+.service-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sc-input{display:none}
+.sc-label{padding:8px 16px;border:1.5px solid var(--line);border-radius:8px;font-size:14px;cursor:pointer;transition:all .18s;font-weight:500}
+.sc-input:checked + .sc-label{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf-deep)}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:'Fraunces',serif;cursor:pointer;transition:transform .16s,box-shadow .16s;margin-top:8px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -10px rgba(15,92,56,.7)}
+.form-note{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center;line-height:1.5}
+/* FAQ */
+.faq{display:flex;flex-direction:column;gap:12px;margin-top:32px}
+details.faq-item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details.faq-item[open]{border-color:var(--leaf)}
+details.faq-item summary{padding:20px 22px;font-size:16px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:'Fraunces',serif}
+details.faq-item summary::after{content:"+";font-size:22px;color:var(--leaf);transition:transform .2s;font-family:'Inter',sans-serif;font-weight:300}
+details.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-body{padding:0 22px 20px;color:var(--muted);font-size:15px;line-height:1.7}
 </style>
 </head>
 <body>
-<div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
+<div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="nav-cta  active">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
+<a class="wa-float" data-whatsapp href="#" target="_blank">
+<span class="wa-icon">💬</span><span class="wa-text">WhatsApp Us</span>
+</a>
 
-<header class="page-head">
+<div class="page-head">
 <div class="glow"></div>
 <div class="wrap">
 <span class="tag">Get in touch</span>
-<h1>Let's grow your reach the right way</h1>
-<p>Tell us your niche and target keyword, and we'll send back available sites with full metrics — no obligation, no pressure.</p>
+<h1>We reply fast. WhatsApp fastest.</h1>
+<p>Tell us your niche, what you need, and your timeline — we'll come back with options and real metrics, no sales pressure.</p>
 </div>
-</header>
+</div>
 
-<section style="padding-top:40px;padding-bottom:40px">
+<section style="padding-top:12px">
 <div class="wrap">
 <div class="contact-grid">
-<div class="contact-card reveal">
-<form id="cform" onsubmit="return sendForm(event)">
-<div class="field"><label>Your name</label><input type="text" id="f-name" required placeholder="Jane Smith"></div>
-<div class="field"><label>Email</label><input type="email" id="f-email" required placeholder="jane@company.com"></div>
-<div class="field"><label>What do you need?</label>
-<select id="f-service">
-<option>Guest posts</option>
-<option>Verified lead list</option>
-<option>Content writing</option>
-<option>OutreachNest Finder license</option>
-<option>Not sure yet</option>
-</select></div>
-<div class="field"><label>Your niche / target</label><input type="text" id="f-niche" placeholder="e.g. solar installation, US"></div>
-<div class="field"><label>Message</label><textarea id="f-msg" placeholder="Tell us a bit about your goals..."></textarea></div>
-<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send message →</button>
-<p style="font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center;line-height:1.5">Opens your email app to send. Didn't work? <a data-whatsapp href="#" target="_blank" style="color:var(--leaf-deep);font-weight:600">Message us on WhatsApp instead →</a></p>
+<!-- Left: channels -->
+<div>
+<h3 style="font-size:22px;margin-bottom:20px">Talk to us directly</h3>
+<div class="channel-list">
+<a href="https://wa.me/923006321406" class="channel" target="_blank">
+<div class="ch-icon wa">💬</div>
+<div><div class="ch-title">WhatsApp</div><div class="ch-sub" data-whatsapp>+923006321406</div></div>
+</a>
+<a class="channel" data-email href="#">
+<div class="ch-icon em">✉️</div>
+<div><div class="ch-title">Email</div><div class="ch-sub" data-email>queries@getoutreachnest.com</div></div>
+</a>
+</div>
+<div class="response-box reveal">
+<h4>What to expect</h4>
+<ul>
+<li>WhatsApp replies typically within minutes during business hours (PKT)</li>
+<li>Email replies within 24 hours on business days</li>
+<li>For guest posts: we'll send site options with DA, traffic, and spam score</li>
+<li>For lead lists: we'll ask for your target region and business type</li>
+<li>No obligation to proceed after receiving options</li>
+</ul>
+</div>
+</div>
+
+<!-- Right: form -->
+<div class="contact-form reveal">
+<h3>Send us a message</h3>
+<p class="subtitle">Opens your email app. Prefer WhatsApp? Hit the button above — it's faster.</p>
+<form id="contact-form" onsubmit="return sendMail(event)">
+<div class="form-row">
+<div class="fg"><label for="fname">Your name</label><input type="text" id="fname" name="name" placeholder="Jane Smith" required></div>
+<div class="fg"><label for="femail">Email address</label><input type="email" id="femail" name="email" placeholder="you@example.com" required></div>
+</div>
+<div class="fg">
+<label>I'm interested in</label>
+<div class="service-chips">
+<input type="radio" name="service" id="s-gp" value="Guest Posts" class="sc-input" checked>
+<label for="s-gp" class="sc-label">🌱 Guest Posts</label>
+<input type="radio" name="service" id="s-ll" value="Lead Lists" class="sc-input">
+<label for="s-ll" class="sc-label">📇 Lead Lists</label>
+<input type="radio" name="service" id="s-cw" value="Content Writing" class="sc-input">
+<label for="s-cw" class="sc-label">✍️ Content Writing</label>
+<input type="radio" name="service" id="s-lic" value="Finder License" class="sc-input">
+<label for="s-lic" class="sc-label">🔍 Finder License</label>
+</div>
+</div>
+<div class="fg"><label for="fniche">Your niche / target keyword</label><input type="text" id="fniche" name="niche" placeholder="e.g. Solar panel installers UK / electrical contractor SEO"></div>
+<div class="fg"><label for="fmsg">Message</label><textarea id="fmsg" name="message" placeholder="Tell us your goal, timeline, DA preference (for guest posts), or quantity (for lead lists)..." required></textarea></div>
+<button type="submit" class="submit-btn">Send message →</button>
+<p class="form-note">This opens your email app. Didn't work? → <a href="https://wa.me/923006321406" target="_blank" style="color:var(--leaf-deep);font-weight:600">Message us on WhatsApp instead.</a></p>
 </form>
-</div>
-<div class="reveal">
-<div class="info-block">
-<div class="il">WhatsApp (Fastest)</div>
-<div class="iv">
-<a class="wa-btn" data-whatsapp href="#" target="_blank">💬 <span data-whatsapp></span></a>
-</div>
-</div>
-<div class="info-block"><div class="il">Email us</div><div class="iv"><a data-email href="#"></a></div></div>
-<div class="info-block"><div class="il">Response time</div><div class="iv">Within 1 business day</div></div>
-<div class="info-block"><div class="il">Location</div><div class="iv" style="font-family:'Inter';font-weight:500;font-size:15px;color:var(--muted)">Multan, Punjab Pakistan</div></div>
-<div class="info-block"><div class="il">No obligation</div><div class="iv" style="font-family:'Inter';font-weight:400;font-size:15px;color:var(--muted)">We'll share available sites and pricing first. You decide what fits.</div></div>
 </div>
 </div>
 </div>
 </section>
 
+<!-- FAQ -->
+<section style="background:var(--paper-2)">
+<div class="wrap">
+<div class="sec-head reveal">
+<span class="tag">Common questions</span>
+<h2>Before you send</h2>
+</div>
+<div class="faq reveal">
+<details class="faq-item">
+<summary>What information should I include in my message?</summary>
+<div class="faq-body">For guest posts: your niche, target keyword, minimum DA preference, and how many placements you're looking for. For lead lists: the industry, target region (city/country), and roughly how many contacts you need. The more specific you are, the faster we can send you real options.</div>
+</details>
+<details class="faq-item">
+<summary>How quickly can you get started?</summary>
+<div class="faq-body">For guest posts, we can usually share available site options within 24 hours of receiving your brief. Content writing takes 3–5 business days after brief approval. Lead lists, depending on volume, typically take 2–4 business days to compile and verify.</div>
+</details>
+<details class="faq-item">
+<summary>Do you offer samples before a larger order?</summary>
+<div class="faq-body">Yes. For lead lists we offer a 25-contact sample so you can verify quality before committing to volume. For guest posts, you see the full site metrics (DA, traffic, spam score) and the article draft before anything is confirmed — nothing is paid for in advance without your sign-off.</div>
+</details>
+<details class="faq-item">
+<summary>Is OutreachNest Finder licensing handled here?</summary>
+<div class="faq-body">Yes — for paid plans (Monthly $15, 6-Month $29, Annual $49), contact us here or on WhatsApp after downloading. Send payment confirmation and we'll issue your license key promptly. For the free trial, use the self-service activation at <a href="/activate" style="color:var(--leaf-deep);font-weight:600">getoutreachnest.com/activate</a>.</div>
+</details>
+</div>
+</div>
+</section>
+
+<!-- CTA -->
+<section style="padding-bottom:20px">
+<div class="cta-band reveal">
+<h2>Still deciding?</h2>
+<p>We're happy to answer questions with no commitment — just tell us your niche and what you're trying to achieve.</p>
+<a href="https://wa.me/923006321406" class="btn btn-gold" target="_blank">💬 WhatsApp us now →</a>
+</div>
+</section>
+
 <div id="footer-holder"><footer><div class="wrap"><div class="foot-grid"><div class="foot-col foot-about"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p><div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><a href="https://wa.me/923006321406" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a><a href="mailto:queries@getoutreachnest.com" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a><a href="https://facebook.com/OutreachNestFinder" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">📘 Facebook</a><a href="https://x.com/MariyamRiagclo" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#000000;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">🐦 Twitter/X</a><a href="https://www.linkedin.com/in/mariyam-riaz-1b93a8431" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#0A66C2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💼 LinkedIn</a></div></div><div class="foot-col"><h4>Services</h4><a href="/services">Guest posts</a><a href="/services">Lead lists</a><a href="/services">Content writing</a><a href="/download">Download Finder</a></div><div class="foot-col"><h4>Company</h4><a href="/niches">Niches</a><a href="/blog">Blog</a><a href="/contact">Contact</a></div><div class="foot-col"><h4>Contact</h4><a href="mailto:queries@getoutreachnest.com">queries@getoutreachnest.com</a><a href="https://wa.me/923006321406" target="_blank">+923006321406</a><p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5">Multan, Punjab Pakistan</p></div></div><div class="foot-bottom"><p>© 2026 OutreachNest. All rights reserved.</p><p>Real outreach for technical niches.</p></div></div></footer></div>
-<script src="main.js"></script>
 <script>
-function sendForm(e){
-e.preventDefault();
-const name=document.getElementById('f-name').value;
-const email=document.getElementById('f-email').value;
-const service=document.getElementById('f-service').value;
-const niche=document.getElementById('f-niche').value;
-const msg=document.getElementById('f-msg').value;
-const subject=encodeURIComponent(`New inquiry: ${service}`);
-const body=encodeURIComponent(`Name: ${name}\nEmail: ${email}\nService: ${service}\nNiche/Target: ${niche}\n\nMessage:\n${msg}`);
-window.location.href=`mailto:${EMAIL}?subject=${subject}&body=${body}`;
-return false;
+function sendMail(e) {
+  e.preventDefault();
+  var n = document.getElementById('fname').value;
+  var em = document.getElementById('femail').value;
+  var svc = document.querySelector('input[name="service"]:checked').value;
+  var niche = document.getElementById('fniche').value;
+  var msg = document.getElementById('fmsg').value;
+  var body = 'Name: ' + n + '\nEmail: ' + em + '\nService: ' + svc + '\nNiche: ' + niche + '\n\n' + msg;
+  window.location.href = 'mailto:queries@getoutreachnest.com?subject=OutreachNest Enquiry – ' + encodeURIComponent(svc) + '&body=' + encodeURIComponent(body);
+  return false;
 }
 </script>
+<script src="main.js"></script>
 </body>
 </html>

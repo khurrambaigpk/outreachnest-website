@@ -2,119 +2,252 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Services — OutreachNest</title>
-<meta name="description" content="Niche guest posts, verified B2B lead lists, and original content writing from OutreachNest.">
 <link rel="canonical" href="https://getoutreachnest.com/services" />
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OutreachNest">
-<meta property="og:title" content="Services — OutreachNest">
-<meta property="og:description" content="Niche guest posts, verified B2B lead lists, and original content writing from OutreachNest.">
+<meta property="og:title" content="OutreachNest Services – Guest Posts, Lead Lists & Content Writing">
+<meta property="og:description" content="Niche guest posts from $70, verified B2B lead lists from $75, and content writing from $45 — all for technical industries like solar, electrical and electronics repair.">
 <meta property="og:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
 <meta property="og:url" content="https://getoutreachnest.com/services">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Services — OutreachNest">
-<meta name="twitter:description" content="Niche guest posts, verified B2B lead lists, and original content writing from OutreachNest.">
+<meta name="twitter:title" content="OutreachNest Services – Guest Posts, Lead Lists & Content Writing">
+<meta name="twitter:description" content="Niche guest posts from $70, verified B2B lead lists from $75, and content writing from $45 — for technical industries.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services – OutreachNest | Guest Posts, Lead Lists &amp; Content</title>
+<meta name="description" content="Niche guest posts from $70, verified B2B lead lists from $75, and content writing from $45 — all for technical industries like solar, electrical and electronics repair.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='services';</script>
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="ZQKYMLdc5E2a0z9MhiU/zg" async></script>
+<style>
+/* Service cards */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:40px}
+.svc-card{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:box-shadow .25s,transform .25s;display:flex;flex-direction:column}
+.svc-card:hover{box-shadow:0 28px 56px -20px rgba(15,92,56,.3);transform:translateY(-6px)}
+.svc-banner{padding:32px 32px 28px;position:relative;overflow:hidden}
+.svc-banner.gp{background:linear-gradient(135deg,#14532d 0%,#2d5a27 55%,#4a7c59 100%)}
+.svc-banner.ll{background:linear-gradient(135deg,#78350f 0%,#c2690a 55%,#fbbf24 100%)}
+.svc-banner.cw{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 55%,#60a5fa 100%)}
+.svc-banner::after{content:"";position:absolute;bottom:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08)}
+.svc-icon{font-size:42px;margin-bottom:14px;display:block}
+.svc-banner h2{color:#fff;font-size:26px;margin-bottom:8px}
+.svc-banner .from{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 14px;font-size:13px;color:#fff;font-weight:600}
+.svc-body{padding:28px 32px;flex:1;display:flex;flex-direction:column}
+.svc-body p{color:var(--muted);font-size:15px;line-height:1.65;margin-bottom:20px}
+.svc-list{list-style:none;margin-bottom:24px;flex:1}
+.svc-list li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.svc-list li:last-child{border:none}
+.svc-list li::before{content:"✓";color:var(--leaf);font-weight:700;flex-shrink:0;margin-top:1px}
+.svc-price{background:var(--paper-2);border-radius:12px;padding:16px 18px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between}
+.svc-price .amount{font-family:'Fraunces',serif;font-size:26px;color:var(--leaf-deep)}
+.svc-price .note{font-size:12px;color:var(--muted);max-width:140px;text-align:right;line-height:1.4}
+/* Comparison table */
+.compare-table{width:100%;border-collapse:collapse;margin-top:32px}
+.compare-table th{background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;padding:16px 20px;text-align:left;font-size:14px;font-weight:600}
+.compare-table th:first-child{border-radius:12px 0 0 0}
+.compare-table th:last-child{border-radius:0 12px 0 0}
+.compare-table td{padding:14px 20px;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line);background:var(--card)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:last-child td:first-child{border-radius:0 0 0 12px}
+.compare-table tr:last-child td:last-child{border-radius:0 0 12px 0}
+.compare-table .tick{color:var(--leaf);font-weight:700}
+.compare-table .cross{color:#dc2626;font-weight:700}
+/* FAQ */
+.faq{display:flex;flex-direction:column;gap:12px;margin-top:32px}
+details.faq-item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:border-color .2s}
+details.faq-item[open]{border-color:var(--leaf)}
+details.faq-item summary{padding:20px 22px;font-size:16px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:'Fraunces',serif}
+details.faq-item summary::after{content:"+";font-size:22px;color:var(--leaf);transition:transform .2s;font-family:'Inter',sans-serif;font-weight:300}
+details.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-body{padding:0 22px 20px;color:var(--muted);font-size:15px;line-height:1.7}
+</style>
 </head>
 <body>
 <div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="">Home</a><a href="/services" class="active">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="">Home</a><a href="/services" class="active">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
+<a class="wa-float" data-whatsapp href="#" target="_blank">
+<span class="wa-icon">💬</span><span class="wa-text">WhatsApp Us</span>
+</a>
 
-<header class="page-head">
+<div class="page-head">
 <div class="glow"></div>
 <div class="wrap">
 <span class="tag">Our services</span>
-<h1>Three ways we help you rank and reach</h1>
-<p>Whether you need authoritative backlinks, a warm list of decision-makers, or content that reads like it belongs — we build it from vetted, real-world sources.</p>
+<h1>Real results. Real sites. Real contacts.</h1>
+<p>Everything we offer is built around one rule: only genuine, vetted opportunities. No bulk PBN packages. No scraped junk lists.</p>
 </div>
-</header>
+</div>
 
-<section style="padding-top:40px">
+<!-- Services -->
+<section style="padding-top:8px">
 <div class="wrap">
-<div class="cards">
-<div class="card reveal"><div class="ic">🌱</div><h3>Niche guest posts</h3><p>Permanent, dofollow placements on genuine niche blogs with real traffic and clean spam scores. Every site is vetted before we recommend it — and you approve each one before we proceed.</p></div>
-<div class="card reveal"><div class="ic">📇</div><h3>Verified lead lists</h3><p>Targeted B2B contact lists with company name, website, and verified email. Built for one clear niche at a time, cleaned and structured so you can drop them straight into your outreach campaigns.</p></div>
-<div class="card reveal"><div class="ic">✍️</div><h3>Content writing</h3><p>Original, well-researched articles matched to each host site's tone and audience. Your placements read naturally, pass editorial review, and actually get published.</p></div>
+<div class="svc-grid">
+
+<!-- Guest Posts -->
+<div class="svc-card reveal">
+<div class="svc-banner gp">
+<span class="svc-icon">🌱</span>
+<h2>Niche Guest Posts</h2>
+<span class="from">From $70 per placement</span>
+</div>
+<div class="svc-body">
+<p>Permanent, dofollow links placed on editorially reviewed niche blogs with genuine organic traffic. You see the full site metrics before anything is confirmed.</p>
+<div class="svc-price">
+<span class="amount">$70<span style="font-size:14px;color:var(--muted)">/post</span></span>
+<span class="note">DA 20+ sites · Real traffic · Clean spam score</span>
+</div>
+<ul class="svc-list">
+<li>Full metrics before commitment: DA, DR, traffic, spam score</li>
+<li>Dofollow, permanent placement on real editorial site</li>
+<li>Content written to match host site's tone &amp; editorial standards</li>
+<li>Niche-matched — solar, electrical, automation, electronics</li>
+<li>You approve the site and the draft before anything publishes</li>
+<li>Live URL delivered once published — no ghost posts</li>
+</ul>
+<a href="/contact" class="btn btn-primary" style="justify-content:center;text-align:center">Request guest posts →</a>
+</div>
+</div>
+
+<!-- Lead Lists -->
+<div class="svc-card reveal">
+<div class="svc-banner ll">
+<span class="svc-icon">📇</span>
+<h2>Verified Lead Lists</h2>
+<span class="from">From $75 per 100 contacts</span>
+</div>
+<div class="svc-body">
+<p>Targeted B2B contact data for solar installers, electrical contractors, electronics repair shops, and automation companies. Verified emails, real business details.</p>
+<div class="svc-price">
+<span class="amount">$75<span style="font-size:14px;color:var(--muted)">/100</span></span>
+<span class="note">Verified email · Company + website · Niche-specific</span>
+</div>
+<ul class="svc-list">
+<li>Company name, website URL, verified email address</li>
+<li>Phone and WhatsApp numbers where publicly available</li>
+<li>Geographic filtering — city, state, or country level</li>
+<li>Business type filtering — installers, contractors, shops</li>
+<li>Delivered as Google Sheets or CSV — ready to import</li>
+<li>Low bounce rate — lists are checked before delivery</li>
+</ul>
+<a href="/contact" class="btn btn-gold" style="justify-content:center;text-align:center">Request a list →</a>
+</div>
+</div>
+
+<!-- Content Writing -->
+<div class="svc-card reveal">
+<div class="svc-banner cw">
+<span class="svc-icon">✍️</span>
+<h2>Content Writing</h2>
+<span class="from">From $45 per 1,000 words</span>
+</div>
+<div class="svc-body">
+<p>Original, niche-specific articles written to pass editorial review on real industry blogs. Not AI slop — researched, human-readable content with a natural voice.</p>
+<div class="svc-price">
+<span class="amount">$45<span style="font-size:14px;color:var(--muted)">/1k words</span></span>
+<span class="note">Original · Niche-researched · Revision included</span>
+</div>
+<ul class="svc-list">
+<li>Written specifically for the target host site's audience</li>
+<li>Niche-accurate technical language — solar, electrical, automation</li>
+<li>Natural anchor text integration — no forced keyword stuffing</li>
+<li>One revision round included at no extra charge</li>
+<li>Can be standalone or bundled with a guest post placement</li>
+<li>Delivered within 5–7 business days of brief approval</li>
+</ul>
+<a href="/contact" class="btn btn-ghost" style="justify-content:center;text-align:center;border:1px solid var(--line)">Get content written →</a>
+</div>
+</div>
+
 </div>
 </div>
 </section>
 
-<section style="padding-top:0">
+<!-- Comparison -->
+<section style="background:var(--paper-2)">
 <div class="wrap">
 <div class="sec-head reveal">
-<span class="tag">Pricing</span>
-<h2>Clear pricing, no hidden fees</h2>
-<p>Every order starts with a free list of available sites or a sample of contacts — you only pay for what you approve.</p>
+<span class="tag">How we compare</span>
+<h2>What you actually get</h2>
+<p>Most services skip the details. We put everything on the table before you spend a dollar.</p>
 </div>
-<div class="pricing-grid">
-<div class="price-card reveal">
-<div class="plan">Niche guest posts</div>
-<div class="from">Starting at</div>
-<div class="amount">$70<span> / placement</span></div>
-<ul>
-<li>DA 20–30 niche sites from $70</li>
-<li>DA 30–50 sites from $130</li>
-<li>DA 50+ sites from $250</li>
-<li>Permanent, dofollow placement</li>
-<li>Full metrics shared before you pay</li>
-<li>You approve every site first</li>
-</ul>
-<a href="/contact" class="btn btn-primary">Request site list →</a>
+<div style="overflow-x:auto">
+<table class="compare-table reveal">
+<thead>
+<tr>
+<th>What you get</th>
+<th>OutreachNest</th>
+<th>Typical agency</th>
+<th>Freelancer marketplace</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Full metrics before commitment</td><td class="tick">✓ Always</td><td class="cross">✗ Rarely</td><td class="cross">✗ Variable</td></tr>
+<tr><td>Real organic traffic on host sites</td><td class="tick">✓ DA 20+, verified</td><td class="cross">✗ Often PBN</td><td class="cross">✗ Unknown</td></tr>
+<tr><td>Niche-matched content only</td><td class="tick">✓ 4 deep verticals</td><td class="cross">✗ Broad networks</td><td class="cross">✗ Any niche</td></tr>
+<tr><td>You approve site and content</td><td class="tick">✓ Every time</td><td class="cross">✗ Rarely</td><td class="cross">✗ Sometimes</td></tr>
+<tr><td>No hidden fees or lock-in</td><td class="tick">✓ Per-placement</td><td class="cross">✗ Monthly retainers</td><td class="tick">✓ Variable</td></tr>
+<tr><td>WhatsApp direct communication</td><td class="tick">✓ Same day</td><td class="cross">✗ Ticket system</td><td class="cross">✗ Platform DMs</td></tr>
+</tbody>
+</table>
 </div>
-<div class="price-card featured reveal">
-<span class="badge-pop">Most popular</span>
-<div class="plan">Verified lead lists</div>
-<div class="from">Starting at</div>
-<div class="amount">$75<span> / 100 contacts</span></div>
-<ul>
-<li>Company, website &amp; decision-maker</li>
-<li>Deliverability checked</li>
-<li>One clear niche per list</li>
-<li>Free 10-contact sample first</li>
-<li>Delivered as clean CSV / Sheets</li>
-<li>Replacement for any bounced email</li>
-</ul>
-<a href="/contact" class="btn btn-gold">Get a free sample →</a>
-</div>
-<div class="price-card reveal">
-<div class="plan">Content writing</div>
-<div class="from">Starting at</div>
-<div class="amount">$45<span> / 1,000 words</span></div>
-<ul>
-<li>Original, researched articles</li>
-<li>Matched to host site's tone</li>
-<li>SEO-optimized for your keyword</li>
-<li>Passes editorial review</li>
-<li>One free revision included</li>
-<li>Bundle discount with guest posts</li>
-</ul>
-<a href="/contact" class="btn btn-primary">Discuss your content →</a>
-</div>
-</div>
-<p class="price-note reveal">Ordering 5+ placements or 500+ leads per month? <strong>Ask about agency rates</strong> — recurring partners get priority inventory and better pricing.</p>
 </div>
 </section>
 
-<section style="padding-top:0">
+<!-- Process -->
+<section>
 <div class="wrap">
-<div class="sec-head reveal"><span class="tag">How it works</span><h2>Simple, transparent, no surprises</h2></div>
-<div class="steps">
-<div class="step reveal"><h3>Tell us your target</h3><p>Share your niche, keywords, and whether you want guest posts or leads.</p></div>
-<div class="step reveal"><h3>We share the list</h3><p>Get vetted sites or contacts with full metrics — DA, traffic, spam score.</p></div>
-<div class="step reveal"><h3>You approve</h3><p>Pick what fits your goals. Nothing goes live without your say-so.</p></div>
-<div class="step reveal"><h3>We deliver</h3><p>Placements published or verified lists delivered, ready to use.</p></div>
+<div class="sec-head reveal">
+<span class="tag">The process</span>
+<h2>From enquiry to live link in 4 steps</h2>
+</div>
+<div class="steps" style="counter-reset:s">
+<div class="step reveal"><h3>Share your brief</h3><p>Tell us niche, target keyword, DA minimum, and budget. WhatsApp is fastest.</p></div>
+<div class="step reveal"><h3>Review options</h3><p>We send available sites or contact lists with full metrics — you pick what fits.</p></div>
+<div class="step reveal"><h3>Approve draft</h3><p>For guest posts, you see the article before it's submitted. One revision included.</p></div>
+<div class="step reveal"><h3>Receive delivery</h3><p>Live URL for guest posts, or CSV/Sheets file for lead lists. Done.</p></div>
 </div>
 </div>
 </section>
 
+<!-- FAQ -->
+<section style="background:var(--paper-2)">
+<div class="wrap">
+<div class="sec-head reveal">
+<span class="tag">FAQ</span>
+<h2>Common questions answered</h2>
+</div>
+<div class="faq reveal">
+<details class="faq-item">
+<summary>How long does a guest post placement take?</summary>
+<div class="faq-body">Typically 5–10 business days from brief approval to a live URL — content writing takes 3–5 days, then the host site's review and publish window takes 2–5 more. We'll give you an estimate specific to your chosen site when you confirm.</div>
+</details>
+<details class="faq-item">
+<summary>What DA/DR do your guest post sites have?</summary>
+<div class="faq-body">Our minimum quality floor is DA 20 with real organic traffic. Most placements fall in the DA 25–50 range. We share the exact DA, PA, DR, traffic estimate, and spam score for every site before you commit — you decide based on the real numbers.</div>
+</details>
+<details class="faq-item">
+<summary>Can I order a sample lead list before buying in bulk?</summary>
+<div class="faq-body">Yes — we offer a 25-contact sample for any niche so you can verify quality before committing to a larger list. Message us on WhatsApp and we'll discuss what's right for your target market.</div>
+</details>
+<details class="faq-item">
+<summary>Do you work with niches outside solar / electrical / electronics?</summary>
+<div class="faq-body">Our core depth is in those four technical verticals. For adjacent industries (HVAC, plumbing, construction, general B2B manufacturing) we can often source quality placements — reach out and we'll be honest about availability in your specific niche.</div>
+</details>
+<details class="faq-item">
+<summary>Is content writing included in guest post pricing?</summary>
+<div class="faq-body">Yes — when you buy a guest post placement through us, content writing is included at no extra charge. The $45/1,000 words rate applies when you need standalone articles or content for placements you're managing yourself.</div>
+</details>
+</div>
+</div>
+</section>
+
+<!-- CTA -->
 <section style="padding-bottom:20px">
 <div class="cta-band reveal">
-<h2>Ready to see what we can do?</h2>
-<p>Tell us your niche and target keyword, and we'll send back available sites with full metrics — no obligation.</p>
+<h2>Ready to get started?</h2>
+<p>Message us your niche and target keyword — we'll come back with available sites and real metrics, no commitment required.</p>
 <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
 <a class="mail-pill" data-email href="#"><span style="font-size:20px">✉️</span><span class="em" data-email></span></a>
 <a class="mail-pill" data-whatsapp href="#" target="_blank"><span style="font-size:20px">💬</span><span class="em" data-whatsapp></span></a>

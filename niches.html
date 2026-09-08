@@ -2,61 +2,206 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Niches — OutreachNest</title>
-<meta name="description" content="Deep coverage in solar, electrical, industrial automation, and electronics repair — the technical niches OutreachNest specializes in.">
 <link rel="canonical" href="https://getoutreachnest.com/niches" />
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OutreachNest">
-<meta property="og:title" content="Niches — OutreachNest">
-<meta property="og:description" content="Deep coverage in solar, electrical, industrial automation, and electronics repair — the technical niches OutreachNest specializes in.">
+<meta property="og:title" content="OutreachNest Niches – Solar, Electrical, Automation &amp; Electronics Repair">
+<meta property="og:description" content="OutreachNest specialises in 4 technical niches: solar energy, electrical contractors, industrial automation, and electronics repair. Depth beats breadth.">
 <meta property="og:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
 <meta property="og:url" content="https://getoutreachnest.com/niches">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Niches — OutreachNest">
-<meta name="twitter:description" content="Deep coverage in solar, electrical, industrial automation, and electronics repair — the technical niches OutreachNest specializes in.">
+<meta name="twitter:title" content="OutreachNest Niches – Solar, Electrical, Automation &amp; Electronics Repair">
+<meta name="twitter:description" content="OutreachNest specialises in 4 technical niches: solar energy, electrical contractors, industrial automation, and electronics repair.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Niches – OutreachNest | Solar · Electrical · Automation · Electronics</title>
+<meta name="description" content="OutreachNest specialises in 4 technical niches: solar energy, electrical contractors, industrial automation, and electronics repair. Depth beats breadth.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='niches';</script>
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="ZQKYMLdc5E2a0z9MhiU/zg" async></script>
+<style>
+/* Niche overview strip */
+.niche-strip{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0}
+.ns-pill{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 20px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--ink)}
+.ns-pill:hover{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf-deep)}
+.ns-pill span{font-size:22px}
+/* Niche detail sections */
+.niche-section{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:56px 0}
+.niche-section:nth-child(even) .niche-visual{order:-1}
+@media(max-width:760px){.niche-section{grid-template-columns:1fr;gap:28px}.niche-section:nth-child(even) .niche-visual{order:0}}
+.niche-visual{border-radius:24px;overflow:hidden;position:relative}
+.niche-banner{height:260px;display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;overflow:hidden}
+.niche-banner::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.08)}
+.nb-solar{background:linear-gradient(135deg,#78350f,#c2690a,#fbbf24)}
+.nb-elec{background:linear-gradient(135deg,#1e3a8a,#1d4ed8,#60a5fa)}
+.nb-auto{background:linear-gradient(135deg,#3b0764,#6d28d9,#a78bfa)}
+.nb-repair{background:linear-gradient(135deg,#0c4a6e,#0e7490,#22d3ee)}
+.niche-badge{position:absolute;bottom:16px;left:16px;z-index:1;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;color:#fff;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;backdrop-filter:blur(4px)}
+.niche-content .tag{margin-bottom:14px}
+.niche-content h2{font-size:clamp(26px,3.5vw,38px);margin-bottom:14px}
+.niche-content .desc{color:var(--muted);font-size:16px;line-height:1.7;margin-bottom:24px}
+.niche-features{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.nf-row{display:flex;gap:12px;align-items:flex-start}
+.nf-icon{font-size:18px;flex-shrink:0;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.nf-icon.solar{background:#fff7ed;border:1px solid #fed7aa}
+.nf-icon.elec{background:#eff6ff;border:1px solid #bfdbfe}
+.nf-icon.auto{background:#f5f3ff;border:1px solid #ddd6fe}
+.nf-icon.repair{background:#ecfeff;border:1px solid #a5f3fc}
+.nf-text h4{font-size:15px;margin-bottom:3px}
+.nf-text p{font-size:13.5px;color:var(--muted);line-height:1.5}
+.divider-band{height:3px;background:linear-gradient(90deg,var(--leaf),var(--gold-bright),var(--leaf));opacity:.3;margin:0 24px}
+/* Stats section */
+.stats-dark{background:linear-gradient(150deg,#0f1e18,#123024);color:#fff;border-radius:30px;padding:60px 48px;margin:0 24px;text-align:center}
+.stats-dark h2{color:#fff;font-size:clamp(26px,3.5vw,38px);margin-bottom:8px}
+.stats-dark p{color:#b9c6bf;margin-bottom:40px;font-size:16px}
+.stats-row{display:flex;justify-content:center;gap:0;flex-wrap:wrap}
+.stat-d{flex:1;min-width:140px;padding:20px;border-right:1px solid rgba(255,255,255,.12)}
+.stat-d:last-child{border:none}
+.stat-d .n{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--gold-bright);line-height:1}
+.stat-d .l{font-size:13px;color:#a9b6af;margin-top:6px;text-transform:uppercase;letter-spacing:.05em}
+</style>
 </head>
 <body>
 <div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="active">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="active">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
+<a class="wa-float" data-whatsapp href="#" target="_blank">
+<span class="wa-icon">💬</span><span class="wa-text">WhatsApp Us</span>
+</a>
 
-<header class="page-head">
+<div class="page-head">
 <div class="glow"></div>
 <div class="wrap">
-<span class="tag">Where we focus</span>
-<h1>Specialists in the industries we know inside out</h1>
-<p>We go deep in a handful of technical, high-value verticals — the ones with real businesses and real buying power — because focused knowledge beats broad guesswork.</p>
+<span class="tag">Our niches</span>
+<h1>Deep knowledge beats broad guesswork.</h1>
+<p>We work exclusively in four technical verticals — the ones with serious buyer intent, real business sites, and decision-makers who actually respond to targeted outreach.</p>
+<div class="niche-strip">
+<a href="#solar" class="ns-pill"><span>☀️</span> Solar Energy</a>
+<a href="#electrical" class="ns-pill"><span>⚡</span> Electrical</a>
+<a href="#automation" class="ns-pill"><span>🤖</span> Automation</a>
+<a href="#electronics" class="ns-pill"><span>🔧</span> Electronics Repair</a>
 </div>
-</header>
+</div>
+</div>
 
-<section style="padding-top:40px">
+<!-- Solar -->
+<section id="solar">
 <div class="wrap">
-<div class="cards">
-<div class="card reveal"><div class="ic">☀️</div><h3>Solar</h3><p>Installation blogs, panel and inverter manufacturers, battery and UPS backup specialists, and renewable-energy education sites. A booming, competitive space where companies invest real budgets in ranking.</p></div>
-<div class="card reveal"><div class="ic">⚡</div><h3>Electrical</h3><p>Residential, commercial, and industrial electrical contractors and services. A huge market of established businesses that suppliers, software, and service providers all want to reach.</p></div>
-<div class="card reveal"><div class="ic">🤖</div><h3>Industrial Automation</h3><p>Automation companies, PLC integrators, robotics specialists, and control-system firms. Smaller in volume but high in value, with each contact worth serious attention.</p></div>
-<div class="card reveal"><div class="ic">🔧</div><h3>Electronics Repair</h3><p>Repair shops, appliance and circuit-board specialists, and their suppliers. A practical, hands-on niche with steady demand and room to grow.</p></div>
+<div class="niche-section reveal">
+<div class="niche-visual">
+<div class="niche-banner nb-solar">☀️<div class="niche-badge">Solar Energy</div></div>
+</div>
+<div class="niche-content">
+<span class="tag">Solar energy</span>
+<h2>The fastest-growing clean energy vertical</h2>
+<p class="desc">Solar has real editorial sites, strong domain diversity, and buyers who research heavily before purchasing. Guest posts here carry genuine topical authority — and the contact lists convert because installers actively need quality leads.</p>
+<div class="niche-features">
+<div class="nf-row"><div class="nf-icon solar">🏡</div><div class="nf-text"><h4>Residential installer blogs</h4><p>DA 25–55 review and advice sites read by homeowners planning installs — ideal for solar brands targeting the consumer market.</p></div></div>
+<div class="nf-row"><div class="nf-icon solar">🔋</div><div class="nf-text"><h4>Battery & inverter publications</h4><p>Technical publications covering solar storage, off-grid systems, and EV integration — strong authority for product brands.</p></div></div>
+<div class="nf-row"><div class="nf-icon solar">📋</div><div class="nf-text"><h4>Solar installer lead lists</h4><p>Verified contact data for licensed solar companies, organised by region and size — ready for B2B outreach campaigns.</p></div></div>
+</div>
+<a href="/contact" class="btn btn-gold">Get solar placements →</a>
+</div>
 </div>
 </div>
 </section>
 
-<section style="padding-top:0">
-<div class="niches reveal">
-<span class="tag">Why niche focus works</span>
-<h2>Specialists win the trust generalists can't</h2>
-<p class="nlead">Almost everyone sells generic marketing links and lists. Far fewer people truly understand solar installers, electrical contractors, or automation firms. That focus is exactly what makes our work stand out to serious buyers who want someone who knows their world.</p>
+<div class="divider-band"></div>
+
+<!-- Electrical -->
+<section id="electrical" style="background:var(--paper-2)">
+<div class="wrap">
+<div class="niche-section reveal">
+<div class="niche-content">
+<span class="tag">Electrical contracting</span>
+<h2>A high-intent niche with real local search value</h2>
+<p class="desc">Electrical contractors are actively searched by builders, property managers, and homeowners at the exact moment of purchase intent. Guest posts in this vertical build DA for competitive local keywords — and lead lists connect you with decision-makers who award contracts.</p>
+<div class="niche-features">
+<div class="nf-row"><div class="nf-icon elec">🏗️</div><div class="nf-text"><h4>Trade & contractor publications</h4><p>Real editorial sites covering electrical installation, code updates, and contractor business advice. Strict editorial standards.</p></div></div>
+<div class="nf-row"><div class="nf-icon elec">⚡</div><div class="nf-text"><h4>Commercial services blogs</h4><p>Sites read by facilities managers and commercial developers — the buyers making volume purchasing decisions, not just single jobs.</p></div></div>
+<div class="nf-row"><div class="nf-icon elec">📞</div><div class="nf-text"><h4>Contractor contact databases</h4><p>Verified emails and phone numbers for licensed electrical contractors, segmented by region, specialty, and company size.</p></div></div>
+</div>
+<a href="/contact" class="btn btn-primary">Get electrical placements →</a>
+</div>
+<div class="niche-visual">
+<div class="niche-banner nb-elec">⚡<div class="niche-badge">Electrical</div></div>
+</div>
+</div>
 </div>
 </section>
 
+<div class="divider-band"></div>
+
+<!-- Automation -->
+<section id="automation">
+<div class="wrap">
+<div class="niche-section reveal">
+<div class="niche-visual">
+<div class="niche-banner nb-auto">🤖<div class="niche-badge">Industrial Automation</div></div>
+</div>
+<div class="niche-content">
+<span class="tag">Industrial automation</span>
+<h2>High-value B2B with long sales cycles worth targeting</h2>
+<p class="desc">PLC integrators, robotics firms, and control system providers deal in contracts worth tens of thousands. The businesses researching them need authoritative content to trust before a conversation begins. A quality link in this vertical carries serious weight.</p>
+<div class="niche-features">
+<div class="nf-row"><div class="nf-icon auto">🔩</div><div class="nf-text"><h4>PLC & SCADA publications</h4><p>Technical editorial sites for automation engineers and plant managers — specific, credible, and with genuinely engaged audiences.</p></div></div>
+<div class="nf-row"><div class="nf-icon auto">🤖</div><div class="nf-text"><h4>Robotics & manufacturing blogs</h4><p>Industry publications covering process automation, robot integration, and smart factory deployments.</p></div></div>
+<div class="nf-row"><div class="nf-icon auto">🏭</div><div class="nf-text"><h4>Industrial B2B lead lists</h4><p>Verified contacts at manufacturing plants, systems integrators, and automation distributors — by region and vertical.</p></div></div>
+</div>
+<a href="/contact" class="btn btn-gold">Get automation placements →</a>
+</div>
+</div>
+</div>
+</section>
+
+<div class="divider-band"></div>
+
+<!-- Electronics Repair -->
+<section id="electronics" style="background:var(--paper-2)">
+<div class="wrap">
+<div class="niche-section reveal">
+<div class="niche-content">
+<span class="tag">Electronics repair</span>
+<h2>A niche that punches above its apparent size</h2>
+<p class="desc">Electronics repair shops and component suppliers compete in local search with real commercial intent behind every query. The editorial sites in this niche are tight-knit, the audiences are technically literate, and the backlinks are notably clean compared to broader consumer electronics.</p>
+<div class="niche-features">
+<div class="nf-row"><div class="nf-icon repair">🔧</div><div class="nf-text"><h4>Repair shop & DIY blogs</h4><p>Editorial sites read by technicians, hobbyists, and component buyers — small but high-engagement audiences with clear purchase intent.</p></div></div>
+<div class="nf-row"><div class="nf-icon repair">🛒</div><div class="nf-text"><h4>Component supplier publications</h4><p>Sites covering PCB repair, component sourcing, and diagnostic tools — useful for brands selling into the repair supply chain.</p></div></div>
+<div class="nf-row"><div class="nf-icon repair">📍</div><div class="nf-text"><h4>Local repair shop leads</h4><p>Verified contact lists for electronics repair shops, organised by city or region — for suppliers targeting local B2B relationships.</p></div></div>
+</div>
+<a href="/contact" class="btn btn-primary">Get electronics placements →</a>
+</div>
+<div class="niche-visual">
+<div class="niche-banner nb-repair">🔧<div class="niche-badge">Electronics Repair</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Stats -->
+<section style="padding:0 0 56px">
+<div class="stats-dark reveal">
+<h2>By the numbers</h2>
+<p>What we've built into our niche databases so far</p>
+<div class="stats-row">
+<div class="stat-d"><div class="n">200+</div><div class="l">Vetted sites</div></div>
+<div class="stat-d"><div class="n">DA 20+</div><div class="l">Quality floor</div></div>
+<div class="stat-d"><div class="n">4</div><div class="l">Deep verticals</div></div>
+<div class="stat-d"><div class="n">100%</div><div class="l">Real editorial</div></div>
+</div>
+</div>
+</section>
+
+<!-- CTA -->
 <section style="padding-bottom:20px">
 <div class="cta-band reveal">
-<h2>Working in one of these niches?</h2>
-<p>Tell us your target and we'll send back available sites and contacts with full metrics — no obligation.</p>
-<a class="mail-pill" data-email href="#"><span style="font-size:20px">✉️</span><span class="em" data-email></span></a>
+<h2>Your niche, our depth</h2>
+<p>Tell us your vertical and goals — we'll share what's available and what it will cost, with no obligation to proceed.</p>
+<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+<a href="/contact" class="btn btn-primary">Start a conversation →</a>
+<a class="mail-pill" data-whatsapp href="#" target="_blank"><span style="font-size:20px">💬</span><span class="em" data-whatsapp></span></a>
+</div>
 </div>
 </section>
 

@@ -16,23 +16,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OutreachNest Finder — Lead Generation Tool</title>
 <meta name="description" content="OutreachNest Finder finds 1,000 SEO prospects in minutes. Auto-checks DA, PA, DR, extracts emails and syncs to Google Sheets. 3-day free trial.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='home';</script>
 <script src="https://analytics.ahrefs.com/analytics.js" data-key="ZQKYMLdc5E2a0z9MhiU/zg" async></script>
+<style>
+/* ── HERO ── */
+.hero{padding:96px 0 56px;position:relative;overflow:hidden;text-align:center}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none}
+.hero-glow:nth-child(1){width:520px;height:520px;background:radial-gradient(circle,rgba(28,122,77,.22),transparent 65%);top:-140px;left:50%;transform:translateX(-60%)}
+.hero-glow.two{width:400px;height:400px;background:radial-gradient(circle,rgba(224,170,66,.14),transparent 65%);top:-80px;right:-80px;transform:none;left:auto}
+.hero .wrap{position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--leaf-soft);border:1px solid rgba(28,122,77,.22);border-radius:99px;padding:6px 18px;font-size:13px;font-weight:600;color:var(--leaf-deep);margin-bottom:24px}
+.eyebrow::before{content:"●";color:var(--leaf);font-size:8px}
+.hero h1{font-size:clamp(40px,7vw,76px);line-height:1.03;letter-spacing:-0.03em;margin-bottom:20px;max-width:18ch;margin-left:auto;margin-right:auto}
+.hero h1 .u{position:relative;color:var(--leaf-deep)}
+.hero h1 em{color:var(--gold);font-style:normal}
+.lead{color:var(--muted);font-size:clamp(16px,2vw,19px);max-width:52ch;margin:0 auto 36px;line-height:1.7}
+.btn-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.pulse{animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 12px 28px -12px rgba(15,92,56,.7)}50%{box-shadow:0 18px 38px -10px rgba(15,92,56,.9),0 0 0 8px rgba(28,122,77,.08)}}
+.hero-stats{display:flex;justify-content:center;gap:0;margin-top:16px;flex-wrap:wrap}
+.stat{padding:20px 36px;border-right:1px solid var(--line);text-align:center}
+.stat:last-child{border:none}
+.stat .num{font-family:'Fraunces',serif;font-size:34px;font-weight:700;color:var(--ink);line-height:1}
+.stat .num span{font-size:20px;color:var(--gold)}
+.stat .lbl{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+/* ── TRUST STRIP ── */
+.trust-row{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card)}
+.trust-item{flex:1;min-width:160px;padding:18px 22px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;border-right:1px solid var(--line)}
+.trust-item:last-child{border:none}
+.trust-item span{font-size:18px}
+/* ── FEATURE CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.feat-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:36px 30px;position:relative;overflow:hidden;transition:box-shadow .25s,transform .25s}
+.feat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--bar,linear-gradient(90deg,var(--leaf),var(--gold-bright)));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.feat-card:hover{box-shadow:0 24px 52px -20px rgba(15,92,56,.35);transform:translateY(-5px)}
+.feat-card:hover::before{transform:scaleX(1)}
+.feat-card .ic{width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--leaf-soft),#fff);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:22px}
+.feat-card h3{font-size:22px;margin-bottom:10px}
+.feat-card p{color:var(--muted);font-size:15px;line-height:1.65}
+.feat-card .learn{display:inline-block;margin-top:18px;color:var(--leaf-deep);font-weight:600;font-size:14px}
+.feat-card .learn:hover{text-decoration:underline}
+/* ── WHY US ── */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.why-grid{grid-template-columns:1fr}}
+.why-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start}
+.why-icon{font-size:26px;flex-shrink:0;width:48px;height:48px;background:var(--leaf-soft);border-radius:12px;display:flex;align-items:center;justify-content:center}
+.why-item h4{font-size:17px;margin-bottom:5px}
+.why-item p{font-size:14px;color:var(--muted);line-height:1.6}
+/* ── SCROLL HINT ── */
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:32px;color:var(--muted);font-size:13px}
+.scroll-hint .arr{animation:bob .9s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+/* ── STEPS ENHANCED ── */
+.steps-h{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;position:relative}
+.steps-h::before{content:"";position:absolute;top:28px;left:48px;right:48px;height:2px;background:linear-gradient(90deg,var(--leaf-soft),var(--gold-bright),var(--leaf-soft));z-index:0}
+.step-h{padding:0 20px 0 0;position:relative;z-index:1;counter-increment:sc}
+.step-h .snum{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;font-family:'Fraunces',serif;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 20px -6px rgba(15,92,56,.6)}
+.step-h h3{font-size:19px;margin-bottom:8px}
+.step-h p{color:var(--muted);font-size:14px;line-height:1.6}
+</style>
 </head>
 <body>
 <div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="active">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="active">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
-
-<!-- Floating WhatsApp Button -->
 <a class="wa-float" data-whatsapp href="#" target="_blank">
-<span class="wa-icon">💬</span>
-<span class="wa-text">WhatsApp Us</span>
+<span class="wa-icon">💬</span><span class="wa-text">WhatsApp Us</span>
 </a>
 
 <header class="hero">
-<div class="hero-glow"></div><div class="hero-glow two"></div>
+<div class="hero-glow"></div>
+<div class="hero-glow two"></div>
 <div class="wrap">
 <span class="eyebrow">Guest posts · Free Finder Tool · Verified leads</span>
 <h1>Grow your reach on <span class="u">real</span> <em>ground.</em></h1>
@@ -48,17 +104,14 @@
 <div class="stat"><div class="num">100%</div><div class="lbl">Real sites</div></div>
 <div class="stat"><div class="num">4.9<span>★</span></div><div class="lbl">User rating</div></div>
 </div>
-<div class="scroll-hint">
-<span>Scroll to explore</span>
-<span class="arr">↓</span>
-</div>
+<div class="scroll-hint"><span>Scroll to explore</span><span class="arr">↓</span></div>
 </div>
 </header>
 
-<!-- Trust badges -->
-<section style="padding:0">
+<!-- Trust strip -->
+<section style="padding:20px 0">
 <div class="wrap">
-<div class="trust-row">
+<div class="trust-row reveal">
 <div class="trust-item"><span>✅</span> Real niche sites only</div>
 <div class="trust-item"><span>🔍</span> Full metrics before you pay</div>
 <div class="trust-item"><span>🤝</span> You approve everything</div>
@@ -69,21 +122,15 @@
 </section>
 
 <!-- Directory badges -->
-<section style="padding:20px 0 30px">
-  <div class="wrap" style="display:flex; justify-content:center; align-items:center; gap:20px; flex-wrap:wrap;">
-    <a href="https://launchnest.io/p/outreachnest-finder" target="_blank">
-      <img src="https://launchnest.io/badge/outreachnest-finder.svg?variant=listed" alt="OutreachNest Finder on LaunchNest" width="220" height="54"/>
-    </a>
-    <a href="https://lookingfortools.com/projects/outreachnest-finder?utm_source=badge" target="_blank" rel="noopener noreferrer">
-      <img src="https://lookingfortools.com/lookingfortools/images/badges/featured-on-light.svg" alt="Featured on Looking For Tools" style="height:44px;width:auto"/>
-    </a>
-            <a href="https://findtop.tools/projects/outreachnest-finder?utm_source=badge" target="_blank" rel="noopener noreferrer">
-          <img src="https://findtop.tools/findtoptools/images/badges/featured-on-light.svg" alt="Featured on Find Top Tools" style="height:54px;width:auto">
-        </a>
-    <a href="https://www.producthunt.com/products/outreachnest-finder?embed=true&utm_source=embed&utm_medium=post_embed" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:0 16px; height:44px; background:rgb(255,97,84); color:#fff; text-decoration:none; border-radius:8px; font-size:13px; font-weight:600;">Product Hunt →</a>
-  </div>
+<section style="padding:10px 0 28px">
+<div class="wrap" style="display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap">
+<a href="https://launchnest.io/p/outreachnest-finder" target="_blank"><img src="https://launchnest.io/badge/outreachnest-finder.svg?variant=listed" alt="OutreachNest Finder on LaunchNest" width="220" height="54"/></a>
+<a href="https://lookingfortools.com/projects/outreachnest-finder?utm_source=badge" target="_blank" rel="noopener noreferrer"><img src="https://lookingfortools.com/lookingfortools/images/badges/featured-on-light.svg" alt="Featured on Looking For Tools" style="height:44px;width:auto"/></a>
+<a href="https://www.producthunt.com/products/outreachnest-finder?embed=true&utm_source=embed&utm_medium=post_embed" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:0 16px;height:44px;background:rgb(255,97,84);color:#fff;text-decoration:none;border-radius:8px;font-size:13px;font-weight:600">Product Hunt →</a>
+</div>
 </section>
-  
+
+<!-- What we offer -->
 <section>
 <div class="wrap">
 <div class="sec-head reveal">
@@ -91,43 +138,67 @@
 <h2>Everything you need to rank and reach</h2>
 <p>Authoritative backlinks, warm decision-maker lists, and content that reads like it belongs — all built from vetted, real-world sources.</p>
 </div>
-<div class="cards">
-<div class="card reveal"><div class="ic">🌱</div><h3>Niche guest posts</h3><p>Permanent, dofollow placements on genuine niche blogs with real traffic and clean spam scores. You approve every site first.</p><a class="learn" href="/services">Learn more →</a></div>
-<div class="card reveal"><div class="ic">📇</div><h3>Verified lead lists</h3><p>Targeted B2B contact lists — company, website, and verified email — ready for your outreach or sales campaigns.</p><a class="learn" href="/services">Learn more →</a></div>
-<div class="card reveal"><div class="ic">✍️</div><h3>Content writing</h3><p>Original articles matched to each host site's tone, so your placements read natural and pass editorial review.</p><a class="learn" href="/services">Learn more →</a></div>
-<div class="card reveal"><div class="ic">🔍</div><h3>OutreachNest Finder</h3><p>Our desktop app finds leads, extracts emails, captures SEO metrics, and exports to Google Sheets — automatically.</p><a class="learn" href="/download">Download free →</a></div>
+<div class="card-grid">
+<div class="feat-card reveal" style="--bar:linear-gradient(90deg,var(--leaf),#4a7c59)"><div class="ic">🌱</div><h3>Niche Guest Posts</h3><p>Permanent, dofollow placements on genuine niche blogs with real traffic and clean spam scores. You approve every site before anything goes live.</p><a class="learn" href="/services">Learn more →</a></div>
+<div class="feat-card reveal" style="--bar:linear-gradient(90deg,var(--gold),var(--gold-bright))"><div class="ic">📇</div><h3>Verified Lead Lists</h3><p>Targeted B2B contact lists — company, website, and verified email — ready for your outreach or sales campaigns. Niche-specific and clean.</p><a class="learn" href="/services">Learn more →</a></div>
+<div class="feat-card reveal" style="--bar:linear-gradient(90deg,#1d4ed8,#60a5fa)"><div class="ic">✍️</div><h3>Content Writing</h3><p>Original articles matched to each host site's tone, so your placements read natural, pass editorial review, and earn real engagement.</p><a class="learn" href="/services">Learn more →</a></div>
+<div class="feat-card reveal" style="--bar:linear-gradient(90deg,#0e7490,#22d3ee)"><div class="ic">🔍</div><h3>OutreachNest Finder</h3><p>Our desktop app finds leads, extracts emails, captures DA/DR/Traffic metrics, and exports to Google Sheets — automatically, in minutes.</p><a class="learn" href="/download">Download free →</a></div>
 </div>
 </div>
 </section>
 
 <div class="sec-divider"></div>
 
+<!-- Niches band -->
 <section style="padding-top:0">
 <div class="niches reveal">
 <span class="tag">Where we focus</span>
 <h2>Specialists in the industries we know inside out</h2>
-<p class="nlead">We go deep in a handful of technical, high-value verticals — the ones with real businesses and real buying power.</p>
+<p class="nlead">We go deep in a handful of technical, high-value verticals — the ones with real businesses and real buying power behind every link.</p>
 <div class="chips">
-<div class="chip"><span class="ci">☀️</span><strong>Solar</strong><span class="sub">Blogs, installers, inverter &amp; battery</span></div>
+<div class="chip"><span class="ci">☀️</span><strong>Solar</strong><span class="sub">Blogs, installers, inverter &amp; battery brands</span></div>
 <div class="chip"><span class="ci">⚡</span><strong>Electrical</strong><span class="sub">Contractors &amp; commercial services</span></div>
-<div class="chip"><span class="ci">🤖</span><strong>Automation</strong><span class="sub">PLC, robotics &amp; control systems</span></div>
-<div class="chip"><span class="ci">🔧</span><strong>Electronics Repair</strong><span class="sub">Repair shops &amp; suppliers</span></div>
+<div class="chip"><span class="ci">🤖</span><strong>Automation</strong><span class="sub">PLC, robotics &amp; industrial control</span></div>
+<div class="chip"><span class="ci">🔧</span><strong>Electronics Repair</strong><span class="sub">Repair shops &amp; component suppliers</span></div>
+</div>
+<div style="margin-top:28px"><a href="/niches" class="btn btn-gold">See all niches →</a></div>
+</div>
+</section>
+
+<!-- Why OutreachNest -->
+<section style="background:var(--paper-2)">
+<div class="wrap">
+<div class="sec-head center reveal" style="margin-inline:auto;text-align:center">
+<span class="tag">Why us</span>
+<h2>The difference you'll feel</h2>
+<p>Every link-building service claims quality. Here's what actually separates us.</p>
+</div>
+<div class="why-grid">
+<div class="why-item reveal"><div class="why-icon">🎯</div><div><h4>Niche-matched placements</h4><p>We only pitch sites that already cover your industry. No lifestyle-blog stuffing. Your link appears where your audience actually reads.</p></div></div>
+<div class="why-item reveal"><div class="why-icon">📊</div><div><h4>Metrics before money</h4><p>DA, PA, DR, traffic, and spam score — all shared before you commit. You decide what's worth the spend, not us.</p></div></div>
+<div class="why-item reveal"><div class="why-icon">🚫</div><div><h4>Zero PBN policy</h4><p>We have never sold PBN links and won't. Real editorial sites only — the kind that stay indexed and keep passing value through algorithm updates.</p></div></div>
+<div class="why-item reveal"><div class="why-icon">💬</div><div><h4>WhatsApp-speed support</h4><p>Questions get answers in minutes, not a ticket queue. You talk to the team doing the work, not a support layer in front of it.</p></div></div>
 </div>
 </div>
 </section>
 
+<!-- How it works -->
 <section>
 <div class="wrap">
-<div class="sec-head reveal"><span class="tag">How it works</span><h2>Simple, transparent, no surprises</h2></div>
-<div class="steps">
-<div class="step reveal"><h3>Tell us your target</h3><p>Share your niche, keywords, and whether you want guest posts or leads.</p></div>
-<div class="step reveal"><h3>We share the list</h3><p>Get vetted sites or contacts with full metrics — DA, traffic, spam score.</p></div>
-<div class="step reveal"><h3>You approve</h3><p>Pick what fits your goals. Nothing goes live without your say-so.</p></div>
-<div class="step reveal"><h3>We deliver</h3><p>Placements published or verified lists delivered, ready to use.</p></div>
+<div class="sec-head reveal">
+<span class="tag">How it works</span>
+<h2>Simple, transparent, no surprises</h2>
+</div>
+<div class="steps" style="counter-reset:s">
+<div class="step reveal"><h3>Tell us your target</h3><p>Share your niche, keywords, and whether you want guest posts, leads, or both.</p></div>
+<div class="step reveal"><h3>We share the list</h3><p>Get vetted sites or contacts with full metrics — DA, traffic, spam score — to review.</p></div>
+<div class="step reveal"><h3>You approve</h3><p>Pick what fits your goals. Nothing goes live without your explicit sign-off.</p></div>
+<div class="step reveal"><h3>We deliver</h3><p>Placements go live or verified lists land in your inbox — ready to use immediately.</p></div>
 </div>
 </div>
 </section>
 
+<!-- CTA -->
 <section style="padding-bottom:20px">
 <div class="cta-band reveal">
 <h2>Let's grow your reach the right way</h2>

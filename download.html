@@ -14,154 +14,195 @@
 <meta name="twitter:description" content="Download OutreachNest Finder — the professional Windows desktop app for lead generation, guest post outreach, and contact extraction.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Download OutreachNest Finder – Free Trial for Windows</title>
+<title>Download OutreachNest Finder – Free 3-Day Trial for Windows</title>
 <meta name="description" content="Download OutreachNest Finder — the professional Windows desktop app for lead generation, guest post outreach, and contact extraction.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>window.PAGE_KEY='download';</script>
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="ZQKYMLdc5E2a0z9MhiU/zg" async></script>
 <style>
-.dl-hero{text-align:center;padding:80px 0 40px;position:relative}
-.dl-hero .glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:300px;background:radial-gradient(circle,rgba(28,122,77,.18),transparent 65%);z-index:-1}
-.dl-hero h1{font-size:clamp(36px,5vw,58px);margin:16px 0 14px}
+/* DL Hero */
+.dl-hero{text-align:center;padding:80px 0 40px;position:relative;overflow:hidden}
+.dl-hero .bg-glow{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,rgba(28,122,77,.18),transparent 65%);z-index:0;pointer-events:none}
+.dl-hero .wrap{position:relative;z-index:1}
+.version-badge{display:inline-flex;align-items:center;gap:8px;background:var(--leaf-soft);border:1px solid rgba(28,122,77,.22);border-radius:100px;padding:6px 18px;font-size:13px;font-weight:600;color:var(--leaf-deep);margin-bottom:20px}
+.dl-hero h1{font-size:clamp(38px,6vw,64px);margin:16px 0 14px}
 .dl-hero p{color:var(--muted);font-size:18px;max-width:52ch;margin:0 auto 36px}
-.version-badge{display:inline-flex;align-items:center;gap:8px;background:var(--leaf-soft);border:1px solid rgba(28,122,77,.2);border-radius:100px;padding:6px 18px;font-size:13px;font-weight:600;color:var(--leaf-deep);margin-bottom:20px}
-.dl-btn{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;padding:18px 38px;border-radius:14px;font-size:18px;font-weight:700;font-family:'Fraunces',serif;box-shadow:0 16px 36px -12px rgba(15,92,56,.6);transition:transform .18s,box-shadow .18s}
-.dl-btn:hover{transform:translateY(-3px);box-shadow:0 22px 44px -14px rgba(15,92,56,.7)}
-.dl-btn .icon{font-size:24px}
-.dl-meta{margin-top:14px;font-size:13px;color:var(--muted)}
-.dl-meta span{margin:0 10px}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:48px}
-.feat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 22px}
-.feat .fi{font-size:28px;margin-bottom:12px}
-.feat h3{font-size:18px;margin-bottom:8px}
-.feat p{color:var(--muted);font-size:14px}
-.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:32px}
-.plan{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 22px;text-align:center;transition:box-shadow .2s,transform .2s}
-.plan:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
-.plan.featured{border:2px solid var(--gold);position:relative}
-.plan .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#3a2a06;font-size:11px;font-weight:700;padding:4px 14px;border-radius:99px;white-space:nowrap}
-.plan .pname{font-family:'Fraunces',serif;font-size:20px;margin-bottom:6px}
-.plan .price{font-size:36px;font-family:'Fraunces',serif;color:var(--leaf-deep);margin:8px 0 4px}
-.plan .price span{font-size:14px;color:var(--muted);font-family:'Inter',sans-serif}
-.plan .dur{font-size:13px;color:var(--muted);margin-bottom:18px}
-.plan ul{list-style:none;text-align:left;margin-bottom:20px}
-.plan li{font-size:13.5px;color:var(--muted);padding:6px 0;border-bottom:1px dashed var(--line);padding-left:20px;position:relative}
-.plan li:last-child{border:none}
-.plan li::before{content:"✓";position:absolute;left:0;color:var(--leaf);font-weight:700}
-.plan .btn{width:100%;justify-content:center;font-size:14px;padding:12px}
-.req-box{background:var(--leaf-soft);border:1px solid rgba(28,122,77,.2);border-radius:16px;padding:28px 30px;margin-top:32px}
-.req-box h3{font-size:20px;margin-bottom:16px}
-.req-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.req-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
-.req-item .ri{font-size:20px}
-.warning-box{background:#fff8e6;border:1px solid #e0aa42;border-radius:12px;padding:18px 20px;margin-top:20px;font-size:14px;color:#5a3e00}
-.warning-box strong{color:#78350f}
+.dl-btn{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;padding:20px 44px;border-radius:16px;font-size:19px;font-weight:700;font-family:'Fraunces',serif;box-shadow:0 18px 40px -12px rgba(15,92,56,.7);transition:transform .18s,box-shadow .18s;animation:dlpulse 2.6s ease-in-out infinite}
+@keyframes dlpulse{0%,100%{box-shadow:0 18px 40px -12px rgba(15,92,56,.7)}50%{box-shadow:0 24px 50px -10px rgba(15,92,56,.9),0 0 0 10px rgba(28,122,77,.07)}}
+.dl-btn:hover{transform:translateY(-3px)}
+.dl-meta{margin-top:18px;display:flex;gap:0;justify-content:center;flex-wrap:wrap}
+.dl-meta-item{padding:8px 20px;border-right:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dl-meta-item:last-child{border:none}
+.warn-box{background:#fff8e6;border:1px solid #e0aa42;border-radius:14px;padding:16px 20px;margin:20px auto 0;font-size:14px;color:#5a3e00;max-width:520px;display:flex;gap:12px;align-items:flex-start;text-align:left}
+.warn-box .wi{font-size:22px;flex-shrink:0}
+/* Features */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:40px}
+.feat-tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 24px;transition:box-shadow .22s,transform .22s}
+.feat-tile:hover{box-shadow:0 18px 40px -18px rgba(15,92,56,.28);transform:translateY(-4px)}
+.feat-tile .fi{font-size:30px;margin-bottom:14px;display:block}
+.feat-tile h3{font-size:18px;margin-bottom:8px}
+.feat-tile p{color:var(--muted);font-size:14px;line-height:1.6}
+/* Plans */
+.plans-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:32px}
+.plan-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 22px;text-align:center;transition:box-shadow .22s,transform .22s;position:relative}
+.plan-card:hover{box-shadow:0 22px 44px -18px rgba(15,92,56,.28);transform:translateY(-4px)}
+.plan-card.best{border:2px solid var(--gold);box-shadow:0 8px 28px -10px rgba(200,145,47,.35)}
+.plan-card .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#3a2a06;font-size:11px;font-weight:700;padding:4px 16px;border-radius:99px;white-space:nowrap}
+.plan-card .pn{font-family:'Fraunces',serif;font-size:20px;margin-bottom:6px}
+.plan-card .pr{font-size:38px;font-family:'Fraunces',serif;color:var(--leaf-deep);margin:8px 0 4px;line-height:1}
+.plan-card .pr small{font-size:15px;color:var(--muted);font-family:'Inter',sans-serif}
+.plan-card .pd{font-size:13px;color:var(--muted);margin-bottom:20px}
+.plan-card ul{list-style:none;text-align:left;margin-bottom:22px}
+.plan-card li{font-size:13.5px;color:var(--muted);padding:7px 0;border-bottom:1px dashed var(--line);padding-left:22px;position:relative;line-height:1.5}
+.plan-card li:last-child{border:none}
+.plan-card li::before{content:"✓";position:absolute;left:0;color:var(--leaf);font-weight:700}
+.plan-card .btn{width:100%;justify-content:center;font-size:14px;padding:13px}
+/* Activation steps */
+.act-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;margin-top:32px}
+.act-step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 22px;display:flex;gap:16px;align-items:flex-start}
+.act-num{width:44px;height:44px;min-width:44px;border-radius:12px;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));color:#fff;font-family:'Fraunces',serif;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -6px rgba(15,92,56,.5)}
+.act-step h4{font-size:17px;margin-bottom:6px}
+.act-step p{font-size:14px;color:var(--muted);line-height:1.6}
+/* Req box */
+.req-box{background:var(--leaf-soft);border:1px solid rgba(28,122,77,.2);border-radius:18px;padding:30px 32px}
+.req-box h3{font-size:22px;margin-bottom:20px}
+.req-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.req-item{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--muted)}
+.req-item .ri{font-size:22px}
 </style>
 </head>
 <body>
 <div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="active">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/" class="">Home</a><a href="/services" class="">Services</a><a href="/niches" class="">Niches</a><a href="/download" class="active">Download</a><a href="/blog" class="">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div></nav></div>
+<a class="wa-float" data-whatsapp href="#" target="_blank">
+<span class="wa-icon">💬</span><span class="wa-text">WhatsApp Us</span>
+</a>
 
 <section class="dl-hero">
-<div class="glow"></div>
+<div class="bg-glow"></div>
 <div class="wrap">
-<span class="version-badge">🚀 Latest Release — V12.19.7</span>
+<span class="version-badge">🚀 Latest Release — V12.19.7 · Windows 10/11</span>
 <h1>OutreachNest Finder</h1>
-<p>Professional Windows desktop app for lead generation, guest post outreach, and contact extraction across 4 search engines.</p>
-
+<p>Professional Windows desktop app for lead generation, guest post prospecting, and contact extraction across 4 search engines. 3-day free trial — no credit card.</p>
 <a class="dl-btn" href="https://mariyamk5.gumroad.com/l/outreachnest-finder?price=0" data-download>
-<span class="icon">⬇</span> Download Free Trial
+<span style="font-size:26px">⬇</span> Download Free Trial
 </a>
 <div class="dl-meta">
-<span>📦 ~25 MB</span>
-<span>🪟 Windows 10 / 11</span>
-<span>🆓 3-Days Free Trial</span>
+<div class="dl-meta-item">📦 ~25 MB</div>
+<div class="dl-meta-item">🪟 Windows 10 / 11</div>
+<div class="dl-meta-item">🆓 3-Day Free Trial</div>
+<div class="dl-meta-item">⚡ Instant activation</div>
 </div>
-
-<div class="warning-box" style="max-width:560px;margin:20px auto 0">
-⚠️ <strong>Windows SmartScreen notice:</strong> If Windows shows a warning, click <strong>"More info" → "Run anyway"</strong>. The app is safe — certificate is being processed.
+<div class="warn-box">
+<span class="wi">⚠️</span>
+<div><strong>Windows SmartScreen notice:</strong> If you see "Windows protected your PC", click <strong>More info → Run anyway</strong>. The app is safe — certificate processing is underway. Antivirus false positives are common with newly-released executables.</div>
 </div>
 </div>
 </section>
 
-<section style="padding-top:20px">
+<!-- Features -->
+<section style="padding-top:8px">
 <div class="wrap">
 <div class="sec-head reveal">
 <span class="tag">Features</span>
-<h2>Everything in one tool</h2>
+<h2>Everything a serious prospector needs</h2>
+<p>One tool replaces a stack of browser extensions, spreadsheets, and manual research tabs.</p>
 </div>
-<div class="features-grid">
-<div class="feat reveal"><div class="fi">🔍</div><h3>4-Engine Search</h3><p>Google, Bing, Yahoo, DuckDuckGo — simultaneously. Auto-switch engine to avoid blocks.</p></div>
-<div class="feat reveal"><div class="fi">📧</div><h3>Email Extraction</h3><p>Auto-find and verify emails, WhatsApp numbers, phone numbers from any website.</p></div>
-<div class="feat reveal"><div class="fi">📊</div><h3>SEO Metrics</h3><p>DA, PA, DR, Ahrefs Rank, Traffic, Spam Score via Chrome Bridge integration.</p></div>
-<div class="feat reveal"><div class="fi">📋</div><h3>Google Sheets Export</h3><p>Auto-export leads to Google Sheets with 30+ columns. Skips duplicates automatically.</p></div>
-<div class="feat reveal"><div class="fi">🎯</div><h3>Niche Profiles</h3><p>Save unlimited niche profiles — Solar, Electrical, Fashion, Automation, and more.</p></div>
-<div class="feat reveal"><div class="fi">📨</div><h3>Email Campaigns</h3><p>Built-in outreach campaign manager with templates, scheduling, and send tracking.</p></div>
+<div class="feat-grid">
+<div class="feat-tile reveal"><span class="fi">🔍</span><h3>4-Engine Search</h3><p>Google, Bing, Yahoo, DuckDuckGo simultaneously. Auto-switches engine to stay unblocked. Covers opportunities every engine-specific tool misses.</p></div>
+<div class="feat-tile reveal"><span class="fi">📧</span><h3>Email Extraction</h3><p>Auto-finds and verifies email addresses, WhatsApp numbers, and phone numbers from prospect websites. Skips duplicates automatically.</p></div>
+<div class="feat-tile reveal"><span class="fi">📊</span><h3>Live SEO Metrics</h3><p>DA, PA, Domain Rating, Ahrefs Rank, Traffic Estimate, and Spam Score — captured via your Chrome Bridge integration in real time.</p></div>
+<div class="feat-tile reveal"><span class="fi">📋</span><h3>Google Sheets Sync</h3><p>Auto-exports to Google Sheets with 30+ structured columns. Deduplication built in — no cleaning required after a run.</p></div>
+<div class="feat-tile reveal"><span class="fi">🎯</span><h3>Niche Profiles</h3><p>Save unlimited search profiles per niche — Solar, Electrical, Fashion, Repair, Automation. Switch between them in one click.</p></div>
+<div class="feat-tile reveal"><span class="fi">📨</span><h3>Email Campaigns</h3><p>Built-in outreach campaign manager with templates, scheduling, and send tracking. Close the loop from find to contact.</p></div>
 </div>
 </div>
 </section>
 
-<section>
+<!-- Pricing -->
+<section style="background:var(--paper-2)">
 <div class="wrap">
 <div class="sec-head reveal">
 <span class="tag">Pricing</span>
-<h2>Simple, affordable plans</h2>
-<p>Start free — no credit card needed. Upgrade anytime.</p>
+<h2>Start free. Upgrade anytime.</h2>
+<p>The trial has no limits on features — try everything before you decide on a plan.</p>
 </div>
-<div class="plans-grid">
-<div class="plan reveal">
-<div class="pname">Free Trial</div>
-<div class="price">FREE</div>
-<div class="dur"> 3 Days</div>
+<div class="plans-row">
+<div class="plan-card reveal">
+<div class="pn">Free Trial</div>
+<div class="pr">FREE</div>
+<div class="pd">3 days · All features</div>
 <ul>
 <li>All features unlocked</li>
 <li>No credit card required</li>
 <li>Full Google Sheets sync</li>
+<li>Instant activation online</li>
 </ul>
-<a href="https://mariyamk5.gumroad.com/l/outreachnest-finder?price=0" class="btn btn-primary">Download now</a>
+<a href="https://mariyamk5.gumroad.com/l/outreachnest-finder?price=0" class="btn btn-primary" data-download>Download now</a>
 </div>
-<div class="plan reveal">
-<div class="pname">Monthly</div>
-<div class="price">$15<span>/mo</span></div>
-<div class="dur">30 Days</div>
+<div class="plan-card reveal">
+<div class="pn">Monthly</div>
+<div class="pr">$15<small>/mo</small></div>
+<div class="pd">30 days · Full access</div>
 <ul>
 <li>All features unlocked</li>
 <li>Chrome Bridge metrics</li>
 <li>Email campaigns</li>
+<li>WhatsApp support</li>
 </ul>
-<a href="/contact" class="btn btn-ghost">Get license →</a>
+<a href="/contact" class="btn btn-ghost" style="border:1px solid var(--line)">Get license →</a>
 </div>
-<div class="plan featured reveal">
-<span class="badge">Best Value</span>
-<div class="pname">Annual</div>
-<div class="price">$49<span>/yr</span></div>
-<div class="dur">365 Days — Save 73%</div>
+<div class="plan-card best reveal">
+<span class="badge">Best Value — Save 73%</span>
+<div class="pn">Annual</div>
+<div class="pr">$49<small>/yr</small></div>
+<div class="pd">365 days · Priority support</div>
 <ul>
 <li>All features unlocked</li>
 <li>Priority support</li>
-<li>Free updates</li>
+<li>Free updates all year</li>
+<li>Chrome Bridge metrics</li>
 </ul>
 <a href="/contact" class="btn btn-gold">Get license →</a>
 </div>
-<div class="plan reveal">
-<div class="pname">6-Month</div>
-<div class="price">$29<span>/6mo</span></div>
-<div class="dur">180 Days</div>
+<div class="plan-card reveal">
+<div class="pn">6-Month</div>
+<div class="pr">$29<small>/6mo</small></div>
+<div class="pd">180 days · Full access</div>
 <ul>
 <li>All features unlocked</li>
 <li>Chrome Bridge metrics</li>
 <li>Email campaigns</li>
+<li>WhatsApp support</li>
 </ul>
-<a href="/contact" class="btn btn-ghost">Get license →</a>
+<a href="/contact" class="btn btn-ghost" style="border:1px solid var(--line)">Get license →</a>
 </div>
 </div>
-<p style="text-align:center;margin-top:20px;font-size:13px;color:var(--muted);max-width:560px;margin-left:auto;margin-right:auto">
-<strong>Free trial:</strong> Download → Install → Open the app → Visit <a href="/activate" style="color:var(--leaf-deep);font-weight:600">getoutreachnest.com/activate</a> — paste your Gumroad license key and HWID to get your activation key <strong>instantly</strong>, no waiting.<br>
-<strong>Paid plans:</strong> Contact us on WhatsApp after download — send payment proof to receive your license key.
-</p>
+<div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:20px;font-size:14px;color:var(--muted);line-height:1.7">
+<strong style="color:var(--ink)">Free trial:</strong> Download → Install → Open app → Visit <a href="/activate" style="color:var(--leaf-deep);font-weight:600">getoutreachnest.com/activate</a> — paste your Gumroad license key and your HWID to get an activation key <strong>instantly</strong>, no waiting.<br>
+<strong style="color:var(--ink)">Paid plans:</strong> Contact us on WhatsApp after downloading — send payment proof to receive your key within minutes.
+</div>
 </div>
 </section>
 
+<!-- Activation guide -->
+<section>
+<div class="wrap">
+<div class="sec-head reveal">
+<span class="tag">Getting started</span>
+<h2>Activate your trial in 3 steps</h2>
+</div>
+<div class="act-steps">
+<div class="act-step reveal"><div class="act-num">1</div><div><h4>Download &amp; install</h4><p>Click the download button, run the installer. If SmartScreen appears, click "More info" then "Run anyway" — it's safe.</p></div></div>
+<div class="act-step reveal"><div class="act-num">2</div><div><h4>Get your Gumroad key</h4><p>Check your email after the free Gumroad checkout — your license key arrives instantly in the confirmation email.</p></div></div>
+<div class="act-step reveal"><div class="act-num">3</div><div><h4>Activate at activate.html</h4><p>Open the app to find your HWID, then visit <a href="/activate" style="color:var(--leaf-deep);font-weight:600">getoutreachnest.com/activate</a> — paste your key and HWID to get your activation code instantly.</p></div></div>
+</div>
+</div>
+</section>
+
+<!-- System requirements -->
 <section style="padding-top:0">
 <div class="wrap">
 <div class="req-box reveal">
@@ -170,17 +211,18 @@
 <div class="req-item"><span class="ri">🪟</span> Windows 10 / 11 (64-bit)</div>
 <div class="req-item"><span class="ri">🧠</span> 4 GB RAM minimum</div>
 <div class="req-item"><span class="ri">💾</span> 200 MB free space</div>
-<div class="req-item"><span class="ri">🌐</span> Internet connection</div>
-<div class="req-item"><span class="ri">🔵</span> Google Chrome (for metrics)</div>
+<div class="req-item"><span class="ri">🌐</span> Active internet connection</div>
+<div class="req-item"><span class="ri">🔵</span> Google Chrome (for live metrics)</div>
 </div>
 </div>
 </div>
 </section>
 
+<!-- CTA -->
 <section style="padding-bottom:20px">
 <div class="cta-band reveal">
-<h2>Need help or a license key?</h2>
-<p>Contact us on WhatsApp for fastest response — we usually reply within minutes.</p>
+<h2>Need help or a paid license?</h2>
+<p>Contact us on WhatsApp for fastest response — usually replied to within minutes, not hours.</p>
 <a class="btn btn-gold" href="https://wa.me/923006321406" target="_blank">💬 WhatsApp Us →</a>
 </div>
 </section>

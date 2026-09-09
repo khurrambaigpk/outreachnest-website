@@ -220,11 +220,14 @@ animation:heroShift 8s ease-in-out infinite alternate;
 .trust-item{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--muted)}
 .trust-item span{font-size:20px}
 
-/* Floating WhatsApp button */
-.wa-float{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;align-items:center;gap:10px;background:#25d366;color:#fff;padding:14px 22px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 8px 28px -6px rgba(37,211,102,.7);transition:transform .18s,box-shadow .18s;text-decoration:none}
-.wa-float:hover{transform:translateY(-3px);box-shadow:0 14px 36px -8px rgba(37,211,102,.8)}
+/* Floating Email button */
+.wa-float{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#3a2a06;padding:14px 22px;border-radius:50px;font-size:15px;font-weight:700;box-shadow:0 8px 28px -6px rgba(200,145,47,.6);transition:transform .18s,box-shadow .18s;text-decoration:none}
+.wa-float:hover{transform:translateY(-3px);box-shadow:0 14px 36px -8px rgba(200,145,47,.8)}
 .wa-float .wa-icon{font-size:22px}
 @media(max-width:600px){.wa-float span.wa-text{display:none}}
+/* Primary mail-pill (email — gold accent) */
+.mail-pill.primary{background:linear-gradient(135deg,var(--gold-bright),var(--gold));border-color:transparent;color:#3a2a06;box-shadow:0 8px 24px -10px rgba(200,145,47,.6)}
+.mail-pill.primary .em{color:#3a2a06}
 
 /* Section divider */
 .sec-divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:0 24px}

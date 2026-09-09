@@ -47,8 +47,8 @@ function buildFooter(){
   <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>
   <p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p>
   <div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-  <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a>
   <a href="mailto:${EMAIL}" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a>
+  <a href="https://wa.me/${WHATSAPP}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a>
   <a href="https://facebook.com/OutreachNestFinder" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">📘 Facebook</a>
   <a href="https://x.com/MariyamRiagclo" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:#000000;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">🐦 Twitter/X</a>
   <a href="https://www.linkedin.com/in/mariyam-riaz-1b93a8431" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:#0A66C2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💼 LinkedIn</a>

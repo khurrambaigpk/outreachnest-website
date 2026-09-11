@@ -6,6 +6,9 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v11 (11 Sep 2026) — Added "image" field to BlogPosting JSON-LD schema (was missing,
+//   causing Google Rich Results "non-critical issue"). Uses the same OG_IMAGE constant
+//   already used for og:image and twitter:image tags — no per-post change needed.
 // v10 (11 Sep 2026) — Fixed BlogPosting JSON-LD: removed escHtml() from JSON values (was
 //   producing &amp; instead of & for titles like "PLC & SCADA", causing structured data
 //   validation errors). Added XSS protection via unicode escapes on JSON output instead.
@@ -276,6 +279,7 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
     "@type": "BlogPosting",
     "headline": h1Text || title,
     "description": desc,
+    "image": OG_IMAGE,
     "url": canonical,
     "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },

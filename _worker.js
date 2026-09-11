@@ -6,6 +6,10 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v10 (11 Sep 2026) — Fixed BlogPosting JSON-LD: removed escHtml() from JSON values (was
+//   producing &amp; instead of & for titles like "PLC & SCADA", causing structured data
+//   validation errors). Added XSS protection via unicode escapes on JSON output instead.
+//   Added noindex meta tag to admin login page and activate page.
 //   Problem this solves: the free trial previously required Mariyam to manually generate and
 //   send a license key by hand (up to 24hr wait) — this was identified as a major reason people
 //   who download the trial never actually activate it and try the product.
@@ -262,16 +266,21 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
   // validation error"). The generic post.html template has an Organization schema
   // which is wrong for article pages — replace it with a BlogPosting schema so
   // Google and Ahrefs see correct structured data for each individual post.
+  // JSON-LD values must NOT be HTML-escaped: JSON.stringify() handles proper JSON
+  // string escaping (quotes, backslashes, control chars). Using escHtml() here would
+  // turn "PLC & SCADA" into "PLC &amp; SCADA" inside the JSON, which is a literal
+  // string value and causes structured data validation errors. Instead, we apply
+  // unicode escapes to < and > on the final JSON string for XSS safety only.
   const blogPostingSchema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": escHtml(h1Text || title),
-    "description": escHtml(desc),
+    "headline": h1Text || title,
+    "description": desc,
     "url": canonical,
     "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },
-  });
+  }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
   const schemaTag = `<script type="application/ld+json">${blogPostingSchema}</script>`;
   // Replace existing JSON-LD block; if none exists, inject before </head>
   const withSchema = out.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>/i, schemaTag);
@@ -403,6 +412,7 @@ function loginPageHtml(showError) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Admin Login — OutreachNest</title>
 <style>
 *{box-sizing:border-box}

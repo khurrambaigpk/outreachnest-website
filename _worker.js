@@ -6,6 +6,9 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v14 (11 Sep 2026) — Extended edge caching to ALL static HTML pages (/blog, /download,
+//   /services, /niches, /contact) — not just /. Fixes "Slow page" and "Slow server
+//   response for AI crawlers" Ahrefs warnings on /blog and other static pages.
 // v13 (11 Sep 2026) — Added IndexNow key file endpoint (/1257f0fc794749fa896e8d3c4e1af272.txt)
 //   so search engines can verify ownership and accept IndexNow URL submissions for this site.
 // v12 (11 Sep 2026) — Added edge caching for homepage (/) to fix "Slow page" Ahrefs
@@ -778,12 +781,14 @@ export default {
     const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
 
     if (!isAdminPath) {
-      // Cache homepage at the edge — same pattern as handlePostPage — to eliminate
-      // Worker cold-start overhead. Previously every homepage visit called
-      // env.ASSETS.fetch() with no caching, causing Ahrefs "Slow page" (~2.3s TTFB).
-      // Other static assets (CSS/JS/images) are already cached natively by Cloudflare
-      // Pages CDN; only the HTML homepage needs this explicit Worker-side cache.
-      if (url.pathname === "/" || url.pathname === "/index.html") {
+      // Cache all static HTML pages at the edge to eliminate Worker cold-start TTFB.
+      // v12 only cached /, but /blog, /download, /services, /niches, /contact all go
+      // through env.ASSETS.fetch() uncached — causing Ahrefs "Slow page" and
+      // "Slow server response for AI crawlers" warnings on those pages.
+      // Static assets (CSS/JS/images) are cached natively by Cloudflare Pages CDN
+      // and never reach this Worker, so we only need to cache HTML pages here.
+      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact"]);
+      if (HTML_PAGES.has(url.pathname) && request.method === "GET") {
         const cache = caches.default;
         const cacheKey = new Request(request.url, { method: "GET" });
         const cached = await cache.match(cacheKey);

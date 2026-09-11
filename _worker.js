@@ -6,6 +6,8 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v13 (11 Sep 2026) — Added IndexNow key file endpoint (/1257f0fc794749fa896e8d3c4e1af272.txt)
+//   so search engines can verify ownership and accept IndexNow URL submissions for this site.
 // v12 (11 Sep 2026) — Added edge caching for homepage (/) to fix "Slow page" Ahrefs
 //   warning. Homepage previously passed straight through to env.ASSETS with no edge
 //   caching, causing ~2.3s TTFB on Worker cold starts. Now uses the same caches.default
@@ -761,6 +763,15 @@ export default {
       return new Response(noindexHtml, {
         status: 200,
         headers: { "Content-Type": "text/html; charset=UTF-8", "Cache-Control": "public, max-age=3600" },
+      });
+    }
+
+    // IndexNow key verification file — served as plain text so search engines can
+    // confirm site ownership and accept IndexNow URL-change submissions.
+    if (url.pathname === "/1257f0fc794749fa896e8d3c4e1af272.txt") {
+      return new Response("1257f0fc794749fa896e8d3c4e1af272", {
+        status: 200,
+        headers: { "Content-Type": "text/plain", "Cache-Control": "public, max-age=86400" },
       });
     }
 

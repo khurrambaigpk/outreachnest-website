@@ -732,8 +732,18 @@ export default {
       if (slug) {
         return handlePostPage(request, env, slug);
       }
-      // /post with no ?p= param — serve the raw template (edge case).
-      return env.ASSETS.fetch(request);
+      // /post with no ?p= param — serve the template with noindex so the bare
+      // /post URL is not treated as a separate indexable page by crawlers.
+      const rawResp = await env.ASSETS.fetch(request);
+      const html = await rawResp.text();
+      const noindexHtml = html.replace(
+        /<meta\s+name="robots"[^>]*>/i,
+        '<meta name="robots" content="noindex, follow">'
+      );
+      return new Response(noindexHtml, {
+        status: 200,
+        headers: { "Content-Type": "text/html; charset=UTF-8", "Cache-Control": "public, max-age=3600" },
+      });
     }
 
     const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";

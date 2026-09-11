@@ -37,14 +37,13 @@
 //          SAME license_key reinstalling on the SAME PC still works exactly as before (idempotent).
 // v5 (Sep 2026) — server-side per-post meta injection for /post?p=SLUG:
 // v6 (Sep 2026) — shortened 9 too-long post titles (under 60 chars total);
-//   added server-side <h1> injection so static crawlers see H1 on every post:
-//   Problem this solves: blog posts use a single post.html template whose <title>, <meta
-//   name="description">, <link rel="canonical">, and OG/Twitter tags are all generic in the
-//   static HTML. JavaScript updates them per-post after render, but static crawlers (Ahrefs raw
-//   HTML mode, Facebook/Twitter OG bots, some Googlebot passes) see the generic values — causing
-//   22 duplicate-title and duplicate-description errors in Ahrefs Site Audit. This interceptor
-//   replaces those tags server-side before the response leaves Cloudflare, so every blog post
-//   has unique, correct metadata in its raw HTML, before any JavaScript runs.
+//   server-side per-post meta injection already fixed duplicate-title/description errors.
+// v7 (Sep 2026) — removed server-side hidden <h1> injection (was causing Ahrefs
+//   "Multiple H1 tags" error on all 22 post pages). The injection was added under the
+//   mistaken assumption that post.html has no static H1 — it does: line 77 has
+//   <h1 id="aTitle"></h1> which JavaScript fills with the post title. The hidden
+//   off-screen H1 was therefore a second duplicate H1, counted by Ahrefs even though
+//   invisible to users. Removing it leaves exactly one H1 per post page.
 
 const ADMIN_USER = "mariyam";
 const ADMIN_PASS = "Nest2026!Falcon91";
@@ -186,19 +185,15 @@ function escHtml(str) {
 
 // Inject per-post metadata into the raw post.html template string.
 // Replaces generic title, canonical, description, and all OG/Twitter tags.
-// Also injects a server-side <h1> so static crawlers (Ahrefs, Googlebot raw
-// HTML pass) see an H1 even though post.html adds the heading via JavaScript.
 // If a tag is missing from the template (should not happen, but safe), injects
 // a minimal set before </head> so the response always has correct values.
 //
 // title     — full page title including " — OutreachNest" suffix (used for <title> and OG)
 // desc      — meta description
 // canonical — canonical URL for this post
-// h1Text    — raw article title WITHOUT " — OutreachNest" (used for the <h1> tag)
-function injectPostMeta(html, title, desc, canonical, h1Text) {
+function injectPostMeta(html, title, desc, canonical) {
   const safeTitle = escHtml(title);
   const safeDesc = escHtml(desc);
-  const safeH1 = escHtml(h1Text || title);
 
   let out = html
     // <title>
@@ -234,15 +229,6 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
     ].join("\n");
     out = out.replace(/<\/head>/i, inject + "\n</head>");
   }
-
-  // Inject a server-side <h1> before </body>.
-  // post.html has no static H1 — JavaScript adds the post heading after render,
-  // so static crawlers see "H1 missing". This hidden element satisfies the check
-  // without affecting the visible layout (the JS-rendered heading is what users see).
-  out = out.replace(
-    /<\/body>/i,
-    `<h1 style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden">${safeH1}</h1>\n</body>`
-  );
 
   return out;
 }
@@ -285,8 +271,7 @@ async function handlePostPage(request, env, slug) {
 
   const fullTitle = meta.title + " — OutreachNest";
   const canonical = "https://getoutreachnest.com/post?p=" + slug;
-  // Pass meta.title (without " — OutreachNest") as the H1 text — cleaner heading
-  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title);
+  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical);
 
   const response = new Response(modified, {
     status: 200,

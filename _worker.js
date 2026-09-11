@@ -44,6 +44,17 @@
 //   <h1 id="aTitle"></h1> which JavaScript fills with the post title. The hidden
 //   off-screen H1 was therefore a second duplicate H1, counted by Ahrefs even though
 //   invisible to users. Removing it leaves exactly one H1 per post page.
+// v8 (Sep 2026) — three Ahrefs errors fixed in one pass:
+//   (a) Added 5 slugs that were in sitemap.xml but missing from POSTS_META
+//       (solar-guest-post-cost-2026, signs-guest-post-site-hurt-rankings,
+//        electrical-contractor-seo-backlinks, vet-electronics-repair-guest-post-site,
+//        guest-posting-vs-pbn-links-difference). Without entries here the worker
+//       served the unmodified template whose canonical is /post, causing
+//       "Non-canonical page in sitemap (5 pages)" in Ahrefs.
+//   (b) injectPostMeta() now injects/replaces JSON-LD with a BlogPosting schema —
+//       fixes "Structured data validation error" (post pages had Organization schema).
+//   (c) Unknown-slug branch now adds noindex to the response, so the generic /post
+//       URL is not counted as an indexable page — fixes "Indexable page not in sitemap".
 
 const ADMIN_USER = "mariyam";
 const ADMIN_PASS = "Nest2026!Falcon91";
@@ -170,6 +181,29 @@ const POSTS_META = {
     title: "Great Backlinks Beat a Hundred Weak Ones",
     desc: "More links isn't the goal. Relevant links from trusted, real sites move rankings. Here's how to focus your link building for results.",
   },
+  // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
+  // without entries here the worker serves the unmodified template whose canonical
+  // is /post (not /post?p=SLUG), causing "Non-canonical page in sitemap" in Ahrefs.
+  "solar-guest-post-cost-2026": {
+    title: "How Much Does a Solar Guest Post Cost in 2026",
+    desc: "Solar guest post prices range from $50 to $500+. Here's what drives the cost and how to find quality placements at reasonable prices.",
+  },
+  "signs-guest-post-site-hurt-rankings": {
+    title: "Signs a Guest Post Site Will Hurt Your Rankings",
+    desc: "Not all guest post sites are safe. Here's how to spot the red flags — thin content, PBN patterns, unnatural link profiles — before you publish.",
+  },
+  "electrical-contractor-seo-backlinks": {
+    title: "How Electrical Contractors Get More SEO Backlinks",
+    desc: "Electrical contractors rarely think about link building — which creates real opportunity. Here's how to build links effectively in this niche.",
+  },
+  "vet-electronics-repair-guest-post-site": {
+    title: "How to Vet an Electronics Repair Guest Post Site",
+    desc: "Electronics repair blogs look legitimate but some are link farms. Here's a quick vetting checklist to find sites actually worth publishing on.",
+  },
+  "guest-posting-vs-pbn-links-difference": {
+    title: "Guest Posting vs PBN Links: The Real Difference",
+    desc: "Both put links on other sites, but the risks and results are completely different. Here's what separates a real guest post link from a PBN link.",
+  },
 };
 
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
@@ -224,6 +258,25 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
   // JS runs afterward and sets the same text via textContent — no conflict.
   out = out.replace(/<h1\s+id="aTitle"[^>]*><\/h1>/i, `<h1 id="aTitle">${safeH1}</h1>`);
 
+  // Inject/replace BlogPosting structured data (fixes Ahrefs "Structured data
+  // validation error"). The generic post.html template has an Organization schema
+  // which is wrong for article pages — replace it with a BlogPosting schema so
+  // Google and Ahrefs see correct structured data for each individual post.
+  const blogPostingSchema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": escHtml(h1Text || title),
+    "description": escHtml(desc),
+    "url": canonical,
+    "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
+    "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },
+  });
+  const schemaTag = `<script type="application/ld+json">${blogPostingSchema}</script>`;
+  // Replace existing JSON-LD block; if none exists, inject before </head>
+  const withSchema = out.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>/i, schemaTag);
+  out = (withSchema !== out) ? withSchema : out.replace(/<\/head>/i, schemaTag + '\n</head>');
+
   // Safety net: if canonical tag was missing in template, inject full tag block before </head>
   if (!out.includes(`href="${canonical}"`)) {
     const inject = [
@@ -271,8 +324,14 @@ async function handlePostPage(request, env, slug) {
   const meta = POSTS_META[slug];
 
   if (!meta) {
-    // Unknown slug — serve the unmodified template (JS will handle it on the client).
-    return new Response(html, {
+    // Unknown slug (or /post with no slug at all) — serve the template but add
+    // noindex so Ahrefs/Google don't count it as a separate indexable page.
+    // This fixes "Indexable page not in sitemap" for the generic /post URL.
+    const noindexHtml = html.replace(
+      /<meta\s+name="robots"[^>]*>/i,
+      '<meta name="robots" content="noindex, follow">'
+    );
+    return new Response(noindexHtml, {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=UTF-8",

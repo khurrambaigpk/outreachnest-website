@@ -185,15 +185,20 @@ function escHtml(str) {
 
 // Inject per-post metadata into the raw post.html template string.
 // Replaces generic title, canonical, description, and all OG/Twitter tags.
+// Also fills the existing <h1 id="aTitle"> element with the post title so that
+// static crawlers (Ahrefs raw-HTML pass, Googlebot without JS) see a non-empty H1.
+// JavaScript later overwrites it with the same value — no visual difference.
 // If a tag is missing from the template (should not happen, but safe), injects
 // a minimal set before </head> so the response always has correct values.
 //
 // title     — full page title including " — OutreachNest" suffix (used for <title> and OG)
 // desc      — meta description
 // canonical — canonical URL for this post
-function injectPostMeta(html, title, desc, canonical) {
+// h1Text    — raw article title WITHOUT " — OutreachNest" (fills the visible <h1>)
+function injectPostMeta(html, title, desc, canonical, h1Text) {
   const safeTitle = escHtml(title);
   const safeDesc = escHtml(desc);
+  const safeH1 = escHtml(h1Text || title);
 
   let out = html
     // <title>
@@ -211,6 +216,13 @@ function injectPostMeta(html, title, desc, canonical) {
     .replace(/<meta\s+name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${safeTitle}">`)
     .replace(/<meta\s+name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${safeDesc}">`)
     .replace(/<meta\s+name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${OG_IMAGE}">`);
+
+  // Fill the existing <h1 id="aTitle"> in the template with the post title.
+  // post.html has <h1 id="aTitle"></h1> (empty — JS fills it after render).
+  // Static crawlers that skip JS would see an empty H1; this fills it server-side
+  // so every raw-HTML response already has a correct, non-empty H1.
+  // JS runs afterward and sets the same text via textContent — no conflict.
+  out = out.replace(/<h1\s+id="aTitle"[^>]*><\/h1>/i, `<h1 id="aTitle">${safeH1}</h1>`);
 
   // Safety net: if canonical tag was missing in template, inject full tag block before </head>
   if (!out.includes(`href="${canonical}"`)) {
@@ -271,7 +283,8 @@ async function handlePostPage(request, env, slug) {
 
   const fullTitle = meta.title + " — OutreachNest";
   const canonical = "https://getoutreachnest.com/post?p=" + slug;
-  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical);
+  // Pass meta.title (without " — OutreachNest") as the visible H1 text
+  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title);
 
   const response = new Response(modified, {
     status: 200,

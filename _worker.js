@@ -6,6 +6,10 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v12 (11 Sep 2026) — Added edge caching for homepage (/) to fix "Slow page" Ahrefs
+//   warning. Homepage previously passed straight through to env.ASSETS with no edge
+//   caching, causing ~2.3s TTFB on Worker cold starts. Now uses the same caches.default
+//   pattern already in use for blog posts (s-maxage=86400, max-age=3600).
 // v11 (11 Sep 2026) — Added "image" field to BlogPosting JSON-LD schema (was missing,
 //   causing Google Rich Results "non-critical issue"). Uses the same OG_IMAGE constant
 //   already used for og:image and twitter:image tags — no per-post change needed.
@@ -763,6 +767,30 @@ export default {
     const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
 
     if (!isAdminPath) {
+      // Cache homepage at the edge — same pattern as handlePostPage — to eliminate
+      // Worker cold-start overhead. Previously every homepage visit called
+      // env.ASSETS.fetch() with no caching, causing Ahrefs "Slow page" (~2.3s TTFB).
+      // Other static assets (CSS/JS/images) are already cached natively by Cloudflare
+      // Pages CDN; only the HTML homepage needs this explicit Worker-side cache.
+      if (url.pathname === "/" || url.pathname === "/index.html") {
+        const cache = caches.default;
+        const cacheKey = new Request(request.url, { method: "GET" });
+        const cached = await cache.match(cacheKey);
+        if (cached) return cached;
+        const resp = await env.ASSETS.fetch(request);
+        if (resp.ok) {
+          const toCache = new Response(resp.body, {
+            status: 200,
+            headers: {
+              "Content-Type": "text/html; charset=UTF-8",
+              "Cache-Control": "public, max-age=3600, s-maxage=86400",
+            },
+          });
+          await cache.put(cacheKey, toCache.clone());
+          return toCache;
+        }
+        return resp;
+      }
       return env.ASSETS.fetch(request);
     }
 

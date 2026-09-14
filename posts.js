@@ -14,12 +14,12 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
  <h2>The Follow-Up Is Where Deals Actually Happen</h2>
  <p>Most outreach dies after message one, because most people never send message two. It's not that follow-ups are some secret weapon — it's that almost nobody bothers, so simply showing up a second time, a few days later, adding something new instead of just "just checking in," already puts you ahead of everyone who gave up. The businesses that reply on the third touch aren't ignoring you out of rudeness; they were just busy the first two times.</p>
  <h2>Narrow Beats Broad, Every Single Time</h2>
- <p>This is the part that feels counterintuitive until you've tried it:<blockquote style="border-left:3px solid #2d5a27;margin:24px 0;padding:10px 20px;font-family:'Fraunces',Georgia,serif;font-size:17px;font-style:italic;color:#374151;line-height:1.55;">"A tightly targeted list of fifty businesses in one niche will usually outperform a mixed bag of five hundred."</blockquote> a tightly targeted list of fifty businesses in one niche will usually outperform a mixed bag of five hundred. When every business on your list shares the same pain points — the same kind of customers, the same competitors, the same reasons they'd want what you're offering — your message stops sounding like outreach and starts sounding like advice. That's the whole idea behind organizing leads by niche instead of scraping everything into one pile: solar installers, electricians, industrial automation shops, and appliance repair businesses don't want the same pitch, and they can tell within a sentence when they're getting one anyway.</p>
+ <p>This is the part that feels counterintuitive until you've tried it:</p><blockquote style="border-left:3px solid #2d5a27;margin:24px 0;padding:10px 20px;font-family:'Fraunces',Georgia,serif;font-size:17px;font-style:italic;color:#374151;line-height:1.55;">"A tightly targeted list of fifty businesses in one niche will usually outperform a mixed bag of five hundred."</blockquote><p>When every business on your list shares the same pain points — the same kind of customers, the same competitors, the same reasons they'd want what you're offering — your message stops sounding like outreach and starts sounding like advice. That's the whole idea behind organizing leads by niche instead of scraping everything into one pile: solar installers, electricians, industrial automation shops, and appliance repair businesses don't want the same pitch, and they can tell within a sentence when they're getting one anyway.</p>
  <h2>So What Actually Works?</h2>
  <p>Not a bigger list. A better one — verified contact info, organized by niche, with enough context to write one honest, specific line before the pitch. Pair that with a follow-up you actually send, and the math changes completely: fewer messages, sent to the right people, followed up properly, beats a thousand messages sent to nobody in particular. It's a slower way to build a list, but it's the only version of cold outreach that doesn't feel cold.</p>`
 },
   {
-    slug:"finding-electronics-and-appliance-repair-businesse",
+    slug:"finding-electronics-appliance-repair-businesses",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
     title:"Finding Electronics and Appliance Repair Businesses for Outreach at Scale",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -38,7 +38,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 <p>If you need more than a few dozen contacts, manual research across each sub-category and city gets slow fast. OutreachNest Finder is built for this: it runs searches across all four major engines in parallel, extracts emails, WhatsApp numbers, and phone numbers automatically, and logs everything to a Google Sheet with deduplication built in. You can pull a list of appliance repair shops across ten cities in the time it would take to manually research five. The 3-day free trial at getoutreachnest.com is enough to test a full real search before committing.</p>`
   },
   {
-    slug:"sourcing-leads-in-industrial-automation-plc-scada-",
+    slug:"industrial-automation-leads",
     cat:"SEO & Tools", cover:"g4", icon:"🤖",
     title:"Sourcing Leads in Industrial Automation: PLC, SCADA, and Instrumentation Companies",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -57,7 +57,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 <p>Keep messages short and technically grounded. Lead with a specific observation about their niche or their site. Make one clear ask. Follow up once if you hear nothing — automation decision-makers have long lead times but do respond to people who bother to understand their world.</p>`
   },
   {
-    slug:"finding-electrical-contractors-and-panel-builders-",
+    slug:"electrical-contractors-panel-builders",
     cat:"Electrical", cover:"g1", icon:"⚡",
     title:"Finding Electrical Contractors and Panel Builders for Outreach — Fast",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -75,7 +75,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 <p>Electrical contractors are busy and practical. Long pitches that open with "I hope this email finds you well" get skimmed past. What works: a single short paragraph that says specifically what you're offering, why it's relevant to their type of work, and one clear next step. Reference their speciality — "I saw you focus on industrial panel building" — and you're already ahead of 90% of the generic outreach they receive. Follow up once, plainly, if you don't hear back in a week. Many contractors respond on follow-up rather than the first message simply because of how their inbox gets checked.</p>`
   },
   {
-    slug:"how-to-find-solar-guest-post-sites-and-leads-in-mi",
+    slug:"solar-guest-post-sites",
     cat:"Solar", cover:"g1", icon:"☀️",
     title:"How to Find Solar Guest Post Sites and Leads in Minutes (Not Days)",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -116,7 +116,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <p>Download OutreachNest Finder free for 3 days at getoutreachnest.com — no credit card required — and create a dedicated niche profile for every industry you serve. Ten minutes of setup now saves hours of untangling later.</p>`
   },
   {
-    slug:"how-to-turn-your-lead-list-into-a-live-google-shee",
+    slug:"lead-list-google-sheet",
     cat:"SEO & Tools, Google Sheets", cover:"g3", icon:"📊",
     title:"How to Turn Your Lead List Into a Live Google Sheet (Automatically)",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
@@ -136,7 +136,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <p>If you're still building lead lists by hand, this one change alone will save hours every week. Download OutreachNest Finder free for 3 days at getoutreachnest.com — no credit card required — connect your Google account, and watch your first sheet fill itself in.</p>`
   },
   {
-    slug:"why-whatsapp-outreach-gets-higher-response-rates-t",
+    slug:"whatsapp-outreach-response-rates",
     cat:"Outreach, WhatsApp", cover:"g2", icon:"💬",
     title:"Why WhatsApp Outreach Gets Higher Response Rates Than Email",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
@@ -156,7 +156,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <p>If your current outreach is email-only, adding WhatsApp as a second channel is one of the fastest ways to lift response rates without changing your offer. Download OutreachNest Finder free for 3 days at getoutreachnest.com — no credit card required — and start building lead lists with verified emails and WhatsApp numbers together.</p>`
   },
   {
-    slug:"outreachnest-finder-features-guide-everything-the-",
+    slug:"outreachnest-finder-features",
     cat:"Product, Features, SEO & Tools", cover:"g1", icon:"📘",
     title:"OutreachNest Finder Features Guide: Everything the App Can Do",
     author:"OutreachNest", date:"August 2026", read:"6 min read",
@@ -203,7 +203,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     <p>Finding SEO clients fast in 2026 comes down to three things: targeting the right niche, reaching out with a personalized and relevant message, and using tools that remove the manual bottleneck from your prospecting process. Start with one niche, build a list of 100 qualified prospects using OutreachNest Finder, write five variations of a personalized outreach email, and send consistently. The clients will come. Try OutreachNest Finder free for 3 days at getoutreachnest.com — no credit card required.</p>`
   },
   {
-    slug:"how-to-build-1-000-link-building-prospects-in-minu",
+    slug:"link-building-prospects",
     cat:"Link Building, SEO Tools", cover:"g1", icon:"🚀",
     title:"How to Build 1,000 Link Building Prospects in Minutes",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
@@ -449,7 +449,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 <h2>4. Content that doesn't hang together</h2>
 <p>Read the site's recent posts. A genuine niche site publishes content that belongs together — a solar blog covers solar topics. A link farm publishes anything: solar one day, cryptocurrency the next, immigration advice the day after. Incoherent editorial content is a reliable signal that the site exists to sell links, not to serve an audience. Links from sites without a real topical identity pass less relevance value and carry more risk.</p>
 <h2>5. The placement comes off a public list</h2>
-<p>Sites that openly advertise "guest post" or "sponsored post" slots in bulk directories, or whose URLs appear on publicly available link-selling lists, are already known to Google. Search engines can algorithmically identify sites where the primary purpose is selling links rather than publishing editorial content. A site that's on ten different "guest post packages" lists has almost certainly been identified and discounted. The best placements are sites that have never advertised that they accept paid content<div style="background:#eaf4e8;border-left:4px solid #2d5a27;border-radius:6px;padding:14px 18px;margin:22px 0;font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;"><strong style="display:block;color:#2d5a27;margin-bottom:6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">🎯 Key Insight</strong>A genuine site has: traffic that matches its DA, outbound links that make topical sense, a steady backlink growth curve, consistent editorial content in one niche, and no history of selling posts in bulk directories.</div> — editorial sites that vet pitches on merit.</p>`
+<p>Sites that openly advertise "guest post" or "sponsored post" slots in bulk directories, or whose URLs appear on publicly available link-selling lists, are already known to Google. Search engines can algorithmically identify sites where the primary purpose is selling links rather than publishing editorial content. A site that's on ten different "guest post packages" lists has almost certainly been identified and discounted. The best placements are sites that have never advertised that they accept paid content</p><div style="background:#eaf4e8;border-left:4px solid #2d5a27;border-radius:6px;padding:14px 18px;margin:22px 0;font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;"><strong style="display:block;color:#2d5a27;margin-bottom:6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">🎯 Key Insight</strong>A genuine site has: traffic that matches its DA, outbound links that make topical sense, a steady backlink growth curve, consistent editorial content in one niche, and no history of selling posts in bulk directories.</div> — editorial sites that vet pitches on merit.</p>`
   },
   {
     slug:"electrical-contractor-seo-backlinks",

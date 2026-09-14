@@ -72,25 +72,25 @@
 //   (c) Unknown-slug branch now adds noindex to the response, so the generic /post
 //       URL is not counted as an indexable page — fixes "Indexable page not in sitemap".
 
-// ── Secrets: read from Cloudflare Worker Secrets (set in Dashboard → Workers & Pages → Settings → Variables and Secrets)
-// Required secret names: ADMIN_USER, ADMIN_PASS, SESSION_SECRET, LICENSE_SECRET, ED25519_PRIVATE_KEY_HEX
-// Never hard-code these here — they are accessed as env.SECRET_NAME inside the fetch handler and passed to functions.
+const ADMIN_USER = "mariyam";
+const ADMIN_PASS = "Nest2026!Falcon91";
+const SESSION_SECRET = "on-8f3k2m9x7q1z5w4v6t0r8y2u3i7o1p9a4s6d";
 const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60; // 2-hour absolute cap, enforced server-side regardless of browser cookie behavior
 const COOKIE_NAME = "on_admin_session";
 
 // ── Activation system config ────────────────────────────────────────────────
 const GUMROAD_PRODUCT_ID = "BZVGpilp2DHoSlq47Zlcjg=="; // "OutreachNest Finder — Multi-Engine Lead Finder" product's API product_id (NOT the URL permalink)
-// LICENSE_SECRET is now read from env.LICENSE_SECRET (Cloudflare Worker Secret)
+const LICENSE_SECRET = "ON_MASTER_2026_OutreachNest_60e77519e1b796a6_SecretKey"; // must match _LICENSE_SECRET in vendor_finder_windows_app.py exactly — rotated here 30 Aug 2026 to match the app-side rotation done in V12.19.23 (this Worker file had been missed until now)
 
 // ── Ed25519 hardening (added 28 Aug 2026) ───────────────────────────────────
 // Every key generated from here on also carries an Ed25519 signature, made
-// with the PRIVATE key stored in Cloudflare Worker Secret: ED25519_PRIVATE_KEY_HEX.
-// Only the updated .exe (which ships the matching PUBLIC key, never this private one)
-// can verify it — older, already-installed customer copies simply never look past
-// byte 14 and keep validating via the unchanged HMAC-only path, so nothing breaks.
-// This PRIVATE key must NEVER appear in source code — store only in Cloudflare Secrets
-// and Mariyam's private keygen tool on her own PC — never into the app, never public.
-// ED25519_PRIVATE_KEY_HEX is now read from env.ED25519_PRIVATE_KEY_HEX (Cloudflare Worker Secret)
+// with the PRIVATE key below. Only the updated .exe (which ships the matching
+// PUBLIC key, never this private one) can verify it — older, already-installed
+// customer copies simply never look past byte 14 and keep validating via the
+// unchanged HMAC-only path, so nothing breaks for anyone already using the app.
+// This PRIVATE key must NEVER go anywhere except here and Mariyam's private
+// keygen tool on her own PC — never into the app, never anywhere public.
+const ED25519_PRIVATE_KEY_HEX = "94985d37de5845bde4df86379e11635477ed39c96fc7ac0abf2aff175cb9efce";
 // Ed25519 private keys import into Web Crypto only via PKCS8 (raw format is
 // public-key-only for this algorithm) — this is a fixed 16-byte DER prefix
 // (RFC 8410) in front of the 32 raw private-key bytes.
@@ -113,19 +113,19 @@ const POSTS_META = {
     title: "The Awkward Truth About Cold Outreach",
     desc: "Most cold outreach doesn't fail because people didn't try hard enough. Find out what actually goes wrong — and how to fix your approach.",
   },
-  "finding-electronics-and-appliance-repair-businesse": {
+  "finding-electronics-appliance-repair-businesses": {
     title: "Electronics Repair Businesses for Outreach",
     desc: "Search appliance, TV, laptop, mobile, UPS, and CCTV repair businesses across cities using OutreachNest Finder's multi-engine search.",
   },
-  "sourcing-leads-in-industrial-automation-plc-scada-": {
+  "industrial-automation-leads": {
     title: "Industrial Automation Leads: PLC & SCADA",
     desc: "Find PLC automation firms, SCADA integrators, and instrumentation suppliers for link building or direct outreach at scale.",
   },
-  "finding-electrical-contractors-and-panel-builders-": {
+  "electrical-contractors-panel-builders": {
     title: "Find Electrical Contractors for Outreach",
     desc: "Search residential, commercial, and industrial electricians, panel builders, and switchgear firms in bulk with OutreachNest Finder.",
   },
-  "how-to-find-solar-guest-post-sites-and-leads-in-mi": {
+  "solar-guest-post-sites": {
     title: "Find Solar Guest Post Sites and Leads Fast",
     desc: "Find solar blogs, installers, and inverter or battery sites for guest posts and lead outreach — in minutes, not days.",
   },
@@ -133,15 +133,15 @@ const POSTS_META = {
     title: "How Agencies Manage 10+ Niches at Once",
     desc: "Running outreach across multiple industries at once usually turns into chaos. Here's how agencies stay organized using niche profiles.",
   },
-  "how-to-turn-your-lead-list-into-a-live-google-shee": {
+  "lead-list-google-sheet": {
     title: "Turn Your Lead List Into a Live Google Sheet",
     desc: "Manually copying leads into a spreadsheet wastes hours every week. Learn how OutreachNest Finder auto-exports leads to Google Sheets.",
   },
-  "why-whatsapp-outreach-gets-higher-response-rates-t": {
+  "whatsapp-outreach-response-rates": {
     title: "WhatsApp Outreach: Higher Response Rates",
     desc: "Cold email open rates keep falling, but WhatsApp messages get read within minutes. Here's how to use WhatsApp for effective outreach.",
   },
-  "outreachnest-finder-features-guide-everything-the-": {
+  "outreachnest-finder-features": {
     title: "OutreachNest Finder: Complete Features Guide",
     desc: "A complete walkthrough of every OutreachNest Finder feature — 4-engine search, email extraction, SEO metrics, Google Sheets export, and more.",
   },
@@ -149,7 +149,7 @@ const POSTS_META = {
     title: "How to Find SEO Clients Fast in 2026",
     desc: "Finding SEO clients does not have to be slow or expensive. Here's a repeatable system for finding and closing new clients fast in 2026.",
   },
-  "how-to-build-1-000-link-building-prospects-in-minu": {
+  "link-building-prospects": {
     title: "Build 1,000 Link Prospects in Minutes",
     desc: "Most SEO freelancers spend days building prospect lists manually. Here's how to build 1,000+ link building prospects in minutes.",
   },
@@ -220,6 +220,20 @@ const POSTS_META = {
     title: "Guest Posting vs PBN Links: The Real Difference",
     desc: "Both put links on other sites, but the risks and results are completely different. Here's what separates a real guest post link from a PBN link.",
   },
+};
+
+// v15: 301 redirects for 8 truncated slugs that Google already indexed.
+// Old URLs (cut off at 50 chars by a previous tooling bug) permanently redirect
+// to clean canonical slugs. POSTS_META keys updated to use the clean slugs.
+const SLUG_REDIRECTS = {
+  "finding-electronics-and-appliance-repair-businesse": "finding-electronics-appliance-repair-businesses",
+  "sourcing-leads-in-industrial-automation-plc-scada-": "industrial-automation-leads",
+  "finding-electrical-contractors-and-panel-builders-": "electrical-contractors-panel-builders",
+  "how-to-find-solar-guest-post-sites-and-leads-in-mi": "solar-guest-post-sites",
+  "how-to-turn-your-lead-list-into-a-live-google-shee": "lead-list-google-sheet",
+  "why-whatsapp-outreach-gets-higher-response-rates-t": "whatsapp-outreach-response-rates",
+  "outreachnest-finder-features-guide-everything-the-": "outreachnest-finder-features",
+  "how-to-build-1-000-link-building-prospects-in-minu": "link-building-prospects",
 };
 
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
@@ -396,19 +410,19 @@ async function hmacSign(message, secret) {
   return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function makeSessionToken(env) {
+async function makeSessionToken() {
   const expiry = Date.now() + SESSION_MAX_AGE_SECONDS * 1000;
-  const sig = await hmacSign(String(expiry), env.SESSION_SECRET);
+  const sig = await hmacSign(String(expiry), SESSION_SECRET);
   return `${expiry}.${sig}`;
 }
 
-async function verifySessionToken(token, env) {
+async function verifySessionToken(token) {
   if (!token) return false;
   const parts = token.split(".");
   if (parts.length !== 2) return false;
   const [expiryStr, sig] = parts;
   if (!/^[0-9]+$/.test(expiryStr)) return false;
-  const expected = await hmacSign(expiryStr, env.SESSION_SECRET);
+  const expected = await hmacSign(expiryStr, SESSION_SECRET);
   if (sig !== expected) return false;
   return Date.now() < parseInt(expiryStr, 10);
 }
@@ -482,10 +496,10 @@ function hexToBytes(hex) {
 }
 
 let _ed25519PrivateKeyCache = null;
-async function getEd25519PrivateKey(env) {
+async function getEd25519PrivateKey() {
   if (_ed25519PrivateKeyCache) return _ed25519PrivateKeyCache;
   const prefix = hexToBytes(ED25519_PKCS8_PREFIX_HEX);
-  const rawPriv = hexToBytes(env.ED25519_PRIVATE_KEY_HEX);
+  const rawPriv = hexToBytes(ED25519_PRIVATE_KEY_HEX);
   const pkcs8 = new Uint8Array(prefix.length + rawPriv.length);
   pkcs8.set(prefix, 0);
   pkcs8.set(rawPriv, prefix.length);
@@ -493,7 +507,7 @@ async function getEd25519PrivateKey(env) {
   return _ed25519PrivateKeyCache;
 }
 
-async function generateActivationKey(plan, days, uidInt, hwidStr, env) {
+async function generateActivationKey(plan, days, uidInt, hwidStr) {
   const planId = PLAN_IDS[plan];
   if (planId === undefined) throw new Error("unknown plan: " + plan);
 
@@ -517,7 +531,7 @@ async function generateActivationKey(plan, days, uidInt, hwidStr, env) {
 
   const key = await crypto.subtle.importKey(
     "raw",
-    new TextEncoder().encode(env.LICENSE_SECRET),
+    new TextEncoder().encode(LICENSE_SECRET),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]
@@ -529,7 +543,7 @@ async function generateActivationKey(plan, days, uidInt, hwidStr, env) {
   // note above) — appended after the legacy 14 bytes. Old app copies never
   // read past byte 14, so this is fully backward compatible; updated app
   // copies verify this too for real forgery resistance.
-  const edPrivKey = await getEd25519PrivateKey(env);
+  const edPrivKey = await getEd25519PrivateKey();
   const edSig = new Uint8Array(await crypto.subtle.sign({ name: "Ed25519" }, edPrivKey, payload));
 
   const raw = new Uint8Array(10 + 4 + 64);
@@ -731,7 +745,7 @@ async function handleActivate(request, env) {
   // ── Generate the activation key (same algorithm the app verifies offline) ──
   const days = await getTrialDays(env);
   const uid = await uidFromLicenseKey(licenseKey);
-  const activationKey = await generateActivationKey("trial7", days, uid, hwidRaw, env);
+  const activationKey = await generateActivationKey("trial7", days, uid, hwidRaw);
 
   return jsonResponse({ success: true, key: activationKey, plan: "trial7", days });
 }
@@ -753,6 +767,14 @@ export default {
     if (url.pathname === "/post") {
       const slug = url.searchParams.get("p");
       if (slug) {
+        // 301 redirect old truncated slugs → clean canonical slugs (v15)
+        const newSlug = SLUG_REDIRECTS[slug];
+        if (newSlug) {
+          return Response.redirect(
+            "https://getoutreachnest.com/post?p=" + newSlug,
+            301
+          );
+        }
         return handlePostPage(request, env, slug);
       }
       // /post with no ?p= param — serve the template with noindex so the bare
@@ -832,8 +854,8 @@ export default {
         // fall through with empty creds -> treated as wrong password
       }
 
-      if (user === env.ADMIN_USER && pass === env.ADMIN_PASS) {
-        const token = await makeSessionToken(env);
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        const token = await makeSessionToken();
         return new Response(null, {
           status: 302,
           headers: {
@@ -851,7 +873,7 @@ export default {
 
     // Normal page view: check the session cookie.
     const token = getCookie(request, COOKIE_NAME);
-    const valid = await verifySessionToken(token, env);
+    const valid = await verifySessionToken(token);
     if (!valid) {
       return new Response(loginPageHtml(false), {
         status: 401,

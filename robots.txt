@@ -5,8 +5,7 @@ Disallow: /admin.html
 Disallow: /admin
 Disallow: /activate
 
-# Allow AI-powered SEARCH bots (ChatGPT, Google AI Overviews, Bing AI)
-# These help your content appear in AI-generated search results — good for SEO
+# Allow AI-powered SEARCH bots (appear in AI-generated search results — good for SEO)
 User-agent: GPTBot
 Allow: /
 
@@ -22,7 +21,22 @@ Allow: /
 User-agent: meta-externalagent
 Allow: /
 
-# Block pure AI TRAINING scrapers (not search) — no SEO benefit to allowing these
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Block pure AI TRAINING scrapers (no SEO benefit — these only harvest data for model training)
 User-agent: CCBot
 Disallow: /
 

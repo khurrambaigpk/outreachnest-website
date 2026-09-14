@@ -1,8 +1,12 @@
+# Allow all standard search crawlers
 User-agent: *
-Disallow: /admin
+Allow: /
 Disallow: /admin.html
+Disallow: /admin
+Disallow: /activate
 
-# AI Search Bots — explicitly allowed for visibility
+# Allow AI-powered SEARCH bots (ChatGPT, Google AI Overviews, Bing AI)
+# These help your content appear in AI-generated search results — good for SEO
 User-agent: GPTBot
 Allow: /
 
@@ -12,11 +16,20 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: Applebot-Extended
 Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# Block pure AI TRAINING scrapers (not search) — no SEO benefit to allowing these
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
 
 User-agent: Amazonbot
-Allow: /
+Disallow: /
 
-User-agent: anthropic-ai
-Allow: /
+Sitemap: https://getoutreachnest.com/sitemap.xml

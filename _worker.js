@@ -126,15 +126,15 @@ const POSTS_META = {
     desc: "Cold outreach fails for the same reasons again and again — and most guides miss them. Learn the real reasons your cold emails and DMs don't get replies.",
   },
   "finding-electronics-appliance-repair-businesses": {
-    title: "How to Find Electronics & Appliance Repair Businesses for Outreach",
+    title: "Find Electronics & Appliance Repair Shops for Outreach",
     desc: "Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale. Ideal for link building, lead gen, and local outreach.",
   },
   "industrial-automation-leads": {
-    title: "How to Find Industrial Automation Leads (PLC, SCADA & More)",
+    title: "Find Industrial Automation Leads: PLC & SCADA",
     desc: "Build B2B lead lists of PLC integrators, SCADA vendors, and instrumentation firms for outreach and link building in the industrial automation niche.",
   },
   "electrical-contractors-panel-builders": {
-    title: "How to Find Electrical Contractors & Panel Builders for Outreach",
+    title: "Find Electrical Contractors & Panel Builders",
     desc: "Find residential, commercial, and industrial electricians, panel builders, and switchgear companies in bulk for link building and B2B outreach campaigns.",
   },
   "solar-guest-post-sites": {
@@ -146,11 +146,11 @@ const POSTS_META = {
     desc: "Running outreach across many industries creates chaos. Here's how SEO agencies use niche profiles to stay organized and scale without confusion.",
   },
   "lead-list-google-sheet": {
-    title: "How to Export Your Lead List to Google Sheets Automatically",
+    title: "Export Your Lead List to Google Sheets Automatically",
     desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "WhatsApp Cold Outreach: Why Response Rates Are Higher Than Email",
+    title: "WhatsApp Outreach: Why It Gets More Replies Than Email",
     desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
@@ -170,7 +170,7 @@ const POSTS_META = {
     desc: "Check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest's Chrome Bridge — no Moz or Ahrefs subscription required.",
   },
   "spot-real-guest-post-site": {
-    title: "How to Spot a Real Guest Post Site vs a PBN or Link Farm",
+    title: "How to Spot Real Guest Post Sites vs PBNs",
     desc: "Not every 'write for us' site is safe. Learn how to identify real guest post opportunities versus link farms and private blog networks before you publish.",
   },
   "b2b-lead-list-worth-buying": {
@@ -190,23 +190,23 @@ const POSTS_META = {
     desc: "Sending cold emails from a brand-new domain without warming it up sends you straight to spam. Here's the right way to warm up an email domain.",
   },
   "choosing-solar-installer-guide": {
-    title: "How Homeowners Choose a Solar Installer (What Marketers Should Know)",
+    title: "How Homeowners Choose a Solar Installer",
     desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Why Electrical Contractors Are an Underrated Online Marketing Niche",
+    title: "Electrical Contractors: An Underrated Marketing Niche",
     desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: A Small but High-Value Outreach Niche",
+    title: "Industrial Automation: A High-Value Outreach Niche",
     desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
-    title: "Electronics Repair as an Outreach Niche: Steady Demand, Low Competition",
+    title: "Electronics Repair: Steady Demand, Low Competition",
     desc: "Repair shops fly under the radar but they're everywhere and always need marketing help. Here's how to tap the electronics repair niche for outreach.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Quality vs Quantity in Link Building: Why Fewer Great Backlinks Win",
+    title: "Link Building Quality vs Quantity: Which Wins?",
     desc: "100 weak links won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality that moves rankings.",
   },
   // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
@@ -225,7 +225,7 @@ const POSTS_META = {
     desc: "Electrical contractors rarely do link building — which creates a real opportunity for SEOs. Here's how to earn and build backlinks in this niche.",
   },
   "vet-electronics-repair-guest-post-site": {
-    title: "How to Vet an Electronics Repair Guest Post Site (Checklist)",
+    title: "Electronics Repair Guest Post Site Checklist",
     desc: "Electronics repair blogs can be link farms in disguise. Here's a fast vetting checklist to find sites actually worth publishing on vs ones to skip.",
   },
   "guest-posting-vs-pbn-links-difference": {

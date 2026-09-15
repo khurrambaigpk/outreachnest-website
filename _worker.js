@@ -234,6 +234,13 @@ const POSTS_META = {
   },
 };
 
+// v26 (15 Sep 2026) — Fix JSON-LD injection for main pages: add CACHE_VERSION to the
+//   Workers caches.default key. "Purge Everything" in the Cloudflare dashboard clears the
+//   CDN cache but NOT the Workers Cache API (caches.default). v25 was deployed but its
+//   injection code never ran because caches.default still held v24's unmodified HTML
+//   cached under the plain URL key. Adding ?_cv=v26 to the cache key causes a miss on
+//   first request, the injection runs, and the fresh v26 HTML is stored. Next version:
+//   just bump CACHE_VERSION → automatic cache bust with no manual purge needed.
 // v25 (15 Sep 2026) — JSON-LD structured data for all 6 main static pages.
 //   Previously the Worker served /, /blog, /download, /services, /niches, /contact
 //   as-is from env.ASSETS with only a caching header added — no HTML modification.
@@ -294,6 +301,7 @@ const SLUG_REDIRECTS = {
 
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
 const SITE_PUB_DATE = "2026-09-01"; // Publication date used in BlogPosting schema
+const CACHE_VERSION = "v26"; // Bump this whenever the HTML_PAGES injection changes — forces a cache miss so fresh HTML is generated
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1094,7 +1102,13 @@ export default {
       const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact"]);
       if (HTML_PAGES.has(url.pathname) && request.method === "GET") {
         const cache = caches.default;
-        const cacheKey = new Request(request.url, { method: "GET" });
+        // v26: include CACHE_VERSION in the key so bumping the version busts the Workers cache.
+        // caches.default is NOT cleared by "Purge Everything" in the Cloudflare dashboard —
+        // it's a separate Workers Cache API store. Without this, re-deploying a new worker version
+        // that modifies HTML leaves the old cached HTML in place until its TTL expires (24h).
+        const versionedUrl = new URL(request.url);
+        versionedUrl.searchParams.set("_cv", CACHE_VERSION);
+        const cacheKey = new Request(versionedUrl.href, { method: "GET" });
         const cached = await cache.match(cacheKey);
         if (cached) return cached;
         const resp = await env.ASSETS.fetch(request);

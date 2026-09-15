@@ -234,6 +234,14 @@ const POSTS_META = {
   },
 };
 
+// v24 (15 Sep 2026) — Dynamic sitemap.xml served directly from the Worker.
+//   Previously sitemap.xml was a static file in the Pages deployment — if it was
+//   missing or stale, GSC would show "invalid". Now the Worker generates it on the
+//   fly from POSTS_META so it is always in sync: add a slug to POSTS_META and it
+//   appears in the sitemap automatically. Served with a 24-hour edge cache.
+//   Also added /robots.txt handler to explicitly allow all AI crawlers
+//   (GPTBot, Claude-Web, PerplexityBot, etc.) — fixes Ahrefs "Indexable page
+//   blocked from some AI search bots" warning on 33 pages.
 // v23 (15 Sep 2026) — Non-blocking cache writes via ctx.waitUntil() to cut TTFB.
 //   Both handlePostPage and the HTML_PAGES block were doing `await cache.put()`
 //   BEFORE returning the response — forcing every cold-cache request to wait for
@@ -266,6 +274,69 @@ const SLUG_REDIRECTS = {
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
 const SITE_PUB_DATE = "2026-09-01"; // Publication date used in BlogPosting schema
 
+// v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
+// Injected as a "Read Next" section before </body> to fix Ahrefs warning
+// "Page has only one dofollow incoming internal link" on 27 blog post pages.
+// Each entry distributes link equity across the cluster, not just from /blog.
+const RELATED_POSTS = {
+  // Cold outreach / email cluster
+  "the-awkward-truth-about-cold-outreach-nobody-tells": ["cold-email-that-gets-replies", "warm-up-new-email-domain", "whatsapp-outreach-response-rates"],
+  "cold-email-that-gets-replies":    ["warm-up-new-email-domain", "the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates"],
+  "warm-up-new-email-domain":        ["cold-email-that-gets-replies", "the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates"],
+  "whatsapp-outreach-response-rates":["cold-email-that-gets-replies", "warm-up-new-email-domain", "how-to-find-seo-clients-fast-in-2026"],
+
+  // SEO clients / agency cluster
+  "how-to-find-seo-clients-fast-in-2026":          ["link-building-prospects", "how-agencies-manage-10-niches-without-losing-track", "outreachnest-finder-features"],
+  "how-agencies-manage-10-niches-without-losing-track": ["how-to-find-seo-clients-fast-in-2026", "link-building-prospects", "outreachnest-finder-features"],
+
+  // Link building cluster
+  "link-building-prospects":              ["quality-over-quantity-backlinks", "spot-real-guest-post-site", "b2b-lead-list-worth-buying"],
+  "quality-over-quantity-backlinks":      ["spot-real-guest-post-site", "guest-posting-vs-pbn-links-difference", "link-building-prospects"],
+  "spot-real-guest-post-site":            ["guest-posting-vs-pbn-links-difference", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
+  "guest-posting-vs-pbn-links-difference":["spot-real-guest-post-site", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
+  "signs-guest-post-site-hurt-rankings":  ["spot-real-guest-post-site", "guest-posting-vs-pbn-links-difference", "vet-electronics-repair-guest-post-site"],
+  "b2b-lead-list-worth-buying":           ["link-building-prospects", "outreachnest-finder-features", "quality-over-quantity-backlinks"],
+
+  // Solar cluster
+  "solar-guest-post-sites":       ["solar-niche-goldmine", "solar-guest-post-cost-2026", "spot-real-guest-post-site"],
+  "solar-niche-goldmine":         ["solar-guest-post-sites", "solar-guest-post-cost-2026", "link-building-prospects"],
+  "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings"],
+  "choosing-solar-installer-guide":["solar-niche-goldmine", "solar-guest-post-sites", "electrical-contractors-online-growth"],
+
+  // Electronics / repair cluster
+  "finding-electronics-appliance-repair-businesses": ["electronics-repair-steady-demand", "vet-electronics-repair-guest-post-site", "outreachnest-finder-features"],
+  "electronics-repair-steady-demand":                ["finding-electronics-appliance-repair-businesses", "vet-electronics-repair-guest-post-site", "how-to-find-seo-clients-fast-in-2026"],
+  "vet-electronics-repair-guest-post-site":          ["electronics-repair-steady-demand", "signs-guest-post-site-hurt-rankings", "guest-posting-vs-pbn-links-difference"],
+
+  // Electrical contractors cluster
+  "electrical-contractors-panel-builders":  ["electrical-contractors-online-growth", "electrical-contractor-seo-backlinks", "finding-electronics-appliance-repair-businesses"],
+  "electrical-contractors-online-growth":   ["electrical-contractors-panel-builders", "electrical-contractor-seo-backlinks", "how-to-find-seo-clients-fast-in-2026"],
+  "electrical-contractor-seo-backlinks":    ["electrical-contractors-panel-builders", "electrical-contractors-online-growth", "link-building-prospects"],
+
+  // Industrial automation cluster
+  "industrial-automation-leads":           ["industrial-automation-high-value-niche", "how-agencies-manage-10-niches-without-losing-track", "link-building-prospects"],
+  "industrial-automation-high-value-niche":["industrial-automation-leads", "how-agencies-manage-10-niches-without-losing-track", "b2b-lead-list-worth-buying"],
+
+  // OutreachNest tool cluster
+  "outreachnest-finder-features":                ["how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet", "how-to-find-seo-clients-fast-in-2026"],
+  "how-to-check-da-pa-dr-without-paying-for-tools":["outreachnest-finder-features", "lead-list-google-sheet", "link-building-prospects"],
+  "lead-list-google-sheet":                       ["outreachnest-finder-features", "how-to-check-da-pa-dr-without-paying-for-tools", "b2b-lead-list-worth-buying"],
+};
+
+// Build the "Read Next" HTML block for a given slug — injected before </body>.
+// Uses dofollow links (no rel="nofollow") so Google distributes link equity.
+function buildRelatedSection(currentSlug) {
+  const related = RELATED_POSTS[currentSlug];
+  if (!related || related.length === 0) return "";
+  const cards = related.map(slug => {
+    const meta = POSTS_META[slug];
+    if (!meta) return "";
+    return `<a href="/post?p=${slug}" style="display:block;padding:14px 16px;background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#1e293b;font-size:14px;font-weight:500;line-height:1.4;transition:background 0.15s">${escHtml(meta.title)}</a>`;
+  }).filter(Boolean).join("\n");
+  if (!cards) return "";
+  return `\n<section style="max-width:720px;margin:40px auto 0;padding:0 20px 48px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">\n  <h2 style="font-size:16px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:0 0 14px">Read Next</h2>\n  <div style="display:flex;flex-direction:column;gap:10px">\n${cards}\n  </div>\n</section>`;
+}
+
 // Escape special HTML characters for safe use inside attribute values and text.
 function escHtml(str) {
   return String(str)
@@ -287,7 +358,8 @@ function escHtml(str) {
 // desc      — meta description
 // canonical — canonical URL for this post
 // h1Text    — raw article title WITHOUT " — OutreachNest" (fills the visible <h1>)
-function injectPostMeta(html, title, desc, canonical, h1Text) {
+// slug      — post slug, used to build the "Read Next" related-posts section (v24)
+function injectPostMeta(html, title, desc, canonical, h1Text, slug) {
   const safeTitle = escHtml(title);
   const safeDesc = escHtml(desc);
   const safeH1 = escHtml(h1Text || title);
@@ -361,6 +433,16 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
     out = out.replace(/<\/head>/i, inject + "\n</head>");
   }
 
+  // v24: inject "Read Next" related-posts section before </body>.
+  // Adds 2-3 dofollow internal links per post — fixes Ahrefs "Page has only one
+  // dofollow incoming internal link" warning on all 27 blog post pages.
+  if (slug) {
+    const relatedHtml = buildRelatedSection(slug);
+    if (relatedHtml) {
+      out = out.replace(/<\/body>/i, relatedHtml + "\n</body>");
+    }
+  }
+
   return out;
 }
 
@@ -409,7 +491,8 @@ async function handlePostPage(request, env, ctx, slug) {
   const fullTitle = meta.title + " — OutreachNest";
   const canonical = "https://getoutreachnest.com/post?p=" + slug;
   // Pass meta.title (without " — OutreachNest") as the visible H1 text
-  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title);
+  // Also pass slug so injectPostMeta can build the "Read Next" related-posts section (v24)
+  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug);
 
   const response = new Response(modified, {
     status: 200,
@@ -840,6 +923,79 @@ export default {
       return new Response("1257f0fc794749fa896e8d3c4e1af272", {
         status: 200,
         headers: { "Content-Type": "text/plain", "Cache-Control": "public, max-age=86400" },
+      });
+    }
+
+    // v24: Dynamic sitemap.xml — generated from POSTS_META so it is always in sync.
+    // GSC "invalid sitemap" was caused by the static sitemap.xml file being missing
+    // or outdated. Now the Worker generates it on the fly from the canonical list.
+    if (url.pathname === "/sitemap.xml") {
+      const BASE = "https://getoutreachnest.com";
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const SITE_PUB_DATE = "2026-09-01";
+      const mainPages = [
+        { loc: `${BASE}/`,         lastmod: today,         priority: "1.0", changefreq: "weekly"  },
+        { loc: `${BASE}/blog`,     lastmod: today,         priority: "0.9", changefreq: "weekly"  },
+        { loc: `${BASE}/download`, lastmod: today,         priority: "0.9", changefreq: "monthly" },
+        { loc: `${BASE}/services`, lastmod: today,         priority: "0.8", changefreq: "monthly" },
+        { loc: `${BASE}/niches`,   lastmod: today,         priority: "0.8", changefreq: "monthly" },
+        { loc: `${BASE}/contact`,  lastmod: today,         priority: "0.7", changefreq: "monthly" },
+      ];
+      const postEntries = Object.keys(POSTS_META).map(slug => ({
+        loc: `${BASE}/post?p=${slug}`,
+        lastmod: SITE_PUB_DATE,
+        priority: "0.7",
+        changefreq: "monthly",
+      }));
+      const allEntries = [...mainPages, ...postEntries];
+      const urlTags = allEntries.map(e =>
+        `  <url>\n    <loc>${e.loc}</loc>\n    <lastmod>${e.lastmod}</lastmod>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
+      ).join("\n");
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlTags}\n</urlset>`;
+      return new Response(xml, {
+        status: 200,
+        headers: {
+          "Content-Type": "application/xml; charset=UTF-8",
+          "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        },
+      });
+    }
+
+    // v24: robots.txt — explicitly allow all AI crawlers to fix Ahrefs warning
+    // "Indexable page blocked from some AI search bots" (33 pages).
+    // GPTBot, Claude-Web, PerplexityBot, Applebot, etc. are now allowed.
+    if (url.pathname === "/robots.txt") {
+      const robotsTxt = `User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+Sitemap: https://getoutreachnest.com/sitemap.xml`;
+      return new Response(robotsTxt, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=UTF-8",
+          "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        },
       });
     }
 

@@ -234,6 +234,10 @@ const POSTS_META = {
   },
 };
 
+// v22 (15 Sep 2026) — Added datePublished & dateModified to BlogPosting JSON-LD schema.
+//   Google Rich Results requires datePublished for Article/BlogPosting rich results.
+//   All 27 posts now include schema dates (fallback: SITE_PUB_DATE = 2026-09-01).
+//   Fixes "Structured data has Google rich results validation error" in Ahrefs.
 // v19 (Sep 2026) — Keyword-optimized titles & descriptions for all 27 posts.
 // Every title now targets a real search query (keyword-first); descriptions
 // include secondary keywords. No structural changes — only POSTS_META strings updated.
@@ -253,6 +257,7 @@ const SLUG_REDIRECTS = {
 };
 
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
+const SITE_PUB_DATE = "2026-09-01"; // Publication date used in BlogPosting schema
 
 // Escape special HTML characters for safe use inside attribute values and text.
 function escHtml(str) {
@@ -320,6 +325,8 @@ function injectPostMeta(html, title, desc, canonical, h1Text) {
     "description": desc,
     "image": OG_IMAGE,
     "url": canonical,
+    "datePublished": meta.date || SITE_PUB_DATE,
+    "dateModified": meta.date || SITE_PUB_DATE,
     "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },

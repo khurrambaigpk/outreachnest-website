@@ -73,14 +73,21 @@
 //       URL is not counted as an indexable page — fixes "Indexable page not in sitemap".
 
 const ADMIN_USER = "mariyam";
-const ADMIN_PASS = "Nest2026!Falcon91";
-const SESSION_SECRET = "on-8f3k2m9x7q1z5w4v6t0r8y2u3i7o1p9a4s6d";
+// ⚠️  ADMIN_PASS and SESSION_SECRET are loaded from Cloudflare Secrets at request
+// time (see fetch() below). Set them in the Cloudflare dashboard:
+//   Settings → Environment variables → Add secret
+//   Names: ADMIN_PASS, SESSION_SECRET
+let ADMIN_PASS;
+let SESSION_SECRET;
 const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60; // 2-hour absolute cap, enforced server-side regardless of browser cookie behavior
 const COOKIE_NAME = "on_admin_session";
 
 // ── Activation system config ────────────────────────────────────────────────
 const GUMROAD_PRODUCT_ID = "BZVGpilp2DHoSlq47Zlcjg=="; // "OutreachNest Finder — Multi-Engine Lead Finder" product's API product_id (NOT the URL permalink)
-const LICENSE_SECRET = "ON_MASTER_2026_OutreachNest_60e77519e1b796a6_SecretKey"; // must match _LICENSE_SECRET in vendor_finder_windows_app.py exactly — rotated here 30 Aug 2026 to match the app-side rotation done in V12.19.23 (this Worker file had been missed until now)
+// ⚠️  LICENSE_SECRET is loaded from Cloudflare Secrets at request time.
+// Set it in the Cloudflare dashboard → Settings → Environment variables → Add secret
+// Name: LICENSE_SECRET   Value: must match _LICENSE_SECRET in vendor_finder_windows_app.py exactly
+let LICENSE_SECRET;
 
 // ── Ed25519 hardening (added 28 Aug 2026) ───────────────────────────────────
 // Every key generated from here on also carries an Ed25519 signature, made
@@ -90,7 +97,10 @@ const LICENSE_SECRET = "ON_MASTER_2026_OutreachNest_60e77519e1b796a6_SecretKey";
 // unchanged HMAC-only path, so nothing breaks for anyone already using the app.
 // This PRIVATE key must NEVER go anywhere except here and Mariyam's private
 // keygen tool on her own PC — never into the app, never anywhere public.
-const ED25519_PRIVATE_KEY_HEX = "94985d37de5845bde4df86379e11635477ed39c96fc7ac0abf2aff175cb9efce";
+// ⚠️  ED25519_PRIVATE_KEY_HEX is loaded from Cloudflare Secrets at request time.
+// Set it in the Cloudflare dashboard → Settings → Environment variables → Add secret
+// Name: ED25519_PRIVATE_KEY_HEX
+let ED25519_PRIVATE_KEY_HEX;
 // Ed25519 private keys import into Web Crypto only via PKCS8 (raw format is
 // public-key-only for this algorithm) — this is a fixed 16-byte DER prefix
 // (RFC 8410) in front of the 32 raw private-key bytes.
@@ -109,118 +119,124 @@ const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 // title: the post's unique page title (the " — OutreachNest" suffix is appended automatically).
 // desc:  the meta description (keep under 160 chars for Ahrefs/Google).
 const POSTS_META = {
+  // v19: All 27 titles & descriptions rewritten to match real search queries.
+  // Primary keyword placed early in title; secondary keywords in description.
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
-    title: "The Awkward Truth About Cold Outreach",
-    desc: "Most cold outreach doesn't fail because people didn't try hard enough. Find out what actually goes wrong — and how to fix your approach.",
+    title: "Why Cold Outreach Fails: Mistakes Nobody Talks About",
+    desc: "Cold outreach fails for the same reasons again and again — and most guides miss them. Learn the real reasons your cold emails and DMs don't get replies.",
   },
   "finding-electronics-appliance-repair-businesses": {
-    title: "Electronics Repair Businesses for Outreach",
-    desc: "Search appliance, TV, laptop, mobile, UPS, and CCTV repair businesses across cities using OutreachNest Finder's multi-engine search.",
+    title: "How to Find Electronics & Appliance Repair Businesses for Outreach",
+    desc: "Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale. Ideal for link building, lead gen, and local outreach.",
   },
   "industrial-automation-leads": {
-    title: "Industrial Automation Leads: PLC & SCADA",
-    desc: "Find PLC automation firms, SCADA integrators, and instrumentation suppliers for link building or direct outreach at scale.",
+    title: "How to Find Industrial Automation Leads (PLC, SCADA & More)",
+    desc: "Build B2B lead lists of PLC integrators, SCADA vendors, and instrumentation firms for outreach and link building in the industrial automation niche.",
   },
   "electrical-contractors-panel-builders": {
-    title: "Find Electrical Contractors for Outreach",
-    desc: "Search residential, commercial, and industrial electricians, panel builders, and switchgear firms in bulk with OutreachNest Finder.",
+    title: "How to Find Electrical Contractors & Panel Builders for Outreach",
+    desc: "Find residential, commercial, and industrial electricians, panel builders, and switchgear companies in bulk for link building and B2B outreach campaigns.",
   },
   "solar-guest-post-sites": {
-    title: "Find Solar Guest Post Sites and Leads Fast",
-    desc: "Find solar blogs, installers, and inverter or battery sites for guest posts and lead outreach — in minutes, not days.",
+    title: "How to Find Solar Guest Post Sites & Leads in Minutes",
+    desc: "Find solar energy blogs, installer sites, and inverter or battery companies for guest posting and link building — in minutes, not days of manual searching.",
   },
   "how-agencies-manage-10-niches-without-losing-track": {
-    title: "How Agencies Manage 10+ Niches at Once",
-    desc: "Running outreach across multiple industries at once usually turns into chaos. Here's how agencies stay organized using niche profiles.",
+    title: "How SEO Agencies Manage 10+ Niches Without Losing Track",
+    desc: "Running outreach across many industries creates chaos. Here's how SEO agencies use niche profiles to stay organized and scale without confusion.",
   },
   "lead-list-google-sheet": {
-    title: "Turn Your Lead List Into a Live Google Sheet",
-    desc: "Manually copying leads into a spreadsheet wastes hours every week. Learn how OutreachNest Finder auto-exports leads to Google Sheets.",
+    title: "How to Export Your Lead List to Google Sheets Automatically",
+    desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "WhatsApp Outreach: Higher Response Rates",
-    desc: "Cold email open rates keep falling, but WhatsApp messages get read within minutes. Here's how to use WhatsApp for effective outreach.",
+    title: "WhatsApp Cold Outreach: Why Response Rates Are Higher Than Email",
+    desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
-    title: "OutreachNest Finder: Complete Features Guide",
-    desc: "A complete walkthrough of every OutreachNest Finder feature — 4-engine search, email extraction, SEO metrics, Google Sheets export, and more.",
+    title: "OutreachNest Finder Features: Complete Guide (2026)",
+    desc: "Full walkthrough of every OutreachNest Finder feature: 4-engine business search, bulk email extraction, DA/PA/DR metrics, Chrome Bridge, and Sheets export.",
   },
   "how-to-find-seo-clients-fast-in-2026": {
-    title: "How to Find SEO Clients Fast in 2026",
-    desc: "Finding SEO clients does not have to be slow or expensive. Here's a repeatable system for finding and closing new clients fast in 2026.",
+    title: "How to Find SEO Clients Fast in 2026 (Step-by-Step)",
+    desc: "A repeatable, no-ads system for finding and closing SEO clients in 2026. Build a prospect list, send targeted outreach, and land your next client fast.",
   },
   "link-building-prospects": {
-    title: "Build 1,000 Link Prospects in Minutes",
-    desc: "Most SEO freelancers spend days building prospect lists manually. Here's how to build 1,000+ link building prospects in minutes.",
+    title: "How to Build 1,000 Link Building Prospects in Minutes",
+    desc: "Most SEO freelancers waste days building prospect lists by hand. Here's a faster method to find 1,000+ real link building opportunities quickly.",
   },
   "how-to-check-da-pa-dr-without-paying-for-tools": {
-    title: "How to Check DA, PA & DR for Free",
-    desc: "Learn how SEO freelancers check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest Finder's Chrome Bridge.",
+    title: "How to Check DA, PA & DR Without Paying for Tools",
+    desc: "Check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest's Chrome Bridge — no Moz or Ahrefs subscription required.",
   },
   "spot-real-guest-post-site": {
-    title: "How to Spot a Real Guest-Post Site",
-    desc: "Not every site that says 'write for us' is worth your link. Here's how to tell real guest post sites from PBNs and link farms.",
+    title: "How to Spot a Real Guest Post Site vs a PBN or Link Farm",
+    desc: "Not every 'write for us' site is safe. Learn how to identify real guest post opportunities versus link farms and private blog networks before you publish.",
   },
   "b2b-lead-list-worth-buying": {
-    title: "What Makes a B2B Lead List Worth Buying",
-    desc: "Most lead lists are stale and full of dead emails. Here's what separates a lead list worth paying for from a waste of money.",
+    title: "What Makes a B2B Lead List Worth Buying in 2026",
+    desc: "Most B2B lead lists are stale and full of bounced emails. Here's what separates a lead list worth paying for from one that wastes your outreach budget.",
   },
   "solar-niche-goldmine": {
-    title: "Why Solar Is a Link Building Goldmine",
-    desc: "Solar is booming, competitive, and full of companies that spend on SEO. Here's why it's one of the best niches for link builders.",
+    title: "Why the Solar Niche Is a Goldmine for Link Building",
+    desc: "Solar is competitive, high-budget, and packed with companies actively investing in SEO. Here's why it's one of the best niches for link builders in 2026.",
   },
   "cold-email-that-gets-replies": {
-    title: "Cold Email Framework That Gets Replies",
-    desc: "Long, salesy emails get ignored. Short, specific, human ones get replies. Here's the simple cold email framework that actually works.",
+    title: "Cold Email That Gets Replies: A Simple Framework",
+    desc: "Long, salesy cold emails get ignored. Short, specific, human ones get replies. Here's the cold email framework that consistently gets responses.",
   },
   "warm-up-new-email-domain": {
-    title: "Warming Up a New Email Domain the Right Way",
-    desc: "Send from a brand-new domain too fast and you land in spam. Here's how to warm up a new email domain properly before outreach.",
+    title: "How to Warm Up a New Email Domain Before Cold Outreach",
+    desc: "Sending cold emails from a brand-new domain without warming it up sends you straight to spam. Here's the right way to warm up an email domain.",
   },
   "choosing-solar-installer-guide": {
-    title: "How Homeowners Choose a Solar Installer",
-    desc: "Understanding how buyers pick a solar company tells you exactly what content and trust signals you need to win more business.",
+    title: "How Homeowners Choose a Solar Installer (What Marketers Should Know)",
+    desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Why Electrical Contractors Are Underrated",
-    desc: "Electrical contractors form one of the largest, most stable B2B markets. Here's how to reach them effectively for outreach.",
+    title: "Why Electrical Contractors Are an Underrated Online Marketing Niche",
+    desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: Small Niche, Big Value",
-    desc: "There aren't many automation companies — but each one is worth serious attention. Here's how to find and reach them for outreach.",
+    title: "Industrial Automation: A Small but High-Value Outreach Niche",
+    desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
-    title: "Electronics Repair: A Steady-Demand Niche",
-    desc: "Repair shops rarely chase the spotlight, but steady demand and loyal customers make electronics repair a reliable outreach niche.",
+    title: "Electronics Repair as an Outreach Niche: Steady Demand, Low Competition",
+    desc: "Repair shops fly under the radar but they're everywhere and always need marketing help. Here's how to tap the electronics repair niche for outreach.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Great Backlinks Beat a Hundred Weak Ones",
-    desc: "More links isn't the goal. Relevant links from trusted, real sites move rankings. Here's how to focus your link building for results.",
+    title: "Quality vs Quantity in Link Building: Why Fewer Great Backlinks Win",
+    desc: "100 weak links won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality that moves rankings.",
   },
   // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
   // without entries here the worker serves the unmodified template whose canonical
   // is /post (not /post?p=SLUG), causing "Non-canonical page in sitemap" in Ahrefs.
   "solar-guest-post-cost-2026": {
-    title: "How Much Does a Solar Guest Post Cost in 2026",
-    desc: "Solar guest post prices range from $50 to $500+. Here's what drives the cost and how to find quality placements at reasonable prices.",
+    title: "How Much Does a Solar Guest Post Cost in 2026?",
+    desc: "Solar guest post prices range from $25 to $500+. Here's what drives the price difference and how to find quality placements at fair market rates.",
   },
   "signs-guest-post-site-hurt-rankings": {
-    title: "Signs a Guest Post Site Will Hurt Your Rankings",
-    desc: "Not all guest post sites are safe. Here's how to spot the red flags — thin content, PBN patterns, unnatural link profiles — before you publish.",
+    title: "5 Signs a Guest Post Site Will Hurt Your Rankings",
+    desc: "Some guest post sites do more harm than good. Learn how to spot thin content, PBN patterns, and unnatural link profiles before you publish and pay.",
   },
   "electrical-contractor-seo-backlinks": {
-    title: "How Electrical Contractors Get More SEO Backlinks",
-    desc: "Electrical contractors rarely think about link building — which creates real opportunity. Here's how to build links effectively in this niche.",
+    title: "How Electrical Contractors Can Build SEO Backlinks",
+    desc: "Electrical contractors rarely do link building — which creates a real opportunity for SEOs. Here's how to earn and build backlinks in this niche.",
   },
   "vet-electronics-repair-guest-post-site": {
-    title: "How to Vet an Electronics Repair Guest Post Site",
-    desc: "Electronics repair blogs look legitimate but some are link farms. Here's a quick vetting checklist to find sites actually worth publishing on.",
+    title: "How to Vet an Electronics Repair Guest Post Site (Checklist)",
+    desc: "Electronics repair blogs can be link farms in disguise. Here's a fast vetting checklist to find sites actually worth publishing on vs ones to skip.",
   },
   "guest-posting-vs-pbn-links-difference": {
-    title: "Guest Posting vs PBN Links: The Real Difference",
-    desc: "Both put links on other sites, but the risks and results are completely different. Here's what separates a real guest post link from a PBN link.",
+    title: "Guest Posting vs PBN Links: What's the Real Difference?",
+    desc: "Both place links on external sites, but the risks and long-term results are completely different. Here's what actually separates a guest post from a PBN link.",
   },
 };
+
+// v19 (Sep 2026) — Keyword-optimized titles & descriptions for all 27 posts.
+// Every title now targets a real search query (keyword-first); descriptions
+// include secondary keywords. No structural changes — only POSTS_META strings updated.
 
 // v15: 301 redirects for 8 truncated slugs that Google already indexed.
 // Old URLs (cut off at 50 chars by a previous tooling bug) permanently redirect
@@ -752,6 +768,17 @@ async function handleActivate(request, env) {
 
 export default {
   async fetch(request, env) {
+    // ── Load secrets from Cloudflare Secrets bindings ──────────────────────
+    // These are never hard-coded here; set them in the Cloudflare dashboard
+    // under Settings → Environment variables → Secrets.
+    ADMIN_PASS            = env.ADMIN_PASS            ?? "";
+    SESSION_SECRET        = env.SESSION_SECRET        ?? "";
+    LICENSE_SECRET        = env.LICENSE_SECRET        ?? "";
+    ED25519_PRIVATE_KEY_HEX = env.ED25519_PRIVATE_KEY_HEX ?? "";
+    // Reset the Ed25519 key cache whenever the env binding changes
+    // (new deployment with rotated key) — forces fresh importKey().
+    _ed25519PrivateKeyCache = null;
+
     const url = new URL(request.url);
 
     if (url.pathname === "/api/activate") {

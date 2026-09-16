@@ -1120,9 +1120,12 @@ export default {
           let bodyText = await resp.text();
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
-            // Replace existing JSON-LD block if present; otherwise inject before </head>
-            const withSchema = bodyText.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>/i, schemaTag);
-            bodyText = (withSchema !== bodyText) ? withSchema : bodyText.replace(/<\/head>/i, schemaTag + "\n</head>");
+            // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours
+            // before </head>. The old single-replace + !== comparison was fragile —
+            // if the regex failed to match (or matched but produced the same string
+            // length by coincidence), the fallback path produced a double-schema page.
+            bodyText = bodyText.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>\n?/gi, '');
+            bodyText = bodyText.replace(/<\/head>/i, schemaTag + "\n</head>");
             // v25: also fix Services page title and meta description (too generic in static HTML)
             if (normPath === "/services") {
               bodyText = bodyText

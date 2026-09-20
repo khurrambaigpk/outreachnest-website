@@ -101,6 +101,14 @@ let LICENSE_SECRET;
 // Set it in the Cloudflare dashboard → Settings → Environment variables → Add secret
 // Name: ED25519_PRIVATE_KEY_HEX
 let ED25519_PRIVATE_KEY_HEX;
+
+// ── GitHub publishing secret (v27) ──────────────────────────────────────────
+// A fine-grained GitHub PAT with "Contents: Read and write" permission on
+// khurrambaigpk/outreachnest-website. Stored as a Cloudflare Secret — never
+// in admin.html or localStorage. handlePublish() reads it from here.
+// Add in Cloudflare dashboard → Settings → Environment variables → Add secret
+// Name: GITHUB_TOKEN
+let GITHUB_TOKEN;
 // Ed25519 private keys import into Web Crypto only via PKCS8 (raw format is
 // public-key-only for this algorithm) — this is a fixed 16-byte DER prefix
 // (RFC 8410) in front of the 32 raw private-key bytes.
@@ -502,6 +510,11 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug) {
     .replace(/<meta\s+name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${safeDesc}">`)
     .replace(/<meta\s+name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${OG_IMAGE}">`);
 
+  // Fix robots meta tag for known slugs — static template has "noindex, follow"
+  // which causes Google to skip all blog post pages. Change it to "index, follow"
+  // so crawlers can index this post. (Unknown slugs stay noindex — see handlePostPage.)
+  out = out.replace(/<meta\s+name="robots"[^>]*>/i, '<meta name="robots" content="index, follow">');
+
   // Fill the existing <h1 id="aTitle"> in the template with the post title.
   // post.html has <h1 id="aTitle"></h1> (empty — JS fills it after render).
   // Static crawlers that skip JS would see an empty H1; this fills it server-side
@@ -613,7 +626,44 @@ async function handlePostPage(request, env, ctx, slug) {
   const canonical = "https://getoutreachnest.com/post?p=" + slug;
   // Pass meta.title (without " — OutreachNest") as the visible H1 text
   // Also pass slug so injectPostMeta can build the "Read Next" related-posts section (v24)
-  const modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug);
+  let modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug);
+
+  // Inject full article body from posts-data.json so non-JS crawlers (Google, Bing,
+  // AI crawlers) see the complete article text on first load — not just the JS shell.
+  // Gracefully skipped if posts-data.json hasn't been deployed yet.
+  try {
+    const dataResp = await env.ASSETS.fetch(
+      new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
+    );
+    if (dataResp.ok) {
+      const allPosts = await dataResp.json();
+      const postData = allPosts.find(p => p.slug === slug);
+      if (postData) {
+        // Inject article body between the opening marker and the first </div> after it
+        const bodyMarker = 'id="aBody">';
+        const bodyStart = modified.indexOf(bodyMarker);
+        if (bodyStart !== -1) {
+          const insertAt = bodyStart + bodyMarker.length;
+          const endDiv = modified.indexOf('</div>', insertAt);
+          if (endDiv !== -1) {
+            modified = modified.slice(0, insertAt) + postData.content + modified.slice(endDiv);
+          }
+        }
+        // Inject cover class and icon
+        modified = modified.replace(
+          /<div([^>]*)\bid="aCover"\b([^>]*)>[^<]*<\/div>/i,
+          `<div class="art-cover ${escHtml(postData.cover)}" id="aCover">${escHtml(postData.icon)}</div>`
+        );
+        // Inject category name
+        modified = modified.replace(
+          /(<div[^>]*\bid="aCat"\b[^>]*>)[^<]*(<\/div>)/i,
+          `$1${escHtml(postData.cat)}$2`
+        );
+      }
+    }
+  } catch (e) {
+    // posts-data.json not yet deployed or parse error — metadata-only response is still served
+  }
 
   const response = new Response(modified, {
     status: 200,
@@ -669,7 +719,31 @@ function getCookie(request, name) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-function loginPageHtml(showError) {
+// ── Admin login rate-limiting (5 failures / 15 min per IP) ─────────────────
+// KV key: `login_fail:{ip}` with 900 s TTL. Cleared on successful login.
+// Shares the LICENSE_KV namespace — no extra binding needed.
+async function getLoginFailCount(ip, env) {
+  if (!ip) return 0;
+  try {
+    const val = await env.LICENSE_KV.get(`login_fail:${ip}`);
+    return val ? parseInt(val, 10) : 0;
+  } catch(e) { return 0; }
+}
+async function incrementLoginFail(ip, env) {
+  if (!ip) return;
+  try {
+    const key = `login_fail:${ip}`;
+    const val = await env.LICENSE_KV.get(key);
+    const count = (val ? parseInt(val, 10) : 0) + 1;
+    await env.LICENSE_KV.put(key, String(count), { expirationTtl: 900 }); // 15 min
+  } catch(e) { /* best-effort */ }
+}
+async function clearLoginFail(ip, env) {
+  if (!ip) return;
+  try { await env.LICENSE_KV.delete(`login_fail:${ip}`); } catch(e) {}
+}
+
+function loginPageHtml(showError, rateLimited = false) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -695,7 +769,7 @@ button:hover{background:#173c2d}
 <div class="lock">🔐</div>
 <h1>Admin Access</h1>
 <p>OutreachNest Blog Editor</p>
-${showError ? '<div class="err">❌ Incorrect username or password.</div>' : ""}
+${rateLimited ? '<div class="err">🔒 Too many failed attempts. Please wait 15 minutes before trying again.</div>' : showError ? '<div class="err">❌ Incorrect username or password.</div>' : ""}
 <form method="POST">
 <input type="text" name="username" placeholder="Username" autocomplete="username" required autofocus>
 <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
@@ -704,6 +778,193 @@ ${showError ? '<div class="err">❌ Incorrect username or password.</div>' : ""}
 </div>
 </body>
 </html>`;
+}
+
+// ── Server-side GitHub publishing (v27) ────────────────────────────────────
+// POST /api/publish  (session-authenticated)
+//
+// Why it lives here:
+//   The GitHub PAT that gives write access to the repo must never be exposed
+//   to JavaScript running in the browser — localStorage is readable by any XSS
+//   payload that ever runs on the same origin. Moving publishing to the Worker
+//   lets us store the credential as a Cloudflare Secret (env.GITHUB_TOKEN),
+//   completely out of reach of client-side code.
+//
+// What it does:
+//   Receives the new post's structured data from admin.html, then makes one
+//   atomic commit (via GitHub's Git Data API) that updates all four files:
+//     posts.js        — JavaScript data array the frontend reads
+//     blog.html       — static grid card so non-JS crawlers see the new post
+//     sitemap.xml     — URL entry so Google can discover the post
+//     posts-data.json — pure JSON for Worker SSR (robots:index, full body)
+//
+//   Using the Git Data API (ref → commit → tree → blob × 4 → new tree →
+//   new commit → update ref) means it's all-or-nothing: either all four files
+//   update together or none do, so the site can never end up in a partial state
+//   where, say, posts.js is updated but posts-data.json is still stale.
+async function handlePublish(request, env) {
+  // 1) Session check — must be logged-in admin
+  const sessionTok = getCookie(request, COOKIE_NAME);
+  if (!await verifySessionToken(sessionTok)) {
+    return jsonResponse({ error: "Unauthorized — please log in to /admin first." }, 401);
+  }
+
+  // 2) Check the GITHUB_TOKEN secret is configured
+  const ghToken = env.GITHUB_TOKEN ?? "";
+  if (!ghToken) {
+    return jsonResponse({ error: "GITHUB_TOKEN secret is not set on this Worker. Add it in Cloudflare Dashboard → Workers → your worker → Settings → Environment variables → Secrets." }, 500);
+  }
+
+  // 3) Parse and validate the request body
+  let post;
+  try {
+    const body = await request.json();
+    post = body.post;
+  } catch(e) {
+    return jsonResponse({ error: "Invalid JSON body" }, 400);
+  }
+  const required = ["slug","cat","cover","icon","title","author","date","read","excerpt","content"];
+  for (const f of required) {
+    if (!post || typeof post[f] === "undefined" || post[f] === "") {
+      return jsonResponse({ error: `Missing or empty field: ${f}` }, 400);
+    }
+  }
+  const { slug, cat, cover, icon, title, author, date, read, excerpt, content } = post;
+
+  const REPO   = "khurrambaigpk/outreachnest-website";
+  const BRANCH = "main";
+  const ghH = {
+    "Authorization"         : `Bearer ${ghToken}`,
+    "Accept"                : "application/vnd.github+json",
+    "Content-Type"          : "application/json",
+    "X-GitHub-Api-Version"  : "2022-11-28",
+    "User-Agent"            : "OutreachNest-Worker/1.0",
+  };
+  const ghFetch = (url, opts = {}) =>
+    fetch(url, { ...opts, headers: { ...ghH, ...(opts.headers || {}) } });
+
+  // Decode GitHub's base64-encoded file content to a UTF-8 string
+  const b64dec = b64 => new TextDecoder().decode(
+    Uint8Array.from(atob(b64.replace(/\n/g, "")), c => c.charCodeAt(0))
+  );
+  // HTML-escape helper for blog card injection
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+  try {
+    // ── Step A: get the current HEAD commit and its tree ──────────────────
+    const refResp = await ghFetch(`https://api.github.com/repos/${REPO}/git/ref/heads/${BRANCH}`);
+    if (!refResp.ok) throw new Error(`GitHub: could not read branch ref (HTTP ${refResp.status})`);
+    const { object: { sha: headSha } } = await refResp.json();
+
+    const headCommitResp = await ghFetch(`https://api.github.com/repos/${REPO}/git/commits/${headSha}`);
+    if (!headCommitResp.ok) throw new Error(`GitHub: could not read HEAD commit (HTTP ${headCommitResp.status})`);
+    const { tree: { sha: treeSha } } = await headCommitResp.json();
+
+    // ── Step B: fetch the four current files in parallel ──────────────────
+    const [postsJsResp, blogHtmlResp, sitemapResp, postsDataResp] = await Promise.all([
+      ghFetch(`https://api.github.com/repos/${REPO}/contents/posts.js?ref=${BRANCH}`),
+      ghFetch(`https://api.github.com/repos/${REPO}/contents/blog.html?ref=${BRANCH}`),
+      ghFetch(`https://api.github.com/repos/${REPO}/contents/sitemap.xml?ref=${BRANCH}`),
+      ghFetch(`https://api.github.com/repos/${REPO}/contents/posts-data.json?ref=${BRANCH}`),
+    ]);
+    if (!postsJsResp.ok)   throw new Error(`GitHub: could not read posts.js (HTTP ${postsJsResp.status})`);
+    if (!blogHtmlResp.ok)  throw new Error(`GitHub: could not read blog.html (HTTP ${blogHtmlResp.status})`);
+    if (!sitemapResp.ok)   throw new Error(`GitHub: could not read sitemap.xml (HTTP ${sitemapResp.status})`);
+    if (!postsDataResp.ok) throw new Error(`GitHub: could not read posts-data.json (HTTP ${postsDataResp.status})`);
+
+    const [postsJsData, blogHtmlData, sitemapData, postsDataData] = await Promise.all([
+      postsJsResp.json(), blogHtmlResp.json(), sitemapResp.json(), postsDataResp.json(),
+    ]);
+
+    const postsJsContent  = b64dec(postsJsData.content);
+    const blogHtmlContent = b64dec(blogHtmlData.content);
+    const sitemapContent  = b64dec(sitemapData.content);
+    const postsDataArr    = JSON.parse(b64dec(postsDataData.content));
+
+    // ── Step C: build patched file contents ───────────────────────────────
+
+    // posts.js — insert new post as a JS object literal using JSON.stringify
+    // (safe: handles quotes, backticks, ${...}, backslashes, and all Unicode)
+    const jsLiteral = `  {\n  slug:${JSON.stringify(slug)},\n  cat:${JSON.stringify(cat)}, cover:${JSON.stringify(cover)}, icon:${JSON.stringify(icon)},\n  title:${JSON.stringify(title)},\n  author:${JSON.stringify(author)}, date:${JSON.stringify(date)}, read:${JSON.stringify(read)},\n  excerpt:${JSON.stringify(excerpt)},\n  content:${JSON.stringify(content)}\n  },`;
+    const postsMarker = "window.POSTS = [";
+    const postsIdx = postsJsContent.indexOf(postsMarker);
+    if (postsIdx === -1) throw new Error('Could not find "window.POSTS = [" in posts.js — file format may have changed');
+    const newPostsJs = postsJsContent.slice(0, postsIdx + postsMarker.length)
+      + "\n" + jsLiteral
+      + postsJsContent.slice(postsIdx + postsMarker.length);
+
+    // blog.html — insert card at the top of the grid
+    const gridMarker = '<div class="blog-grid" id="blogGrid">';
+    const gridIdx = blogHtmlContent.indexOf(gridMarker);
+    if (gridIdx === -1) throw new Error('Could not find blog grid in blog.html — file format may have changed');
+    const blogCard = `<a class="post reveal" href="/post?p=${slug}"><div class="cover ${cover}">${esc(icon)}</div><div class="body"><div class="cat">${esc(cat)}</div><h3>${esc(title)}</h3><div class="excerpt">${esc(excerpt)}</div><div class="meta"><span>${esc(author)}</span><span class="dot"></span><span>${esc(read)}</span></div></div></a>`;
+    const newBlogHtml = blogHtmlContent.slice(0, gridIdx + gridMarker.length)
+      + blogCard
+      + blogHtmlContent.slice(gridIdx + gridMarker.length);
+
+    // sitemap.xml — insert new <url> entry
+    const urlsetMarker = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    const urlsetIdx = sitemapContent.indexOf(urlsetMarker);
+    if (urlsetIdx === -1) throw new Error('Could not find <urlset> in sitemap.xml — file format may have changed');
+    const urlEntry = `<url><loc>https://getoutreachnest.com/post?p=${slug}</loc><priority>0.6</priority></url>`;
+    const newSitemap = sitemapContent.slice(0, urlsetIdx + urlsetMarker.length)
+      + "\n" + urlEntry
+      + sitemapContent.slice(urlsetIdx + urlsetMarker.length);
+
+    // posts-data.json — prepend new post to JSON array
+    const newPostObj = { slug, cat, cover, icon, title, author, date, read, excerpt, content };
+    const newPostsData = JSON.stringify([newPostObj, ...postsDataArr], null, 2);
+
+    // ── Step D: create git blobs for all four files in parallel ───────────
+    const filesToCommit = [
+      { path: "posts.js",        body: newPostsJs   },
+      { path: "blog.html",       body: newBlogHtml  },
+      { path: "sitemap.xml",     body: newSitemap   },
+      { path: "posts-data.json", body: newPostsData },
+    ];
+    const blobs = await Promise.all(filesToCommit.map(async ({ path, body: fileBody }) => {
+      const blobResp = await ghFetch(`https://api.github.com/repos/${REPO}/git/blobs`, {
+        method: "POST",
+        body: JSON.stringify({ content: fileBody, encoding: "utf-8" }),
+      });
+      if (!blobResp.ok) {
+        const e = await blobResp.json().catch(() => ({}));
+        throw new Error(`Blob creation failed for ${path}: ${e.message || blobResp.status}`);
+      }
+      const { sha: blobSha } = await blobResp.json();
+      return { path, sha: blobSha, mode: "100644", type: "blob" };
+    }));
+
+    // ── Step E: create new tree, new commit, advance branch pointer ────────
+    const newTreeResp = await ghFetch(`https://api.github.com/repos/${REPO}/git/trees`, {
+      method: "POST",
+      body: JSON.stringify({ base_tree: treeSha, tree: blobs }),
+    });
+    if (!newTreeResp.ok) throw new Error(`Tree creation failed (HTTP ${newTreeResp.status})`);
+    const { sha: newTreeSha } = await newTreeResp.json();
+
+    const newCommitResp = await ghFetch(`https://api.github.com/repos/${REPO}/git/commits`, {
+      method: "POST",
+      body: JSON.stringify({
+        message: `publish: add "${title}" (${slug})`,
+        tree: newTreeSha,
+        parents: [headSha],
+      }),
+    });
+    if (!newCommitResp.ok) throw new Error(`Commit creation failed (HTTP ${newCommitResp.status})`);
+    const { sha: newCommitSha } = await newCommitResp.json();
+
+    const updateRefResp = await ghFetch(`https://api.github.com/repos/${REPO}/git/refs/heads/${BRANCH}`, {
+      method: "PATCH",
+      body: JSON.stringify({ sha: newCommitSha, force: false }),
+    });
+    if (!updateRefResp.ok) throw new Error(`Branch update failed (HTTP ${updateRefResp.status})`);
+
+    return jsonResponse({ success: true, commit: newCommitSha.slice(0, 7) });
+
+  } catch(err) {
+    return jsonResponse({ error: err.message }, 500);
+  }
 }
 
 // ── Activation key generation (byte-identical port of the app's algorithm) ──
@@ -991,10 +1252,11 @@ export default {
     // ── Load secrets from Cloudflare Secrets bindings ──────────────────────
     // These are never hard-coded here; set them in the Cloudflare dashboard
     // under Settings → Environment variables → Secrets.
-    ADMIN_PASS            = env.ADMIN_PASS            ?? "";
-    SESSION_SECRET        = env.SESSION_SECRET        ?? "";
-    LICENSE_SECRET        = env.LICENSE_SECRET        ?? "";
+    ADMIN_PASS              = env.ADMIN_PASS              ?? "";
+    SESSION_SECRET          = env.SESSION_SECRET          ?? "";
+    LICENSE_SECRET          = env.LICENSE_SECRET          ?? "";
     ED25519_PRIVATE_KEY_HEX = env.ED25519_PRIVATE_KEY_HEX ?? "";
+    GITHUB_TOKEN            = env.GITHUB_TOKEN            ?? "";
     // Reset the Ed25519 key cache whenever the env binding changes
     // (new deployment with rotated key) — forces fresh importKey().
     _ed25519PrivateKeyCache = null;
@@ -1003,6 +1265,12 @@ export default {
 
     if (url.pathname === "/api/activate") {
       return handleActivate(request, env);
+    }
+
+    // Server-side publishing: admin POSTs post data here; Worker commits all
+    // four files atomically to GitHub using env.GITHUB_TOKEN (a Cloudflare Secret).
+    if (url.pathname === "/api/publish" && request.method === "POST") {
+      return handlePublish(request, env);
     }
 
     // ── Blog post pages: inject per-post metadata server-side ──────────────
@@ -1162,6 +1430,16 @@ export default {
 
     // Login form submission.
     if (request.method === "POST") {
+      const ip = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "";
+      const failCount = await getLoginFailCount(ip, env);
+      // Block after 5 failures — attacker must wait for the 15-min TTL to expire.
+      if (failCount >= 5) {
+        return new Response(loginPageHtml(false, true), {
+          status: 429,
+          headers: { "Content-Type": "text/html; charset=UTF-8" },
+        });
+      }
+
       let user = "", pass = "";
       try {
         const form = await request.formData();
@@ -1172,6 +1450,8 @@ export default {
       }
 
       if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        // Successful login — clear failure counter so the next genuine lockout starts fresh.
+        await clearLoginFail(ip, env);
         const token = await makeSessionToken();
         return new Response(null, {
           status: 302,
@@ -1182,6 +1462,8 @@ export default {
         });
       }
 
+      // Failed login — increment counter (non-blocking; best-effort).
+      await incrementLoginFail(ip, env);
       return new Response(loginPageHtml(true), {
         status: 401,
         headers: { "Content-Type": "text/html; charset=UTF-8" },

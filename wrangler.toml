@@ -5,7 +5,7 @@ main = "_worker.js"
 [assets]
 directory = "./"
 binding = "ASSETS"
-run_worker_first = ["/admin", "/admin.html", "/api/activate", "/post"]
+run_worker_first = ["/admin", "/admin.html", "/api/activate", "/post", "/post.html"]
 
 [[kv_namespaces]]
 binding = "LICENSE_KV"

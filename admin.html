@@ -61,17 +61,6 @@ textarea{min-height:120px;resize:vertical}
 <h1>📝 Blog Editor <a href="/admin?logout=1" style="float:right;font-size:13px;font-weight:600;color:#a33;text-decoration:none;border:1px solid #a33;border-radius:6px;padding:5px 10px;vertical-align:middle">Logout</a></h1>
 <p class="sub">Fill this form to create a new blog post. No coding needed — it generates the code for you.</p>
 
-<div class="box" id="ghBox">
-<label>🔗 GitHub Auto-Publish (optional)</label>
-<p class="hint">Save your GitHub token once — it's stored only in this browser and is never sent anywhere except directly to GitHub. After that, "Publish to GitHub" will push new posts to <b>posts.js</b> automatically, no manual copy-paste needed.</p>
-<div class="gh-row">
-<input type="password" id="ghTokenInput" placeholder="Paste your GitHub token here (ghp_... or github_pat_...)">
-<button class="btn" onclick="saveGhToken()">Save token</button>
-<button class="btn gh-remove" onclick="clearGhToken()">Remove</button>
-</div>
-<p id="ghTokenStatus" class="hint"></p>
-</div>
-
 <div class="box">
 <label>Blog title</label>
 <input id="title" placeholder="e.g. 5 Solar Marketing Tips That Actually Work">
@@ -164,14 +153,10 @@ else content+=` <p>${txt}</p>\n`;
 });
 const slug=slugify(title);
 const date=new Date().toLocaleString('en-US',{month:'long',year:'numeric'});
-const code=` {
-slug:"${slug}",
-cat:"${cat}", cover:"${cover}", icon:"${icon}",
-title:"${title.replace(/"/g,'\\"')}",
-author:"OutreachNest", date:"${date}", read:"${read}",
-excerpt:"${excerpt.replace(/"/g,'\\"')}",
-content:\`${content.trim()}\`
-},`;
+// Use JSON.stringify for all string fields — handles quotes, backticks,
+// ${...} template expressions, backslashes, and all Unicode correctly.
+// The old .replace(/"/g,'\\"') approach broke on backticks and $ signs.
+const code=` {\n  slug:${JSON.stringify(slug)},\n  cat:${JSON.stringify(cat)}, cover:${JSON.stringify(cover)}, icon:${JSON.stringify(icon)},\n  title:${JSON.stringify(title)},\n  author:"OutreachNest", date:${JSON.stringify(date)}, read:${JSON.stringify(read)},\n  excerpt:${JSON.stringify(excerpt)},\n  content:${JSON.stringify(content.trim())}\n  },`;
 document.getElementById('code').value=code;
 document.getElementById('ghStatus').textContent='';
 document.getElementById('output').style.display='block';
@@ -184,75 +169,18 @@ event.target.textContent='✅ Copied!';
 setTimeout(()=>event.target.textContent='📋 Copy code',1600);
 }
 
-// ── GitHub Auto-Publish ──
-const GH_OWNER='khurrambaigpk';
-const GH_REPO='outreachnest-website';
-const GH_BRANCH='main';
-const GH_FILE='posts.js';
-const GH_TOKEN_KEY='on_admin_gh_token';
-
-function b64EncodeUnicode(str){
-return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,(m,p1)=>String.fromCharCode('0x'+p1)));
-}
-function b64DecodeUnicode(str){
-return decodeURIComponent(atob(str.replace(/\n/g,'')).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-}
+// ── GitHub Auto-Publish (v27) ─────────────────────────────────────────────
+// The GitHub token is now a Cloudflare Secret on the Worker — never stored
+// in the browser. publishToGitHub() just POSTs structured post data to
+// /api/publish; the Worker fetches all four files, patches them, and
+// commits everything atomically in one GitHub commit.
 function escapeHtml(s){
 return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function saveGhToken(){
-const val=document.getElementById('ghTokenInput').value.trim();
-if(!val){alert('Please paste your GitHub token first.');return;}
-localStorage.setItem(GH_TOKEN_KEY,val);
-document.getElementById('ghTokenInput').value='';
-updateGhTokenStatus();
-}
-function clearGhToken(){
-localStorage.removeItem(GH_TOKEN_KEY);
-updateGhTokenStatus();
-}
-function updateGhTokenStatus(){
-const has=!!localStorage.getItem(GH_TOKEN_KEY);
-const el=document.getElementById('ghTokenStatus');
-el.textContent = has ? '✅ Token saved in this browser — ready to publish.' : '⚠️ No token saved yet — add one to enable one-click publish.';
-el.style.color = has ? 'var(--leaf-deep)' : '#a33';
-}
-updateGhTokenStatus();
-
-async function githubGetFile(path, headers){
-const apiBase=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
-const res=await fetch(`${apiBase}?ref=${GH_BRANCH}`,{headers});
-if(!res.ok){
-throw new Error(`Could not read ${path} (HTTP ${res.status}). Check your token has write access to ${GH_REPO}.`);
-}
-const data=await res.json();
-return {sha:data.sha, content:b64DecodeUnicode(data.content), apiBase};
-}
-async function githubPutFile(apiBase, headers, newContent, sha, message, label){
-const res=await fetch(apiBase,{
-method:'PUT',
-headers:{...headers,'Content-Type':'application/json'},
-body:JSON.stringify({message, content:b64EncodeUnicode(newContent), sha, branch:GH_BRANCH})
-});
-if(!res.ok){
-const errBody=await res.text();
-throw new Error(`Publish failed for ${label} (HTTP ${res.status}): ${errBody.slice(0,200)}`);
-}
-return res.json();
-}
-
 async function publishToGitHub(){
-const token=localStorage.getItem(GH_TOKEN_KEY);
 const statusEl=document.getElementById('ghStatus');
-const codeSnippet=document.getElementById('code').value;
-
-if(!codeSnippet){alert('Click "Generate blog code" first.');return;}
-if(!token){
-alert('Please save your GitHub token in the box above first.');
-document.getElementById('ghTokenInput').focus();
-return;
-}
+if(!document.getElementById('code').value){alert('Click "Generate blog code" first.');return;}
 
 const title=document.getElementById('title').value.trim();
 const cat=document.getElementById('cat').value.trim();
@@ -261,58 +189,41 @@ const icon=document.getElementById('icon').value.trim()||'📄';
 const cover=document.getElementById('cover').value;
 const read=document.getElementById('read').value.trim()||'5 min read';
 const slug=slugify(title);
+const date=new Date().toLocaleString('en-US',{month:'long',year:'numeric'});
 
-const headers={
-'Authorization':`Bearer ${token}`,
-'Accept':'application/vnd.github+json'
-};
+// Collect paragraph content (same logic as generate())
+let content='';
+document.querySelectorAll('#paras .para-row').forEach(row=>{
+const type=row.querySelector('select').value;
+const txt=row.querySelector('textarea').value.trim();
+if(!txt)return;
+if(type==='h3')content+=` <h3>${txt}</h3>\n`;
+else content+=` <p>${txt}</p>\n`;
+});
+
+statusEl.style.color='var(--muted)';
+statusEl.textContent='⏳ Publishing… (committing all 4 files atomically)';
 
 try{
-// 1) posts.js — the actual article data
-statusEl.style.color='var(--muted)';
-statusEl.textContent='⏳ (1/3) Updating posts.js...';
-const postsFile=await githubGetFile(GH_FILE, headers);
-const postsMarker='window.POSTS = [';
-const postsIdx=postsFile.content.indexOf(postsMarker);
-if(postsIdx===-1){
-throw new Error('Could not find "window.POSTS = [" in posts.js — file format may have changed.');
+// POST structured post data to the Worker — it holds the GitHub token as a
+// Cloudflare Secret and handles all GitHub API calls server-side, then creates
+// one atomic commit for posts.js, blog.html, sitemap.xml, and posts-data.json.
+const resp=await fetch('/api/publish',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({post:{slug,cat,cover,icon,title,author:'OutreachNest',date,read,excerpt,content:content.trim()}})
+});
+const result=await resp.json();
+if(!resp.ok||result.error){
+statusEl.style.color='#c0392b';
+statusEl.textContent='❌ '+result.error;
+return;
 }
-const postsInsertAt=postsIdx+postsMarker.length;
-const newPostsContent=postsFile.content.slice(0,postsInsertAt)+'\n'+codeSnippet+postsFile.content.slice(postsInsertAt);
-await githubPutFile(postsFile.apiBase, headers, newPostsContent, postsFile.sha, `Add new blog post: ${title}`, 'posts.js');
-
-// 2) blog.html — static grid card, so non-JS crawlers see the new post too (without this, new posts
-// published from here were invisible to simple crawlers even though real visitors could see them)
-statusEl.textContent='⏳ (2/3) Updating blog.html...';
-const blogFile=await githubGetFile('blog.html', headers);
-const gridMarker='<div class="blog-grid" id="blogGrid">';
-const gridIdx=blogFile.content.indexOf(gridMarker);
-if(gridIdx===-1){
-throw new Error('Could not find the blog grid in blog.html — file format may have changed.');
-}
-const cardHtml=`<a class="post reveal" href="/post?p=${slug}"><div class="cover ${cover}">${icon}</div><div class="body"><div class="cat">${escapeHtml(cat)}</div><h3>${escapeHtml(title)}</h3><div class="excerpt">${escapeHtml(excerpt)}</div><div class="meta"><span>OutreachNest</span><span class="dot"></span><span>${escapeHtml(read)}</span></div></div></a>`;
-const gridInsertAt=gridIdx+gridMarker.length;
-const newBlogContent=blogFile.content.slice(0,gridInsertAt)+cardHtml+blogFile.content.slice(gridInsertAt);
-await githubPutFile(blogFile.apiBase, headers, newBlogContent, blogFile.sha, `Add "${title}" to blog.html grid`, 'blog.html');
-
-// 3) sitemap.xml — so search engines can discover the new post's URL
-statusEl.textContent='⏳ (3/3) Updating sitemap.xml...';
-const sitemapFile=await githubGetFile('sitemap.xml', headers);
-const urlsetMarker='<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-const urlsetIdx=sitemapFile.content.indexOf(urlsetMarker);
-if(urlsetIdx===-1){
-throw new Error('Could not find <urlset> in sitemap.xml — file format may have changed.');
-}
-const urlEntry=`<url><loc>https://getoutreachnest.com/post?p=${slug}</loc><priority>0.6</priority></url>`;
-const urlsetInsertAt=urlsetIdx+urlsetMarker.length;
-const newSitemapContent=sitemapFile.content.slice(0,urlsetInsertAt)+'\n'+urlEntry+sitemapFile.content.slice(urlsetInsertAt);
-await githubPutFile(sitemapFile.apiBase, headers, newSitemapContent, sitemapFile.sha, `Add "${title}" to sitemap.xml`, 'sitemap.xml');
-
 statusEl.style.color='var(--leaf-deep)';
-statusEl.textContent='✅ Published! posts.js, blog.html, and sitemap.xml all updated — your new post will be live and discoverable within a minute or two.';
+statusEl.textContent=`✅ Published! Commit ${result.commit} — posts.js, blog.html, sitemap.xml, and posts-data.json updated in one atomic commit.`;
 }catch(err){
 statusEl.style.color='#c0392b';
-statusEl.textContent='❌ '+err.message+' — if this happened after step 1 or 2 already showed progress, some files may already be updated on GitHub; check there before retrying.';
+statusEl.textContent='❌ '+err.message;
 }
 }
 </script>

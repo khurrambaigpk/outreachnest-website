@@ -326,13 +326,12 @@ body { background: var(--bg); color: var(--text); }
   color: #fff;
   box-shadow: 0 2px 8px rgba(28,122,77,.3);
 }
-.cat-pill[data-cat="Solar"].active       { background:var(--solar);  border-color:var(--solar); }
-.cat-pill[data-cat="Electrical"].active  { background:var(--elec);   border-color:var(--elec); }
-.cat-pill[data-cat="Electronics"].active { background:var(--teal);   border-color:var(--teal); }
-.cat-pill[data-cat="Guest"].active       { background:var(--guest);  border-color:var(--guest); }
-.cat-pill[data-cat="Outreach"].active    { background:var(--outreach);border-color:var(--outreach); }
-.cat-pill[data-cat="SEO"].active         { background:var(--seo);    border-color:var(--seo); }
-.cat-pill[data-cat="Deliverability"].active{ background:var(--deliv);border-color:var(--deliv); }
+.cat-pill[data-cat="LinkBuilding"].active { background:var(--guest);       border-color:var(--guest); }
+.cat-pill[data-cat="Outreach"].active    { background:var(--outreach);    border-color:var(--outreach); }
+.cat-pill[data-cat="SEO"].active         { background:var(--seo);         border-color:var(--seo); }
+.cat-pill[data-cat="Research"].active    { background:#0369a1;            border-color:#0369a1; }
+.cat-pill[data-cat="Industry"].active    { background:var(--solar);       border-color:var(--solar); }
+.cat-pill[data-cat="Resources"].active   { background:#6d28d9;            border-color:#6d28d9; }
 .pill-count {
   background: rgba(255,255,255,.22);
   color: inherit;
@@ -449,6 +448,37 @@ body { background: var(--bg); color: var(--text); }
 .p-automation { background:var(--automation-bg);color:var(--automation);}
 .p-brand      { background:var(--brand-soft);  color:var(--brand);    }
 .p-default    { background:var(--bg);          color:var(--text-3);   }
+
+/* ── Content-type badges (Data Study / Case Study / Resource / Experiment) ── */
+.pc-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 9px;
+  width: fit-content;
+  border: 1px solid transparent;
+}
+.pt-research   { background:#e0f2fe; color:#0369a1; border-color:#bae6fd; }
+.pt-casestudy  { background:#dcfce7; color:#15803d; border-color:#bbf7d0; }
+.pt-resource   { background:#fef9c3; color:#854d0e; border-color:#fde68a; }
+.pt-experiment { background:#fae8ff; color:#7e22ce; border-color:#e9d5ff; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pt-research   { background:#082f49; color:#38bdf8; border-color:#0c4a6e; }
+  :root:not([data-theme="light"]) .pt-casestudy  { background:#052e16; color:#4ade80; border-color:#14532d; }
+  :root:not([data-theme="light"]) .pt-resource   { background:#1c1208; color:#fbbf24; border-color:#3b2000; }
+  :root:not([data-theme="light"]) .pt-experiment { background:#1a0a28; color:#c084fc; border-color:#3b0764; }
+}
+:root[data-theme="dark"] .pt-research   { background:#082f49; color:#38bdf8; border-color:#0c4a6e; }
+:root[data-theme="dark"] .pt-casestudy  { background:#052e16; color:#4ade80; border-color:#14532d; }
+:root[data-theme="dark"] .pt-resource   { background:#1c1208; color:#fbbf24; border-color:#3b2000; }
+:root[data-theme="dark"] .pt-experiment { background:#1a0a28; color:#c084fc; border-color:#3b0764; }
 
 .pc-title {
   font-family: 'Fraunces', Georgia, serif;
@@ -568,8 +598,8 @@ body { background: var(--bg); color: var(--text); }
 <div class="glow"></div>
 <div class="wrap">
 <span class="tag">From the nest</span>
-<h1>Insights on links, leads &amp; outreach</h1>
-<p>Practical, no-fluff guides on guest posting, lead generation, deliverability, and SEO — written from real experience in technical niches.</p>
+<h1>Research, tactics &amp; experiments for better outreach</h1>
+<p>Practical guides, original research, experiments and resources for link building, lead generation and technical SEO — written from real work in technical niches.</p>
 </div>
 </header>
 
@@ -580,13 +610,12 @@ body { background: var(--bg); color: var(--text); }
 <div class="filter-bar" id="filterBar">
   <h2>Filter:</h2>
   <button class="cat-pill active" data-cat="all">All Posts <span class="pill-count" id="cnt-all">0</span></button>
-  <button class="cat-pill" data-cat="Solar">☀️ Solar <span class="pill-count" id="cnt-Solar">0</span></button>
-  <button class="cat-pill" data-cat="Electrical">⚡ Electrical <span class="pill-count" id="cnt-Electrical">0</span></button>
-  <button class="cat-pill" data-cat="Electronics">🔧 Electronics <span class="pill-count" id="cnt-Electronics">0</span></button>
-  <button class="cat-pill" data-cat="Guest">🌱 Guest Posting <span class="pill-count" id="cnt-Guest">0</span></button>
+  <button class="cat-pill" data-cat="LinkBuilding">🔗 Link Building <span class="pill-count" id="cnt-LinkBuilding">0</span></button>
   <button class="cat-pill" data-cat="Outreach">📨 Outreach <span class="pill-count" id="cnt-Outreach">0</span></button>
-  <button class="cat-pill" data-cat="SEO">🔗 SEO &amp; Tools <span class="pill-count" id="cnt-SEO">0</span></button>
-  <button class="cat-pill" data-cat="Deliverability">🔥 Deliverability <span class="pill-count" id="cnt-Deliverability">0</span></button>
+  <button class="cat-pill" data-cat="SEO">🔎 SEO &amp; Tools <span class="pill-count" id="cnt-SEO">0</span></button>
+  <button class="cat-pill" data-cat="Research">🔬 Research <span class="pill-count" id="cnt-Research">0</span></button>
+  <button class="cat-pill" data-cat="Industry">🏭 Industry <span class="pill-count" id="cnt-Industry">0</span></button>
+  <button class="cat-pill" data-cat="Resources">📋 Resources <span class="pill-count" id="cnt-Resources">0</span></button>
 </div>
 
 <!-- Hero slot (All view only) -->
@@ -597,10 +626,10 @@ body { background: var(--bg); color: var(--text); }
 
 <!-- Stats band -->
 <div class="blog-stats reveal">
-  <div class="bs-item"><div class="bs-num">27+</div><div class="bs-label">Articles published</div></div>
-  <div class="bs-item"><div class="bs-num">7</div><div class="bs-label">Specialist niches</div></div>
-  <div class="bs-item"><div class="bs-num">100%</div><div class="bs-label">Practical, no-fluff</div></div>
-  <div class="bs-item"><div class="bs-num">Free</div><div class="bs-label">Always open access</div></div>
+  <div class="bs-item"><div class="bs-num">32+</div><div class="bs-label">Articles published</div></div>
+  <div class="bs-item"><div class="bs-num">4</div><div class="bs-label">Core niches covered</div></div>
+  <div class="bs-item"><div class="bs-num">6</div><div class="bs-label">Content categories</div></div>
+  <div class="bs-item"><div class="bs-num">Free</div><div class="bs-label">Always free to read</div></div>
 </div>
 
 </div>
@@ -611,6 +640,19 @@ body { background: var(--bg); color: var(--text); }
 <script src="posts.js"></script>
 <script src="main.js"></script>
 <script>
+// ── Content-type badge ─────────────────────────────────────────────────────
+function typeBadge(type) {
+  if (!type) return '';
+  var map = {
+    'research':   { icon: '🔬', label: 'Original Research', cls: 'pt-research' },
+    'casestudy':  { icon: '📈', label: 'Case Study',    cls: 'pt-casestudy' },
+    'resource':   { icon: '📋', label: 'Free Resource', cls: 'pt-resource' },
+    'experiment': { icon: '🧪', label: 'Experiment',    cls: 'pt-experiment' }
+  };
+  var t = map[(type || '').toLowerCase()];
+  return t ? '<span class="pc-type ' + t.cls + '">' + t.icon + ' ' + t.label + '</span>' : '';
+}
+
 // ── Utilities ──────────────────────────────────────────────────────────────
 function pillClass(cat) {
   var c = (cat || '').toLowerCase();
@@ -630,7 +672,20 @@ function isNew(date) { return date && date.indexOf('September') > -1; }
 
 function matchesCat(post, cat) {
   if (cat === 'all') return true;
-  return (post.cat || '').toLowerCase().indexOf(cat.toLowerCase()) > -1;
+  var lcat = (post.cat || '').toLowerCase();
+  var ptype = (post.type || '').toLowerCase();
+  var alias = {
+    'LinkBuilding': ['guest', 'link building'],
+    'Outreach':     ['outreach', 'whatsapp', 'cold'],
+    'SEO':          ['seo', 'tools', 'deliverability', 'product', 'features', 'agency', 'freelancing'],
+    'Industry':     ['solar', 'electrical', 'electronics', 'automation', 'industrial'],
+    'Resources':    ['resources']
+  };
+  if (cat === 'Research')  return lcat.indexOf('research')  > -1 || ptype === 'research';
+  if (cat === 'Resources') return lcat.indexOf('resources') > -1 || ptype === 'resource';
+  var terms = alias[cat];
+  if (terms) return terms.some(function(t){ return lcat.indexOf(t) > -1; });
+  return lcat.indexOf(cat.toLowerCase()) > -1;
 }
 
 // ── Hero HTML ──────────────────────────────────────────────────────────────
@@ -643,6 +698,7 @@ function heroHTML(p) {
     +   '<div class="bh-label">✦ Featured Article</div>'
     + '</div>'
     + '<div class="bh-body">'
+    +   typeBadge(p.type)
     +   '<span class="bh-pill ' + pc + '">' + pl + '</span>'
     +   '<h2 class="bh-title">' + p.title + '</h2>'
     +   '<p class="bh-excerpt">' + p.excerpt + '</p>'
@@ -665,6 +721,7 @@ function cardHTML(p) {
     +   '<span class="pc-icon">' + p.icon + '</span>'
     + '</div>'
     + '<div class="pc-body">'
+    +   typeBadge(p.type)
     +   '<span class="pc-pill ' + pc + '">' + pl + '</span>'
     +   '<h3 class="pc-title">' + p.title + '</h3>'
     +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
@@ -679,7 +736,7 @@ function cardHTML(p) {
 // ── Count posts per category ───────────────────────────────────────────────
 function updateCounts() {
   if (!window.POSTS) return;
-  var cats = ['all','Solar','Electrical','Electronics','Guest','Outreach','SEO','Deliverability'];
+  var cats = ['all','LinkBuilding','Outreach','SEO','Research','Industry','Resources'];
   cats.forEach(function(cat) {
     var el = document.getElementById('cnt-' + cat);
     if (!el) return;
@@ -719,7 +776,8 @@ function render(cat) {
 
   // Hero slot: show only when "All" is selected
   if (isAll && posts.length) {
-    heroSlot.innerHTML = heroHTML(posts[0]);
+    var featuredPost = posts.filter(function(p){ return p.featured; })[0] || posts[0];
+    heroSlot.innerHTML = heroHTML(featuredPost);
     heroSlot.style.display = '';
     // Animate hero in
     var heroEl = heroSlot.querySelector('.blog-hero');
@@ -730,7 +788,7 @@ function render(cat) {
       heroEl.style.opacity = '1';
       heroEl.style.transform = 'translateY(0)';
     }, 40);
-    posts = posts.slice(1); // remaining posts go to grid
+    posts = posts.filter(function(p){ return p.slug !== featuredPost.slug; }); // exclude featured from grid
   } else {
     heroSlot.innerHTML = '';
     heroSlot.style.display = 'none';
@@ -793,6 +851,11 @@ render('all');
 <a href="/post?p=electrical-contractor-seo-backlinks">How Electrical Contractors Get More SEO Backlinks</a>
 <a href="/post?p=vet-electronics-repair-guest-post-site">How to Vet an Electronics Repair Guest Post Site</a>
 <a href="/post?p=guest-posting-vs-pbn-links-difference">Guest Posting vs PBN Links: The Real Difference</a>
+<a href="/post?p=high-da-zero-traffic-explained">High DA, Zero Traffic: How Does That Actually Happen?</a>
+<a href="/post?p=da-dr-traffic-which-matters-guest-posting">DA vs DR vs Traffic: Which SEO Metric Actually Matters for Guest Posting?</a>
+<a href="/post?p=build-b2b-lead-list-from-scratch-2026">How to Build a B2B Lead List From Scratch in 2026</a>
+<a href="/post?p=industrial-automation-seo-untapped-potential">Industrial Automation SEO: The Niche With Untapped Link Building Potential</a>
+<a href="/post?p=niche-relevance-guest-posts-explained">What Makes a Guest Post 'Niche Relevant'? The Question Most Buyers Get Wrong</a>
 </div>
 </noscript>
 </body>

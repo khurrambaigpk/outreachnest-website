@@ -242,6 +242,12 @@ const POSTS_META = {
   },
 };
 
+// v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
+//   warning. External platforms (LaunchNest, ProductHunt, etc.) link to the homepage
+//   with a ?ref= tracking parameter. Ahrefs crawls these as separate pages and flags
+//   them as orphans (no internal links point to /?ref=launchnest etc.). Since the
+//   homepage canonical already covers these variants, redirecting to the clean URL
+//   consolidates them and removes the Ahrefs warning without breaking any functionality.
 // v26 (15 Sep 2026) — Fix JSON-LD injection for main pages: add CACHE_VERSION to the
 //   Workers caches.default key. "Purge Everything" in the Cloudflare dashboard clears the
 //   CDN cache but NOT the Workers Cache API (caches.default). v25 was deployed but its
@@ -309,7 +315,7 @@ const SLUG_REDIRECTS = {
 
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
 const SITE_PUB_DATE = "2026-09-01"; // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v26"; // Bump this whenever the HTML_PAGES injection changes — forces a cache miss so fresh HTML is generated
+const CACHE_VERSION = "v27"; // Bump this whenever the HTML_PAGES injection changes — forces a cache miss so fresh HTML is generated
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1357,6 +1363,20 @@ export default {
     // no SEO value. Ahrefs "AI bots blocked" warning fires because it lumps training
     // scrapers together with search bots — the configuration is correct as-is.
     // Fall through to env.ASSETS.fetch() below to serve the static file unchanged.
+
+    // v27: 301 redirect for homepage ?ref= variants → clean canonical URL.
+    // /?ref=launchnest, /?ref=producthunt, /?ref=logit.show etc. are how external
+    // listing platforms link to this site. Ahrefs crawls them as separate pages and
+    // flags them as orphans (no internal links). Redirect to / to consolidate.
+    if (url.pathname === "/" && url.searchParams.has("ref") && request.method === "GET") {
+      return new Response(null, {
+        status: 301,
+        headers: {
+          "Location": "https://getoutreachnest.com/",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
 
     const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
 

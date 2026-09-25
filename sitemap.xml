@@ -1,206 +1,221 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Main pages -->
-  <url>
-    <loc>https://getoutreachnest.com/</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/blog</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/download</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/services</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/niches</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/contact</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Blog posts (27) -->
-  <url>
-    <loc>https://getoutreachnest.com/post?p=the-awkward-truth-about-cold-outreach-nobody-tells</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=finding-electronics-appliance-repair-businesses</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=industrial-automation-leads</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=electrical-contractors-panel-builders</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=solar-guest-post-sites</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=how-agencies-manage-10-niches-without-losing-track</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=lead-list-google-sheet</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=whatsapp-outreach-response-rates</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=outreachnest-finder-features</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=how-to-find-seo-clients-fast-in-2026</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=link-building-prospects</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=how-to-check-da-pa-dr-without-paying-for-tools</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=spot-real-guest-post-site</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=b2b-lead-list-worth-buying</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=solar-niche-goldmine</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=cold-email-that-gets-replies</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=warm-up-new-email-domain</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=choosing-solar-installer-guide</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=electrical-contractors-online-growth</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=industrial-automation-high-value-niche</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=electronics-repair-steady-demand</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=quality-over-quantity-backlinks</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=solar-guest-post-cost-2026</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=signs-guest-post-site-hurt-rankings</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=electrical-contractor-seo-backlinks</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=vet-electronics-repair-guest-post-site</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getoutreachnest.com/post?p=guest-posting-vs-pbn-links-difference</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
+<!--  Main pages  -->
+<url>
+<loc>https://getoutreachnest.com/</loc>
+<lastmod>2026-09-25</lastmod>
+<changefreq>weekly</changefreq>
+<priority>1.0</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/blog</loc>
+<lastmod>2026-09-25</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.9</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/download</loc>
+<lastmod>2026-09-15</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.9</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/services</loc>
+<lastmod>2026-09-15</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/niches</loc>
+<lastmod>2026-09-15</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/contact</loc>
+<lastmod>2026-09-15</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<!--  Blog posts (30)  -->
+<url>
+<loc>https://getoutreachnest.com/post?p=longi-vs-canadian-solar-vs-jinko-panel-brand-comparison</loc>
+<lastmod>2026-09-25</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=string-inverter-vs-hybrid-vs-microinverter-comparison</loc>
+<lastmod>2026-09-25</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=topcon-vs-perc-vs-hjt-solar-panel-technology</loc>
+<lastmod>2026-09-25</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=the-awkward-truth-about-cold-outreach-nobody-tells</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=finding-electronics-appliance-repair-businesses</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=industrial-automation-leads</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=electrical-contractors-panel-builders</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=solar-guest-post-sites</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=how-agencies-manage-10-niches-without-losing-track</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=lead-list-google-sheet</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=whatsapp-outreach-response-rates</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=outreachnest-finder-features</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=how-to-find-seo-clients-fast-in-2026</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=link-building-prospects</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=how-to-check-da-pa-dr-without-paying-for-tools</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=spot-real-guest-post-site</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=b2b-lead-list-worth-buying</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=solar-niche-goldmine</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=cold-email-that-gets-replies</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=warm-up-new-email-domain</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=choosing-solar-installer-guide</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=electrical-contractors-online-growth</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=industrial-automation-high-value-niche</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=electronics-repair-steady-demand</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=quality-over-quantity-backlinks</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=solar-guest-post-cost-2026</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=signs-guest-post-site-hurt-rankings</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=electrical-contractor-seo-backlinks</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=vet-electronics-repair-guest-post-site</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://getoutreachnest.com/post?p=guest-posting-vs-pbn-links-difference</loc>
+<lastmod>2026-09-01</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
 </urlset>

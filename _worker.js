@@ -78,6 +78,7 @@ const ADMIN_USER = "mariyam";
 //   Settings → Environment variables → Add secret
 //   Names: ADMIN_PASS, SESSION_SECRET
 let ADMIN_PASS;
+let RECOVERY_CODE;
 let SESSION_SECRET;
 const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60; // 2-hour absolute cap, enforced server-side regardless of browser cookie behavior
 const COOKIE_NAME = "on_admin_session";
@@ -363,7 +364,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v28"; // Bump on each deployment — forces cache miss for old noindex responses
+const CACHE_VERSION = "v29"; // Bumped: recovery-code feature added
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1336,6 +1337,7 @@ export default {
     // These are never hard-coded here; set them in the Cloudflare dashboard
     // under Settings → Environment variables → Secrets.
     ADMIN_PASS              = env.ADMIN_PASS              ?? "";
+    RECOVERY_CODE           = env.RECOVERY_CODE          ?? "";
     SESSION_SECRET          = env.SESSION_SECRET          ?? "";
     LICENSE_SECRET          = env.LICENSE_SECRET          ?? "";
     ED25519_PRIVATE_KEY_HEX = env.ED25519_PRIVATE_KEY_HEX ?? "";
@@ -1573,7 +1575,7 @@ export default {
         // fall through with empty creds -> treated as wrong password
       }
 
-      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+      if (user === ADMIN_USER && (pass === ADMIN_PASS || (RECOVERY_CODE && pass === RECOVERY_CODE))) {
         // Successful login — clear failure counter so the next genuine lockout starts fresh.
         await clearLoginFail(ip, env);
         const token = await makeSessionToken();

@@ -6,19 +6,21 @@
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#075C3B">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Research, Tactics &amp; Experiments — OutreachNest | Link Building &amp; SEO</title>
-<meta name="description" content="Original research, practical frameworks, experiments and field-tested tactics for link building, guest posting, and outreach — written from real work.">
+<title>SEO &amp; Link Building Blog | Outreach &amp; Guest Posting Guides | OutreachNest</title>
+<meta name="description" content="Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies for finding better prospects and building authority.">
 <link rel="canonical" href="https://getoutreachnest.com/blog" />
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OutreachNest">
-<meta property="og:title" content="Research, Tactics &amp; Experiments — OutreachNest">
-<meta property="og:description" content="Original research, practical frameworks, experiments and field-tested tactics for link building, guest posting, and outreach.">
+<meta property="og:title" content="SEO &amp; Link Building Blog | OutreachNest">
+<meta property="og:description" content="Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies.">
 <meta property="og:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
+<meta property="og:image:alt" content="OutreachNest SEO and link building blog">
 <meta property="og:url" content="https://getoutreachnest.com/blog">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Research, Tactics &amp; Experiments — OutreachNest">
-<meta name="twitter:description" content="Original research, practical frameworks, experiments and field-tested tactics for link building, guest posting, and outreach.">
+<meta name="twitter:title" content="SEO &amp; Link Building Blog | OutreachNest">
+<meta name="twitter:description" content="Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies.">
 <meta name="twitter:image" content="https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6">
+<meta name="twitter:image:alt" content="OutreachNest SEO and link building blog">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -42,6 +44,40 @@
     "https://facebook.com/OutreachNestFinder",
     "https://x.com/MariyamRiagclo",
     "https://www.linkedin.com/in/mariyam-riaz-1b93a8431"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "SEO & Link Building Blog",
+  "url": "https://getoutreachnest.com/blog",
+  "description": "Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies.",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "OutreachNest",
+    "url": "https://getoutreachnest.com"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://getoutreachnest.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://getoutreachnest.com/blog"
+    }
   ]
 }
 </script>
@@ -130,6 +166,12 @@ body { background: var(--bg); color: var(--text); }
   box-shadow: 0 4px 16px rgba(7,92,59,.12);
   transform: translateY(-2px);
 }
+.find-card:focus-visible,
+.cat-pill:focus-visible {
+   outline: 3px solid rgba(7,92,59,.28);
+   outline-offset: 2px;
+}
+
 .find-card.active {
   border-color: var(--brand);
   background: var(--brand-pale);
@@ -605,8 +647,8 @@ body { background: var(--bg); color: var(--text); }
 <div class="glow"></div>
 <div class="wrap">
 <span class="tag">From the nest</span>
-<h1>Research, tactics &amp; experiments for better outreach</h1>
-<p>Original research, practical frameworks, experiments and field-tested tactics for SEO, link building and outreach — written from real work in technical niches.</p>
+<h1>SEO, link building &amp; outreach research</h1>
+<p>Original research, practical frameworks, guest posting guides and field-tested tactics for SEO, link building and outreach — written from real work in technical niches.</p>
 </div>
 </header>
 
@@ -615,30 +657,30 @@ body { background: var(--bg); color: var(--text); }
 
 <!-- "What you'll find here" — visible only on All view -->
 <div class="find-row" id="findRow">
-  <div class="find-card" data-filter="Research">
+  <button type="button" class="find-card" data-filter="Research" aria-label="Show research articles">
     <span class="find-card-icon">🔬</span>
     <div class="find-card-type">Original Research</div>
     <div class="find-card-title">Data &amp; Analysis</div>
     <p class="find-card-desc">Evidence-backed findings around outreach, link building and SEO metrics.</p>
-  </div>
-  <div class="find-card" data-filter="LinkBuilding">
+  </button>
+  <button type="button" class="find-card" data-filter="LinkBuilding" aria-label="Show link building guides">
     <span class="find-card-icon">🗺️</span>
     <div class="find-card-type">Practical Playbooks</div>
     <div class="find-card-title">Step-by-Step Guides</div>
     <p class="find-card-desc">Frameworks and approaches you can put to work immediately.</p>
-  </div>
-  <div class="find-card" data-filter="SEO">
+  </button>
+  <button type="button" class="find-card" data-filter="SEO" aria-label="Show SEO and tools articles">
     <span class="find-card-icon">🧪</span>
     <div class="find-card-type">Experiments</div>
     <div class="find-card-title">What We Tested</div>
     <p class="find-card-desc">What happened, what we learned, and what changed as a result.</p>
-  </div>
-  <div class="find-card" data-filter="Resources">
+  </button>
+  <button type="button" class="find-card" data-filter="Resources" aria-label="Show free resources">
     <span class="find-card-icon">📋</span>
     <div class="find-card-type">Free Resources</div>
     <div class="find-card-title">Templates &amp; Tools</div>
     <p class="find-card-desc">Ready-to-use templates, checklists and downloadable resources.</p>
-  </div>
+  </button>
 </div>
 
 <!-- Filter bar -->
@@ -662,11 +704,11 @@ body { background: var(--bg); color: var(--text); }
 <div id="blogSections" class="blog-sections"></div>
 
 <!-- Post grid (used on filtered view) -->
-<div class="blog-grid" id="blogGrid" style="display:none"></div>
+<div class="blog-grid" id="blogGrid" style="display:none" aria-live="polite"></div>
 
 <!-- Stats band -->
 <div class="blog-stats reveal">
-  <div class="bs-item"><div class="bs-num">35+</div><div class="bs-label">Articles published</div></div>
+  <div class="bs-item"><div class="bs-num">35</div><div class="bs-label">Articles published</div></div>
   <div class="bs-item"><div class="bs-num">4</div><div class="bs-label">Core niches covered</div></div>
   <div class="bs-item"><div class="bs-num">6</div><div class="bs-label">Content categories</div></div>
   <div class="bs-item"><div class="bs-num">Free</div><div class="bs-label">Always free to read</div></div>
@@ -710,14 +752,37 @@ function matchesCat(post, cat) {
   return lcat.indexOf(cat.toLowerCase()) > -1;
 }
 
-// ── Primary category label ─────────────────────────────────────────
-function primaryCat(cat) { return (cat || '').split(',')[0].trim(); }
-function isNew(date) { return date && date.indexOf('September') > -1; }
+// ── Date helpers ─────────────────────────────────────────────────────
+var MONTH_INDEX = {
+  january:0, february:1, march:2, april:3, may:4, june:5,
+  july:6, august:7, september:8, october:9, november:10, december:11
+};
 
-// ── Featured Research HTML ─────────────────────────────────────────
+function dateKey(date) {
+  var m = String(date || '').trim().toLowerCase().match(/^([a-z]+)\s+(\d{4})$/);
+  if (!m || MONTH_INDEX[m[1]] === undefined) return 0;
+  return Number(m[2]) * 100 + MONTH_INDEX[m[1]];
+}
+
+function sortPosts(list) {
+  return list.slice().sort(function(a, b) {
+    return dateKey(b.date) - dateKey(a.date);
+  });
+}
+
+function primaryCat(cat) { return (cat || '').split(',')[0].trim(); }
+
+function isNew(date) {
+  var now = new Date();
+  var currentMonth = now.toLocaleString('en-US', { month: 'long' });
+  var currentYear = String(now.getFullYear());
+  return String(date || '').toLowerCase() === (currentMonth + ' ' + currentYear).toLowerCase();
+}
+
+// ── Featured Research HTML ──────────────────────────────────────────
 function featHTML(p) {
   var typePart = p.type ? typeBadge(p.type) : '';
-  return '<a class="feat-article" href="/post?p=' + p.slug + '">'
+  return '<a class="feat-article" href="/post?p=' + encodeURIComponent(p.slug) + '">'
     + '<div class="feat-body">'
     +   '<div class="feat-eyebrow"><span class="feat-eyebrow-text">✦ Featured Research</span><span class="feat-eyebrow-line"></span></div>'
     +   (typePart ? typePart + '<br><br>' : '')
@@ -734,29 +799,29 @@ function featHTML(p) {
     +     '<span class="feat-cta">Read the research &nbsp;→</span>'
     +   '</div>'
     + '</div>'
-    + '<div class="feat-visual ' + p.cover + '">' + p.icon + '</div>'
+    + '<div class="feat-visual ' + (p.cover || '') + '">' + (p.icon || '✦') + '</div>'
     + '</a>';
 }
 
-// ── Card HTML ──────────────────────────────────────────────────────
+// ── Card HTML ────────────────────────────────────────────────────────
 function cardHTML(p) {
   var pcat = primaryCat(p.cat);
   var newBadge = isNew(p.date) ? '<span class="pc-new">New</span>' : '';
   var tbadge = typeBadge(p.type) || '';
-  return '<a class="post-card" href="/post?p=' + p.slug + '" data-cat="' + p.cat + '">'
+  return '<a class="post-card" href="/post?p=' + encodeURIComponent(p.slug) + '" data-cat="' + (p.cat || '') + '">'
     + '<div class="pc-body">'
     +   '<div class="pc-top">' + tbadge + newBadge + '</div>'
     +   '<h3 class="pc-title">' + p.title + '</h3>'
     +   '<p class="pc-excerpt">' + p.excerpt + '</p>'
     +   '<div class="pc-foot">'
     +     '<span class="pc-meta"><span class="pc-cat">' + pcat + '</span><span class="dot"></span><span>' + p.date + '</span><span class="dot"></span><span>' + p.read + '</span></span>'
-    +     '<span class="pc-arrow">→</span>'
+    +     '<span class="pc-arrow" aria-hidden="true">→</span>'
     +   '</div>'
     + '</div>'
     + '</a>';
 }
 
-// ── Section block HTML ─────────────────────────────────────────────
+// ── Section block HTML ───────────────────────────────────────────────
 function sectionBlock(label, posts) {
   if (!posts.length) return '';
   var html = '<div class="sec-label"><span class="sec-label-text">' + label + '</span><span class="sec-label-line"></span></div>';
@@ -766,7 +831,7 @@ function sectionBlock(label, posts) {
   return html;
 }
 
-// ── Count posts ────────────────────────────────────────────────────
+// ── Count posts ─────────────────────────────────────────────────────
 function updateCounts() {
   if (!window.POSTS) return;
   ['all','Research','LinkBuilding','Outreach','SEO','Industry','Resources'].forEach(function(cat) {
@@ -778,11 +843,18 @@ function updateCounts() {
   });
 }
 
-// ── Reveal animation ───────────────────────────────────────────────
+// ── Reveal animation ────────────────────────────────────────────────
 var revealIO;
 function setupReveal() {
   if (revealIO) revealIO.disconnect();
   var cards = document.querySelectorAll('.post-card');
+
+  // Respect reduced-motion preferences.
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    cards.forEach(function(c){ c.classList.add('in'); });
+    return;
+  }
+
   revealIO = new IntersectionObserver(function(entries, obs) {
     entries.forEach(function(e) {
       if (e.isIntersecting) {
@@ -796,60 +868,79 @@ function setupReveal() {
   cards.forEach(function(c){ revealIO.observe(c); });
 }
 
-// ── Refs ───────────────────────────────────────────────────────────
+// ── Refs ─────────────────────────────────────────────────────────────
 var heroSlot  = document.getElementById('heroSlot');
 var sections  = document.getElementById('blogSections');
 var grid      = document.getElementById('blogGrid');
 var findRow   = document.getElementById('findRow');
 var currentCat = 'all';
 
-// ── Render ─────────────────────────────────────────────────────────
-function render(cat) {
+// ── Render ──────────────────────────────────────────────────────────
+function render(cat, updateUrl) {
   currentCat = cat;
   if (!window.POSTS || !window.POSTS.length) return;
+
+  if (updateUrl !== false) {
+    var hash = cat === 'all' ? '' : '#' + encodeURIComponent(cat.toLowerCase());
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + hash);
+    }
+  }
+
   var isAll = cat === 'all';
 
-  // ── All view: sectioned layout ──────────────────────────────────
   if (isAll) {
     findRow.style.display = '';
-
-    var featuredPost = window.POSTS.filter(function(p){ return p.featured; })[0] || window.POSTS[0];
+    var ordered = sortPosts(window.POSTS);
+    var featuredPost = ordered.filter(function(p){ return p.featured; })[0] || ordered[0];
     heroSlot.innerHTML = featHTML(featuredPost);
-    // Animate hero
+
     var hEl = heroSlot.querySelector('.feat-article');
     if (hEl) {
-      hEl.style.opacity = '0'; hEl.style.transform = 'translateY(14px)';
+      hEl.style.opacity = '0';
+      hEl.style.transform = 'translateY(14px)';
       hEl.style.transition = 'opacity .4s ease, transform .4s ease, box-shadow .2s';
       setTimeout(function(){ hEl.style.opacity='1'; hEl.style.transform='translateY(0)'; }, 40);
     }
 
-    var rest = window.POSTS.filter(function(p){ return p.slug !== featuredPost.slug; });
-    var research  = rest.filter(function(p){ return matchesCat(p,'Research'); });
-    var industry  = rest.filter(function(p){ return matchesCat(p,'Industry'); });
-    var linking   = rest.filter(function(p){ return matchesCat(p,'LinkBuilding') || matchesCat(p,'Outreach'); });
-    var resources = rest.filter(function(p){ return matchesCat(p,'Resources'); });
-    var seen = research.concat(industry,linking,resources).map(function(p){ return p.slug; });
-    var other = rest.filter(function(p){ return seen.indexOf(p.slug) === -1; });
+    // Assign each article to exactly one section so no post is duplicated
+    // and all published articles remain discoverable on the main blog page.
+    var rest = ordered.filter(function(p){ return p.slug !== featuredPost.slug; });
+    var used = {};
+
+    function take(list) {
+      return list.filter(function(p) {
+        if (used[p.slug]) return false;
+        used[p.slug] = true;
+        return true;
+      });
+    }
+
+    var research  = take(rest.filter(function(p){ return matchesCat(p,'Research'); }));
+    var resources = take(rest.filter(function(p){ return matchesCat(p,'Resources'); }));
+    var linking   = take(rest.filter(function(p){ return matchesCat(p,'LinkBuilding') || matchesCat(p,'Outreach'); }));
+    var industry  = take(rest.filter(function(p){ return matchesCat(p,'Industry'); }));
+    var other     = rest.filter(function(p){ return !used[p.slug]; });
 
     sections.innerHTML =
-      sectionBlock('Latest Research', research.slice(0,6)) +
-      sectionBlock('Link Building &amp; Outreach', linking.slice(0,6)) +
-      sectionBlock('SEO &amp; Industry Insights', industry.concat(other).slice(0,6)) +
-      sectionBlock('Free Resources', resources.slice(0,6));
+      sectionBlock('Latest Research', research) +
+      sectionBlock('Link Building &amp; Outreach', linking) +
+      sectionBlock('SEO &amp; Industry Insights', industry.concat(other)) +
+      sectionBlock('Free Resources', resources);
+
     sections.style.display = '';
     grid.style.display = 'none';
     setupReveal();
     return;
   }
 
-  // ── Filtered view ───────────────────────────────────────────────
   findRow.style.display = 'none';
   heroSlot.innerHTML = '';
   sections.innerHTML = '';
   sections.style.display = 'none';
   grid.style.display = '';
 
-  var posts = window.POSTS.filter(function(p){ return matchesCat(p, cat); });
+  var posts = sortPosts(window.POSTS.filter(function(p){ return matchesCat(p, cat); }));
   if (!posts.length) {
     grid.innerHTML = '<div class="empty-state"><span class="e-icon">🔍</span><p>No articles in this category yet — check back soon.</p></div>';
     return;
@@ -860,6 +951,7 @@ function render(cat) {
 
 // ── Filter clicks ───────────────────────────────────────────────────
 document.querySelectorAll('.cat-pill').forEach(function(btn) {
+  btn.type = 'button';
   btn.addEventListener('click', function() {
     document.querySelectorAll('.cat-pill').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
@@ -876,9 +968,51 @@ document.querySelectorAll('.find-card').forEach(function(card) {
   });
 });
 
+// ── Initial filter from URL hash ───────────────────────────────────
+function initialCategory() {
+  var raw = (window.location.hash || '').replace(/^#/, '').toLowerCase();
+  var map = {
+    research:'Research',
+    linkbuilding:'LinkBuilding',
+    outreach:'Outreach',
+    seo:'SEO',
+    industry:'Industry',
+    resources:'Resources'
+  };
+  return map[raw] || 'all';
+}
+
 // ── Init ────────────────────────────────────────────────────────────
 updateCounts();
-render('all');
+var initialCat = initialCategory();
+var initialBtn = document.querySelector('.cat-pill[data-cat="' + initialCat + '"]');
+if (initialBtn) {
+  document.querySelectorAll('.cat-pill').forEach(function(b){ b.classList.remove('active'); });
+  initialBtn.classList.add('active');
+}
+render(initialCat, false);
+
+// Dynamic ItemList structured data for all posts.
+(function addItemListSchema() {
+  if (!window.POSTS || !window.POSTS.length) return;
+  var node = document.createElement('script');
+  node.type = 'application/ld+json';
+  node.text = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': 'OutreachNest Blog Articles',
+    'numberOfItems': window.POSTS.length,
+    'itemListElement': sortPosts(window.POSTS).map(function(p, i) {
+      return {
+        '@type': 'ListItem',
+        'position': i + 1,
+        'name': p.title,
+        'url': 'https://getoutreachnest.com/post?p=' + encodeURIComponent(p.slug)
+      };
+    })
+  });
+  document.head.appendChild(node);
+})();
 </script>
 
 <!-- Static post links for crawlers (SEO — fixes orphan pages) -->

@@ -240,6 +240,40 @@ const POSTS_META = {
     title: "Guest Posting vs PBN Links: What's the Real Difference?",
     desc: "Both place links on external sites, but the risks and long-term results are completely different. Here's what actually separates a guest post from a PBN link.",
   },
+  // v28: 8 missing September 2026 slugs added — these were in posts.js but absent
+  // from POSTS_META so the Worker was serving noindex for all of them.
+  "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": {
+    title: "Longi vs Canadian Solar vs Jinko vs Risen: Solar Brand Comparison",
+    desc: "Which solar panel brand wins on degradation, warranty, and hot-climate performance? An honest comparison of Longi, Canadian Solar, Jinko, and Risen.",
+  },
+  "string-inverter-vs-hybrid-vs-microinverter-comparison": {
+    title: "String Inverter vs Hybrid vs Microinverter: Real 10-Year Cost Comparison",
+    desc: "Most solar buyers choose the wrong inverter type. Here's the real cost, failure rate, and 10-year economics of string, hybrid, and microinverter systems.",
+  },
+  "topcon-vs-perc-vs-hjt-solar-panel-technology": {
+    title: "TOPCon vs PERC vs HJT Solar Panel Technology Explained",
+    desc: "PERC was the standard. TOPCon took over. HJT is next. Here's what each technology means for output, 25-year degradation, and your actual payback period.",
+  },
+  "high-da-zero-traffic-explained": {
+    title: "High DA, Zero Traffic: What's Actually Happening?",
+    desc: "A site with DA 45 and barely 30 monthly visitors — strong metric, no rankings. Here's why this happens and what it means before you pay for a link.",
+  },
+  "da-dr-traffic-which-matters-guest-posting": {
+    title: "DA vs DR vs Traffic: Which Metric Matters for Guest Posting?",
+    desc: "Three numbers every link builder watches — but they measure different things. Here's which one to prioritize for guest posting when DA, DR, and traffic conflict.",
+  },
+  "build-b2b-lead-list-from-scratch-2026": {
+    title: "How to Build a B2B Lead List From Scratch in 2026",
+    desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches with real contacts.",
+  },
+  "industrial-automation-seo-untapped-potential": {
+    title: "Industrial Automation SEO: Untapped Link Building Potential",
+    desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
+  },
+  "niche-relevance-guest-posts-explained": {
+    title: "What Makes a Guest Post Niche Relevant? Most Buyers Get It Wrong",
+    desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
+  },
 };
 
 // v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
@@ -314,8 +348,22 @@ const SLUG_REDIRECTS = {
 };
 
 const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6";
-const SITE_PUB_DATE = "2026-09-01"; // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v27"; // Bump this whenever the HTML_PAGES injection changes — forces a cache miss so fresh HTML is generated
+const SITE_PUB_DATE = "2026-09-01";
+
+
+// v28: Convert "Month YYYY" post dates to ISO YYYY-MM-01 for per-post schema dates.
+// Falls back to SITE_PUB_DATE if the date string is missing or unrecognised.
+function postDateToISO(dateStr) {
+  var MONTHS = {
+    january:"01", february:"02", march:"03", april:"04",
+    may:"05", june:"06", july:"07", august:"08",
+    september:"09", october:"10", november:"11", december:"12"
+  };
+  var m = String(dateStr || "").trim().toLowerCase().match(/^([a-z]+)\s+(\d{4})$/);
+  if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
+  return m[2] + "-" + MONTHS[m[1]] + "-01";
+} // Publication date used in BlogPosting schema
+const CACHE_VERSION = "v28"; // Bump on each deployment — forces cache miss for old noindex responses
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -360,6 +408,22 @@ const RELATED_POSTS = {
   "industrial-automation-leads":           ["industrial-automation-high-value-niche", "how-agencies-manage-10-niches-without-losing-track", "link-building-prospects"],
   "industrial-automation-high-value-niche":["industrial-automation-leads", "how-agencies-manage-10-niches-without-losing-track", "b2b-lead-list-worth-buying"],
 
+
+  // Solar tech comparison cluster (new Sep 2026)
+  "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": ["topcon-vs-perc-vs-hjt-solar-panel-technology", "string-inverter-vs-hybrid-vs-microinverter-comparison", "solar-niche-goldmine"],
+  "string-inverter-vs-hybrid-vs-microinverter-comparison":   ["longi-vs-canadian-solar-vs-jinko-panel-brand-comparison", "topcon-vs-perc-vs-hjt-solar-panel-technology", "choosing-solar-installer-guide"],
+  "topcon-vs-perc-vs-hjt-solar-panel-technology":            ["longi-vs-canadian-solar-vs-jinko-panel-brand-comparison", "string-inverter-vs-hybrid-vs-microinverter-comparison", "solar-niche-goldmine"],
+
+  // DA/DR/traffic + niche relevance cluster (new Sep 2026)
+  "high-da-zero-traffic-explained":           ["da-dr-traffic-which-matters-guest-posting", "niche-relevance-guest-posts-explained", "spot-real-guest-post-site"],
+  "da-dr-traffic-which-matters-guest-posting":["high-da-zero-traffic-explained", "niche-relevance-guest-posts-explained", "quality-over-quantity-backlinks"],
+  "niche-relevance-guest-posts-explained":    ["da-dr-traffic-which-matters-guest-posting", "high-da-zero-traffic-explained", "guest-posting-vs-pbn-links-difference"],
+
+  // B2B lead list (new Sep 2026)
+  "build-b2b-lead-list-from-scratch-2026": ["b2b-lead-list-worth-buying", "link-building-prospects", "outreachnest-finder-features"],
+
+  // Industrial automation SEO (new Sep 2026)
+  "industrial-automation-seo-untapped-potential": ["industrial-automation-leads", "industrial-automation-high-value-niche", "link-building-prospects"],
   // OutreachNest tool cluster
   "outreachnest-finder-features":                ["how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet", "how-to-find-seo-clients-fast-in-2026"],
   "how-to-check-da-pa-dr-without-paying-for-tools":["outreachnest-finder-features", "lead-list-google-sheet", "link-building-prospects"],
@@ -494,7 +558,7 @@ function escHtml(str) {
 // canonical — canonical URL for this post
 // h1Text    — raw article title WITHOUT " — OutreachNest" (fills the visible <h1>)
 // slug      — post slug, used to build the "Read Next" related-posts section (v24)
-function injectPostMeta(html, title, desc, canonical, h1Text, slug) {
+function injectPostMeta(html, title, desc, canonical, h1Text, slug, postDate) {
   const safeTitle = escHtml(title);
   const safeDesc = escHtml(desc);
   const safeH1 = escHtml(h1Text || title);
@@ -544,8 +608,8 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug) {
     "description": desc,
     "image": OG_IMAGE,
     "url": canonical,
-    "datePublished": SITE_PUB_DATE,
-    "dateModified": SITE_PUB_DATE,
+    "datePublished": postDate || SITE_PUB_DATE,
+    "dateModified": postDate || SITE_PUB_DATE,
     "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },
@@ -592,7 +656,7 @@ async function handlePostPage(request, env, ctx, slug) {
   // Check Cloudflare's edge cache first — avoids Worker invocation entirely on a
   // cache hit, eliminating cold-start latency for AI crawlers and repeat visitors.
   const cache = caches.default;
-  const cacheKey = new Request(request.url, { method: "GET" });
+  const cacheKey = new Request(request.url + "#" + CACHE_VERSION, { method: "GET" });
   const cachedResp = await cache.match(cacheKey);
   if (cachedResp) return cachedResp;
 
@@ -609,12 +673,35 @@ async function handlePostPage(request, env, ctx, slug) {
   }
 
   const html = await assetResp.text();
-  const meta = POSTS_META[slug];
+
+  // ── v28 permanent fix: posts-data.json is the single source of truth ──────
+  // Previously, POSTS_META (a static object in this file) controlled which slugs
+  // got "index, follow". New posts published via admin updated posts-data.json but
+  // NOT POSTS_META, so every new post received noindex until _worker.js was manually
+  // edited. Now we fetch posts-data.json first (already fetched for SSR anyway) and
+  // use it as the authoritative slug registry. POSTS_META is kept as a fast fallback
+  // for the edge case where posts-data.json is not yet deployed.
+  let postData = null;
+  try {
+    const dataResp = await env.ASSETS.fetch(
+      new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
+    );
+    if (dataResp.ok) {
+      const allPosts = await dataResp.json();
+      postData = allPosts.find(p => p.slug === slug) || null;
+    }
+  } catch (e) {
+    // posts-data.json unavailable — fall back to static POSTS_META below
+  }
+
+  // Resolve metadata: live posts-data.json → static POSTS_META → noindex
+  const staticMeta = POSTS_META[slug];
+  const meta = postData
+    ? { title: postData.title, desc: postData.excerpt || (staticMeta && staticMeta.desc) || "" }
+    : staticMeta;
 
   if (!meta) {
-    // Unknown slug (or /post with no slug at all) — serve the template but add
-    // noindex so Ahrefs/Google don't count it as a separate indexable page.
-    // This fixes "Indexable page not in sitemap" for the generic /post URL.
+    // Unknown slug — not in posts-data.json AND not in POSTS_META → noindex
     const noindexHtml = html.replace(
       /<meta\s+name="robots"[^>]*>/i,
       '<meta name="robots" content="noindex, follow">'
@@ -628,47 +715,37 @@ async function handlePostPage(request, env, ctx, slug) {
     });
   }
 
+  const postDate = postDateToISO(postData ? postData.date : "");
   const fullTitle = meta.title + " — OutreachNest";
   const canonical = "https://getoutreachnest.com/post?p=" + slug;
-  // Pass meta.title (without " — OutreachNest") as the visible H1 text
-  // Also pass slug so injectPostMeta can build the "Read Next" related-posts section (v24)
-  let modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug);
+  let modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug, postDate);
 
-  // Inject full article body from posts-data.json so non-JS crawlers (Google, Bing,
-  // AI crawlers) see the complete article text on first load — not just the JS shell.
-  // Gracefully skipped if posts-data.json hasn't been deployed yet.
-  try {
-    const dataResp = await env.ASSETS.fetch(
-      new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
-    );
-    if (dataResp.ok) {
-      const allPosts = await dataResp.json();
-      const postData = allPosts.find(p => p.slug === slug);
-      if (postData) {
-        // Inject article body between the opening marker and the first </div> after it
-        const bodyMarker = 'id="aBody">';
-        const bodyStart = modified.indexOf(bodyMarker);
-        if (bodyStart !== -1) {
-          const insertAt = bodyStart + bodyMarker.length;
-          const endDiv = modified.indexOf('</div>', insertAt);
-          if (endDiv !== -1) {
-            modified = modified.slice(0, insertAt) + postData.content + modified.slice(endDiv);
-          }
+  // Inject full article body + cover/category from postData (already fetched above)
+  if (postData) {
+    try {
+      // Inject article body
+      const bodyMarker = 'id="aBody">';
+      const bodyStart = modified.indexOf(bodyMarker);
+      if (bodyStart !== -1) {
+        const insertAt = bodyStart + bodyMarker.length;
+        const endDiv = modified.indexOf('</div>', insertAt);
+        if (endDiv !== -1) {
+          modified = modified.slice(0, insertAt) + postData.content + modified.slice(endDiv);
         }
-        // Inject cover class and icon
-        modified = modified.replace(
-          /<div([^>]*)\bid="aCover"\b([^>]*)>[^<]*<\/div>/i,
-          `<div class="art-cover ${escHtml(postData.cover)}" id="aCover">${escHtml(postData.icon)}</div>`
-        );
-        // Inject category name
-        modified = modified.replace(
-          /(<div[^>]*\bid="aCat"\b[^>]*>)[^<]*(<\/div>)/i,
-          `$1${escHtml(postData.cat)}$2`
-        );
       }
+      // Inject cover class and icon
+      modified = modified.replace(
+        /<div([^>]*)\bid="aCover"\b([^>]*)>[^<]*<\/div>/i,
+        `<div class="art-cover ${escHtml(postData.cover)}" id="aCover">${escHtml(postData.icon)}</div>`
+      );
+      // Inject category name
+      modified = modified.replace(
+        /(<div[^>]*\bid="aCat"\b[^>]*>)[^<]*(<\/div>)/i,
+        `$1${escHtml(postData.cat)}$2`
+      );
+    } catch (e) {
+      // SSR content injection failed — metadata-only response still served
     }
-  } catch (e) {
-    // posts-data.json not yet deployed or parse error — metadata-only response is still served
   }
 
   const response = new Response(modified, {
@@ -1285,6 +1362,15 @@ export default {
     // this intercepts the request and returns a version with correct values
     // injected for the specific slug before any JavaScript runs, so Ahrefs,
     // Google, and all social OG bots see unique metadata per post.
+    // v28: 301 redirect /post.html → /post to eliminate the duplicate-URL issue.
+    // /post.html and /post serve identical content; having both indexable creates
+    // canonical ambiguity. Redirect to the clean canonical form.
+    if (url.pathname === "/post.html") {
+      const dest = new URL(request.url);
+      dest.pathname = "/post";
+      return Response.redirect(dest.toString(), 301);
+    }
+
     if (url.pathname === "/post") {
       const slug = url.searchParams.get("p");
       if (slug) {
@@ -1336,9 +1422,27 @@ export default {
         { loc: `${BASE}/niches`,   lastmod: today,         priority: "0.8", changefreq: "monthly" },
         { loc: `${BASE}/contact`,  lastmod: today,         priority: "0.7", changefreq: "monthly" },
       ];
-      const postEntries = Object.keys(POSTS_META).map(slug => ({
+      // v28: per-post lastmod from posts-data.json; fall back to SITE_PUB_DATE
+      let postDatesMap = {};
+      try {
+        const pdResp = await env.ASSETS.fetch(
+          new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
+        );
+        if (pdResp.ok) {
+          const pdArr = await pdResp.json();
+          pdArr.forEach(p => { postDatesMap[p.slug] = postDateToISO(p.date); });
+        }
+      } catch(e) {}
+
+      // Use posts-data.json slugs if available (always up-to-date);
+      // fall back to POSTS_META keys (covers pre-deployment edge case).
+      const sitemapSlugs = Object.keys(postDatesMap).length
+        ? Object.keys(postDatesMap)
+        : Object.keys(POSTS_META);
+
+      const postEntries = sitemapSlugs.map(slug => ({
         loc: `${BASE}/post?p=${slug}`,
-        lastmod: SITE_PUB_DATE,
+        lastmod: postDatesMap[slug] || SITE_PUB_DATE,
         priority: "0.7",
         changefreq: "monthly",
       }));

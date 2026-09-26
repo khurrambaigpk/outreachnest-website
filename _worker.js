@@ -79,6 +79,8 @@ const ADMIN_USER = "mariyam";
 //   Names: ADMIN_PASS, SESSION_SECRET
 let ADMIN_PASS;
 let RECOVERY_CODE;
+let RESEND_API_KEY;
+let RECOVERY_EMAIL;
 let SESSION_SECRET;
 const SESSION_MAX_AGE_SECONDS = 2 * 60 * 60; // 2-hour absolute cap, enforced server-side regardless of browser cookie behavior
 const COOKIE_NAME = "on_admin_session";
@@ -364,7 +366,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v31"; // v31: Remove hardcoded temp password
+const CACHE_VERSION = "v32"; // v32: Eye icon + email recovery system
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -827,6 +829,14 @@ async function clearLoginFail(ip, env) {
   try { await env.LICENSE_KV.delete(`login_fail:${ip}`); } catch(e) {}
 }
 
+// ── Recovery (v32) ──────────────────────────────────────────────────────────
+async function generateRecoveryToken(){const e=Date.now()+900000;const r=[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');const p=r+'.'+e;return p+'.'+(await hmacSign(p,SESSION_SECRET));}
+async function verifyRecoveryToken(t){const[r,e,s]=t.split('.');if(!r||!e||!s)return false;if(Date.now()>+e)return false;return s===(await hmacSign(r+'.'+e,SESSION_SECRET));}
+async function sendRecoveryEmail(token,req){if(!RESEND_API_KEY||!RECOVERY_EMAIL)return false;const link=new URL(req.url).origin+'/admin/recover?token='+encodeURIComponent(token);try{const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{'Authorization':'Bearer '+RESEND_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({from:'OutreachNest <noreply@getoutreachnest.com>',to:[RECOVERY_EMAIL],subject:'Admin Recovery Link',html:'<p>Your recovery link (expires in 15 min):</p><p><a href="'+link+'">'+link+'</a></p>'})});return r.ok;}catch(e){return false;}}
+function forgotPageHtml(){return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recovery</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#faf8f3;font-family:system-ui;padding:20px}.b{background:#fff;border:1px solid #e4ddd0;border-radius:14px;padding:36px 32px;max-width:340px;width:100%;text-align:center}h1{font-size:20px;margin:0 0 8px;color:#16261f}p{color:#6b6459;font-size:13.5px;margin:0 0 20px}input{width:100%;padding:12px 14px;margin-bottom:12px;border:1px solid #d8d0c0;border-radius:8px;font-size:14px}button{width:100%;padding:12px;border:none;border-radius:8px;background:#1f4d3a;color:#fff;font-weight:600;cursor:pointer}a{display:block;margin-top:12px;font-size:13px;color:#888;text-decoration:none}</style></head><body><div class="b"><div style="font-size:36px;margin-bottom:12px">📧</div><h1>Account Recovery</h1><p>We'll send a recovery link to your registered email.</p><form method="POST"><input type="email" name="email" placeholder="Your email address" required autofocus><button>Send Recovery Link</button></form><a href="/admin">← Back to login</a></div></body></html>`;}
+function recoveryConfirmHtml(sent){const m=sent?'Recovery link sent! Check your inbox — expires in 15 minutes.':'Request received. If that email is registered, a link has been sent.';return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recovery Sent</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#faf8f3;font-family:system-ui;padding:20px}.b{background:#fff;border:1px solid #e4ddd0;border-radius:14px;padding:36px 32px;max-width:340px;width:100%;text-align:center}p{color:#3a6b55;font-size:14px;margin:0 0 20px}a{font-size:13px;color:#888;text-decoration:none}</style></head><body><div class="b"><div style="font-size:40px;margin-bottom:12px">✅</div><p>${m}</p><a href="/admin">← Back to login</a></div></body></html>`;}
+function invalidTokenHtml(){return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invalid Link</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#faf8f3;font-family:system-ui;padding:20px}.b{background:#fff;border:1px solid #e4ddd0;border-radius:14px;padding:36px 32px;max-width:340px;width:100%;text-align:center}p{color:#a33;font-size:14px;margin:0 0 20px}a{font-size:13px;color:#888;text-decoration:none}</style></head><body><div class="b"><div style="font-size:40px;margin-bottom:12px">❌</div><p>This recovery link is invalid or expired.</p><a href="/admin/forgot">Request new link</a></div></body></html>`;}
+
 function loginPageHtml(showError, rateLimited = false) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -846,6 +856,12 @@ input{width:100%;padding:12px 14px;margin-bottom:12px;border:1px solid #d8d0c0;b
 button{width:100%;padding:12px;border:none;border-radius:8px;background:#1f4d3a;color:#fff;font-weight:600;font-size:14.5px;cursor:pointer}
 button:hover{background:#173c2d}
 .err{background:#fbe9e9;color:#a33;border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:14px}
+.pw-wrap{position:relative;display:flex;align-items:center;margin-bottom:12px}
+.pw-wrap input{width:100%;padding-right:2.6rem;margin-bottom:0}
+.eye-btn{position:absolute;right:.55rem;background:none;border:none;cursor:pointer;color:#aaa;padding:0;display:flex;align-items:center}
+.eye-btn:hover{color:#555}.eye-btn svg{width:1.15rem;height:1.15rem}
+.forgot{display:block;text-align:center;margin-top:6px;font-size:12.5px;color:#aaa;text-decoration:none}
+.forgot:hover{color:#555}
 </style>
 </head>
 <body>
@@ -856,9 +872,11 @@ button:hover{background:#173c2d}
 ${rateLimited ? '<div class="err">🔒 Too many failed attempts. Please wait 15 minutes before trying again.</div>' : showError ? '<div class="err">❌ Incorrect username or password.</div>' : ""}
 <form method="POST">
 <input type="text" name="username" placeholder="Username" autocomplete="username" required autofocus>
-<input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+<div class="pw-wrap"><input type="password" name="password" id="adminPw" placeholder="Password" autocomplete="current-password" required><button type="button" class="eye-btn" id="eyeBtn" aria-label="Toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
 <button type="submit">Unlock →</button>
 </form>
+<a href="/admin/forgot" class="forgot">Forgot password?</a>
+<script>document.getElementById('eyeBtn').onclick=function(){var f=document.getElementById('adminPw');f.type=f.type==='password'?'text':'password';this.innerHTML=f.type==='password'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'};</script>
 </div>
 </body>
 </html>`;
@@ -1338,6 +1356,8 @@ export default {
     // under Settings → Environment variables → Secrets.
     ADMIN_PASS              = env.ADMIN_PASS              ?? "";
     RECOVERY_CODE           = env.RECOVERY_CODE          ?? "";
+    RESEND_API_KEY          = env.RESEND_API_KEY          ?? "";
+    RECOVERY_EMAIL          = env.RECOVERY_EMAIL          ?? "";
     SESSION_SECRET          = env.SESSION_SECRET          ?? "";
     LICENSE_SECRET          = env.LICENSE_SECRET          ?? "";
     ED25519_PRIVATE_KEY_HEX = env.ED25519_PRIVATE_KEY_HEX ?? "";
@@ -1484,7 +1504,11 @@ export default {
       });
     }
 
-    const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
+    // Recovery routes (v32)
+    if(url.pathname==='/admin/forgot'){if(request.method==='GET')return new Response(forgotPageHtml(),{headers:{'Content-Type':'text/html; charset=UTF-8'}});if(request.method==='POST'){const tok=await generateRecoveryToken();try{await env.LICENSE_KV.put('admin_recovery_token',tok,{expirationTtl:900});}catch(e){}const sent=await sendRecoveryEmail(tok,request);return new Response(recoveryConfirmHtml(sent),{headers:{'Content-Type':'text/html; charset=UTF-8'}});}}
+    if(url.pathname==='/admin/recover'){const tok=url.searchParams.get('token')||'';if(!tok)return Response.redirect('/admin',302);let valid=false;try{const stored=await env.LICENSE_KV.get('admin_recovery_token');if(stored&&stored===tok){valid=await verifyRecoveryToken(tok);if(valid)await env.LICENSE_KV.delete('admin_recovery_token');}}catch(e){}if(!valid)return new Response(invalidTokenHtml(),{headers:{'Content-Type':'text/html; charset=UTF-8'}});const st=await makeSessionToken();return new Response(null,{status:302,headers:{Location:'/admin','Set-Cookie':`${COOKIE_NAME}=${st}; Path=/; HttpOnly; Secure; SameSite=Lax`}});}
+
+        const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
 
     if (!isAdminPath) {
       // Cache all static HTML pages at the edge to eliminate Worker cold-start TTFB.

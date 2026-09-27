@@ -37,6 +37,12 @@
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
+<url>
+<loc>https://getoutreachnest.com/activate</loc>
+<lastmod>2026-09-27</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.6</priority>
+</url>
 <!--  Blog posts (30)  -->
 <url>
 <loc>https://getoutreachnest.com/post?p=longi-vs-canadian-solar-vs-jinko-panel-brand-comparison</loc>

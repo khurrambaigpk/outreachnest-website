@@ -60,6 +60,9 @@
 //   <h1 id="aTitle"></h1> which JavaScript fills with the post title. The hidden
 //   off-screen H1 was therefore a second duplicate H1, counted by Ahrefs even though
 //   invisible to users. Removing it leaves exactly one H1 per post page.
+// v9 (Sep 2026) — fixed 3 POSTS_META titles still >60 chars and 3 descs still >155 chars
+//   (longi vs canadian solar title, string inverter title, niche relevance title,
+//    guest post vs pbn desc, da/dr/traffic desc, b2b lead list desc)
 // v8 (Sep 2026) — three Ahrefs errors fixed in one pass:
 //   (a) Added 5 slugs that were in sitemap.xml but missing from POSTS_META
 //       (solar-guest-post-cost-2026, signs-guest-post-site-hurt-rankings,
@@ -241,16 +244,16 @@ const POSTS_META = {
   },
   "guest-posting-vs-pbn-links-difference": {
     title: "Guest Posting vs PBN Links: What's the Real Difference?",
-    desc: "Both place links on external sites, but the risks and long-term results are completely different. Here's what actually separates a guest post from a PBN link.",
+    desc: "Both place links on external sites, but risks and long-term results differ completely. Here's what actually separates a real guest post from a PBN link.",
   },
   // v28: 8 missing September 2026 slugs added — these were in posts.js but absent
   // from POSTS_META so the Worker was serving noindex for all of them.
   "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": {
-    title: "Longi vs Canadian Solar vs Jinko vs Risen: Solar Brand Comparison",
+    title: "Longi vs Canadian Solar vs Jinko: Solar Brand Comparison",
     desc: "Which solar panel brand wins on degradation, warranty, and hot-climate performance? An honest comparison of Longi, Canadian Solar, Jinko, and Risen.",
   },
   "string-inverter-vs-hybrid-vs-microinverter-comparison": {
-    title: "String Inverter vs Hybrid vs Microinverter: Real 10-Year Cost Comparison",
+    title: "String vs Hybrid vs Microinverter: Real Cost Compared",
     desc: "Most solar buyers choose the wrong inverter type. Here's the real cost, failure rate, and 10-year economics of string, hybrid, and microinverter systems.",
   },
   "topcon-vs-perc-vs-hjt-solar-panel-technology": {
@@ -263,18 +266,18 @@ const POSTS_META = {
   },
   "da-dr-traffic-which-matters-guest-posting": {
     title: "DA vs DR vs Traffic: Which Metric Matters for Guest Posting?",
-    desc: "Three numbers every link builder watches — but they measure different things. Here's which one to prioritize for guest posting when DA, DR, and traffic conflict.",
+    desc: "Three metrics every link builder watches — but they measure different things. Here's which to prioritize when DA, DR, and traffic conflict.",
   },
   "build-b2b-lead-list-from-scratch-2026": {
     title: "How to Build a B2B Lead List From Scratch in 2026",
-    desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches with real contacts.",
+    desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches from scratch.",
   },
   "industrial-automation-seo-untapped-potential": {
     title: "Industrial Automation SEO: Untapped Link Building Potential",
     desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
   },
   "niche-relevance-guest-posts-explained": {
-    title: "What Makes a Guest Post Niche Relevant? Most Buyers Get It Wrong",
+    title: "Guest Post Niche Relevance: What Most Buyers Get Wrong",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
 };

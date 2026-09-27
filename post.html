@@ -40,6 +40,16 @@
 .art-cta{margin:40px 0 0;padding:34px;background:var(--leaf-soft);border:1px solid var(--line);border-radius:20px;text-align:center}
 .art-cta h3{font-size:22px;margin-bottom:10px}
 .art-cta p{color:var(--muted);margin-bottom:18px}
+.related-posts{margin:48px 0 40px}
+.related-posts>h3{font-size:20px;font-weight:700;color:var(--ink);margin:0 0 20px}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.rel-card{display:block;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;background:var(--card);transition:box-shadow .18s}
+.rel-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.09)}
+.rel-cover{height:80px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.rel-info{padding:12px 14px 14px}
+.rel-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:4px}
+.rel-title{font-size:14px;font-weight:600;color:var(--ink);line-height:1.45;margin-bottom:6px}
+.rel-read{font-size:12px;color:var(--muted)}
 </style>
 <script>window.PAGE_KEY='blog';</script>
 <script type="application/ld+json">
@@ -84,6 +94,7 @@
 <p>Tell us your niche and we'll send back available sites with full metrics.</p>
 <a class="btn btn-gold" data-email href="#">Get in touch →</a>
 </div>
+<div class="related-posts" id="relatedPosts"></div>
 </div>
 
 <div id="footer-holder"><footer><div class="wrap"><div class="foot-grid"><div class="foot-col foot-about"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><p>Quality guest posts, verified leads, and content for solar, electrical, automation and electronics brands.</p><div class="foot-social" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><a href="mailto:queries@getoutreachnest.com" style="display:inline-flex;align-items:center;gap:6px;background:var(--leaf-soft);color:var(--leaf-deep);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">✉️ Email</a><a href="https://wa.me/923006321406" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💬 WhatsApp</a><a href="https://facebook.com/OutreachNestFinder" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1877F2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">📘 Facebook</a><a href="https://x.com/MariyamRiagclo" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#000000;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">🐦 Twitter/X</a><a href="https://www.linkedin.com/in/mariyam-riaz-1b93a8431" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#0A66C2;color:#fff;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600">💼 LinkedIn</a></div></div><div class="foot-col"><h4>Services</h4><a href="/services">Guest posts</a><a href="/services">Lead lists</a><a href="/services">Content writing</a><a href="/download">Download Finder</a></div><div class="foot-col"><h4>Company</h4><a href="/niches">Niches</a><a href="/blog">Blog</a><a href="/contact">Contact</a></div><div class="foot-col"><h4>Contact</h4><a href="mailto:queries@getoutreachnest.com">queries@getoutreachnest.com</a><a href="https://wa.me/923006321406" target="_blank">+923006321406</a><p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5">Multan, Punjab Pakistan</p></div></div><div class="foot-bottom"><p>© 2026 OutreachNest. All rights reserved.</p><p>Real outreach for technical niches.</p></div></div></footer></div>
@@ -113,6 +124,22 @@ document.querySelector('meta[property="og:description"]').setAttribute('content'
 document.querySelector('meta[property="og:url"]').setAttribute('content', postUrl);
 document.querySelector('meta[name="twitter:title"]').setAttribute('content', post.title + ' — OutreachNest');
 document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.excerpt);
+
+// Related posts — same category, excluding current post, max 3
+const related = window.POSTS.filter(p => p.cat === post.cat && p.slug !== post.slug).slice(0, 3);
+if (related.length > 0) {
+  const cards = related.map(p =>
+    `<a class="rel-card" href="/post?p=${p.slug}">` +
+    `<div class="rel-cover ${p.cover}">${p.icon}</div>` +
+    `<div class="rel-info">` +
+    `<div class="rel-cat">${p.cat}</div>` +
+    `<div class="rel-title">${p.title}</div>` +
+    `<div class="rel-read">${p.read}</div>` +
+    `</div></a>`
+  ).join('');
+  document.getElementById('relatedPosts').innerHTML =
+    '<h3>Related articles</h3><div class="rel-grid">' + cards + '</div>';
+}
 </script>
 </body>
 </html>

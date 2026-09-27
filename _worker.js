@@ -858,7 +858,7 @@ button:hover{background:#173c2d}
 .err{background:#fbe9e9;color:#a33;border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:14px}
 .pw-wrap{position:relative;display:flex;align-items:center;margin-bottom:12px}
 .pw-wrap input{width:100%;padding-right:2.6rem;margin-bottom:0}
-.eye-btn{position:absolute;right:.55rem;background:none;border:none;cursor:pointer;color:#aaa;padding:0;display:flex;align-items:center}
+.eye-btn{position:absolute;right:.55rem;background:none;border:none;cursor:pointer;color:#aaa;padding:0;display:flex;align-items:center;width:auto}
 .eye-btn:hover{color:#555}.eye-btn svg{width:1.15rem;height:1.15rem}
 .forgot{display:block;text-align:center;margin-top:6px;font-size:12.5px;color:#aaa;text-decoration:none}
 .forgot:hover{color:#555}

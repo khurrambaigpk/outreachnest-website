@@ -3,7 +3,7 @@ window.POSTS = [
 {
 slug:"longi-vs-canadian-solar-vs-jinko-panel-brand-comparison",
 cat:"Industry, Solar", cover:"g3", icon:"☀️",
-title:"Longi vs Canadian Solar vs Jinko vs Risen: The Honest Brand Comparison Nobody Talks About",
+title:"Longi vs Canadian Solar vs Jinko: Honest Brand Comparison",
 author:"OutreachNest", date:"September 2026", read:"7 min read",
 excerpt:"Longi, Canadian Solar, Jinko, or Risen — which solar panel brand actually wins on degradation, warranty, and hot-climate performance?",
 content:`<p>Most solar panel comparison guides read like sponsored content — every brand gets a trophy and nobody tells you which one to actually buy. This isn't that guide.</p>
@@ -143,7 +143,7 @@ content:`<p>Most solar panel comparison guides read like sponsored content — e
 {
 slug:"string-inverter-vs-hybrid-vs-microinverter-comparison",
 cat:"Solar", cover:"g2", icon:"⚡",
-title:"String Inverter vs Hybrid Inverter vs Microinverter: What They Don't Tell You Before You Buy",
+title:"String vs Hybrid vs Microinverter: What They Won't Tell You",
 author:"OutreachNest", date:"September 2026", read:"6 min read",
 excerpt:"Most solar buyers choose the wrong inverter type because installers push margin, not fit. This guide breaks down the real cost, failure rates",
 content:`<p>The solar industry has a dirty little secret: most people choose the wrong inverter type — not because they're uninformed, but because installers often recommend whatever gives them the best margin, not whatever fits your roof.</p>
@@ -289,7 +289,7 @@ content:`<p>The solar industry has a dirty little secret: most people choose the
 {
 slug:"topcon-vs-perc-vs-hjt-solar-panel-technology",
 cat:"Solar, Industry", cover:"g4", icon:"🔬",
-title:"TOPCon vs PERC vs HJT: The Solar Panel Technology War (And Who's Actually Winning)",
+title:"TOPCon vs PERC vs HJT: Solar Panel Technology War",
 author:"OutreachNest", date:"September 2026", read:"7 min read",
 excerpt:"PERC was the standard. TOPCon took over. HJT is next. Here's what each technology actually means for your electricity output, degradation over 25 years",
 content:`<p>In 2022, virtually every solar panel sold used PERC technology. By 2026, TOPCon has taken over — and HJT is quietly waiting to replace it. If you're buying solar panels this year and nobody has explained what these acronyms actually mean for your electricity bill, this guide is for you.</p>
@@ -507,7 +507,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"finding-electronics-appliance-repair-businesses",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"How to Find Electronics & Appliance Repair Businesses for Outreach",
+    title:"Find Electronics & Appliance Repair Businesses for Outreach",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
     excerpt:"Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale — with verified contact info and SEO metrics.",
     content:`<p>Electronics and appliance repair shops don't show up on the same directories as solar companies or IT firms. They're scattered across Google Maps, local business directories, niche forums, and sometimes nothing more than a Facebook page — which makes finding them a research exercise in itself. If you're trying to reach these businesses for outreach, partnerships, or link-building, here's what actually works.</p>
@@ -545,7 +545,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electrical-contractors-panel-builders",
     cat:"Electrical", cover:"g1", icon:"⚡",
-    title:"How to Find Electrical Contractors & Panel Builders for Outreach",
+    title:"Find Electrical Contractors & Panel Builders for Outreach",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
     excerpt:"Find residential, commercial, and industrial electricians, panel builders, and switchgear companies in bulk — with emails and SEO metrics ",
     content:`<p>Electrical contracting is one of the largest skilled trades in the world, but a surprisingly high share of these businesses have minimal online visibility — which creates a real opportunity for anyone doing outreach, lead generation, or link building in this space. Here's how to find the right contacts and actually get replies.</p>
@@ -624,7 +624,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"whatsapp-outreach-response-rates",
     cat:"Outreach, WhatsApp", cover:"g2", icon:"💬",
-    title:"WhatsApp Cold Outreach: Why Response Rates Are Higher Than Email",
+    title:"WhatsApp Cold Outreach: Response Rates Higher Than Email",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's why WhatsApp outreach works, when to use it",
     content:`<p>Cold email still works, but inbox fatigue is real — most prospects get dozens of pitches a day and skim past them without opening. WhatsApp is different. Message notifications get checked almost immediately, open rates run far higher than email, and a well-placed WhatsApp message often gets a reply within the hour instead of days. For outreach that depends on speed — time-sensitive offers, quick qualification, or following up on a hot lead — WhatsApp is one of the most underused channels available.</p>
@@ -820,7 +820,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"choosing-solar-installer-guide",
     cat:"Solar", cover:"g3", icon:"☀️",
-    title:"How Homeowners Choose a Solar Installer (What Marketers Should Know)",
+    title:"How Homeowners Pick a Solar Installer: For Marketers",
     author:"OutreachNest", date:"July 2026", read:"6 min read",
     excerpt:"Understanding the buyer journey for solar installations reveals exactly what content, reviews, and trust signals help marketers, installers",
     content:`<p>The solar industry is crowded, and homeowners rarely buy from the first company they find. They compare, research, and hesitate before committing to a purchase that often runs into thousands. For anyone marketing in this space, understanding that decision journey is the difference between content that converts and content that gets ignored.</p>
@@ -836,7 +836,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electrical-contractors-online-growth",
     cat:"Electrical", cover:"g4", icon:"⚡",
-    title:"Why Electrical Contractors Are an Underrated Online Marketing Niche",
+    title:"Electrical Contractors: An Underrated Online Marketing Niche",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Electrical contractors form one of the largest, most stable B2B markets — and most of them are barely visible online.",
     content:`<p>Electrical contracting is a huge, steady industry, yet a surprising number of these businesses have almost no online presence beyond a basic listing. That gap is both a challenge and an opportunity for anyone selling services, tools, or marketing to this market.</p>
@@ -868,7 +868,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electronics-repair-steady-demand",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"Electronics Repair as an Outreach Niche: Steady Demand, Low Competition",
+    title:"Electronics Repair Niche: Steady Demand, Low Competition",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
     excerpt:"Repair shops fly under the radar — but they're everywhere, always need new customers, and rarely have strong online competition.",
     content:`<p>Electronics and appliance repair rarely makes headlines, yet demand for it never really goes away. As long as people own devices and appliances, some of them will break, and someone needs to fix them. That steadiness makes repair a quietly reliable niche to work in.</p>
@@ -885,7 +885,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"quality-over-quantity-backlinks",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g6", icon:"📈",
-    title:"Quality vs Quantity in Link Building: Why Fewer Great Backlinks Win",
+    title:"Quality vs Quantity in Link Building: Fewer Backlinks Win",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
     excerpt:"100 weak backlinks won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality ",
     content:`<p>It's tempting to measure a link-building campaign by the sheer number of backlinks it produces, but that number can be deeply misleading. A handful of strong, relevant links will almost always outperform a large pile of weak ones, and understanding why changes how you spend your budget.</p>
@@ -1012,7 +1012,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"da-dr-traffic-which-matters-guest-posting",
     featured: true, type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g3", icon:"📊",
-    title:"DA vs DR vs Traffic: Which SEO Metric Actually Matters for Guest Posting?",
+    title:"DA vs DR vs Traffic: Which SEO Metric Matters Most?",
     author:"OutreachNest", date:"September 2026", read:"6 min read",
     excerpt:"Three numbers every link builder watches — but they measure different things and rarely agree. Here's what each one actually tells you, when it matters",
     content:`<p>Open any conversation about link building and within a few messages, someone mentions DA. Open the next one, it's DR. A third person says neither matters — traffic is what counts. They're all partly right, which is why these conversations go in circles. The more useful question is: what does each metric actually measure, and which one should you weight when they disagree?</p>
@@ -1062,7 +1062,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"industrial-automation-seo-untapped-potential",
     cat:"Automation, SEO & Tools", cover:"g4", icon:"⚙️",
-    title:"Industrial Automation SEO: The Niche With Untapped Link Building Potential",
+    title:"Industrial Automation SEO: Untapped Link Building Potential",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"PLC integrators, SCADA vendors, and panel builders rank on Google — but almost none have a real link building strategy.",
     content:`<p>Industrial automation is one of those niches where the businesses are real, the contracts are large, and the digital marketing is still stuck a decade behind. PLC integrators, SCADA system vendors, control panel builders, and industrial instrumentation companies often run websites that look like they were designed around 2014 — contact forms that may or may not work, no blog, no content strategy, and no backlinks beyond a few trade directories. For SEO professionals and link builders, that underdevelopment isn't a barrier. It's a structural opportunity.</p>
@@ -1083,7 +1083,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"niche-relevance-guest-posts-explained",
     type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g1", icon:"🎯",
-    title:"What Makes a Guest Post 'Niche Relevant'? The Question Most Buyers Get Wrong",
+    title:"Guest Post Niche Relevance: What Most Buyers Get Wrong",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"A solar company placing a link on a home improvement blog — high DA, clean metrics, but not exactly solar. Does relevance matter?",
     content:`<p>Ask ten link builders about niche relevance and you get ten different answers. One says the host site must be in exactly the same industry — a solar company should only place links on solar sites. Another says topical relevance at the article level is what counts, regardless of the site's overall category. A third says it barely matters if the DA is high enough. All three are overconfident about a question that's more nuanced than any single rule handles.</p>

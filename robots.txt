@@ -1,6 +1,6 @@
 # Allow all standard search crawlers
 User-agent: *
-Allow: /
+Allow: / 
 Disallow: /admin.html
 Disallow: /admin
 

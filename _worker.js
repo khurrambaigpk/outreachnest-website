@@ -6,6 +6,14 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v33 (28 Sep 2026) — Three SEO fixes from comprehensive audit:
+//   (a) og:type corrected to "article" on all blog post pages — was "website" (inherited
+//       from static post.html template). injectPostMeta() now explicitly sets
+//       og:type=article, fixing social previews and Google article eligibility.
+//   (b) Homepage meta description shortened from 208 → 133 chars (was over 155-char limit).
+//       Added override in HTML_PAGES caching block (same pattern as /services fix in v25).
+//   (c) /blog title shortened from 73 → 54 chars and desc from 164 → 141 chars.
+//       Both were over search-engine display limits. Overrides injected at cache time.
 // v14 (11 Sep 2026) — Extended edge caching to ALL static HTML pages (/blog, /download,
 //   /services, /niches, /contact) — not just /. Fixes "Slow page" and "Slow server
 //   response for AI crawlers" Ahrefs warnings on /blog and other static pages.
@@ -373,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v32"; // v32: Eye icon + email recovery system
+const CACHE_VERSION = "v33"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -588,7 +596,10 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug, postDate) {
     // Twitter tags
     .replace(/<meta\s+name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${safeTitle}">`)
     .replace(/<meta\s+name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${safeDesc}">`)
-    .replace(/<meta\s+name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${OG_IMAGE}">`);
+    .replace(/<meta\s+name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${OG_IMAGE}">`)
+    // og:type — static template has "website"; blog posts must use "article" for
+    // correct social previews and Google's article rich result eligibility.
+    .replace(/<meta\s+property="og:type"[^>]*>/i, '<meta property="og:type" content="article">');
 
   // Fix robots meta tag for known slugs — static template has "noindex, follow"
   // which causes Google to skip all blog post pages. Change it to "index, follow"
@@ -1571,6 +1582,17 @@ export default {
               bodyText = bodyText
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
+            }
+            // v33: fix homepage meta description (was 208 chars — over 155-char limit)
+            if (normPath === "/") {
+              bodyText = bodyText
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">');
+            }
+            // v33: fix /blog title (73 chars) and meta description (164 chars) — both over limit
+            if (normPath === "/blog") {
+              bodyText = bodyText
+                .replace(/<title>[^<]*<\/title>/i, "<title>SEO, Link Building &amp; Guest Posting Blog — OutreachNest</title>")
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies for finding better prospects.">');
             }
           }
           const toCache = new Response(bodyText, {

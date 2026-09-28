@@ -60,6 +60,10 @@
 //   <h1 id="aTitle"></h1> which JavaScript fills with the post title. The hidden
 //   off-screen H1 was therefore a second duplicate H1, counted by Ahrefs even though
 //   invisible to users. Removing it leaves exactly one H1 per post page.
+// v10 (Sep 2026) — IndexNow ping on publish: after every successful admin-panel post,
+//   the new post URL is submitted to api.indexnow.org (fire-and-forget, never blocks
+//   the publish response). Bing, Yandex, and any IndexNow-compatible engine receive
+//   the URL within seconds instead of waiting for their next crawl cycle.
 // v9 (Sep 2026) — fixed 3 POSTS_META titles still >60 chars and 3 descs still >155 chars
 //   (longi vs canadian solar title, string inverter title, niche relevance title,
 //    guest post vs pbn desc, da/dr/traffic desc, b2b lead list desc)
@@ -1064,6 +1068,21 @@ async function handlePublish(request, env) {
       body: JSON.stringify({ sha: newCommitSha, force: false }),
     });
     if (!updateRefResp.ok) throw new Error(`Branch update failed (HTTP ${updateRefResp.status})`);
+
+    // ── v10: IndexNow ping (fire-and-forget — never blocks the publish response) ──
+    // Notifies Bing, Yandex, and any IndexNow-compatible engine about the new URL
+    // immediately, instead of waiting for their next scheduled crawl.
+    const newPostUrl = `https://getoutreachnest.com/post?p=${slug}`;
+    fetch("https://api.indexnow.org/indexnow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        host: "getoutreachnest.com",
+        key: "1257f0fc794749fa896e8d3c4e1af272",
+        keyLocation: "https://getoutreachnest.com/1257f0fc794749fa896e8d3c4e1af272.txt",
+        urlList: [newPostUrl],
+      }),
+    }).catch(() => {}); // silent — a ping failure never rolls back a successful publish
 
     return jsonResponse({ success: true, commit: newCommitSha.slice(0, 7) });
 

@@ -381,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v33"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v34"; // v34: ensure Worker-first routing, correct homepage/services descriptions, and sitemap consistency.
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1467,15 +1467,16 @@ export default {
     // or outdated. Now the Worker generates it on the fly from the canonical list.
     if (url.pathname === "/sitemap.xml") {
       const BASE = "https://getoutreachnest.com";
-      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
       const SITE_PUB_DATE = "2026-09-01";
+      // Keep lastmod truthful: do not claim every main page changed every day.
+      // Update these dates when the corresponding page's substantive content changes.
       const mainPages = [
-        { loc: `${BASE}/`,         lastmod: today,         priority: "1.0", changefreq: "weekly"  },
-        { loc: `${BASE}/blog`,     lastmod: today,         priority: "0.9", changefreq: "weekly"  },
-        { loc: `${BASE}/download`, lastmod: today,         priority: "0.9", changefreq: "monthly" },
-        { loc: `${BASE}/services`, lastmod: today,         priority: "0.8", changefreq: "monthly" },
-        { loc: `${BASE}/niches`,   lastmod: today,         priority: "0.8", changefreq: "monthly" },
-        { loc: `${BASE}/contact`,  lastmod: today,         priority: "0.7", changefreq: "monthly" },
+        { loc: `${BASE}/`,         lastmod: "2026-09-25", priority: "1.0", changefreq: "weekly"  },
+        { loc: `${BASE}/blog`,     lastmod: "2026-09-25", priority: "0.9", changefreq: "weekly"  },
+        { loc: `${BASE}/download`, lastmod: "2026-09-15", priority: "0.9", changefreq: "monthly" },
+        { loc: `${BASE}/services`, lastmod: "2026-09-15", priority: "0.8", changefreq: "monthly" },
+        { loc: `${BASE}/niches`,   lastmod: "2026-09-15", priority: "0.8", changefreq: "monthly" },
+        { loc: `${BASE}/contact`,  lastmod: "2026-09-15", priority: "0.7", changefreq: "monthly" },
       ];
       // v28: per-post lastmod from posts-data.json; fall back to SITE_PUB_DATE
       let postDatesMap = {};
@@ -1581,12 +1582,12 @@ export default {
             if (normPath === "/services") {
               bodyText = bodyText
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts from $70, verified B2B lead lists from $75, and SEO content writing from $45 for technical niches including solar and electrical.">');
             }
             // v33: fix homepage meta description (was 208 chars — over 155-char limit)
             if (normPath === "/") {
               bodyText = bodyText
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Niche guest posts, B2B lead lists and content writing for solar, electrical, automation and electronics brands, plus a free Windows prospecting tool.">');
             }
             // v33: fix /blog title (73 chars) and meta description (164 chars) — both over limit
             if (normPath === "/blog") {

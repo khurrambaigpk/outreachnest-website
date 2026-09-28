@@ -148,11 +148,11 @@ const POSTS_META = {
   // v19: All 27 titles & descriptions rewritten to match real search queries.
   // Primary keyword placed early in title; secondary keywords in description.
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
-    title: "Why Cold Outreach Fails: Mistakes Nobody Talks About",
+    title: "Why Cold Outreach Fails: Common Mistakes",
     desc: "Cold outreach fails for the same reasons again and again — and most guides miss them. Learn the real reasons your cold emails and DMs don't get replies.",
   },
   "finding-electronics-appliance-repair-businesses": {
-    title: "Find Electronics & Appliance Repair Shops for Outreach",
+    title: "Find Electronics Repair Shops for Outreach",
     desc: "Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale. Ideal for link building, lead gen, and local outreach.",
   },
   "industrial-automation-leads": {
@@ -164,35 +164,35 @@ const POSTS_META = {
     desc: "Find residential, commercial, and industrial electricians, panel builders, and switchgear companies in bulk for link building and B2B outreach campaigns.",
   },
   "solar-guest-post-sites": {
-    title: "How to Find Solar Guest Post Sites & Leads in Minutes",
+    title: "Find Solar Guest Post Sites & Leads",
     desc: "Find solar energy blogs, installer sites, and inverter or battery companies for guest posting and link building — in minutes, not days of manual searching.",
   },
   "how-agencies-manage-10-niches-without-losing-track": {
-    title: "How SEO Agencies Manage 10+ Niches Without Losing Track",
+    title: "How SEO Agencies Manage 10+ Niches",
     desc: "Running outreach across many industries creates chaos. Here's how SEO agencies use niche profiles to stay organized and scale without confusion.",
   },
   "lead-list-google-sheet": {
-    title: "Export Your Lead List to Google Sheets Automatically",
+    title: "Export Lead Lists to Google Sheets",
     desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "WhatsApp Outreach: Why It Gets More Replies Than Email",
+    title: "WhatsApp Outreach: More Replies Than Email?",
     desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
-    title: "OutreachNest Finder Features: Complete Guide (2026)",
+    title: "OutreachNest Finder Features (2026)",
     desc: "Full walkthrough of every OutreachNest Finder feature: 4-engine business search, bulk email extraction, DA/PA/DR metrics, Chrome Bridge, and Sheets export.",
   },
   "how-to-find-seo-clients-fast-in-2026": {
-    title: "How to Find SEO Clients Fast in 2026 (Step-by-Step)",
+    title: "How to Find SEO Clients Fast in 2026",
     desc: "A repeatable, no-ads system for finding and closing SEO clients in 2026. Build a prospect list, send targeted outreach, and land your next client fast.",
   },
   "link-building-prospects": {
-    title: "How to Build 1,000 Link Building Prospects in Minutes",
+    title: "Build 1,000 Link Building Prospects Fast",
     desc: "Most SEO freelancers waste days building prospect lists by hand. Here's a faster method to find 1,000+ real link building opportunities quickly.",
   },
   "how-to-check-da-pa-dr-without-paying-for-tools": {
-    title: "How to Check DA, PA & DR Without Paying for Tools",
+    title: "Check DA, PA & DR for Free",
     desc: "Check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest's Chrome Bridge — no Moz or Ahrefs subscription required.",
   },
   "spot-real-guest-post-site": {
@@ -200,19 +200,19 @@ const POSTS_META = {
     desc: "Not every 'write for us' site is safe. Learn how to identify real guest post opportunities versus link farms and private blog networks before you publish.",
   },
   "b2b-lead-list-worth-buying": {
-    title: "What Makes a B2B Lead List Worth Buying in 2026",
+    title: "What Makes a B2B Lead List Worth Buying?",
     desc: "Most B2B lead lists are stale and full of bounced emails. Here's what separates a lead list worth paying for from one that wastes your outreach budget.",
   },
   "solar-niche-goldmine": {
-    title: "Why the Solar Niche Is a Goldmine for Link Building",
+    title: "Why Solar Is a Goldmine for Link Building",
     desc: "Solar is competitive, high-budget, and packed with companies actively investing in SEO. Here's why it's one of the best niches for link builders in 2026.",
   },
   "cold-email-that-gets-replies": {
-    title: "Cold Email That Gets Replies: A Simple Framework",
+    title: "Cold Email That Gets Replies",
     desc: "Long, salesy cold emails get ignored. Short, specific, human ones get replies. Here's the cold email framework that consistently gets responses.",
   },
   "warm-up-new-email-domain": {
-    title: "How to Warm Up a New Email Domain Before Cold Outreach",
+    title: "How to Warm Up a New Email Domain",
     desc: "Sending cold emails from a brand-new domain without warming it up sends you straight to spam. Here's the right way to warm up an email domain.",
   },
   "choosing-solar-installer-guide": {
@@ -220,34 +220,34 @@ const POSTS_META = {
     desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Electrical Contractors: An Underrated Marketing Niche",
+    title: "Electrical Contractors: Marketing Niche",
     desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: A High-Value Outreach Niche",
+    title: "Industrial Automation: High-Value Niche",
     desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
-    title: "Electronics Repair: Steady Demand, Low Competition",
+    title: "Electronics Repair: Steady Demand",
     desc: "Repair shops fly under the radar but they're everywhere and always need marketing help. Here's how to tap the electronics repair niche for outreach.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Link Building Quality vs Quantity: Which Wins?",
+    title: "Link Building Quality vs Quantity",
     desc: "100 weak links won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality that moves rankings.",
   },
   // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
   // without entries here the worker serves the unmodified template whose canonical
   // is /post (not /post?p=SLUG), causing "Non-canonical page in sitemap" in Ahrefs.
   "solar-guest-post-cost-2026": {
-    title: "How Much Does a Solar Guest Post Cost in 2026?",
+    title: "How Much Does a Solar Guest Post Cost?",
     desc: "Solar guest post prices range from $25 to $500+. Here's what drives the price difference and how to find quality placements at fair market rates.",
   },
   "signs-guest-post-site-hurt-rankings": {
-    title: "5 Signs a Guest Post Site Will Hurt Your Rankings",
+    title: "5 Signs a Guest Post Site Will Hurt SEO",
     desc: "Some guest post sites do more harm than good. Learn how to spot thin content, PBN patterns, and unnatural link profiles before you publish and pay.",
   },
   "electrical-contractor-seo-backlinks": {
-    title: "How Electrical Contractors Can Build SEO Backlinks",
+    title: "SEO Backlinks for Electrical Contractors",
     desc: "Electrical contractors rarely do link building — which creates a real opportunity for SEOs. Here's how to earn and build backlinks in this niche.",
   },
   "vet-electronics-repair-guest-post-site": {
@@ -255,41 +255,41 @@ const POSTS_META = {
     desc: "Electronics repair blogs can be link farms in disguise. Here's a fast vetting checklist to find sites actually worth publishing on vs ones to skip.",
   },
   "guest-posting-vs-pbn-links-difference": {
-    title: "Guest Posting vs PBN Links: What's the Real Difference?",
+    title: "Guest Posting vs PBN Links: Key Differences",
     desc: "Both place links on external sites, but risks and long-term results differ completely. Here's what actually separates a real guest post from a PBN link.",
   },
   // v28: 8 missing September 2026 slugs added — these were in posts.js but absent
   // from POSTS_META so the Worker was serving noindex for all of them.
   "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": {
-    title: "Longi vs Canadian Solar vs Jinko: Solar Brand Comparison",
+    title: "Longi vs Canadian Solar vs Jinko",
     desc: "Which solar panel brand wins on degradation, warranty, and hot-climate performance? An honest comparison of Longi, Canadian Solar, Jinko, and Risen.",
   },
   "string-inverter-vs-hybrid-vs-microinverter-comparison": {
-    title: "String vs Hybrid vs Microinverter: Real Cost Compared",
+    title: "String vs Hybrid vs Microinverter",
     desc: "Most solar buyers choose the wrong inverter type. Here's the real cost, failure rate, and 10-year economics of string, hybrid, and microinverter systems.",
   },
   "topcon-vs-perc-vs-hjt-solar-panel-technology": {
-    title: "TOPCon vs PERC vs HJT Solar Panel Technology Explained",
+    title: "TOPCon vs PERC vs HJT Explained",
     desc: "PERC was the standard. TOPCon took over. HJT is next. Here's what each technology means for output, 25-year degradation, and your actual payback period.",
   },
   "high-da-zero-traffic-explained": {
-    title: "High DA, Zero Traffic: What's Actually Happening?",
+    title: "High DA, Zero Traffic: Why?",
     desc: "A site with DA 45 and barely 30 monthly visitors — strong metric, no rankings. Here's why this happens and what it means before you pay for a link.",
   },
   "da-dr-traffic-which-matters-guest-posting": {
-    title: "DA vs DR vs Traffic: Which Metric Matters for Guest Posting?",
+    title: "DA vs DR vs Traffic for Guest Posting",
     desc: "Three metrics every link builder watches — but they measure different things. Here's which to prioritize when DA, DR, and traffic conflict.",
   },
   "build-b2b-lead-list-from-scratch-2026": {
-    title: "How to Build a B2B Lead List From Scratch in 2026",
+    title: "Build a B2B Lead List From Scratch",
     desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches from scratch.",
   },
   "industrial-automation-seo-untapped-potential": {
-    title: "Industrial Automation SEO: Untapped Link Building Potential",
+    title: "Industrial Automation SEO: Link Building",
     desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
   },
   "niche-relevance-guest-posts-explained": {
-    title: "Guest Post Niche Relevance: What Most Buyers Get Wrong",
+    title: "Guest Post Niche Relevance Explained",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
 };
@@ -381,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v34"; // v34: ensure Worker-first routing, correct homepage/services descriptions, and sitemap consistency.
+const CACHE_VERSION = "v35"; // v35: keep SEO page titles under 60 chars while preserving full article/H1 titles.
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -717,8 +717,11 @@ async function handlePostPage(request, env, ctx, slug) {
 
   // Resolve metadata: live posts-data.json → static POSTS_META → noindex
   const staticMeta = POSTS_META[slug];
+  // Use the curated SEO title from POSTS_META when available. The full article title
+  // in posts-data.json remains unchanged for the visible H1; this only keeps the
+  // HTML <title> concise and search-result friendly.
   const meta = postData
-    ? { title: postData.title, desc: postData.excerpt || (staticMeta && staticMeta.desc) || "" }
+    ? { title: (staticMeta && staticMeta.title) || postData.title, desc: postData.excerpt || (staticMeta && staticMeta.desc) || "" }
     : staticMeta;
 
   if (!meta) {

@@ -381,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v35"; // v35: keep SEO page titles under 60 chars while preserving full article/H1 titles.
+const CACHE_VERSION = "v36"; // v36: strengthen BlogPosting publisher schema and internal linking after Ahrefs crawl; keep SEO page titles under 60 chars while preserving full article/H1 titles.
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -409,7 +409,7 @@ const RELATED_POSTS = {
   // Solar cluster
   "solar-guest-post-sites":       ["solar-niche-goldmine", "solar-guest-post-cost-2026", "spot-real-guest-post-site"],
   "solar-niche-goldmine":         ["solar-guest-post-sites", "solar-guest-post-cost-2026", "link-building-prospects"],
-  "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings"],
+  "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings", "choosing-solar-installer-guide"],
   "choosing-solar-installer-guide":["solar-niche-goldmine", "solar-guest-post-sites", "electrical-contractors-online-growth"],
 
   // Electronics / repair cluster
@@ -631,8 +631,20 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug, postDate) {
     "url": canonical,
     "datePublished": postDate || SITE_PUB_DATE,
     "dateModified": postDate || SITE_PUB_DATE,
-    "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
-    "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
+    "author": {
+      "@type": "Organization",
+      "name": "OutreachNest",
+      "url": "https://getoutreachnest.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "OutreachNest",
+      "url": "https://getoutreachnest.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://getoutreachnest.com/favicon.png"
+      }
+    },
     "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },
   }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
   const schemaTag = `<script type="application/ld+json">${blogPostingSchema}</script>`;

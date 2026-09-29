@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://getoutreachnest.com/activate">
+<title>Activate Your Free Trial — OutreachNest Finder</title>
+<meta name="description" content="Activate your OutreachNest Finder free trial instantly — paste your Gumroad license key and PC ID to get your activation key right away, no waiting.">
+<link rel="stylesheet" href="style.css">
+<style>
+.activate-hero{padding:120px 0 60px;background:var(--paper)}
+.activate-hero .wrap{max-width:640px}
+.activate-hero h1{font-size:clamp(28px,4vw,40px);margin:0 0 12px;color:var(--ink)}
+.activate-hero p.lead{color:var(--muted);font-size:16px;line-height:1.6;margin:0 0 0}
+.activate-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 32px;margin-top:32px;box-shadow:var(--shadow)}
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:600;font-size:14px;color:var(--ink);margin-bottom:6px}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+.field input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;font-size:14.5px;font-family:inherit;background:var(--paper-2);color:var(--ink)}
+.field input:focus{outline:none;border-color:var(--leaf);background:#fff}
+.activate-btn{width:100%;justify-content:center;font-size:15.5px}
+.activate-btn[disabled]{opacity:.6;cursor:default}
+.result-box{margin-top:22px;border-radius:12px;padding:18px 20px;font-size:14.5px;line-height:1.6;display:none}
+.result-box.show{display:block}
+.result-ok{background:var(--leaf-soft);border:1px solid var(--leaf);color:var(--leaf-deep)}
+.result-err{background:#fbe9e9;border:1px solid #d99;color:#a33}
+.key-display{margin-top:10px;background:#fff;border:1px dashed var(--leaf);border-radius:10px;padding:14px 16px;font-family:Consolas,Menlo,monospace;font-size:16px;letter-spacing:.5px;color:var(--leaf-deep);word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.copy-btn{border:1px solid var(--leaf);background:#fff;color:var(--leaf-deep);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.copy-btn:hover{background:var(--leaf-soft)}
+.steps{margin-top:34px;background:var(--paper-2);border-radius:14px;padding:22px 24px}
+.steps h3{margin:0 0 12px;font-size:15px;color:var(--ink)}
+.steps ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px;line-height:1.9}
+.steps a{color:var(--leaf-deep);font-weight:600}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-inner">
+  <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>
+  <div class="nav-links"><a href="/">Home</a><a href="/services">Services</a><a href="/niches">Niches</a><a href="/download">Download</a><a href="/blog">Blog</a><a href="/contact" class="nav-cta">Get in touch</a></div>
+  <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+</div>
+<div class="mobile-menu" id="mobile-menu"><a href="/">Home</a><a href="/services">Services</a><a href="/niches">Niches</a><a href="/download">Download</a><a href="/blog">Blog</a><a href="/contact">Get in touch</a></div>
+</nav>
+
+<section class="activate-hero">
+  <div class="wrap">
+    <h1>Activate your free trial</h1>
+    <p class="lead">Paste your Gumroad license key and your PC ID (HWID) below — your activation key is generated instantly, no waiting for email or WhatsApp.</p>
+
+    <div class="activate-card">
+      <form id="activateForm">
+        <div class="field">
+          <label for="licenseKey">Gumroad license key</label>
+          <input type="text" id="licenseKey" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" autocomplete="off" required>
+          <div class="hint">Sent automatically to your email by Gumroad right after you claim the free trial.</div>
+        </div>
+        <div class="field">
+          <label for="hwid">Your PC ID (HWID)</label>
+          <input type="text" id="hwid" placeholder="e.g. A1B2C3D4E5F6A7B8" autocomplete="off" required>
+          <div class="hint">Shown inside OutreachNest Finder on the "Activate License" screen — copy it exactly as displayed.</div>
+        </div>
+        <button type="submit" class="btn btn-primary activate-btn" id="submitBtn">Activate now →</button>
+      </form>
+
+      <div class="result-box" id="resultBox"></div>
+    </div>
+
+    <div class="steps">
+      <h3>How this works</h3>
+      <ol>
+        <li>Get the free trial from the <a href="/download">Download page</a> and claim it on Gumroad (no card required).</li>
+        <li>Check your email for the Gumroad license key, and open the app to find your PC ID.</li>
+        <li>Paste both above — your activation key appears instantly and is locked to this one PC.</li>
+        <li>Copy the key back into the app's "Activate License" screen and you're in.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+const form = document.getElementById('activateForm');
+const resultBox = document.getElementById('resultBox');
+const submitBtn = document.getElementById('submitBtn');
+
+function showResult(kind, html) {
+  resultBox.className = 'result-box show ' + (kind === 'ok' ? 'result-ok' : 'result-err');
+  resultBox.innerHTML = html;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const licenseKey = document.getElementById('licenseKey').value.trim();
+  const hwid = document.getElementById('hwid').value.trim();
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Activating…';
+  resultBox.className = 'result-box';
+
+  try {
+    const resp = await fetch('/api/activate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license_key: licenseKey, hwid }),
+    });
+    const data = await resp.json();
+
+    if (data.success) {
+      showResult('ok',
+        '✅ <strong>Activated!</strong> Copy this key into the app:' +
+        '<div class="key-display"><span id="keyText">' + data.key + '</span>' +
+        '<button type="button" class="copy-btn" id="copyKeyBtn">📋 Copy</button></div>'
+      );
+      document.getElementById('copyKeyBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(data.key).then(() => {
+          const btn = document.getElementById('copyKeyBtn');
+          btn.textContent = '✅ Copied!';
+          setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+        });
+      });
+    } else {
+      showResult('err', '❌ ' + (data.error || 'Something went wrong. Please try again.'));
+    }
+  } catch (err) {
+    showResult('err', '❌ Could not reach the activation service. Please check your connection and try again.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Activate now →';
+  }
+});
+
+// Mobile menu toggle (same behavior as the rest of the site)
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+if (menuBtn && mobileMenu) {
+  menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+}
+</script>
+
+</body>
+</html>

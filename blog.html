@@ -422,24 +422,7 @@ body { background: var(--bg); color: var(--text); }
 }
 .blog-sections { margin-bottom: 64px; }
 
-/* ── Post card — editorial cover + icon ───────────────── */
-.pc-cover {
-  height: 118px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-  line-height: 1;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.pc-cover.g1 { background: linear-gradient(135deg,#dff0e6,#f3e8cf); }
-.pc-cover.g2 { background: linear-gradient(135deg,#e7f0da,#e9f3ef); }
-.pc-cover.g3 { background: linear-gradient(135deg,#f5e9d0,#e6f1ea); }
-.pc-cover.g4 { background: linear-gradient(135deg,#e4efe8,#f6ecd4); }
-.pc-cover.g5 { background: linear-gradient(135deg,#eae4f0,#e9f3ef); }
-.pc-cover.g6 { background: linear-gradient(135deg,#f0e2da,#f6ecd4); }
-
+/* ── Post card — editorial, no cover image ────────────── */
 .post-card {
   display: flex;
   flex-direction: column;
@@ -470,6 +453,23 @@ body { background: var(--bg); color: var(--text); }
   text-decoration: none;
 }
 .post-card:hover::before { background: var(--brand); }
+
+.pc-cover {
+  height: 118px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  line-height: 1;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.pc-cover.g1 { background: linear-gradient(135deg, #dff0e6, #f3e8cf); }
+.pc-cover.g2 { background: linear-gradient(135deg, #e7f0da, #e9f3ef); }
+.pc-cover.g3 { background: linear-gradient(135deg, #f5e9d0, #e6f1ea); }
+.pc-cover.g4 { background: linear-gradient(135deg, #e4efe8, #f6ecd4); }
+.pc-cover.g5 { background: linear-gradient(135deg, #eae4f0, #e9f3ef); }
+.pc-cover.g6 { background: linear-gradient(135deg, #f0e2da, #f6ecd4); }
 
 .pc-body {
   flex: 1;

@@ -6,7 +6,6 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
-// v34 (28 Sep 2026) — wrangler.toml routing fix: all main routes now Worker-first
 // v33 (28 Sep 2026) — Three SEO fixes from comprehensive audit:
 //   (a) og:type corrected to "article" on all blog post pages — was "website" (inherited
 //       from static post.html template). injectPostMeta() now explicitly sets
@@ -382,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v37"; // v37: remove ineligible SoftwareApplication rich-result markup from /download; no fabricated rating/review. // v34 (28 Sep 2026) — wrangler.toml routing fix: all main routes now Worker-first // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v34"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -476,7 +475,7 @@ const PAGE_SCHEMAS = {
     "@type": "WebPage",
     "name": "Download OutreachNest Finder — Free 3-Day Trial",
     "url": "https://getoutreachnest.com/download",
-    "description": "Download OutreachNest Finder for Windows and start the 3-day free trial. Find SEO prospects, check DA/PA/DR, extract emails and export prospect data.",
+    "description": "Download OutreachNest Finder for Windows and start the 3-day free trial. Find SEO prospects, check DA, PA and DR, extract emails and export prospect data.",
     "about": {
       "@type": "Thing",
       "name": "OutreachNest Finder"
@@ -487,7 +486,7 @@ const PAGE_SCHEMAS = {
       "url": "https://getoutreachnest.com",
       "logo": "https://getoutreachnest.com/favicon.png"
     }
-  }).replace(/</g, "\u003c").replace(/>/g, "\u003e"),
+  }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
 
   "/services": JSON.stringify({
     "@context": "https://schema.org",

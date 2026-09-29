@@ -6,6 +6,7 @@
 // v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v34 (28 Sep 2026) — wrangler.toml routing fix: all main routes now Worker-first
 // v33 (28 Sep 2026) — Three SEO fixes from comprehensive audit:
 //   (a) og:type corrected to "article" on all blog post pages — was "website" (inherited
 //       from static post.html template). injectPostMeta() now explicitly sets
@@ -148,11 +149,11 @@ const POSTS_META = {
   // v19: All 27 titles & descriptions rewritten to match real search queries.
   // Primary keyword placed early in title; secondary keywords in description.
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
-    title: "Why Cold Outreach Fails: Common Mistakes",
+    title: "Why Cold Outreach Fails: Mistakes Nobody Talks About",
     desc: "Cold outreach fails for the same reasons again and again — and most guides miss them. Learn the real reasons your cold emails and DMs don't get replies.",
   },
   "finding-electronics-appliance-repair-businesses": {
-    title: "Find Electronics Repair Shops for Outreach",
+    title: "Find Electronics & Appliance Repair Shops for Outreach",
     desc: "Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale. Ideal for link building, lead gen, and local outreach.",
   },
   "industrial-automation-leads": {
@@ -164,35 +165,35 @@ const POSTS_META = {
     desc: "Find residential, commercial, and industrial electricians, panel builders, and switchgear companies in bulk for link building and B2B outreach campaigns.",
   },
   "solar-guest-post-sites": {
-    title: "Find Solar Guest Post Sites & Leads",
+    title: "How to Find Solar Guest Post Sites & Leads in Minutes",
     desc: "Find solar energy blogs, installer sites, and inverter or battery companies for guest posting and link building — in minutes, not days of manual searching.",
   },
   "how-agencies-manage-10-niches-without-losing-track": {
-    title: "How SEO Agencies Manage 10+ Niches",
+    title: "How SEO Agencies Manage 10+ Niches Without Losing Track",
     desc: "Running outreach across many industries creates chaos. Here's how SEO agencies use niche profiles to stay organized and scale without confusion.",
   },
   "lead-list-google-sheet": {
-    title: "Export Lead Lists to Google Sheets",
+    title: "Export Your Lead List to Google Sheets Automatically",
     desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "WhatsApp Outreach: More Replies Than Email?",
+    title: "WhatsApp Outreach: Why It Gets More Replies Than Email",
     desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
-    title: "OutreachNest Finder Features (2026)",
+    title: "OutreachNest Finder Features: Complete Guide (2026)",
     desc: "Full walkthrough of every OutreachNest Finder feature: 4-engine business search, bulk email extraction, DA/PA/DR metrics, Chrome Bridge, and Sheets export.",
   },
   "how-to-find-seo-clients-fast-in-2026": {
-    title: "How to Find SEO Clients Fast in 2026",
+    title: "How to Find SEO Clients Fast in 2026 (Step-by-Step)",
     desc: "A repeatable, no-ads system for finding and closing SEO clients in 2026. Build a prospect list, send targeted outreach, and land your next client fast.",
   },
   "link-building-prospects": {
-    title: "Build 1,000 Link Building Prospects Fast",
+    title: "How to Build 1,000 Link Building Prospects in Minutes",
     desc: "Most SEO freelancers waste days building prospect lists by hand. Here's a faster method to find 1,000+ real link building opportunities quickly.",
   },
   "how-to-check-da-pa-dr-without-paying-for-tools": {
-    title: "Check DA, PA & DR for Free",
+    title: "How to Check DA, PA & DR Without Paying for Tools",
     desc: "Check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest's Chrome Bridge — no Moz or Ahrefs subscription required.",
   },
   "spot-real-guest-post-site": {
@@ -200,19 +201,19 @@ const POSTS_META = {
     desc: "Not every 'write for us' site is safe. Learn how to identify real guest post opportunities versus link farms and private blog networks before you publish.",
   },
   "b2b-lead-list-worth-buying": {
-    title: "What Makes a B2B Lead List Worth Buying?",
+    title: "What Makes a B2B Lead List Worth Buying in 2026",
     desc: "Most B2B lead lists are stale and full of bounced emails. Here's what separates a lead list worth paying for from one that wastes your outreach budget.",
   },
   "solar-niche-goldmine": {
-    title: "Why Solar Is a Goldmine for Link Building",
+    title: "Why the Solar Niche Is a Goldmine for Link Building",
     desc: "Solar is competitive, high-budget, and packed with companies actively investing in SEO. Here's why it's one of the best niches for link builders in 2026.",
   },
   "cold-email-that-gets-replies": {
-    title: "Cold Email That Gets Replies",
+    title: "Cold Email That Gets Replies: A Simple Framework",
     desc: "Long, salesy cold emails get ignored. Short, specific, human ones get replies. Here's the cold email framework that consistently gets responses.",
   },
   "warm-up-new-email-domain": {
-    title: "How to Warm Up a New Email Domain",
+    title: "How to Warm Up a New Email Domain Before Cold Outreach",
     desc: "Sending cold emails from a brand-new domain without warming it up sends you straight to spam. Here's the right way to warm up an email domain.",
   },
   "choosing-solar-installer-guide": {
@@ -220,34 +221,34 @@ const POSTS_META = {
     desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Electrical Contractors: Marketing Niche",
+    title: "Electrical Contractors: An Underrated Marketing Niche",
     desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: High-Value Niche",
+    title: "Industrial Automation: A High-Value Outreach Niche",
     desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
-    title: "Electronics Repair: Steady Demand",
+    title: "Electronics Repair: Steady Demand, Low Competition",
     desc: "Repair shops fly under the radar but they're everywhere and always need marketing help. Here's how to tap the electronics repair niche for outreach.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Link Building Quality vs Quantity",
+    title: "Link Building Quality vs Quantity: Which Wins?",
     desc: "100 weak links won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality that moves rankings.",
   },
   // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
   // without entries here the worker serves the unmodified template whose canonical
   // is /post (not /post?p=SLUG), causing "Non-canonical page in sitemap" in Ahrefs.
   "solar-guest-post-cost-2026": {
-    title: "How Much Does a Solar Guest Post Cost?",
+    title: "How Much Does a Solar Guest Post Cost in 2026?",
     desc: "Solar guest post prices range from $25 to $500+. Here's what drives the price difference and how to find quality placements at fair market rates.",
   },
   "signs-guest-post-site-hurt-rankings": {
-    title: "5 Signs a Guest Post Site Will Hurt SEO",
+    title: "5 Signs a Guest Post Site Will Hurt Your Rankings",
     desc: "Some guest post sites do more harm than good. Learn how to spot thin content, PBN patterns, and unnatural link profiles before you publish and pay.",
   },
   "electrical-contractor-seo-backlinks": {
-    title: "SEO Backlinks for Electrical Contractors",
+    title: "How Electrical Contractors Can Build SEO Backlinks",
     desc: "Electrical contractors rarely do link building — which creates a real opportunity for SEOs. Here's how to earn and build backlinks in this niche.",
   },
   "vet-electronics-repair-guest-post-site": {
@@ -255,41 +256,41 @@ const POSTS_META = {
     desc: "Electronics repair blogs can be link farms in disguise. Here's a fast vetting checklist to find sites actually worth publishing on vs ones to skip.",
   },
   "guest-posting-vs-pbn-links-difference": {
-    title: "Guest Posting vs PBN Links: Key Differences",
+    title: "Guest Posting vs PBN Links: What's the Real Difference?",
     desc: "Both place links on external sites, but risks and long-term results differ completely. Here's what actually separates a real guest post from a PBN link.",
   },
   // v28: 8 missing September 2026 slugs added — these were in posts.js but absent
   // from POSTS_META so the Worker was serving noindex for all of them.
   "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": {
-    title: "Longi vs Canadian Solar vs Jinko",
+    title: "Longi vs Canadian Solar vs Jinko: Solar Brand Comparison",
     desc: "Which solar panel brand wins on degradation, warranty, and hot-climate performance? An honest comparison of Longi, Canadian Solar, Jinko, and Risen.",
   },
   "string-inverter-vs-hybrid-vs-microinverter-comparison": {
-    title: "String vs Hybrid vs Microinverter",
+    title: "String vs Hybrid vs Microinverter: Real Cost Compared",
     desc: "Most solar buyers choose the wrong inverter type. Here's the real cost, failure rate, and 10-year economics of string, hybrid, and microinverter systems.",
   },
   "topcon-vs-perc-vs-hjt-solar-panel-technology": {
-    title: "TOPCon vs PERC vs HJT Explained",
+    title: "TOPCon vs PERC vs HJT Solar Panel Technology Explained",
     desc: "PERC was the standard. TOPCon took over. HJT is next. Here's what each technology means for output, 25-year degradation, and your actual payback period.",
   },
   "high-da-zero-traffic-explained": {
-    title: "High DA, Zero Traffic: Why?",
+    title: "High DA, Zero Traffic: What's Actually Happening?",
     desc: "A site with DA 45 and barely 30 monthly visitors — strong metric, no rankings. Here's why this happens and what it means before you pay for a link.",
   },
   "da-dr-traffic-which-matters-guest-posting": {
-    title: "DA vs DR vs Traffic for Guest Posting",
+    title: "DA vs DR vs Traffic: Which Metric Matters for Guest Posting?",
     desc: "Three metrics every link builder watches — but they measure different things. Here's which to prioritize when DA, DR, and traffic conflict.",
   },
   "build-b2b-lead-list-from-scratch-2026": {
-    title: "Build a B2B Lead List From Scratch",
+    title: "How to Build a B2B Lead List From Scratch in 2026",
     desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches from scratch.",
   },
   "industrial-automation-seo-untapped-potential": {
-    title: "Industrial Automation SEO: Link Building",
+    title: "Industrial Automation SEO: Untapped Link Building Potential",
     desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
   },
   "niche-relevance-guest-posts-explained": {
-    title: "Guest Post Niche Relevance Explained",
+    title: "Guest Post Niche Relevance: What Most Buyers Get Wrong",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
 };
@@ -381,7 +382,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v36"; // v36: strengthen BlogPosting publisher schema and internal linking after Ahrefs crawl; keep SEO page titles under 60 chars while preserving full article/H1 titles.
+const CACHE_VERSION = "v37"; // v37: remove ineligible SoftwareApplication rich-result markup from /download; no fabricated rating/review. // v34 (28 Sep 2026) — wrangler.toml routing fix: all main routes now Worker-first // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -409,7 +410,7 @@ const RELATED_POSTS = {
   // Solar cluster
   "solar-guest-post-sites":       ["solar-niche-goldmine", "solar-guest-post-cost-2026", "spot-real-guest-post-site"],
   "solar-niche-goldmine":         ["solar-guest-post-sites", "solar-guest-post-cost-2026", "link-building-prospects"],
-  "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings", "choosing-solar-installer-guide"],
+  "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings"],
   "choosing-solar-installer-guide":["solar-niche-goldmine", "solar-guest-post-sites", "electrical-contractors-online-growth"],
 
   // Electronics / repair cluster
@@ -472,24 +473,21 @@ const PAGE_SCHEMAS = {
 
   "/download": JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "OutreachNest Finder",
-    "operatingSystem": "Windows",
-    "applicationCategory": "BusinessApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-      "description": "3-day free trial",
-    },
-    "description": "OutreachNest Finder finds 1,000 SEO prospects in minutes. Auto-checks DA, PA, DR, extracts emails and syncs to Google Sheets.",
+    "@type": "WebPage",
+    "name": "Download OutreachNest Finder — Free 3-Day Trial",
     "url": "https://getoutreachnest.com/download",
-    "author": {
+    "description": "Download OutreachNest Finder for Windows and start the 3-day free trial. Find SEO prospects, check DA/PA/DR, extract emails and export prospect data.",
+    "about": {
+      "@type": "Thing",
+      "name": "OutreachNest Finder"
+    },
+    "publisher": {
       "@type": "Organization",
       "name": "OutreachNest",
       "url": "https://getoutreachnest.com",
-    },
-  }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
+      "logo": "https://getoutreachnest.com/favicon.png"
+    }
+  }).replace(/</g, "\u003c").replace(/>/g, "\u003e"),
 
   "/services": JSON.stringify({
     "@context": "https://schema.org",
@@ -631,20 +629,8 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug, postDate) {
     "url": canonical,
     "datePublished": postDate || SITE_PUB_DATE,
     "dateModified": postDate || SITE_PUB_DATE,
-    "author": {
-      "@type": "Organization",
-      "name": "OutreachNest",
-      "url": "https://getoutreachnest.com"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "OutreachNest",
-      "url": "https://getoutreachnest.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://getoutreachnest.com/favicon.png"
-      }
-    },
+    "author": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
+    "publisher": { "@type": "Organization", "name": "OutreachNest", "url": "https://getoutreachnest.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": canonical },
   }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
   const schemaTag = `<script type="application/ld+json">${blogPostingSchema}</script>`;
@@ -729,11 +715,8 @@ async function handlePostPage(request, env, ctx, slug) {
 
   // Resolve metadata: live posts-data.json → static POSTS_META → noindex
   const staticMeta = POSTS_META[slug];
-  // Use the curated SEO title from POSTS_META when available. The full article title
-  // in posts-data.json remains unchanged for the visible H1; this only keeps the
-  // HTML <title> concise and search-result friendly.
   const meta = postData
-    ? { title: (staticMeta && staticMeta.title) || postData.title, desc: postData.excerpt || (staticMeta && staticMeta.desc) || "" }
+    ? { title: postData.title, desc: postData.excerpt || (staticMeta && staticMeta.desc) || "" }
     : staticMeta;
 
   if (!meta) {
@@ -1482,16 +1465,15 @@ export default {
     // or outdated. Now the Worker generates it on the fly from the canonical list.
     if (url.pathname === "/sitemap.xml") {
       const BASE = "https://getoutreachnest.com";
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
       const SITE_PUB_DATE = "2026-09-01";
-      // Keep lastmod truthful: do not claim every main page changed every day.
-      // Update these dates when the corresponding page's substantive content changes.
       const mainPages = [
-        { loc: `${BASE}/`,         lastmod: "2026-09-25", priority: "1.0", changefreq: "weekly"  },
-        { loc: `${BASE}/blog`,     lastmod: "2026-09-25", priority: "0.9", changefreq: "weekly"  },
-        { loc: `${BASE}/download`, lastmod: "2026-09-15", priority: "0.9", changefreq: "monthly" },
-        { loc: `${BASE}/services`, lastmod: "2026-09-15", priority: "0.8", changefreq: "monthly" },
-        { loc: `${BASE}/niches`,   lastmod: "2026-09-15", priority: "0.8", changefreq: "monthly" },
-        { loc: `${BASE}/contact`,  lastmod: "2026-09-15", priority: "0.7", changefreq: "monthly" },
+        { loc: `${BASE}/`,         lastmod: today,         priority: "1.0", changefreq: "weekly"  },
+        { loc: `${BASE}/blog`,     lastmod: today,         priority: "0.9", changefreq: "weekly"  },
+        { loc: `${BASE}/download`, lastmod: today,         priority: "0.9", changefreq: "monthly" },
+        { loc: `${BASE}/services`, lastmod: today,         priority: "0.8", changefreq: "monthly" },
+        { loc: `${BASE}/niches`,   lastmod: today,         priority: "0.8", changefreq: "monthly" },
+        { loc: `${BASE}/contact`,  lastmod: today,         priority: "0.7", changefreq: "monthly" },
       ];
       // v28: per-post lastmod from posts-data.json; fall back to SITE_PUB_DATE
       let postDatesMap = {};
@@ -1597,12 +1579,12 @@ export default {
             if (normPath === "/services") {
               bodyText = bodyText
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts from $70, verified B2B lead lists from $75, and SEO content writing from $45 for technical niches including solar and electrical.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
             }
             // v33: fix homepage meta description (was 208 chars — over 155-char limit)
             if (normPath === "/") {
               bodyText = bodyText
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Niche guest posts, B2B lead lists and content writing for solar, electrical, automation and electronics brands, plus a free Windows prospecting tool.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">');
             }
             // v33: fix /blog title (73 chars) and meta description (164 chars) — both over limit
             if (normPath === "/blog") {

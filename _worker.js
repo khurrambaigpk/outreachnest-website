@@ -292,6 +292,26 @@ const POSTS_META = {
     title: "Guest Post Niche Relevance: What Most Buyers Get Wrong",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
+  "guest-post-outreach-email-templates-2026": {
+    title: "Guest Post Outreach Email Templates That Actually Work",
+    desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails tha",
+  },
+  "how-to-price-guest-posts-2026": {
+    title: "How to Price Guest Posts in 2026: What Buyers and Sellers Ne",
+    desc: "Guest post pricing varies wildly \u2014 from $30 to $3,000 for what looks like the same thing. Here's what actually drives the price an",
+  },
+  "outreachnest-finder-vs-manual-prospecting": {
+    title: "OutreachNest Finder vs Manual Prospecting: An Honest Compari",
+    desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense, what each one cos",
+  },
+  "b2b-lead-generation-electrical-contractors": {
+    title: "B2B Lead Generation for Electrical Contractors: A Practical ",
+    desc: "Electrical contractors are one of the most reliable B2B markets for lead generation \u2014 but finding the right contacts requires a di",
+  },
+  "link-building-solar-companies-guide": {
+    title: "Link Building for Solar Companies: What Actually Works in 20",
+    desc: "Solar is one of the most competitive niches for SEO \u2014 but most solar companies are doing link building wrong. Here's what the top-",
+  },
 };
 
 // v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
@@ -381,7 +401,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v35"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v37"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning

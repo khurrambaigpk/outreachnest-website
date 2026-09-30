@@ -6,16 +6,23 @@ main = "_worker.js"
 directory = "./"
 binding = "ASSETS"
 run_worker_first = [
-  "/", "/index.html",
-  "/blog", "/blog.html",
-  "/download", "/download.html",
-  "/services", "/services.html",
-  "/niches", "/niches.html",
-  "/contact", "/contact.html",
+  "/",
+  "/index.html",
+  "/blog",
+  "/blog.html",
+  "/download",
+  "/download.html",
+  "/services",
+  "/services.html",
+  "/niches",
+  "/niches.html",
+  "/contact",
+  "/contact.html",
   "/sitemap.xml",
   "/post*",
   "/admin*",
-  "/api/*"
+  "/api/*",
+  "/posts.js"
 ]
 
 [[kv_namespaces]]

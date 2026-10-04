@@ -22,7 +22,6 @@ run_worker_first = [
   "/post*",
   "/admin*",
   "/api/*",
-  "/posts.js"
 ]
 
 [[kv_namespaces]]

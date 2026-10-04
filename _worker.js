@@ -3,7 +3,7 @@
 // /api/activate endpoint before Cloudflare's normal static-file serving kicks in; every other page
 // on the site bypasses this file entirely and is served exactly as before, unchanged.
 //
-// v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login. 
+// v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
 // v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
 // v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
 // v33 (28 Sep 2026) — Three SEO fixes from comprehensive audit:

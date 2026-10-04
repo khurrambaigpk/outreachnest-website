@@ -381,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v38"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v39"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1445,34 +1445,7 @@ export default {
       }
     }
 
-    // ── Dynamic posts.js — v38 single source of truth ──────────────────────
-    // Worker generates posts.js on-the-fly from posts-data.json.
-    // Update ONLY posts-data.json — posts.js auto-syncs. No manual sync needed.
-    if (url.pathname === "/posts.js") {
-      try {
-        const jsonResp = await env.ASSETS.fetch(
-          new Request(new URL("/posts-data.json", request.url).toString())
-        );
-        if (!jsonResp.ok) throw new Error("posts-data.json not found");
-        const posts = await jsonResp.json();
-        let js = "// Auto-generated from posts-data.json by Worker v38\n";
-        js += "window.POSTS = [\n";
-        for (const p of posts) {
-          js += JSON.stringify(p) + ",\n";
-        }
-        js += "];\n";
-        return new Response(js, {
-          headers: {
-            "Content-Type": "application/javascript; charset=UTF-8",
-            "Cache-Control": "public, max-age=60",
-          },
-        });
-      } catch (e) {
-        return env.ASSETS.fetch(request);
-      }
-    }
-
-    if (url.pathname === "/post.html") {
+if (url.pathname === "/post.html") {
       const dest = new URL(request.url);
       dest.pathname = "/post";
       return Response.redirect(dest.toString(), 301);

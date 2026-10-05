@@ -1604,7 +1604,9 @@ if (url.pathname === "/post.html") {
             bodyText = bodyText.replace(/<\/head>/i, schemaTag + "\n</head>");
             // v25: also fix Services page title and meta description (too generic in static HTML)
             if (normPath === "/services") {
+              const fiverrBanner = `\n<!-- Fiverr Banner -->\n<section style="padding:20px 0 0"><div class="wrap" style="text-align:center"><div style="display:inline-flex;align-items:center;gap:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:14px 24px;flex-wrap:wrap;justify-content:center"><span style="font-size:15px;color:var(--muted)">Need a single blog post?</span><a href="https://www.fiverr.com/s/VrYj9jx" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:#1dbf73;color:#fff;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none">🛒 Order on Fiverr — from $15</a></div></div></section>`;
               bodyText = bodyText
+                .replace(/<!-- CTA -->/, fiverrBanner + '\n<!-- CTA -->')
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
             }

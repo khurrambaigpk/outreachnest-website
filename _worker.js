@@ -381,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v39"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v40"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -545,7 +545,7 @@ function buildRelatedSection(currentSlug) {
   const cards = related.map(slug => {
     const meta = POSTS_META[slug];
     if (!meta) return "";
-    return `<a href="/blog/${slug}" style="display:block;padding:14px 16px;background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#1e293b;font-size:14px;font-weight:500;line-height:1.4;transition:background 0.15s">${escHtml(meta.title)}</a>`;
+    return `<a href="/post?p=${slug}" style="display:block;padding:14px 16px;background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#1e293b;font-size:14px;font-weight:500;line-height:1.4;transition:background 0.15s">${escHtml(meta.title)}</a>`;
   }).filter(Boolean).join("\n");
   if (!cards) return "";
   return `\n<section style="max-width:720px;margin:40px auto 0;padding:0 20px 48px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">\n  <h2 style="font-size:16px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:0 0 14px">Read Next</h2>\n  <div style="display:flex;flex-direction:column;gap:10px">\n${cards}\n  </div>\n</section>`;
@@ -690,7 +690,13 @@ async function handlePostPage(request, env, ctx, slug) {
     return assetResp;
   }
 
-  const html = await assetResp.text();
+  let html = await assetResp.text();
+  // v35: inject <base href="/"> so all relative CSS/JS/image paths in post.html
+  // resolve from the site root, not from /blog/slug/. Without this, a browser
+  // at /blog/cold-email-... looks for ./style.css at /blog/style.css (404).
+  if (!html.includes('<base ')) {
+    html = html.replace('<head>', '<head>\n<base href="/">');
+  }
 
   // ── v28 permanent fix: posts-data.json is the single source of truth ──────
   // Previously, POSTS_META (a static object in this file) controlled which slugs
@@ -735,7 +741,7 @@ async function handlePostPage(request, env, ctx, slug) {
 
   const postDate = postDateToISO(postData ? postData.date : "");
   const fullTitle = meta.title + " — OutreachNest";
-  const canonical = "https://getoutreachnest.com/blog/" + slug;
+  const canonical = "https://getoutreachnest.com/post?p=" + slug;
   let modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug, postDate);
 
   // Inject full article body + cover/category from postData (already fetched above)
@@ -1014,7 +1020,7 @@ async function handlePublish(request, env) {
     const gridMarker = '<div class="blog-grid" id="blogGrid">';
     const gridIdx = blogHtmlContent.indexOf(gridMarker);
     if (gridIdx === -1) throw new Error('Could not find blog grid in blog.html — file format may have changed');
-    const blogCard = `<a class="post reveal" href="/blog/${slug}"><div class="cover ${cover}">${esc(icon)}</div><div class="body"><div class="cat">${esc(cat)}</div><h3>${esc(title)}</h3><div class="excerpt">${esc(excerpt)}</div><div class="meta"><span>${esc(author)}</span><span class="dot"></span><span>${esc(read)}</span></div></div></a>`;
+    const blogCard = `<a class="post reveal" href="/post?p=${slug}"><div class="cover ${cover}">${esc(icon)}</div><div class="body"><div class="cat">${esc(cat)}</div><h3>${esc(title)}</h3><div class="excerpt">${esc(excerpt)}</div><div class="meta"><span>${esc(author)}</span><span class="dot"></span><span>${esc(read)}</span></div></div></a>`;
     const newBlogHtml = blogHtmlContent.slice(0, gridIdx + gridMarker.length)
       + blogCard
       + blogHtmlContent.slice(gridIdx + gridMarker.length);
@@ -1023,7 +1029,7 @@ async function handlePublish(request, env) {
     const urlsetMarker = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
     const urlsetIdx = sitemapContent.indexOf(urlsetMarker);
     if (urlsetIdx === -1) throw new Error('Could not find <urlset> in sitemap.xml — file format may have changed');
-    const urlEntry = `<url><loc>https://getoutreachnest.com/blog/${slug}</loc><priority>0.6</priority></url>`;
+    const urlEntry = `<url><loc>https://getoutreachnest.com/post?p=${slug}</loc><priority>0.6</priority></url>`;
     const newSitemap = sitemapContent.slice(0, urlsetIdx + urlsetMarker.length)
       + "\n" + urlEntry
       + sitemapContent.slice(urlsetIdx + urlsetMarker.length);
@@ -1080,7 +1086,7 @@ async function handlePublish(request, env) {
     // ── v10: IndexNow ping (fire-and-forget — never blocks the publish response) ──
     // Notifies Bing, Yandex, and any IndexNow-compatible engine about the new URL
     // immediately, instead of waiting for their next scheduled crawl.
-    const newPostUrl = `https://getoutreachnest.com/blog/${slug}`;
+    const newPostUrl = `https://getoutreachnest.com/post?p=${slug}`;
     fetch("https://api.indexnow.org/indexnow", {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -1451,15 +1457,6 @@ if (url.pathname === "/post.html") {
       return Response.redirect(dest.toString(), 301);
     }
 
-    // v34: /blog/slug → 200 canonical article page (clean URL architecture)
-    // /post?p=slug → 301 → /blog/slug (old URLs permanently redirected)
-    // This makes /blog/slug the single canonical URL for all posts.
-    const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9\-]{2,100})$/);
-    if (blogSlugMatch) {
-      const slug = blogSlugMatch[1];
-      return handlePostPage(request, env, ctx, slug);
-    }
-
     if (url.pathname === "/post") {
       const slug = url.searchParams.get("p");
       if (slug) {
@@ -1467,15 +1464,11 @@ if (url.pathname === "/post.html") {
         const newSlug = SLUG_REDIRECTS[slug];
         if (newSlug) {
           return Response.redirect(
-            "https://getoutreachnest.com/blog/" + newSlug,
+            "https://getoutreachnest.com/post?p=" + newSlug,
             301
           );
         }
-        // v34: /post?p=slug → 301 → /blog/slug (permanent canonical migration)
-        return Response.redirect(
-          "https://getoutreachnest.com/blog/" + slug,
-          301
-        );
+        return handlePostPage(request, env, ctx, slug);
       }
       // /post with no ?p= param — serve the template with noindex so the bare
       // /post URL is not treated as a separate indexable page by crawlers.
@@ -1534,7 +1527,7 @@ if (url.pathname === "/post.html") {
         : Object.keys(POSTS_META);
 
       const postEntries = sitemapSlugs.map(slug => ({
-        loc: `${BASE}/blog/${slug}`,
+        loc: `${BASE}/post?p=${slug}`,
         lastmod: postDatesMap[slug] || SITE_PUB_DATE,
         priority: "0.7",
         changefreq: "monthly",

@@ -381,7 +381,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v40"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v39"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -690,13 +690,7 @@ async function handlePostPage(request, env, ctx, slug) {
     return assetResp;
   }
 
-  let html = await assetResp.text();
-  // v35: inject <base href="/"> so all relative CSS/JS/image paths in post.html
-  // resolve from the site root, not from /blog/slug/. Without this, a browser
-  // at /blog/cold-email-... looks for ./style.css at /blog/style.css (404).
-  if (!html.includes('<base ')) {
-    html = html.replace('<head>', '<head>\n<base href="/">');
-  }
+  const html = await assetResp.text();
 
   // ── v28 permanent fix: posts-data.json is the single source of truth ──────
   // Previously, POSTS_META (a static object in this file) controlled which slugs

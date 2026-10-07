@@ -1466,7 +1466,7 @@ export default {
       }
     }
 
-if (url.pathname === "/post.html") {
+    if (url.pathname === "/post.html") {
       // v41: Direct redirect to canonical /blog/slug (skip double-hop via /post)
       const slug = url.searchParams.get("p");
       if (slug) {
@@ -1476,7 +1476,7 @@ if (url.pathname === "/post.html") {
     }
 
     // v41: /blog/slug → canonical article page
-    const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9\-]{2,100})$/);
+    const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9-]{2,100})$/);
     if (blogSlugMatch) {
       return handlePostPage(request, env, ctx, blogSlugMatch[1]);
     }

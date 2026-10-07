@@ -292,6 +292,11 @@ const POSTS_META = {
     title: "Guest Post Niche Relevance: What Most Buyers Get Wrong",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
+  "guest-post-outreach-email-templates-2026": { title: "Guest Post Outreach Email Templates That Actually Work", desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails that actually get replies \u2014 " },
+  "how-to-price-guest-posts-2026": { title: "How to Price Guest Posts in 2026: What Buyers and Sellers Need to Know", desc: "Guest post pricing varies wildly \u2014 from $30 to $3,000 for what looks like the same thing. Here's what actually drives the price and how to evaluate whether" },
+  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting: An Honest Comparison", desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense, what each one costs in time and money, and" },
+  "b2b-lead-generation-electrical-contractors": { title: "B2B Lead Generation for Electrical Contractors: A Practical Guide", desc: "Electrical contractors are one of the most reliable B2B markets for lead generation \u2014 but finding the right contacts requires a different approach than mos" },
+  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies: What Actually Works in 2026", desc: "Solar is one of the most competitive niches for SEO \u2014 but most solar companies are doing link building wrong. Here's what the top-ranking installers and ma" },
 };
 
 // v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
@@ -381,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v39"; // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v41"; // v41: complete /blog/slug migration + all SEO fixes // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -446,6 +451,11 @@ const RELATED_POSTS = {
   "outreachnest-finder-features":                ["how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet", "how-to-find-seo-clients-fast-in-2026"],
   "how-to-check-da-pa-dr-without-paying-for-tools":["outreachnest-finder-features", "lead-list-google-sheet", "link-building-prospects"],
   "lead-list-google-sheet":                       ["outreachnest-finder-features", "how-to-check-da-pa-dr-without-paying-for-tools", "b2b-lead-list-worth-buying"],
+  "guest-post-outreach-email-templates-2026": ["the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates", "cold-email-that-gets-replies"],
+  "how-to-price-guest-posts-2026": ["spot-real-guest-post-site", "solar-guest-post-cost-2026", "signs-guest-post-site-hurt-rankings"],
+  "outreachnest-finder-vs-manual-prospecting": ["industrial-automation-leads", "how-agencies-manage-10-niches-without-losing-track", "lead-list-google-sheet"],
+  "b2b-lead-generation-electrical-contractors": ["electrical-contractors-panel-builders", "electrical-contractors-online-growth", "electrical-contractor-seo-backlinks"],
+  "link-building-solar-companies-guide": ["solar-niche-goldmine", "guest-post-outreach-email-templates-2026", "how-to-price-guest-posts-2026"],
 };
 
 // v25: JSON-LD schemas for each of the 6 main static pages.
@@ -545,7 +555,7 @@ function buildRelatedSection(currentSlug) {
   const cards = related.map(slug => {
     const meta = POSTS_META[slug];
     if (!meta) return "";
-    return `<a href="/post?p=${slug}" style="display:block;padding:14px 16px;background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#1e293b;font-size:14px;font-weight:500;line-height:1.4;transition:background 0.15s">${escHtml(meta.title)}</a>`;
+    return `<a href="/blog/${slug}" style="display:block;padding:14px 16px;background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#1e293b;font-size:14px;font-weight:500;line-height:1.4;transition:background 0.15s">${escHtml(meta.title)}</a>`;
   }).filter(Boolean).join("\n");
   if (!cards) return "";
   return `\n<section style="max-width:720px;margin:40px auto 0;padding:0 20px 48px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">\n  <h2 style="font-size:16px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:0 0 14px">Read Next</h2>\n  <div style="display:flex;flex-direction:column;gap:10px">\n${cards}\n  </div>\n</section>`;
@@ -690,7 +700,11 @@ async function handlePostPage(request, env, ctx, slug) {
     return assetResp;
   }
 
-  const html = await assetResp.text();
+  let html = await assetResp.text();
+  // v41: base href so CSS/JS loads correctly from /blog/slug path
+  if (!html.includes('<base ')) {
+    html = html.replace('<head>', '<head>\n<base href="/">');
+  }
 
   // ── v28 permanent fix: posts-data.json is the single source of truth ──────
   // Previously, POSTS_META (a static object in this file) controlled which slugs
@@ -735,7 +749,7 @@ async function handlePostPage(request, env, ctx, slug) {
 
   const postDate = postDateToISO(postData ? postData.date : "");
   const fullTitle = meta.title + " — OutreachNest";
-  const canonical = "https://getoutreachnest.com/post?p=" + slug;
+  const canonical = "https://getoutreachnest.com/blog/" + slug;
   let modified = injectPostMeta(html, fullTitle, meta.desc, canonical, meta.title, slug, postDate);
 
   // Inject full article body + cover/category from postData (already fetched above)
@@ -1014,7 +1028,7 @@ async function handlePublish(request, env) {
     const gridMarker = '<div class="blog-grid" id="blogGrid">';
     const gridIdx = blogHtmlContent.indexOf(gridMarker);
     if (gridIdx === -1) throw new Error('Could not find blog grid in blog.html — file format may have changed');
-    const blogCard = `<a class="post reveal" href="/post?p=${slug}"><div class="cover ${cover}">${esc(icon)}</div><div class="body"><div class="cat">${esc(cat)}</div><h3>${esc(title)}</h3><div class="excerpt">${esc(excerpt)}</div><div class="meta"><span>${esc(author)}</span><span class="dot"></span><span>${esc(read)}</span></div></div></a>`;
+    const blogCard = `<a class="post reveal" href="/blog/${slug}"><div class="cover ${cover}">${esc(icon)}</div><div class="body"><div class="cat">${esc(cat)}</div><h3>${esc(title)}</h3><div class="excerpt">${esc(excerpt)}</div><div class="meta"><span>${esc(author)}</span><span class="dot"></span><span>${esc(read)}</span></div></div></a>`;
     const newBlogHtml = blogHtmlContent.slice(0, gridIdx + gridMarker.length)
       + blogCard
       + blogHtmlContent.slice(gridIdx + gridMarker.length);
@@ -1023,7 +1037,7 @@ async function handlePublish(request, env) {
     const urlsetMarker = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
     const urlsetIdx = sitemapContent.indexOf(urlsetMarker);
     if (urlsetIdx === -1) throw new Error('Could not find <urlset> in sitemap.xml — file format may have changed');
-    const urlEntry = `<url><loc>https://getoutreachnest.com/post?p=${slug}</loc><priority>0.6</priority></url>`;
+    const urlEntry = `<url><loc>https://getoutreachnest.com/blog/${slug}</loc><priority>0.6</priority></url>`;
     const newSitemap = sitemapContent.slice(0, urlsetIdx + urlsetMarker.length)
       + "\n" + urlEntry
       + sitemapContent.slice(urlsetIdx + urlsetMarker.length);
@@ -1080,7 +1094,7 @@ async function handlePublish(request, env) {
     // ── v10: IndexNow ping (fire-and-forget — never blocks the publish response) ──
     // Notifies Bing, Yandex, and any IndexNow-compatible engine about the new URL
     // immediately, instead of waiting for their next scheduled crawl.
-    const newPostUrl = `https://getoutreachnest.com/post?p=${slug}`;
+    const newPostUrl = `https://getoutreachnest.com/blog/${slug}`;
     fetch("https://api.indexnow.org/indexnow", {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -1398,6 +1412,13 @@ export default {
 
     const url = new URL(request.url);
 
+    // v41: redirect .html duplicates to clean canonical URLs
+    if (url.pathname === "/blog.html") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
+    if (url.pathname === "/services.html") { return Response.redirect("https://getoutreachnest.com/services", 301); }
+    if (url.pathname === "/niches.html") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
+    if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
+    if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
+
     if (url.pathname === "/api/activate") {
       return handleActivate(request, env);
     }
@@ -1446,9 +1467,18 @@ export default {
     }
 
 if (url.pathname === "/post.html") {
-      const dest = new URL(request.url);
-      dest.pathname = "/post";
-      return Response.redirect(dest.toString(), 301);
+      // v41: Direct redirect to canonical /blog/slug (skip double-hop via /post)
+      const slug = url.searchParams.get("p");
+      if (slug) {
+        return Response.redirect("https://getoutreachnest.com/blog/" + slug, 301);
+      }
+      return Response.redirect("https://getoutreachnest.com/blog", 301);
+    }
+
+    // v41: /blog/slug → canonical article page
+    const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9\-]{2,100})$/);
+    if (blogSlugMatch) {
+      return handlePostPage(request, env, ctx, blogSlugMatch[1]);
     }
 
     if (url.pathname === "/post") {
@@ -1458,11 +1488,12 @@ if (url.pathname === "/post.html") {
         const newSlug = SLUG_REDIRECTS[slug];
         if (newSlug) {
           return Response.redirect(
-            "https://getoutreachnest.com/post?p=" + newSlug,
+            "https://getoutreachnest.com/blog/" + newSlug,
             301
           );
         }
-        return handlePostPage(request, env, ctx, slug);
+        // v41: permanent redirect to canonical /blog/slug
+        return Response.redirect("https://getoutreachnest.com/blog/" + slug, 301);
       }
       // /post with no ?p= param — serve the template with noindex so the bare
       // /post URL is not treated as a separate indexable page by crawlers.
@@ -1521,7 +1552,7 @@ if (url.pathname === "/post.html") {
         : Object.keys(POSTS_META);
 
       const postEntries = sitemapSlugs.map(slug => ({
-        loc: `${BASE}/post?p=${slug}`,
+        loc: `${BASE}/blog/${slug}`,
         lastmod: postDatesMap[slug] || SITE_PUB_DATE,
         priority: "0.7",
         changefreq: "monthly",

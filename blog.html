@@ -725,7 +725,7 @@ body { background: var(--bg); color: var(--text); }
 
 <!-- Stats band -->
 <div class="blog-stats reveal">
-  <div class="bs-item"><div class="bs-num">35</div><div class="bs-label">Articles published</div></div>
+  <div class="bs-item"><div class="bs-num">40</div><div class="bs-label">Articles published</div></div>
   <div class="bs-item"><div class="bs-num">4</div><div class="bs-label">Core niches covered</div></div>
   <div class="bs-item"><div class="bs-num">6</div><div class="bs-label">Content categories</div></div>
   <div class="bs-item"><div class="bs-num">Free</div><div class="bs-label">Always free to read</div></div>
@@ -799,7 +799,7 @@ function isNew(date) {
 // ── Featured Research HTML ──────────────────────────────────────────
 function featHTML(p) {
   var typePart = p.type ? typeBadge(p.type) : '';
-  return '<a class="feat-article" href="/post?p=' + encodeURIComponent(p.slug) + '">'
+  return '<a class="feat-article" href="/blog/' + encodeURIComponent(p.slug) + '">'
     + '<div class="feat-body">'
     +   '<div class="feat-eyebrow"><span class="feat-eyebrow-text">✦ Featured Research</span><span class="feat-eyebrow-line"></span></div>'
     +   (typePart ? typePart + '<br><br>' : '')
@@ -825,7 +825,7 @@ function cardHTML(p) {
   var pcat = primaryCat(p.cat);
   var newBadge = isNew(p.date) ? '<span class="pc-new">New</span>' : '';
   var tbadge = typeBadge(p.type) || '';
-  return '<a class="post-card" href="/post?p=' + encodeURIComponent(p.slug) + '" data-cat="' + (p.cat || '') + '">'
+  return '<a class="post-card" href="/blog/' + encodeURIComponent(p.slug) + '" data-cat="' + (p.cat || '') + '">'
     + '<div class="pc-cover ' + (p.cover || 'g1') + '" aria-hidden="true">' + (p.icon || '✦') + '</div>'
     + '<div class="pc-body">'
     +   '<div class="pc-top">' + tbadge + newBadge + '</div>'
@@ -1001,14 +1001,25 @@ function initialCategory() {
 }
 
 // ── Init ────────────────────────────────────────────────────────────
-updateCounts();
-var initialCat = initialCategory();
-var initialBtn = document.querySelector('.cat-pill[data-cat="' + initialCat + '"]');
-if (initialBtn) {
-  document.querySelectorAll('.cat-pill').forEach(function(b){ b.classList.remove('active'); });
-  initialBtn.classList.add('active');
+function runInit() {
+  updateCounts();
+  var initialCat = initialCategory();
+  var initialBtn = document.querySelector('.cat-pill[data-cat="' + initialCat + '"]');
+  if (initialBtn) {
+    document.querySelectorAll('.cat-pill').forEach(function(b){ b.classList.remove('active'); });
+    initialBtn.classList.add('active');
+  }
+  render(initialCat, false);
 }
-render(initialCat, false);
+// posts.js is Worker-generated — wait for window.POSTS before init
+if (window.POSTS && window.POSTS.length) {
+  runInit();
+} else {
+  var _pw = setInterval(function() {
+    if (window.POSTS && window.POSTS.length) { clearInterval(_pw); runInit(); }
+  }, 30);
+  setTimeout(function() { clearInterval(_pw); if (window.POSTS) runInit(); }, 3000);
+}
 
 // Dynamic ItemList structured data for all posts.
 (function addItemListSchema() {
@@ -1025,7 +1036,7 @@ render(initialCat, false);
         '@type': 'ListItem',
         'position': i + 1,
         'name': p.title,
-        'url': 'https://getoutreachnest.com/post?p=' + encodeURIComponent(p.slug)
+        'url': 'https://getoutreachnest.com/blog/' + encodeURIComponent(p.slug)
       };
     })
   });
@@ -1036,41 +1047,47 @@ render(initialCat, false);
 <!-- Static post links for crawlers (SEO — fixes orphan pages) -->
 <noscript>
 <div id="static-post-links">
-<a href="/post?p=longi-vs-canadian-solar-vs-jinko-panel-brand-comparison">Longi vs Canadian Solar vs Jinko vs Risen: The Honest Brand Comparison</a>
-<a href="/post?p=string-inverter-vs-hybrid-vs-microinverter-comparison">String Inverter vs Hybrid Inverter vs Microinverter: What They Don't Tell You</a>
-<a href="/post?p=topcon-vs-perc-vs-hjt-solar-panel-technology">TOPCon vs PERC vs HJT: The Solar Panel Technology War</a>
-<a href="/post?p=the-awkward-truth-about-cold-outreach-nobody-tells">The Awkward Truth About Cold Outreach</a>
-<a href="/post?p=finding-electronics-appliance-repair-businesses">Electronics &amp; Appliance Repair Businesses for Outreach</a>
-<a href="/post?p=industrial-automation-leads">Industrial Automation Leads: PLC &amp; SCADA</a>
-<a href="/post?p=electrical-contractors-panel-builders">Find Electrical Contractors for Outreach</a>
-<a href="/post?p=solar-guest-post-sites">Find Solar Guest Post Sites and Leads Fast</a>
-<a href="/post?p=how-agencies-manage-10-niches-without-losing-track">How Agencies Manage 10+ Niches at Once</a>
-<a href="/post?p=lead-list-google-sheet">Turn Your Lead List Into a Live Google Sheet</a>
-<a href="/post?p=whatsapp-outreach-response-rates">WhatsApp Outreach: Higher Response Rates</a>
-<a href="/post?p=outreachnest-finder-features">OutreachNest Finder: Complete Features Guide</a>
-<a href="/post?p=how-to-find-seo-clients-fast-in-2026">How to Find SEO Clients Fast in 2026</a>
-<a href="/post?p=link-building-prospects">Build 1,000 Link Prospects in Minutes</a>
-<a href="/post?p=how-to-check-da-pa-dr-without-paying-for-tools">How to Check DA, PA &amp; DR for Free</a>
-<a href="/post?p=spot-real-guest-post-site">How to Spot a Real Guest-Post Site</a>
-<a href="/post?p=b2b-lead-list-worth-buying">What Makes a B2B Lead List Worth Buying</a>
-<a href="/post?p=solar-niche-goldmine">Why Solar Is a Link Building Goldmine</a>
-<a href="/post?p=cold-email-that-gets-replies">Cold Email Framework That Gets Replies</a>
-<a href="/post?p=warm-up-new-email-domain">Warming Up a New Email Domain the Right Way</a>
-<a href="/post?p=choosing-solar-installer-guide">How Homeowners Choose a Solar Installer</a>
-<a href="/post?p=electrical-contractors-online-growth">Why Electrical Contractors Are Underrated</a>
-<a href="/post?p=industrial-automation-high-value-niche">Industrial Automation: Small Niche, Big Value</a>
-<a href="/post?p=electronics-repair-steady-demand">Electronics Repair: A Steady-Demand Niche</a>
-<a href="/post?p=quality-over-quantity-backlinks">Great Backlinks Beat a Hundred Weak Ones</a>
-<a href="/post?p=solar-guest-post-cost-2026">How Much Does a Solar Guest Post Cost in 2026</a>
-<a href="/post?p=signs-guest-post-site-hurt-rankings">Signs a Guest Post Site Will Hurt Your Rankings</a>
-<a href="/post?p=electrical-contractor-seo-backlinks">How Electrical Contractors Get More SEO Backlinks</a>
-<a href="/post?p=vet-electronics-repair-guest-post-site">How to Vet an Electronics Repair Guest Post Site</a>
-<a href="/post?p=guest-posting-vs-pbn-links-difference">Guest Posting vs PBN Links: The Real Difference</a>
-<a href="/post?p=high-da-zero-traffic-explained">High DA, Zero Traffic: How Does That Actually Happen?</a>
-<a href="/post?p=da-dr-traffic-which-matters-guest-posting">DA vs DR vs Traffic: Which SEO Metric Actually Matters for Guest Posting?</a>
-<a href="/post?p=build-b2b-lead-list-from-scratch-2026">How to Build a B2B Lead List From Scratch in 2026</a>
-<a href="/post?p=industrial-automation-seo-untapped-potential">Industrial Automation SEO: The Niche With Untapped Link Building Potential</a>
-<a href="/post?p=niche-relevance-guest-posts-explained">What Makes a Guest Post 'Niche Relevant'? The Question Most Buyers Get Wrong</a>
+<a href="/blog/longi-vs-canadian-solar-vs-jinko-panel-brand-comparison">Longi vs Canadian Solar vs Jinko vs Risen: The Honest Brand Comparison</a>
+<a href="/blog/string-inverter-vs-hybrid-vs-microinverter-comparison">String Inverter vs Hybrid Inverter vs Microinverter: What They Don't Tell You</a>
+<a href="/blog/topcon-vs-perc-vs-hjt-solar-panel-technology">TOPCon vs PERC vs HJT: The Solar Panel Technology War</a>
+<a href="/blog/the-awkward-truth-about-cold-outreach-nobody-tells">The Awkward Truth About Cold Outreach</a>
+<a href="/blog/finding-electronics-appliance-repair-businesses">Electronics &amp; Appliance Repair Businesses for Outreach</a>
+<a href="/blog/industrial-automation-leads">Industrial Automation Leads: PLC &amp; SCADA</a>
+<a href="/blog/electrical-contractors-panel-builders">Find Electrical Contractors for Outreach</a>
+<a href="/blog/solar-guest-post-sites">Find Solar Guest Post Sites and Leads Fast</a>
+<a href="/blog/how-agencies-manage-10-niches-without-losing-track">How Agencies Manage 10+ Niches at Once</a>
+<a href="/blog/lead-list-google-sheet">Turn Your Lead List Into a Live Google Sheet</a>
+<a href="/blog/whatsapp-outreach-response-rates">WhatsApp Outreach: Higher Response Rates</a>
+<a href="/blog/outreachnest-finder-features">OutreachNest Finder: Complete Features Guide</a>
+<a href="/blog/how-to-find-seo-clients-fast-in-2026">How to Find SEO Clients Fast in 2026</a>
+<a href="/blog/link-building-prospects">Build 1,000 Link Prospects in Minutes</a>
+<a href="/blog/how-to-check-da-pa-dr-without-paying-for-tools">How to Check DA, PA &amp; DR for Free</a>
+<a href="/blog/spot-real-guest-post-site">How to Spot a Real Guest-Post Site</a>
+<a href="/blog/b2b-lead-list-worth-buying">What Makes a B2B Lead List Worth Buying</a>
+<a href="/blog/solar-niche-goldmine">Why Solar Is a Link Building Goldmine</a>
+<a href="/blog/cold-email-that-gets-replies">Cold Email Framework That Gets Replies</a>
+<a href="/blog/warm-up-new-email-domain">Warming Up a New Email Domain the Right Way</a>
+<a href="/blog/choosing-solar-installer-guide">How Homeowners Choose a Solar Installer</a>
+<a href="/blog/electrical-contractors-online-growth">Why Electrical Contractors Are Underrated</a>
+<a href="/blog/industrial-automation-high-value-niche">Industrial Automation: Small Niche, Big Value</a>
+<a href="/blog/electronics-repair-steady-demand">Electronics Repair: A Steady-Demand Niche</a>
+<a href="/blog/quality-over-quantity-backlinks">Great Backlinks Beat a Hundred Weak Ones</a>
+<a href="/blog/solar-guest-post-cost-2026">How Much Does a Solar Guest Post Cost in 2026</a>
+<a href="/blog/signs-guest-post-site-hurt-rankings">Signs a Guest Post Site Will Hurt Your Rankings</a>
+<a href="/blog/electrical-contractor-seo-backlinks">How Electrical Contractors Get More SEO Backlinks</a>
+<a href="/blog/vet-electronics-repair-guest-post-site">How to Vet an Electronics Repair Guest Post Site</a>
+<a href="/blog/guest-posting-vs-pbn-links-difference">Guest Posting vs PBN Links: The Real Difference</a>
+<a href="/blog/high-da-zero-traffic-explained">High DA, Zero Traffic: How Does That Actually Happen?</a>
+<a href="/blog/da-dr-traffic-which-matters-guest-posting">DA vs DR vs Traffic: Which SEO Metric Actually Matters for Guest Posting?</a>
+<a href="/blog/build-b2b-lead-list-from-scratch-2026">How to Build a B2B Lead List From Scratch in 2026</a>
+<a href="/blog/industrial-automation-seo-untapped-potential">Industrial Automation SEO: The Niche With Untapped Link Building Potential</a>
+<a href="/blog/niche-relevance-guest-posts-explained">What Makes a Guest Post 'Niche Relevant'? The Question Most Buyers Get Wrong</a>
+
+<a href="/blog/guest-post-outreach-email-templates-2026">Guest Post Outreach Email Templates That Actually Work</a>
+<a href="/blog/how-to-price-guest-posts-2026">How to Price Guest Posts in 2026: What Buyers and Sellers Need to Know</a>
+<a href="/blog/outreachnest-finder-vs-manual-prospecting">OutreachNest Finder vs Manual Prospecting: An Honest Comparison</a>
+<a href="/blog/b2b-lead-generation-electrical-contractors">B2B Lead Generation for Electrical Contractors: A Practical Guide</a>
+<a href="/blog/link-building-solar-companies-guide">Link Building for Solar Companies: What Actually Works in 2026</a>
 </div>
 </noscript>
 </body>

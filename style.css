@@ -21,7 +21,10 @@ a{text-decoration:none;color:inherit}
 section{padding:56px 0}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);will-change:transform}
+@media(max-width:768px){
+  nav{backdrop-filter:none;background:rgba(246,244,236,.98)}
+}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
 .logo{display:flex;align-items:center;gap:11px;font-family:'Fraunces',serif;font-weight:600;font-size:21px;color:var(--ink)}
 .logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--leaf),var(--leaf-deep));position:relative;box-shadow:0 4px 14px -4px rgba(15,92,56,.6)}
@@ -157,8 +160,12 @@ footer{border-top:1px solid var(--line);padding:40px 0 32px;margin-top:48px}
 .stat .num span{color:var(--gold)}
 .stat .lbl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
 
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;will-change:opacity,transform}
 .reveal.in{opacity:1;transform:none}
+/* Mobile: reduce animation for performance */
+@media(max-width:768px){
+  .reveal{opacity:1;transform:none;transition:none}
+}
 
 /* PRICING */
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px;align-items:stretch}
@@ -203,6 +210,9 @@ z-index:-1;
 animation:heroShift 8s ease-in-out infinite alternate;
 }
 @keyframes heroShift{from{opacity:.5}to{opacity:1}}
+@media(max-width:768px){
+  .hero::before{animation:none;opacity:.7}
+}
 
 /* Card hover glow */
 .card:hover{box-shadow:0 24px 56px -20px rgba(15,92,56,.35),0 0 0 1px rgba(28,122,77,.1)}
@@ -210,6 +220,9 @@ animation:heroShift 8s ease-in-out infinite alternate;
 /* Pulse animation on download button */
 @keyframes pulse{0%,100%{box-shadow:0 12px 28px -12px rgba(15,92,56,.7)}50%{box-shadow:0 12px 36px -8px rgba(15,92,56,.9),0 0 0 8px rgba(28,122,77,.08)}}
 .btn-primary.pulse{animation:pulse 2.5s ease-in-out infinite}
+@media(max-width:768px){
+  .btn-primary.pulse{animation:none;box-shadow:0 12px 28px -12px rgba(15,92,56,.7)}
+}
 
 /* Stats counter style */
 .hero-stats .stat{position:relative}
@@ -248,3 +261,22 @@ animation:heroShift 8s ease-in-out infinite alternate;
 /* Fix: .foot-col a{display:block} was unintentionally overriding the footer brand logo link,
    collapsing .logo-mark (the colored icon box) to 0 width and dimming the OutreachNest text to var(--muted). */
 .foot-about a.logo{display:flex;color:var(--ink)}
+
+
+/* ===== MOBILE PERFORMANCE FIXES ===== */
+/* Prevent layout shift on emoji icons */
+.ic,.si,.why-icon,.finder-ic,.chip .ci,.wa-icon{
+  contain:layout style;
+  font-variant-emoji:text;
+}
+/* Reduce box-shadow complexity on mobile */
+@media(max-width:768px){
+  .card:hover,.post:hover,.feat-card:hover{
+    box-shadow:0 8px 24px -10px rgba(15,92,56,.25);
+    transform:translateY(-2px);
+  }
+  .niches{margin:0 12px;padding:40px 24px}
+  .chips .chip{min-width:160px}
+}
+/* Font display optimization */
+body{font-display:swap}

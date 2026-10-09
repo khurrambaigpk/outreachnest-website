@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v44"; // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v45"; // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1645,16 +1645,9 @@ export default {
             if (normPath === "/") {
               bodyText = bodyText
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">')
-                // v44: LaunchIgniter badge after Product Hunt in AS FEATURED ON section
-                .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a>$2');
+                ;
             }
-            // v44: LaunchIgniter badge on /download — inject before footer
-            if (normPath === "/download") {
-              bodyText = bodyText.replace(
-                '<div id="footer-holder">',
-                '<section style="padding:16px 0;text-align:center"><a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a></section><div id="footer-holder">'
-              );
-            }
+
             // v33: fix /blog title (73 chars) and meta description (164 chars) — both over limit
             if (normPath === "/blog") {
               bodyText = bodyText

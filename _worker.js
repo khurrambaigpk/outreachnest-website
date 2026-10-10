@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = typeof __CACHE_BUST__ !== "undefined" ? __CACHE_BUST__ : Date.now().toString(); // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v44"; // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1476,6 +1476,10 @@ export default {
     }
 
     // v41: /blog/slug → canonical article page
+    // Trailing slash redirect: /blog/slug/ → /blog/slug
+    if (url.pathname.match(/^\/blog\/[a-z0-9][a-z0-9-]{2,100}\/$/) ) {
+      return Response.redirect("https://getoutreachnest.com" + url.pathname.slice(0, -1), 301);
+    }
     const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9-]{2,100})$/);
     if (blogSlugMatch) {
       return handlePostPage(request, env, ctx, blogSlugMatch[1]);

@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v44"; // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes // v33: og:type=article on posts; fix homepage desc (208→133 chars); fix /blog title (73→54) and desc (164→141)
+const CACHE_VERSION = "v45"; // v45: trailing slash 301 redirect (/blog/slug/ → /blog/slug) // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1600,6 +1600,20 @@ export default {
     // Recovery routes (v32)
     if(url.pathname==='/admin/forgot'){if(request.method==='GET')return new Response(forgotPageHtml(),{headers:{'Content-Type':'text/html; charset=UTF-8'}});if(request.method==='POST'){const tok=await generateRecoveryToken();try{await env.LICENSE_KV.put('admin_recovery_token',tok,{expirationTtl:900});}catch(e){}const sent=await sendRecoveryEmail(tok,request);return new Response(recoveryConfirmHtml(sent),{headers:{'Content-Type':'text/html; charset=UTF-8'}});}}
     if(url.pathname==='/admin/recover'){const tok=url.searchParams.get('token')||'';if(!tok)return Response.redirect('/admin',302);let valid=false;try{const stored=await env.LICENSE_KV.get('admin_recovery_token');if(stored&&stored===tok){valid=await verifyRecoveryToken(tok);if(valid)await env.LICENSE_KV.delete('admin_recovery_token');}}catch(e){}if(!valid)return new Response(invalidTokenHtml(),{headers:{'Content-Type':'text/html; charset=UTF-8'}});const st=await makeSessionToken();return new Response(null,{status:302,headers:{Location:'/admin','Set-Cookie':`${COOKIE_NAME}=${st}; Path=/; HttpOnly; Secure; SameSite=Lax`}});}
+
+    // v45: trailing slash redirect — /blog/slug/ → /blog/slug (301)
+    // Cloudflare Pages does NOT strip trailing slashes automatically when a Worker
+    // is in front. Any link or bookmark with a trailing slash returns 404 instead
+    // of the post. This catch-all redirect fixes it for all paths site-wide.
+    if (url.pathname !== "/" && url.pathname.endsWith("/") && request.method === "GET") {
+      return new Response(null, {
+        status: 301,
+        headers: {
+          "Location": "https://" + url.host + url.pathname.slice(0, -1) + (url.search || ""),
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
 
         const isAdminPath = url.pathname === "/admin" || url.pathname === "/admin.html";
 

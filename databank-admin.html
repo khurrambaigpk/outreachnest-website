@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OutreachNest — Data Bank Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #1c2330;
+  --border: #2d3748; --text: #e6edf3; --text-muted: #8b949e;
+  --primary: #3b5bdb; --primary-dark: #2f4ac0; --primary-light: #1a2550;
+  --success: #059669; --danger: #dc2626; --warning: #d97706;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3); --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 380px; text-align: center; }
+.login-card h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.login-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+.login-card input { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; margin-bottom: 10px; font-family: inherit; }
+.login-card input:focus { border-color: var(--primary); }
+.login-card button { width: 100%; padding: 11px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.login-err { color: var(--danger); font-size: 13px; margin-top: 8px; }
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+.header h1 { font-size: 17px; font-weight: 700; }
+.header span { font-size: 12px; color: var(--text-muted); }
+.container { max-width: 1000px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+.card h2 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.card .sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+.btn { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; transition: all 0.15s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-success { background: var(--success); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-light); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.form-group input { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; font-family: inherit; }
+.form-group input:focus { border-color: var(--primary); }
+.toggle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.toggle-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; }
+.toggle-item .name { font-size: 13px; font-weight: 500; }
+.toggle { position: relative; display: inline-block; width: 40px; height: 22px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; inset: 0; background: #374151; border-radius: 22px; transition: 0.2s; }
+.slider:before { content: ""; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+input:checked + .slider { background: var(--primary); }
+input:checked + .slider:before { transform: translateX(18px); }
+.sync-result { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 14px; font-size: 13px; color: var(--text-muted); min-height: 60px; font-family: monospace; white-space: pre-wrap; display: none; }
+.stat-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.stat-pill { background: var(--primary-light); border: 1px solid var(--primary); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: var(--primary); }
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; max-width: 320px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.ok { background: var(--success); color: white; }
+.toast.err { background: var(--danger); color: white; }
+.toast.info { background: #334155; color: white; }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div style="font-size:28px;margin-bottom:8px;">⚙️</div>
+    <h1>Admin Panel</h1>
+    <p>OutreachNest Data Bank Administration</p>
+    <input type="password" id="pass-in" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<div id="main" style="display:none;">
+<div class="header">
+  <div>
+    <h1>⚙️ Data Bank Admin</h1>
+    <span>OutreachNest — Manage vendor data settings</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="databank.html" class="btn btn-outline" style="font-size:12px;">← View Data Bank</a>
+    <button class="btn btn-outline" onclick="doLogout()" style="font-size:12px;">Logout</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SYNC STATUS -->
+  <div class="card">
+    <h2>📊 Sync Status</h2>
+    <div class="sub">Current data loaded from Google Sheets via Cloudflare Worker</div>
+    <div class="stat-row" id="sync-stats">
+      <div class="stat-pill">Loading...</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="doSync()" id="sync-btn">
+        🔄 Sync Now from Google Sheets
+      </button>
+      <button class="btn btn-outline" onclick="clearCache()">🗑️ Clear Cache</button>
+    </div>
+    <div class="sync-result" id="sync-result"></div>
+  </div>
+
+  <!-- NICHE CONTROL -->
+  <div class="card">
+    <h2>📁 Niche Visibility</h2>
+    <div class="sub">Toggle which niches are visible in the public Data Bank</div>
+    <div class="toggle-grid" id="niche-toggles">
+      <div style="color:var(--text-muted);font-size:13px;">Loading niches from API...</div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px;">
+      <button class="btn btn-outline btn-sm" onclick="toggleAll(true)">Enable All</button>
+      <button class="btn btn-outline btn-sm" onclick="toggleAll(false)">Disable All</button>
+      <button class="btn btn-success btn-sm" onclick="saveNiches()" id="save-niches-btn">Save Niche Settings</button>
+    </div>
+  </div>
+
+  <!-- COLUMN CONTROL -->
+  <div class="card">
+    <h2>📋 Column Visibility</h2>
+    <div class="sub">Choose which columns appear in the public Data Bank table</div>
+    <div class="toggle-grid" id="col-toggles"></div>
+    <div style="margin-top:14px;display:flex;gap:8px;">
+      <button class="btn btn-outline btn-sm" onclick="colAll(true)">Show All</button>
+      <button class="btn btn-outline btn-sm" onclick="colAll(false)">Hide All</button>
+      <button class="btn btn-success btn-sm" onclick="saveCols()">Save Column Settings</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD CHANGE -->
+  <div class="card">
+    <h2>🔐 Access Passwords</h2>
+    <div class="sub">Change the password for the public Data Bank and this admin panel</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data Bank Password (Public)</label>
+        <input type="password" id="pub-pass" placeholder="New public password">
+      </div>
+      <div class="form-group">
+        <label>Admin Password</label>
+        <input type="password" id="adm-pass" placeholder="New admin password">
+      </div>
+    </div>
+    <div style="margin-top:14px;">
+      <button class="btn btn-primary" onclick="savePasses()">Update Passwords</button>
+    </div>
+  </div>
+
+  <!-- API CONFIG -->
+  <div class="card">
+    <h2>🔗 API Configuration</h2>
+    <div class="sub">Cloudflare Worker URL that proxies Google Sheets data</div>
+    <div class="form-group" style="max-width:500px;">
+      <label>Worker API URL</label>
+      <input type="url" id="api-url" value="https://api.getoutreachnest.com">
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px;">
+      <button class="btn btn-primary btn-sm" onclick="saveApiUrl()">Save URL</button>
+      <button class="btn btn-outline btn-sm" onclick="testApi()">Test Connection</button>
+    </div>
+    <div class="sync-result" id="api-result"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PASS_DEFAULT = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"; // "password"
+const ALL_COLS = ["Domain","URL","Niche","Category","Sub-Category","DA","DR","PA","AS","Traffic","Backlinks","Ref Domains","Organic Keywords","Emails","Email_Status","Phone","WhatsApp","Address","Country","Language","Type","Site_Type","Status","Price","Client Score","Contact Method","LinkedIn","Facebook","Instagram"];
+const DEFAULT_COLS = ["Domain","Niche","Category","DA","DR","Traffic","Emails","Phone","Country","Type","Status"];
+let apiNiches = [];
+
+// ─── AUTH ─────────────────────────────────────────────────
+async function sha256(str) {
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+async function doLogin() {
+  const pass = document.getElementById("pass-in").value.trim();
+  if (!pass) return;
+  const hash = await sha256(pass);
+  const stored = localStorage.getItem("on_admin_hash") || ADMIN_PASS_DEFAULT;
+  if (hash === stored) {
+    sessionStorage.setItem("on_admin_auth", "1");
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main").style.display = "block";
+    initAdmin();
+  } else {
+    document.getElementById("login-err").textContent = "Incorrect admin password.";
+    document.getElementById("pass-in").value = "";
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem("on_admin_auth");
+  location.reload();
+}
+
+function checkAdminAuth() {
+  if (sessionStorage.getItem("on_admin_auth") === "1") {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main").style.display = "block";
+    initAdmin();
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+async function initAdmin() {
+  const apiUrl = localStorage.getItem("on_api_url") || "https://api.getoutreachnest.com";
+  document.getElementById("api-url").value = apiUrl;
+  await loadNiches(apiUrl);
+  buildColToggles();
+  updateSyncStats();
+}
+
+async function loadNiches(apiUrl) {
+  try {
+    const resp = await fetch(apiUrl, { cache: "no-store" });
+    const json = await resp.json();
+    apiNiches = Object.keys(json);
+    buildNicheToggles();
+    updateSyncStats(json);
+  } catch(e) {
+    document.getElementById("niche-toggles").innerHTML = `<div style="color:var(--danger);font-size:13px;">⚠️ Could not load niches: ${e.message}</div>`;
+  }
+}
+
+// ─── SYNC ─────────────────────────────────────────────────
+async function doSync() {
+  const btn = document.getElementById("sync-btn");
+  const res = document.getElementById("sync-result");
+  btn.innerHTML = '<span class="spinner"></span> Syncing...';
+  btn.disabled = true;
+  res.style.display = "block";
+  res.textContent = "Connecting to API...";
+
+  try {
+    const apiUrl = localStorage.getItem("on_api_url") || "https://api.getoutreachnest.com";
+    const resp = await fetch(apiUrl + "?t=" + Date.now(), { cache: "no-store" });
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const json = await resp.json();
+    apiNiches = Object.keys(json);
+
+    let total = 0, log = "✅ Sync successful!\n\n";
+    Object.keys(json).forEach(sheet => {
+      const cnt = (json[sheet]||[]).length;
+      total += cnt;
+      log += `  • ${sheet}: ${cnt} rows\n`;
+    });
+    log += `\nTotal: ${total} rows | ${new Date().toLocaleString()}`;
+    res.textContent = log;
+
+    // Update cache
+    const allRows = [];
+    const enabledNiches = getEnabledNiches();
+    Object.keys(json).forEach(sheet => {
+      if (enabledNiches.length && !enabledNiches.includes(sheet)) return;
+      (json[sheet]||[]).forEach(row => allRows.push({...row, _sheet: sheet}));
+    });
+    localStorage.setItem("on_cache", JSON.stringify(allRows));
+    localStorage.setItem("on_last_sync", new Date().toLocaleTimeString());
+
+    buildNicheToggles();
+    updateSyncStats(json);
+    toast(`✅ Synced ${total} rows from ${apiNiches.length} niches`, "ok");
+  } catch(e) {
+    res.textContent = "❌ Error: " + e.message;
+    toast("Sync failed: " + e.message, "err");
+  } finally {
+    btn.innerHTML = '🔄 Sync Now from Google Sheets';
+    btn.disabled = false;
+  }
+}
+
+function updateSyncStats(json) {
+  const bar = document.getElementById("sync-stats");
+  const cached = localStorage.getItem("on_cache");
+  const lastSync = localStorage.getItem("on_last_sync");
+  if (json) {
+    let total = 0;
+    Object.keys(json).forEach(s => total += (json[s]||[]).length);
+    bar.innerHTML = `
+      <div class="stat-pill">${Object.keys(json).length} Niches</div>
+      <div class="stat-pill">${total} Total Rows</div>
+      <div class="stat-pill">${lastSync ? 'Last sync: ' + lastSync : 'Not synced yet'}</div>`;
+  } else if (cached) {
+    const rows = JSON.parse(cached);
+    bar.innerHTML = `<div class="stat-pill">${rows.length} Cached Rows</div><div class="stat-pill">${lastSync ? 'Cached: ' + lastSync : 'Cache available'}</div>`;
+  } else {
+    bar.innerHTML = `<div class="stat-pill" style="border-color:var(--warning);color:var(--warning);">No data synced yet</div>`;
+  }
+}
+
+function clearCache() {
+  localStorage.removeItem("on_cache");
+  localStorage.removeItem("on_last_sync");
+  toast("Cache cleared", "info");
+  updateSyncStats();
+}
+
+// ─── NICHES ───────────────────────────────────────────────
+function getEnabledNiches() {
+  try { return JSON.parse(localStorage.getItem("on_niches") || "[]"); }
+  catch { return []; }
+}
+
+function buildNicheToggles() {
+  const enabled = getEnabledNiches();
+  const grid = document.getElementById("niche-toggles");
+  if (!apiNiches.length) {
+    grid.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No niches found. Try syncing first.</div>';
+    return;
+  }
+  grid.innerHTML = apiNiches.map(n => {
+    const isOn = !enabled.length || enabled.includes(n);
+    return `<div class="toggle-item">
+      <span class="name">${esc(n)}</span>
+      <label class="toggle">
+        <input type="checkbox" id="niche-${esc(n)}" ${isOn?'checked':''}>
+        <span class="slider"></span>
+      </label>
+    </div>`;
+  }).join("");
+}
+
+function toggleAll(state) {
+  apiNiches.forEach(n => {
+    const el = document.getElementById("niche-" + n);
+    if (el) el.checked = state;
+  });
+}
+
+function saveNiches() {
+  const enabled = apiNiches.filter(n => {
+    const el = document.getElementById("niche-" + n);
+    return el && el.checked;
+  });
+  localStorage.setItem("on_niches", JSON.stringify(enabled));
+  toast("✅ Niche settings saved", "ok");
+}
+
+// ─── COLUMNS ──────────────────────────────────────────────
+function buildColToggles() {
+  const visible = JSON.parse(localStorage.getItem("on_cols") || JSON.stringify(DEFAULT_COLS));
+  document.getElementById("col-toggles").innerHTML = ALL_COLS.map(c => `
+    <div class="toggle-item">
+      <span class="name">${esc(c)}</span>
+      <label class="toggle">
+        <input type="checkbox" id="col-${esc(c)}" ${visible.includes(c)?'checked':''}>
+        <span class="slider"></span>
+      </label>
+    </div>`).join("");
+}
+
+function colAll(state) {
+  ALL_COLS.forEach(c => {
+    const el = document.getElementById("col-" + c);
+    if (el) el.checked = state;
+  });
+}
+
+function saveCols() {
+  const visible = ALL_COLS.filter(c => {
+    const el = document.getElementById("col-" + c);
+    return el && el.checked;
+  });
+  if (!visible.length) { toast("Select at least one column", "err"); return; }
+  localStorage.setItem("on_cols", JSON.stringify(visible));
+  toast("✅ Column settings saved", "ok");
+}
+
+// ─── PASSWORDS ────────────────────────────────────────────
+async function savePasses() {
+  const pub = document.getElementById("pub-pass").value.trim();
+  const adm = document.getElementById("adm-pass").value.trim();
+  if (!pub && !adm) { toast("Enter at least one password", "err"); return; }
+  if (pub) {
+    const h = await sha256(pub);
+    localStorage.setItem("on_pass_hash", h);
+    document.getElementById("pub-pass").value = "";
+  }
+  if (adm) {
+    const h = await sha256(adm);
+    localStorage.setItem("on_admin_hash", h);
+    document.getElementById("adm-pass").value = "";
+    sessionStorage.removeItem("on_admin_auth");
+    toast("✅ Admin password updated — please login again", "ok");
+    setTimeout(() => location.reload(), 1500);
+    return;
+  }
+  toast("✅ Passwords updated", "ok");
+}
+
+// ─── API CONFIG ───────────────────────────────────────────
+function saveApiUrl() {
+  const url = document.getElementById("api-url").value.trim();
+  if (!url) { toast("Enter a valid URL", "err"); return; }
+  localStorage.setItem("on_api_url", url);
+  toast("✅ API URL saved", "ok");
+}
+
+async function testApi() {
+  const url = document.getElementById("api-url").value.trim();
+  const res = document.getElementById("api-result");
+  res.style.display = "block";
+  res.textContent = "Testing connection...";
+  try {
+    const resp = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const json = await resp.json();
+    const niches = Object.keys(json);
+    let total = 0;
+    niches.forEach(n => total += (json[n]||[]).length);
+    res.textContent = `✅ Connection OK!\nNiches: ${niches.join(", ")}\nTotal rows: ${total}`;
+    toast("Connection successful", "ok");
+  } catch(e) {
+    res.textContent = "❌ Connection failed: " + e.message;
+    toast("Connection failed", "err");
+  }
+}
+
+function toast(msg, type="info") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = "toast", 3500);
+}
+
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+checkAdminAuth();
+</script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OutreachNest — Vendor Data Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4ff;
+  --surface: #ffffff;
+  --surface2: #f8faff;
+  --border: #dde3f0;
+  --text: #1a2340;
+  --text-muted: #5a6a8a;
+  --primary: #3b5bdb;
+  --primary-dark: #2f4ac0;
+  --primary-light: #e8edff;
+  --accent: #0ea5e9;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --shadow: 0 1px 3px rgba(59,91,219,0.08);
+  --shadow-md: 0 4px 16px rgba(59,91,219,0.12);
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #2d3748;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --primary-light: #1a2550;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* LOGIN */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); text-align: center; }
+.login-logo { font-size: 32px; margin-bottom: 8px; }
+.login-card h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.login-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+.login-card input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; background: var(--bg); color: var(--text); outline: none; margin-bottom: 12px; font-family: inherit; }
+.login-card input:focus { border-color: var(--primary); }
+.login-card button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.login-card button:hover { background: var(--primary-dark); }
+.login-err { color: var(--danger); font-size: 13px; margin-top: 8px; }
+
+/* HEADER */
+.header { background: var(--primary); color: white; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.header-brand .logo { font-size: 22px; }
+.header-brand h1 { font-size: 18px; font-weight: 700; }
+.header-brand span { font-size: 12px; opacity: 0.8; font-weight: 400; }
+.header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hbadge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.hbadge.green { background: #059669; }
+.hbadge.yellow { background: #d97706; }
+
+/* CONTAINER */
+.container { max-width: 1500px; margin: 0 auto; padding: 20px 16px; }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.stat .n { font-size: 28px; font-weight: 700; color: var(--primary); line-height: 1; }
+.stat .l { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* TOOLBAR */
+.toolbar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; box-shadow: var(--shadow); }
+.search-wrap { flex: 1; min-width: 220px; position: relative; }
+.search-wrap input { width: 100%; padding: 9px 12px 9px 38px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; font-family: inherit; }
+.search-wrap input:focus { border-color: var(--primary); }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 15px; pointer-events: none; }
+select, .sel { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: var(--bg); color: var(--text); cursor: pointer; outline: none; font-family: inherit; }
+select:focus { border-color: var(--primary); }
+.btn { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; transition: all 0.15s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-light); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-danger { background: var(--danger); color: white; }
+
+/* NICHE TABS */
+.niche-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.ntab { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.15s; }
+.ntab:hover { border-color: var(--primary); color: var(--primary); }
+.ntab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* TABLE */
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+thead th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; background: var(--surface2); border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+thead th:hover { color: var(--primary); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--primary-light); }
+tbody td { padding: 10px 14px; font-size: 13px; vertical-align: middle; }
+.domain-link { color: var(--primary); text-decoration: none; font-weight: 500; }
+.domain-link:hover { text-decoration: underline; }
+.nbadge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.nb-ec { background: #dbeafe; color: #1e40af; }
+.nb-ms { background: #ffe4e6; color: #9f1239; }
+.nb-solar { background: #fef9c3; color: #854d0e; }
+.nb-elec { background: #f3e8ff; color: #6b21a8; }
+.nb-auto { background: #dcfce7; color: #166534; }
+.nb-default { background: #f1f5f9; color: #475569; }
+.da-val { font-weight: 700; color: var(--primary); }
+.score-high { color: #059669; font-weight: 600; }
+.score-med { color: #d97706; font-weight: 600; }
+.score-low { color: #dc2626; font-weight: 600; }
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state .ei { font-size: 48px; margin-bottom: 12px; }
+.empty-state h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.empty-state p { font-size: 14px; color: var(--text-muted); }
+.loading-state { text-align: center; padding: 50px; color: var(--text-muted); }
+.spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pagination { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-top: 1px solid var(--border); justify-content: space-between; flex-wrap: wrap; }
+.pagination span { font-size: 13px; color: var(--text-muted); }
+.page-btns { display: flex; gap: 6px; }
+.page-btn { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); cursor: pointer; font-size: 13px; font-family: inherit; }
+.page-btn:hover { border-color: var(--primary); color: var(--primary); }
+.page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; max-width: 320px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.ok { background: #059669; color: white; }
+.toast.err { background: #dc2626; color: white; }
+.toast.info { background: var(--text); color: var(--bg); }
+.sync-status { font-size: 12px; color: rgba(255,255,255,0.7); }
+@media (max-width: 640px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .header-brand h1 { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🗂️</div>
+    <h1>OutreachNest Data Bank</h1>
+    <p>Enter your access password to continue</p>
+    <input type="password" id="pass-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button onclick="tryLogin()">Access Data Bank</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none;">
+
+<div class="header">
+  <div class="header-brand">
+    <span class="logo">🗂️</span>
+    <div>
+      <h1>OutreachNest Vendor Data Bank</h1>
+      <span class="sync-status" id="sync-status">Loading...</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="hbadge" id="total-badge">0 rows</span>
+    <button class="btn btn-outline" style="color:white;border-color:rgba(255,255,255,0.4);" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn" style="background:rgba(255,255,255,0.15);color:white;" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats" id="stats-bar">
+    <div class="stat"><div class="n" id="s-total">—</div><div class="l">Total Vendors</div></div>
+    <div class="stat"><div class="n" id="s-ec">—</div><div class="l">Electrical</div></div>
+    <div class="stat"><div class="n" id="s-solar">—</div><div class="l">Solar Sites</div></div>
+    <div class="stat"><div class="n" id="s-elec">—</div><div class="l">Electronics</div></div>
+    <div class="stat"><div class="n" id="s-auto">—</div><div class="l">Automation</div></div>
+    <div class="stat"><div class="n" id="s-mob">—</div><div class="l">Mobile Screen</div></div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="q" placeholder="Search domain, email, category..." oninput="onFilter()">
+    </div>
+    <select id="f-country" onchange="onFilter()">
+      <option value="">All Countries</option>
+    </select>
+    <select id="f-type" onchange="onFilter()">
+      <option value="">All Types</option>
+      <option value="lead_prospect">Lead Prospect</option>
+      <option value="guest_post_site">Guest Post Site</option>
+    </select>
+    <select id="f-da" onchange="onFilter()">
+      <option value="">All DA</option>
+      <option value="10">DA 10+</option>
+      <option value="20">DA 20+</option>
+      <option value="30">DA 30+</option>
+      <option value="50">DA 50+</option>
+    </select>
+    <select id="f-email" onchange="onFilter()">
+      <option value="">All</option>
+      <option value="yes">Has Email</option>
+      <option value="no">No Email</option>
+    </select>
+    <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear</button>
+  </div>
+
+  <!-- NICHE TABS -->
+  <div class="niche-tabs" id="niche-tabs"></div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="loading-state" id="loading-st">
+      <div class="spinner"></div>
+      <div>Loading vendor data...</div>
+    </div>
+    <table id="main-table" style="display:none;">
+      <thead id="thead-row"></thead>
+      <tbody id="tbody-rows"></tbody>
+    </table>
+    <div class="empty-state" id="empty-st" style="display:none;">
+      <div class="ei">🔍</div>
+      <h3>No vendors found</h3>
+      <p>Try different filters or sync the data</p>
+    </div>
+    <div class="pagination" id="pagination" style="display:none;"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const API_URL   = "https://api.getoutreachnest.com";
+const PASS_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"; // "password" — change in admin
+const PER_PAGE  = 50;
+
+// Columns to display — admin can toggle these via localStorage
+const DEFAULT_COLS = ["Domain","Niche","Category","DA","DR","Traffic","Emails","Phone","Country","Type","Status"];
+
+// ─── STATE ────────────────────────────────────────────────
+let allRows    = [];
+let filtered   = [];
+let activeNiche = "all";
+let sortCol    = "";
+let sortDir    = 1;
+let page       = 1;
+let visibleCols = loadCols();
+
+// ─── AUTH ─────────────────────────────────────────────────
+function sha256(str) {
+  // Simple hash check using stored hash
+  return new Promise(resolve => {
+    const enc = new TextEncoder().encode(str);
+    crypto.subtle.digest("SHA-256", enc).then(buf => {
+      resolve(Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join(""));
+    });
+  });
+}
+
+async function tryLogin() {
+  const pass = document.getElementById("pass-input").value.trim();
+  if (!pass) return;
+  const hash = await sha256(pass);
+  const stored = localStorage.getItem("on_pass_hash") || PASS_HASH;
+  if (hash === stored) {
+    sessionStorage.setItem("on_auth", "1");
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main-app").style.display = "block";
+    loadData();
+  } else {
+    document.getElementById("login-err").textContent = "Incorrect password. Try again.";
+    document.getElementById("pass-input").value = "";
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem("on_auth");
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("main-app").style.display = "none";
+  document.getElementById("pass-input").value = "";
+}
+
+function checkAuth() {
+  if (sessionStorage.getItem("on_auth") === "1") {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main-app").style.display = "block";
+    loadData();
+  }
+}
+
+// ─── DATA LOAD ────────────────────────────────────────────
+async function loadData() {
+  document.getElementById("loading-st").style.display = "block";
+  document.getElementById("main-table").style.display = "none";
+  document.getElementById("empty-st").style.display = "none";
+  document.getElementById("sync-status").textContent = "Syncing from Google Sheets...";
+
+  try {
+    // Get enabled niches from admin settings
+    const enabledNiches = getEnabledNiches();
+
+    const resp = await fetch(API_URL, { cache: "no-store" });
+    if (!resp.ok) throw new Error("API error: " + resp.status);
+    const json = await resp.json();
+
+    allRows = [];
+    Object.keys(json).forEach(sheet => {
+      if (enabledNiches.length && !enabledNiches.includes(sheet)) return;
+      const rows = json[sheet] || [];
+      rows.forEach(row => {
+        if (Object.values(row).some(v => v)) {
+          allRows.push({ ...row, _sheet: sheet });
+        }
+      });
+    });
+
+    const now = new Date().toLocaleTimeString();
+    document.getElementById("sync-status").textContent = `Last sync: ${now} — ${allRows.length} rows`;
+    localStorage.setItem("on_last_sync", now);
+    localStorage.setItem("on_cache", JSON.stringify(allRows));
+
+    buildNicheTabs(json);
+    buildCountryFilter();
+    onFilter();
+    updateStats();
+    toast(`✅ Loaded ${allRows.length} vendors`, "ok");
+
+  } catch(e) {
+    // Try cache
+    const cached = localStorage.getItem("on_cache");
+    if (cached) {
+      allRows = JSON.parse(cached);
+      const t = localStorage.getItem("on_last_sync") || "cached";
+      document.getElementById("sync-status").textContent = `Cached data (${t}) — ${allRows.length} rows`;
+      buildNicheTabs({});
+      buildCountryFilter();
+      onFilter();
+      updateStats();
+      toast("⚠️ Using cached data — could not reach API", "info");
+    } else {
+      document.getElementById("loading-st").innerHTML = `<div style="color:var(--danger);padding:20px;">⚠️ ${e.message}<br><br><button class="btn btn-primary" onclick="loadData()">Retry</button></div>`;
+    }
+  }
+}
+
+function getEnabledNiches() {
+  try {
+    const s = localStorage.getItem("on_niches");
+    return s ? JSON.parse(s) : [];
+  } catch { return []; }
+}
+
+// ─── TABS ─────────────────────────────────────────────────
+function buildNicheTabs(json) {
+  const niches = ["all", ...new Set(allRows.map(r => r._sheet).filter(Boolean))];
+  const bar = document.getElementById("niche-tabs");
+  bar.innerHTML = niches.map(n => {
+    const cnt = n === "all" ? allRows.length : allRows.filter(r => r._sheet === n).length;
+    return `<button class="ntab ${n === activeNiche ? 'active' : ''}" onclick="setNiche('${n}')">${n === "all" ? "All Niches" : n} <span style="opacity:.7;font-size:11px;">(${cnt})</span></button>`;
+  }).join("");
+}
+
+function setNiche(n) {
+  activeNiche = n;
+  page = 1;
+  document.querySelectorAll(".ntab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
+  onFilter();
+}
+
+// ─── FILTERS ──────────────────────────────────────────────
+function onFilter() {
+  const q       = document.getElementById("q").value.toLowerCase();
+  const country = document.getElementById("f-country").value;
+  const type    = document.getElementById("f-type").value;
+  const minDa   = parseInt(document.getElementById("f-da").value) || 0;
+  const emailF  = document.getElementById("f-email").value;
+
+  filtered = allRows.filter(r => {
+    if (activeNiche !== "all" && r._sheet !== activeNiche) return false;
+    if (country && (r.Country||"") !== country) return false;
+    if (type && (r.Type||"") !== type) return false;
+    if (minDa && parseInt(r.DA||0) < minDa) return false;
+    if (emailF === "yes" && !r.Emails) return false;
+    if (emailF === "no" && r.Emails) return false;
+    if (q) return Object.values(r).some(v => v && String(v).toLowerCase().includes(q));
+    return true;
+  });
+
+  if (sortCol) {
+    filtered.sort((a,b) => {
+      const av = a[sortCol] || "", bv = b[sortCol] || "";
+      const an = parseFloat(av), bn = parseFloat(bv);
+      if (!isNaN(an) && !isNaN(bn)) return (an - bn) * sortDir;
+      return String(av).localeCompare(String(bv)) * sortDir;
+    });
+  }
+
+  page = 1;
+  renderTable();
+  document.getElementById("total-badge").textContent = filtered.length + " rows";
+}
+
+function clearFilters() {
+  document.getElementById("q").value = "";
+  document.getElementById("f-country").value = "";
+  document.getElementById("f-type").value = "";
+  document.getElementById("f-da").value = "";
+  document.getElementById("f-email").value = "";
+  activeNiche = "all";
+  document.querySelectorAll(".ntab").forEach(t => t.classList.remove("active"));
+  if (document.querySelector(".ntab")) document.querySelector(".ntab").classList.add("active");
+  onFilter();
+}
+
+function buildCountryFilter() {
+  const countries = [...new Set(allRows.map(r => r.Country).filter(Boolean))].sort();
+  const sel = document.getElementById("f-country");
+  sel.innerHTML = '<option value="">All Countries</option>' +
+    countries.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+}
+
+// ─── TABLE RENDER ─────────────────────────────────────────
+function renderTable() {
+  const table = document.getElementById("main-table");
+  const empty = document.getElementById("empty-st");
+  const pag   = document.getElementById("pagination");
+  document.getElementById("loading-st").style.display = "none";
+
+  if (filtered.length === 0) {
+    table.style.display = "none";
+    empty.style.display = "block";
+    pag.style.display = "none";
+    return;
+  }
+
+  empty.style.display = "none";
+  table.style.display = "table";
+
+  const cols = visibleCols;
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const start = (page - 1) * PER_PAGE;
+  const rows  = filtered.slice(start, start + PER_PAGE);
+
+  // Header
+  document.getElementById("thead-row").innerHTML = `<tr>
+    <th style="width:40px;">#</th>
+    ${cols.map(c => `<th onclick="sortBy('${c}')">${c} ${sortCol===c?(sortDir===1?'↑':'↓'):''}</th>`).join("")}
+  </tr>`;
+
+  // Rows
+  document.getElementById("tbody-rows").innerHTML = rows.map((r, i) => `
+    <tr>
+      <td style="color:var(--text-muted);font-size:11px;">${start + i + 1}</td>
+      ${cols.map(c => renderCell(c, r)).join("")}
+    </tr>
+  `).join("");
+
+  // Pagination
+  if (totalPages > 1) {
+    pag.style.display = "flex";
+    const from = start + 1, to = Math.min(start + PER_PAGE, filtered.length);
+    pag.innerHTML = `
+      <span>${from}–${to} of ${filtered.length}</span>
+      <div class="page-btns">
+        <button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>← Prev</button>
+        ${Array.from({length:Math.min(totalPages,7)},(_,i)=>{
+          const p = Math.max(1, Math.min(page-3,totalPages-6)) + i;
+          return p <= totalPages ? `<button class="page-btn ${p===page?'active':''}" onclick="goPage(${p})">${p}</button>` : '';
+        }).join("")}
+        <button class="page-btn" onclick="goPage(${page+1})" ${page===totalPages?'disabled':''}>Next →</button>
+      </div>`;
+  } else {
+    pag.style.display = "none";
+  }
+}
+
+function renderCell(col, r) {
+  const v = r[col] || "";
+  if (col === "Domain") {
+    const url = r.URL || ("https://" + v);
+    return `<td><a href="${esc(url)}" target="_blank" rel="noopener" class="domain-link">${esc(v.replace(/https?:\/\//,'').slice(0,40))}</a></td>`;
+  }
+  if (col === "Niche" || col === "_sheet") {
+    return `<td><span class="nbadge ${getNicheClass(r._sheet)}">${esc(r._sheet||v)}</span></td>`;
+  }
+  if (col === "Emails") {
+    const first = v.split(",")[0].trim();
+    return `<td style="font-size:12px;">${first ? `<a href="mailto:${esc(first)}" style="color:var(--primary);">${esc(first.slice(0,35))}</a>` : '<span style="color:var(--text-muted);">—</span>'}</td>`;
+  }
+  if (col === "DA" || col === "DR") {
+    return `<td><span class="da-val">${esc(v)||'—'}</span></td>`;
+  }
+  if (col === "Client Score") {
+    const n = parseInt(v);
+    const cls = n >= 90 ? "score-high" : n >= 60 ? "score-med" : n > 0 ? "score-low" : "";
+    return `<td><span class="${cls}">${esc(v)||'—'}</span></td>`;
+  }
+  if (col === "Traffic") {
+    const n = parseInt(v);
+    return `<td>${n ? n.toLocaleString() : '—'}</td>`;
+  }
+  return `<td style="font-size:13px;">${esc(String(v).slice(0,60))||'<span style="color:var(--text-muted);">—</span>'}</td>`;
+}
+
+function getNicheClass(sheet) {
+  if (!sheet) return "nb-default";
+  const s = sheet.toLowerCase();
+  if (s.includes("electrical")) return "nb-ec";
+  if (s.includes("mobile")) return "nb-ms";
+  if (s.includes("solar")) return "nb-solar";
+  if (s.includes("electron")) return "nb-elec";
+  if (s.includes("autom")) return "nb-auto";
+  return "nb-default";
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+  onFilter();
+}
+
+function goPage(p) {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  page = Math.max(1, Math.min(p, total));
+  renderTable();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+// ─── STATS ────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById("s-total").textContent = allRows.length;
+  const count = sheet => allRows.filter(r => (r._sheet||"").toLowerCase().includes(sheet)).length;
+  document.getElementById("s-ec").textContent    = count("electrical");
+  document.getElementById("s-solar").textContent = count("solar");
+  document.getElementById("s-elec").textContent  = count("electron");
+  document.getElementById("s-auto").textContent  = count("autom");
+  document.getElementById("s-mob").textContent   = count("mobile");
+}
+
+// ─── COLS ─────────────────────────────────────────────────
+function loadCols() {
+  try {
+    const s = localStorage.getItem("on_cols");
+    return s ? JSON.parse(s) : DEFAULT_COLS;
+  } catch { return DEFAULT_COLS; }
+}
+
+// ─── EXPORT ───────────────────────────────────────────────
+function exportCSV() {
+  if (!filtered.length) { toast("No data to export", "err"); return; }
+  const keys = ["Domain","URL","Niche","Category","DA","DR","Traffic","Emails","Phone","WhatsApp","Country","Type","Status","Price","Client Score"];
+  const csv = [keys.join(","),
+    ...filtered.map(r => keys.map(k => `"${String(r[k]||"").replace(/"/g,'""')}"`).join(","))
+  ].join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
+  a.download = `outreachnest_${activeNiche}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast("CSV exported!", "ok");
+}
+
+// ─── TOAST ────────────────────────────────────────────────
+function toast(msg, type="info") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = "toast", 3500);
+}
+
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+checkAuth();
+</script>
+</body>
+</html>

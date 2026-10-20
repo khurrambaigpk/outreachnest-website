@@ -193,6 +193,7 @@ async function doLogin() {
   const stored = localStorage.getItem("on_admin_hash") || ADMIN_PASS_DEFAULT;
   if (hash === stored) {
     sessionStorage.setItem("on_admin_auth", "1");
+    sessionStorage.setItem("on_admin_plain", pass);
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("main").style.display = "block";
     initAdmin();
@@ -341,12 +342,13 @@ function toggleAll(state) {
   });
 }
 
-function saveNiches() {
+async function saveNiches() {
   const enabled = apiNiches.filter(n => {
     const el = document.getElementById("niche-" + n);
     return el && el.checked;
   });
   localStorage.setItem("on_niches", JSON.stringify(enabled));
+  await saveConfigToServer();
   toast("✅ Niche settings saved", "ok");
 }
 
@@ -370,13 +372,14 @@ function colAll(state) {
   });
 }
 
-function saveCols() {
+async function saveCols() {
   const visible = ALL_COLS.filter(c => {
     const el = document.getElementById("col-" + c);
     return el && el.checked;
   });
   if (!visible.length) { toast("Select at least one column", "err"); return; }
   localStorage.setItem("on_cols", JSON.stringify(visible));
+  await saveConfigToServer();
   toast("✅ Column settings saved", "ok");
 }
 
@@ -427,6 +430,37 @@ async function testApi() {
   } catch(e) {
     res.textContent = "❌ Connection failed: " + e.message;
     toast("Connection failed", "err");
+  }
+}
+
+// ─── SERVER CONFIG SAVE ───────────────────────────────────
+async function saveConfigToServer() {
+  try {
+    const cols    = JSON.parse(localStorage.getItem("on_cols") || "[]");
+    const niches  = JSON.parse(localStorage.getItem("on_niches") || "[]");
+    const pubHash = localStorage.getItem("on_pass_hash") || "";
+    const admPass = document.getElementById("adm-pass")?.value || "";
+
+    const cfg = { cols, niches, pub_hash: pubHash };
+
+    const resp = await fetch("/api/databank-config", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Admin-Token": admPass || sessionStorage.getItem("on_admin_plain") || ""
+      },
+      body: JSON.stringify(cfg)
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json();
+      toast("⚠️ Server save failed: " + err.error, "err");
+      return false;
+    }
+    return true;
+  } catch(e) {
+    toast("⚠️ Could not save to server: " + e.message, "err");
+    return false;
   }
 }
 

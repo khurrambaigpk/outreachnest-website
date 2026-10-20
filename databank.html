@@ -302,6 +302,8 @@ function checkAuth() {
 
 // ─── DATA LOAD ────────────────────────────────────────────
 async function loadData() {
+  // Load server config first — columns, niches, password
+  await loadServerConfig();
   document.getElementById("loading-st").style.display = "block";
   document.getElementById("main-table").style.display = "none";
   document.getElementById("empty-st").style.display = "none";
@@ -556,6 +558,27 @@ function loadCols() {
     const s = localStorage.getItem("on_cols");
     return s ? JSON.parse(s) : DEFAULT_COLS;
   } catch { return DEFAULT_COLS; }
+}
+
+// Load config from server
+async function loadServerConfig() {
+  try {
+    const resp = await fetch("/api/databank-config", { cache: "no-store" });
+    if (!resp.ok) return;
+    const cfg = await resp.json();
+    if (cfg.cols && cfg.cols.length) {
+      visibleCols = cfg.cols;
+      localStorage.setItem("on_cols", JSON.stringify(cfg.cols));
+    }
+    if (cfg.niches && cfg.niches.length) {
+      localStorage.setItem("on_niches", JSON.stringify(cfg.niches));
+    }
+    if (cfg.pub_hash) {
+      localStorage.setItem("on_pass_hash", cfg.pub_hash);
+    }
+  } catch(e) {
+    // Fallback to localStorage silently
+  }
 }
 
 // ─── EXPORT ───────────────────────────────────────────────

@@ -510,9 +510,8 @@ function renderCell(col, r) {
     const cls = n >= 90 ? "score-high" : n >= 60 ? "score-med" : n > 0 ? "score-low" : "";
     return `<td><span class="${cls}">${esc(v)||'—'}</span></td>`;
   }
-  if (col === "Traffic") {
-    const n = parseInt(v);
-    return `<td>${n ? n.toLocaleString() : '—'}</td>`;
+  if (col === "Traffic" || col === "Backlinks" || col === "Ref Domains" || col === "Organic Keywords") {
+    return `<td style="font-size:13px;">${fmtNum(v)}</td>`;
   }
   return `<td style="font-size:13px;">${esc(String(v).slice(0,60))||'<span style="color:var(--text-muted);">—</span>'}</td>`;
 }
@@ -601,6 +600,15 @@ function toast(msg, type="info") {
   t.textContent = msg;
   t.className = `toast show ${type}`;
   setTimeout(() => t.className = "toast", 3500);
+}
+
+function fmtNum(v) {
+  const n = parseInt(v);
+  if (!n || isNaN(n)) return '<span style="color:var(--text-muted);">—</span>';
+  if (n >= 1000000000) return (n/1000000000).toFixed(1).replace(/\.0$/,'') + 'B';
+  if (n >= 1000000)    return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+  if (n >= 1000)       return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K';
+  return n.toString();
 }
 
 function esc(s) {

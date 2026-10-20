@@ -1419,6 +1419,14 @@ export default {
     if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
     if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
 
+    // Databank routes
+    if (url.pathname === "/databank" || url.pathname === "/databank/") {
+      return env.ASSETS.fetch(new Request(new URL("/databank.html", url).toString(), request));
+    }
+    if (url.pathname === "/databank-admin" || url.pathname === "/databank-admin/") {
+      return env.ASSETS.fetch(new Request(new URL("/databank-admin.html", url).toString(), request));
+    }
+
     if (url.pathname === "/api/activate") {
       return handleActivate(request, env);
     }

@@ -1419,6 +1419,53 @@ export default {
     if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
     if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
 
+    // Databank config API — save/load settings server-side via KV
+    // GET /api/databank-config — returns current config JSON
+    if (url.pathname === "/api/databank-config" && request.method === "GET") {
+      try {
+        const cfg = await env.LICENSE_KV.get("databank_config");
+        const data = cfg ? cfg : JSON.stringify({
+          cols: ["Domain","Niche","Category","DA","DR","Traffic","Emails","Phone","Country","Type","Status"],
+          niches: [],
+          pub_hash: "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+        });
+        return new Response(data, {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "no-store"
+          }
+        });
+      } catch(e) {
+        return new Response('{"error":"KV unavailable"}', { status: 500, headers: { "Content-Type": "application/json" } });
+      }
+    }
+
+    // POST /api/databank-config — save config (requires admin token)
+    if (url.pathname === "/api/databank-config" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        // Verify admin token
+        const token = request.headers.get("X-Admin-Token") || "";
+        const storedHash = await env.LICENSE_KV.get("databank_admin_hash") || "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
+        const enc = new TextEncoder().encode(token);
+        const buf = await crypto.subtle.digest("SHA-256", enc);
+        const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+        if (hash !== storedHash) {
+          return new Response('{"error":"Unauthorized"}', { status: 401, headers: { "Content-Type": "application/json" } });
+        }
+        await env.LICENSE_KV.put("databank_config", JSON.stringify(body));
+        return new Response('{"ok":true}', { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+      } catch(e) {
+        return new Response('{"error":"' + e.message + '"}', { status: 500, headers: { "Content-Type": "application/json" } });
+      }
+    }
+
+    // OPTIONS preflight for config API
+    if (url.pathname === "/api/databank-config" && request.method === "OPTIONS") {
+      return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Admin-Token" } });
+    }
+
     // Databank routes — serve .html files directly, no redirect loop
     if (url.pathname === "/databank" || url.pathname === "/databank/") {
       const assetUrl = new URL(request.url);

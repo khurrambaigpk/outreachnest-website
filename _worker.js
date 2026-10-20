@@ -1445,14 +1445,17 @@ export default {
     if (url.pathname === "/api/databank-config" && request.method === "POST") {
       try {
         const body = await request.json();
-        // Verify admin token
+        // Verify admin token — hash incoming token and compare with stored hash
+        // Default hash = SHA256("password")
+        const DEFAULT_ADMIN_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
         const token = request.headers.get("X-Admin-Token") || "";
-        const storedHash = await env.LICENSE_KV.get("databank_admin_hash") || "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
+        let storedHash = DEFAULT_ADMIN_HASH;
+        try { storedHash = await env.LICENSE_KV.get("databank_admin_hash") || DEFAULT_ADMIN_HASH; } catch(e) {}
         const enc = new TextEncoder().encode(token);
         const buf = await crypto.subtle.digest("SHA-256", enc);
         const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
         if (hash !== storedHash) {
-          return new Response('{"error":"Unauthorized"}', { status: 401, headers: { "Content-Type": "application/json" } });
+          return new Response('{"error":"Unauthorized"}', { status: 401, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
         }
         await env.LICENSE_KV.put("databank_config", JSON.stringify(body));
         return new Response('{"ok":true}', { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });

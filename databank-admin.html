@@ -436,25 +436,26 @@ async function testApi() {
 // ─── SERVER CONFIG SAVE ───────────────────────────────────
 async function saveConfigToServer() {
   try {
-    const cols    = JSON.parse(localStorage.getItem("on_cols") || "[]");
-    const niches  = JSON.parse(localStorage.getItem("on_niches") || "[]");
+    const cols   = JSON.parse(localStorage.getItem("on_cols") || "[]");
+    const niches = JSON.parse(localStorage.getItem("on_niches") || "[]");
     const pubHash = localStorage.getItem("on_pass_hash") || "";
-    const admPass = document.getElementById("adm-pass")?.value || "";
+    const token  = sessionStorage.getItem("on_admin_plain") || "";
+
+    if (!token) {
+      toast("⚠️ Session expired — please logout and login again", "err");
+      return false;
+    }
 
     const cfg = { cols, niches, pub_hash: pubHash };
-
     const resp = await fetch("/api/databank-config", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Admin-Token": admPass || sessionStorage.getItem("on_admin_plain") || ""
-      },
+      headers: { "Content-Type": "application/json", "X-Admin-Token": token },
       body: JSON.stringify(cfg)
     });
 
     if (!resp.ok) {
-      const err = await resp.json();
-      toast("⚠️ Server save failed: " + err.error, "err");
+      const err = await resp.json().catch(() => ({}));
+      toast("⚠️ Server save failed: " + (err.error || resp.status), "err");
       return false;
     }
     return true;

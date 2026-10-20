@@ -1419,12 +1419,20 @@ export default {
     if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
     if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
 
-    // Databank routes
+    // Databank routes — serve .html files directly, no redirect loop
     if (url.pathname === "/databank" || url.pathname === "/databank/") {
-      return env.ASSETS.fetch(new Request(new URL("/databank.html", url).toString(), request));
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = "/databank.html";
+      return env.ASSETS.fetch(new Request(assetUrl.toString(), { method: "GET", headers: request.headers }));
     }
     if (url.pathname === "/databank-admin" || url.pathname === "/databank-admin/") {
-      return env.ASSETS.fetch(new Request(new URL("/databank-admin.html", url).toString(), request));
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = "/databank-admin.html";
+      return env.ASSETS.fetch(new Request(assetUrl.toString(), { method: "GET", headers: request.headers }));
+    }
+    // Also handle direct .html access without redirect loop
+    if (url.pathname === "/databank.html" || url.pathname === "/databank-admin.html") {
+      return env.ASSETS.fetch(request);
     }
 
     if (url.pathname === "/api/activate") {

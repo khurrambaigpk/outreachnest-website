@@ -1,6 +1,91 @@
-// Cloudflare Worker — getoutreachnest.com
-// Handles: admin panel, /api/activate, /api/databank-config, blog post meta injection,
-// SEO redirects, edge caching, IndexNow pings, GitHub publishing.
+// Cloudflare Worker entry point — runs on Cloudflare's edge, source never sent to visitors.
+// wrangler.toml's `run_worker_first` makes THIS script run for the admin panel paths AND the new
+// /api/activate endpoint before Cloudflare's normal static-file serving kicks in; every other page
+// on the site bypasses this file entirely and is served exactly as before, unchanged.
+//
+// v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
+// v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
+// v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
+// v33 (28 Sep 2026) — Three SEO fixes from comprehensive audit:
+//   (a) og:type corrected to "article" on all blog post pages — was "website" (inherited
+//       from static post.html template). injectPostMeta() now explicitly sets
+//       og:type=article, fixing social previews and Google article eligibility.
+//   (b) Homepage meta description shortened from 208 → 133 chars (was over 155-char limit).
+//       Added override in HTML_PAGES caching block (same pattern as /services fix in v25).
+//   (c) /blog title shortened from 73 → 54 chars and desc from 164 → 141 chars.
+//       Both were over search-engine display limits. Overrides injected at cache time.
+// v14 (11 Sep 2026) — Extended edge caching to ALL static HTML pages (/blog, /download,
+//   /services, /niches, /contact) — not just /. Fixes "Slow page" and "Slow server
+//   response for AI crawlers" Ahrefs warnings on /blog and other static pages.
+// v13 (11 Sep 2026) — Added IndexNow key file endpoint (/1257f0fc794749fa896e8d3c4e1af272.txt)
+//   so search engines can verify ownership and accept IndexNow URL submissions for this site.
+// v12 (11 Sep 2026) — Added edge caching for homepage (/) to fix "Slow page" Ahrefs
+//   warning. Homepage previously passed straight through to env.ASSETS with no edge
+//   caching, causing ~2.3s TTFB on Worker cold starts. Now uses the same caches.default
+//   pattern already in use for blog posts (s-maxage=86400, max-age=3600).
+// v11 (11 Sep 2026) — Added "image" field to BlogPosting JSON-LD schema (was missing,
+//   causing Google Rich Results "non-critical issue"). Uses the same OG_IMAGE constant
+//   already used for og:image and twitter:image tags — no per-post change needed.
+// v10 (11 Sep 2026) — Fixed BlogPosting JSON-LD: removed escHtml() from JSON values (was
+//   producing &amp; instead of & for titles like "PLC & SCADA", causing structured data
+//   validation errors). Added XSS protection via unicode escapes on JSON output instead.
+//   Added noindex meta tag to admin login page and activate page.
+//   Problem this solves: the free trial previously required Mariyam to manually generate and
+//   send a license key by hand (up to 24hr wait) — this was identified as a major reason people
+//   who download the trial never actually activate it and try the product.
+//   Design constraints (explicit, from the business owner):
+//     1. A key must NEVER be issued without a real, verified Gumroad purchase first — this
+//        endpoint calls Gumroad's own License Verification API (server-side, using the secret-free
+//        public verify endpoint) and refuses to generate anything unless Gumroad confirms the
+//        submitted license key is real, unused for a DIFFERENT machine, and not refunded/disputed/
+//        chargebacked.
+//     2. Must be resistant to abuse/hacking:
+//        - Per-IP rate limiting (Workers KV) — throttles automated key-farming attempts.
+//        - Strict input validation (regex) on both license_key and hwid before they touch any
+//          logic — rejects malformed/injection-shaped input immediately.
+//        - One Gumroad license key can only ever be bound to ONE machine (HWID) — enforced via a
+//          KV lookup; a second machine trying to reuse someone else's purchased key is rejected.
+//        - The generated activation key format/signature is byte-identical to the existing
+//          Windows app's own offline `_verify_key()` logic (same HMAC-SHA256 secret + Base32
+//          encoding) — nothing about the app itself changes, and the underlying
+//          `_LICENSE_SECRET` exposure inside the distributed .exe (a pre-existing condition, not
+//          introduced by this change) is unchanged and was intentionally left out of this task's
+//          scope (a separate, bigger future project would be required to fix that at the source).
+//        - ONE FREE TRIAL PER PC, EVER — not just "one trial per license key". Without this, someone
+//          could claim a fresh $0 Gumroad checkout (a new email each time) and keep re-activating
+//          unlimited free trials on the same machine by uninstalling/reinstalling. A KV record
+//          (`trial_used:<HWID>`) remembers which license_key first claimed the trial on each PC;
+//          a second, different license_key trying to claim another trial on that same PC is
+//          rejected and pointed to the paid plans (Monthly/Half-Yearly/Annual, still handled
+//          manually via WhatsApp payment-proof, unchanged) instead of getting a free key. The
+//          SAME license_key reinstalling on the SAME PC still works exactly as before (idempotent).
+// v5 (Sep 2026) — server-side per-post meta injection for /post?p=SLUG:
+// v6 (Sep 2026) — shortened 9 too-long post titles (under 60 chars total);
+//   server-side per-post meta injection already fixed duplicate-title/description errors.
+// v7 (Sep 2026) — removed server-side hidden <h1> injection (was causing Ahrefs
+//   "Multiple H1 tags" error on all 22 post pages). The injection was added under the
+//   mistaken assumption that post.html has no static H1 — it does: line 77 has
+//   <h1 id="aTitle"></h1> which JavaScript fills with the post title. The hidden
+//   off-screen H1 was therefore a second duplicate H1, counted by Ahrefs even though
+//   invisible to users. Removing it leaves exactly one H1 per post page.
+// v10 (Sep 2026) — IndexNow ping on publish: after every successful admin-panel post,
+//   the new post URL is submitted to api.indexnow.org (fire-and-forget, never blocks
+//   the publish response). Bing, Yandex, and any IndexNow-compatible engine receive
+//   the URL within seconds instead of waiting for their next crawl cycle.
+// v9 (Sep 2026) — fixed 3 POSTS_META titles still >60 chars and 3 descs still >155 chars
+//   (longi vs canadian solar title, string inverter title, niche relevance title,
+//    guest post vs pbn desc, da/dr/traffic desc, b2b lead list desc)
+// v8 (Sep 2026) — three Ahrefs errors fixed in one pass:
+//   (a) Added 5 slugs that were in sitemap.xml but missing from POSTS_META
+//       (solar-guest-post-cost-2026, signs-guest-post-site-hurt-rankings,
+//        electrical-contractor-seo-backlinks, vet-electronics-repair-guest-post-site,
+//        guest-posting-vs-pbn-links-difference). Without entries here the worker
+//       served the unmodified template whose canonical is /post, causing
+//       "Non-canonical page in sitemap (5 pages)" in Ahrefs.
+//   (b) injectPostMeta() now injects/replaces JSON-LD with a BlogPosting schema —
+//       fixes "Structured data validation error" (post pages had Organization schema).
+//   (c) Unknown-slug branch now adds noindex to the response, so the generic /post
+//       URL is not counted as an indexable page — fixes "Indexable page not in sitemap".
 
 const ADMIN_USER = "mariyam";
 // ⚠️  ADMIN_PASS and SESSION_SECRET are loaded from Cloudflare Secrets at request
@@ -603,12 +688,17 @@ async function handlePostPage(request, env, ctx, slug) {
   const cachedResp = await cache.match(cacheKey);
   if (cachedResp) return cachedResp;
 
-  // Fetch the static post.html template (without the query string, which is
-  // irrelevant to static-file serving — Cloudflare Pages maps /post → post.html).
+  // Fetch post.html template AND posts-data.json in parallel — cuts TTFB by
+  // eliminating the sequential wait between two round-trips to ASSETS.
   const templateUrl = new URL(request.url);
   templateUrl.pathname = "/post";
   templateUrl.search = "";
-  const assetResp = await env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" }));
+  const dataUrl = new URL("/posts-data.json", request.url).href;
+
+  const [assetResp, dataResp] = await Promise.all([
+    env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" })),
+    env.ASSETS.fetch(new Request(dataUrl, { method: "GET" })).catch(() => null),
+  ]);
 
   if (!assetResp.ok) {
     // Template fetch failed — pass through the error response unchanged.
@@ -616,24 +706,16 @@ async function handlePostPage(request, env, ctx, slug) {
   }
 
   let html = await assetResp.text();
-  // v41: base href so CSS/JS loads correctly from /blog/slug path
+  // base href so CSS/JS loads correctly from /blog/slug path
   if (!html.includes('<base ')) {
     html = html.replace('<head>', '<head>\n<base href="/">');
   }
 
-  // ── v28 permanent fix: posts-data.json is the single source of truth ──────
-  // Previously, POSTS_META (a static object in this file) controlled which slugs
-  // got "index, follow". New posts published via admin updated posts-data.json but
-  // NOT POSTS_META, so every new post received noindex until _worker.js was manually
-  // edited. Now we fetch posts-data.json first (already fetched for SSR anyway) and
-  // use it as the authoritative slug registry. POSTS_META is kept as a fast fallback
-  // for the edge case where posts-data.json is not yet deployed.
+  // posts-data.json is the single source of truth for slug registry.
+  // POSTS_META is kept as a fast fallback if posts-data.json is unavailable.
   let postData = null;
   try {
-    const dataResp = await env.ASSETS.fetch(
-      new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
-    );
-    if (dataResp.ok) {
+    if (dataResp && dataResp.ok) {
       const allPosts = await dataResp.json();
       postData = allPosts.find(p => p.slug === slug) || null;
     }
@@ -699,9 +781,10 @@ async function handlePostPage(request, env, ctx, slug) {
     status: 200,
     headers: {
       "Content-Type": "text/html; charset=UTF-8",
-      // 1-hour browser cache, 24-hour CDN edge cache — long enough to serve AI
-      // crawlers from cache instantly, short enough to pick up post additions.
-      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+      // 7-day browser cache, 30-day CDN edge cache for blog posts.
+      // Posts rarely change after publish — long cache = fast repeat visits.
+      // CACHE_VERSION bump in cacheKey busts edge cache when needed.
+      "Cache-Control": "public, max-age=604800, s-maxage=2592000",
     },
   });
 

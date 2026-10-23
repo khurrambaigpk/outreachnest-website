@@ -176,7 +176,7 @@ const POSTS_META = {
     desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "WhatsApp Outreach: Why It Gets More Replies Than Email",
+    title: "WhatsApp Outreach: More Replies Than Cold Email",
     desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
@@ -220,11 +220,11 @@ const POSTS_META = {
     desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Electrical Contractors: An Underrated Marketing Niche",
+    title: "Electrical Contractors: Underrated Marketing Niche",
     desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: A High-Value Outreach Niche",
+    title: "Industrial Automation: High-Value Outreach Niche",
     desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
@@ -285,7 +285,7 @@ const POSTS_META = {
     desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches from scratch.",
   },
   "industrial-automation-seo-untapped-potential": {
-    title: "Industrial Automation SEO: Untapped Link Building Potential",
+    title: "Industrial Automation SEO: Untapped Link Building",
     desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
   },
   "niche-relevance-guest-posts-explained": {
@@ -293,10 +293,10 @@ const POSTS_META = {
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
   "guest-post-outreach-email-templates-2026": { title: "Guest Post Outreach Email Templates That Actually Work", desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails that actually get replies \u2014 " },
-  "how-to-price-guest-posts-2026": { title: "How to Price Guest Posts in 2026: What Buyers and Sellers Need to Know", desc: "Guest post pricing varies wildly \u2014 from $30 to $3,000 for what looks like the same thing. Here's what actually drives the price and how to evaluate whether" },
-  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting: An Honest Comparison", desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense, what each one costs in time and money, and" },
-  "b2b-lead-generation-electrical-contractors": { title: "B2B Lead Generation for Electrical Contractors: A Practical Guide", desc: "Electrical contractors are one of the most reliable B2B markets for lead generation \u2014 but finding the right contacts requires a different approach than mos" },
-  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies: What Actually Works in 2026", desc: "Solar is one of the most competitive niches for SEO \u2014 but most solar companies are doing link building wrong. Here's what the top-ranking installers and ma" },
+  "how-to-price-guest-posts-2026": { title: "Guest Post Pricing in 2026: What Buyers & Sellers Must Know", desc: "Guest post prices range from $30 to $3,000 for what looks identical. Here's what drives the price and how to evaluate whether you're getting real value." },
+  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting: Honest Review", desc: "Manual prospecting works. So does OutreachNest Finder. Here's where each approach makes sense, what each costs in time and money, and when to use which." },
+  "b2b-lead-generation-electrical-contractors": { title: "B2B Lead Generation for Electrical Contractors", desc: "Electrical contractors are one of the most reliable B2B markets — but finding the right contacts requires a different approach than most industries. Here's what works." },
+  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies: What Works in 2026", desc: "Solar is one of the most competitive SEO niches — but most companies are doing link building wrong. Here's what top-ranking installers and manufacturers do differently." },
 };
 
 // v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v45"; // v45: trailing slash 301 redirect (/blog/slug/ → /blog/slug) // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes
+const CACHE_VERSION = "v46"; // v45: trailing slash 301 redirect (/blog/slug/ → /blog/slug) // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -688,17 +688,12 @@ async function handlePostPage(request, env, ctx, slug) {
   const cachedResp = await cache.match(cacheKey);
   if (cachedResp) return cachedResp;
 
-  // Fetch post.html template AND posts-data.json in parallel — cuts TTFB by
-  // eliminating the sequential wait between two round-trips to ASSETS.
+  // Fetch the static post.html template (without the query string, which is
+  // irrelevant to static-file serving — Cloudflare Pages maps /post → post.html).
   const templateUrl = new URL(request.url);
   templateUrl.pathname = "/post";
   templateUrl.search = "";
-  const dataUrl = new URL("/posts-data.json", request.url).href;
-
-  const [assetResp, dataResp] = await Promise.all([
-    env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" })),
-    env.ASSETS.fetch(new Request(dataUrl, { method: "GET" })).catch(() => null),
-  ]);
+  const assetResp = await env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" }));
 
   if (!assetResp.ok) {
     // Template fetch failed — pass through the error response unchanged.
@@ -706,16 +701,24 @@ async function handlePostPage(request, env, ctx, slug) {
   }
 
   let html = await assetResp.text();
-  // base href so CSS/JS loads correctly from /blog/slug path
+  // v41: base href so CSS/JS loads correctly from /blog/slug path
   if (!html.includes('<base ')) {
     html = html.replace('<head>', '<head>\n<base href="/">');
   }
 
-  // posts-data.json is the single source of truth for slug registry.
-  // POSTS_META is kept as a fast fallback if posts-data.json is unavailable.
+  // ── v28 permanent fix: posts-data.json is the single source of truth ──────
+  // Previously, POSTS_META (a static object in this file) controlled which slugs
+  // got "index, follow". New posts published via admin updated posts-data.json but
+  // NOT POSTS_META, so every new post received noindex until _worker.js was manually
+  // edited. Now we fetch posts-data.json first (already fetched for SSR anyway) and
+  // use it as the authoritative slug registry. POSTS_META is kept as a fast fallback
+  // for the edge case where posts-data.json is not yet deployed.
   let postData = null;
   try {
-    if (dataResp && dataResp.ok) {
+    const dataResp = await env.ASSETS.fetch(
+      new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
+    );
+    if (dataResp.ok) {
       const allPosts = await dataResp.json();
       postData = allPosts.find(p => p.slug === slug) || null;
     }
@@ -781,10 +784,9 @@ async function handlePostPage(request, env, ctx, slug) {
     status: 200,
     headers: {
       "Content-Type": "text/html; charset=UTF-8",
-      // 7-day browser cache, 30-day CDN edge cache for blog posts.
-      // Posts rarely change after publish — long cache = fast repeat visits.
-      // CACHE_VERSION bump in cacheKey busts edge cache when needed.
-      "Cache-Control": "public, max-age=604800, s-maxage=2592000",
+      // 1-hour browser cache, 24-hour CDN edge cache — long enough to serve AI
+      // crawlers from cache instantly, short enough to pick up post additions.
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
     },
   });
 
@@ -1721,12 +1723,12 @@ export default {
               bodyText = bodyText
                 .replace(/<!-- CTA -->/, fiverrBanner + '\n<!-- CTA -->')
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts ($70–$250), B2B lead lists ($75/100), SEO content ($45/1,000 words). Solar, electrical &amp; automation niches. Real sites, real traffic.">');
             }
             // v33: fix homepage meta description (was 208 chars — over 155-char limit)
             if (normPath === "/") {
               bodyText = bodyText
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">')
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Niche guest posts, B2B lead lists &amp; SEO content for Solar, Electrical, Automation &amp; Electronics. Free Windows prospecting tool included.">')
                 // v44: LaunchIgniter badge after Product Hunt in AS FEATURED ON section
                 .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a>$2');
             }

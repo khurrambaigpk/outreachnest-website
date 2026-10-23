@@ -176,7 +176,7 @@ const POSTS_META = {
     desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "WhatsApp Outreach: More Replies Than Cold Email",
+    title: "WhatsApp Outreach: Why It Gets More Replies Than Email",
     desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
@@ -220,11 +220,11 @@ const POSTS_META = {
     desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "Electrical Contractors: Underrated Marketing Niche",
+    title: "Electrical Contractors: An Underrated Marketing Niche",
     desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Industrial Automation: High-Value Outreach Niche",
+    title: "Industrial Automation: A High-Value Outreach Niche",
     desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
@@ -285,7 +285,7 @@ const POSTS_META = {
     desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches from scratch.",
   },
   "industrial-automation-seo-untapped-potential": {
-    title: "Industrial Automation SEO: Untapped Link Building",
+    title: "Industrial Automation SEO: Untapped Link Building Potential",
     desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
   },
   "niche-relevance-guest-posts-explained": {
@@ -293,10 +293,10 @@ const POSTS_META = {
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
   "guest-post-outreach-email-templates-2026": { title: "Guest Post Outreach Email Templates That Actually Work", desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails that actually get replies \u2014 " },
-  "how-to-price-guest-posts-2026": { title: "Guest Post Pricing in 2026: What Buyers & Sellers Must Know", desc: "Guest post prices range from $30 to $3,000 for what looks identical. Here's what drives the price and how to evaluate whether you're getting real value." },
-  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting: Honest Review", desc: "Manual prospecting works. So does OutreachNest Finder. Here's where each approach makes sense, what each costs in time and money, and when to use which." },
-  "b2b-lead-generation-electrical-contractors": { title: "B2B Lead Generation for Electrical Contractors", desc: "Electrical contractors are one of the most reliable B2B markets — but finding the right contacts requires a different approach than most industries. Here's what works." },
-  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies: What Works in 2026", desc: "Solar is one of the most competitive SEO niches — but most companies are doing link building wrong. Here's what top-ranking installers and manufacturers do differently." },
+  "how-to-price-guest-posts-2026": { title: "How to Price Guest Posts in 2026: What Buyers and Sellers Need to Know", desc: "Guest post pricing varies wildly \u2014 from $30 to $3,000 for what looks like the same thing. Here's what actually drives the price and how to evaluate whether" },
+  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting: An Honest Comparison", desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense, what each one costs in time and money, and" },
+  "b2b-lead-generation-electrical-contractors": { title: "B2B Lead Generation for Electrical Contractors: A Practical Guide", desc: "Electrical contractors are one of the most reliable B2B markets for lead generation \u2014 but finding the right contacts requires a different approach than mos" },
+  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies: What Actually Works in 2026", desc: "Solar is one of the most competitive niches for SEO \u2014 but most solar companies are doing link building wrong. Here's what the top-ranking installers and ma" },
 };
 
 // v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
@@ -1649,11 +1649,11 @@ export default {
     // scrapers together with search bots — the configuration is correct as-is.
     // Fall through to env.ASSETS.fetch() below to serve the static file unchanged.
 
-    // v27: 301 redirect for homepage ?ref= variants → clean canonical URL.
-    // /?ref=launchnest, /?ref=producthunt, /?ref=logit.show etc. are how external
-    // listing platforms link to this site. Ahrefs crawls them as separate pages and
-    // flags them as orphans (no internal links). Redirect to / to consolidate.
-    if (url.pathname === "/" && url.searchParams.has("ref") && request.method === "GET") {
+    // 301 redirect for homepage tracking parameter variants → clean canonical URL.
+    // /?ref=*, /?via=*, /?utm_source=* are how external listing platforms link to
+    // this site. Ahrefs crawls them as separate orphan pages. Redirect to / to consolidate.
+    if (url.pathname === "/" && request.method === "GET" &&
+        (url.searchParams.has("ref") || url.searchParams.has("via") || url.searchParams.has("utm_source"))) {
       return new Response(null, {
         status: 301,
         headers: {
@@ -1723,12 +1723,12 @@ export default {
               bodyText = bodyText
                 .replace(/<!-- CTA -->/, fiverrBanner + '\n<!-- CTA -->')
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts ($70–$250), B2B lead lists ($75/100), SEO content ($45/1,000 words). Solar, electrical &amp; automation niches. Real sites, real traffic.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
             }
             // v33: fix homepage meta description (was 208 chars — over 155-char limit)
             if (normPath === "/") {
               bodyText = bodyText
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Niche guest posts, B2B lead lists &amp; SEO content for Solar, Electrical, Automation &amp; Electronics. Free Windows prospecting tool included.">')
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">')
                 // v44: LaunchIgniter badge after Product Hunt in AS FEATURED ON section
                 .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a>$2');
             }

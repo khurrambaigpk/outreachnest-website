@@ -1,91 +1,6 @@
-// Cloudflare Worker entry point — runs on Cloudflare's edge, source never sent to visitors.
-// wrangler.toml's `run_worker_first` makes THIS script run for the admin panel paths AND the new
-// /api/activate endpoint before Cloudflare's normal static-file serving kicks in; every other page
-// on the site bypasses this file entirely and is served exactly as before, unchanged.
-//
-// v2 (27 Aug 2026) — replaced HTTP Basic Auth with a proper session-cookie login.
-// v3 (27 Aug 2026) — SESSION_MAX_AGE_SECONDS cap + admin.html pagehide logout beacon.
-// v4 (27 Aug 2026) — added the automated free-trial activation system (/api/activate):
-// v33 (28 Sep 2026) — Three SEO fixes from comprehensive audit:
-//   (a) og:type corrected to "article" on all blog post pages — was "website" (inherited
-//       from static post.html template). injectPostMeta() now explicitly sets
-//       og:type=article, fixing social previews and Google article eligibility.
-//   (b) Homepage meta description shortened from 208 → 133 chars (was over 155-char limit).
-//       Added override in HTML_PAGES caching block (same pattern as /services fix in v25).
-//   (c) /blog title shortened from 73 → 54 chars and desc from 164 → 141 chars.
-//       Both were over search-engine display limits. Overrides injected at cache time.
-// v14 (11 Sep 2026) — Extended edge caching to ALL static HTML pages (/blog, /download,
-//   /services, /niches, /contact) — not just /. Fixes "Slow page" and "Slow server
-//   response for AI crawlers" Ahrefs warnings on /blog and other static pages.
-// v13 (11 Sep 2026) — Added IndexNow key file endpoint (/1257f0fc794749fa896e8d3c4e1af272.txt)
-//   so search engines can verify ownership and accept IndexNow URL submissions for this site.
-// v12 (11 Sep 2026) — Added edge caching for homepage (/) to fix "Slow page" Ahrefs
-//   warning. Homepage previously passed straight through to env.ASSETS with no edge
-//   caching, causing ~2.3s TTFB on Worker cold starts. Now uses the same caches.default
-//   pattern already in use for blog posts (s-maxage=86400, max-age=3600).
-// v11 (11 Sep 2026) — Added "image" field to BlogPosting JSON-LD schema (was missing,
-//   causing Google Rich Results "non-critical issue"). Uses the same OG_IMAGE constant
-//   already used for og:image and twitter:image tags — no per-post change needed.
-// v10 (11 Sep 2026) — Fixed BlogPosting JSON-LD: removed escHtml() from JSON values (was
-//   producing &amp; instead of & for titles like "PLC & SCADA", causing structured data
-//   validation errors). Added XSS protection via unicode escapes on JSON output instead.
-//   Added noindex meta tag to admin login page and activate page.
-//   Problem this solves: the free trial previously required Mariyam to manually generate and
-//   send a license key by hand (up to 24hr wait) — this was identified as a major reason people
-//   who download the trial never actually activate it and try the product.
-//   Design constraints (explicit, from the business owner):
-//     1. A key must NEVER be issued without a real, verified Gumroad purchase first — this
-//        endpoint calls Gumroad's own License Verification API (server-side, using the secret-free
-//        public verify endpoint) and refuses to generate anything unless Gumroad confirms the
-//        submitted license key is real, unused for a DIFFERENT machine, and not refunded/disputed/
-//        chargebacked.
-//     2. Must be resistant to abuse/hacking:
-//        - Per-IP rate limiting (Workers KV) — throttles automated key-farming attempts.
-//        - Strict input validation (regex) on both license_key and hwid before they touch any
-//          logic — rejects malformed/injection-shaped input immediately.
-//        - One Gumroad license key can only ever be bound to ONE machine (HWID) — enforced via a
-//          KV lookup; a second machine trying to reuse someone else's purchased key is rejected.
-//        - The generated activation key format/signature is byte-identical to the existing
-//          Windows app's own offline `_verify_key()` logic (same HMAC-SHA256 secret + Base32
-//          encoding) — nothing about the app itself changes, and the underlying
-//          `_LICENSE_SECRET` exposure inside the distributed .exe (a pre-existing condition, not
-//          introduced by this change) is unchanged and was intentionally left out of this task's
-//          scope (a separate, bigger future project would be required to fix that at the source).
-//        - ONE FREE TRIAL PER PC, EVER — not just "one trial per license key". Without this, someone
-//          could claim a fresh $0 Gumroad checkout (a new email each time) and keep re-activating
-//          unlimited free trials on the same machine by uninstalling/reinstalling. A KV record
-//          (`trial_used:<HWID>`) remembers which license_key first claimed the trial on each PC;
-//          a second, different license_key trying to claim another trial on that same PC is
-//          rejected and pointed to the paid plans (Monthly/Half-Yearly/Annual, still handled
-//          manually via WhatsApp payment-proof, unchanged) instead of getting a free key. The
-//          SAME license_key reinstalling on the SAME PC still works exactly as before (idempotent).
-// v5 (Sep 2026) — server-side per-post meta injection for /post?p=SLUG:
-// v6 (Sep 2026) — shortened 9 too-long post titles (under 60 chars total);
-//   server-side per-post meta injection already fixed duplicate-title/description errors.
-// v7 (Sep 2026) — removed server-side hidden <h1> injection (was causing Ahrefs
-//   "Multiple H1 tags" error on all 22 post pages). The injection was added under the
-//   mistaken assumption that post.html has no static H1 — it does: line 77 has
-//   <h1 id="aTitle"></h1> which JavaScript fills with the post title. The hidden
-//   off-screen H1 was therefore a second duplicate H1, counted by Ahrefs even though
-//   invisible to users. Removing it leaves exactly one H1 per post page.
-// v10 (Sep 2026) — IndexNow ping on publish: after every successful admin-panel post,
-//   the new post URL is submitted to api.indexnow.org (fire-and-forget, never blocks
-//   the publish response). Bing, Yandex, and any IndexNow-compatible engine receive
-//   the URL within seconds instead of waiting for their next crawl cycle.
-// v9 (Sep 2026) — fixed 3 POSTS_META titles still >60 chars and 3 descs still >155 chars
-//   (longi vs canadian solar title, string inverter title, niche relevance title,
-//    guest post vs pbn desc, da/dr/traffic desc, b2b lead list desc)
-// v8 (Sep 2026) — three Ahrefs errors fixed in one pass:
-//   (a) Added 5 slugs that were in sitemap.xml but missing from POSTS_META
-//       (solar-guest-post-cost-2026, signs-guest-post-site-hurt-rankings,
-//        electrical-contractor-seo-backlinks, vet-electronics-repair-guest-post-site,
-//        guest-posting-vs-pbn-links-difference). Without entries here the worker
-//       served the unmodified template whose canonical is /post, causing
-//       "Non-canonical page in sitemap (5 pages)" in Ahrefs.
-//   (b) injectPostMeta() now injects/replaces JSON-LD with a BlogPosting schema —
-//       fixes "Structured data validation error" (post pages had Organization schema).
-//   (c) Unknown-slug branch now adds noindex to the response, so the generic /post
-//       URL is not counted as an indexable page — fixes "Indexable page not in sitemap".
+// Cloudflare Worker — getoutreachnest.com
+// Handles: admin panel, /api/activate, /api/databank-config, blog post meta injection,
+// SEO redirects, edge caching, IndexNow pings, GitHub publishing.
 
 const ADMIN_USER = "mariyam";
 // ⚠️  ADMIN_PASS and SESSION_SECRET are loaded from Cloudflare Secrets at request
@@ -145,7 +60,7 @@ const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 // title: the post's unique page title (the " — OutreachNest" suffix is appended automatically).
 // desc:  the meta description (keep under 160 chars for Ahrefs/Google).
 const POSTS_META = {
-  // v19: All 27 titles & descriptions rewritten to match real search queries.
+  All 27 titles & descriptions rewritten to match real search queries.
   // Primary keyword placed early in title; secondary keywords in description.
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
     title: "Why Cold Outreach Fails: Mistakes Nobody Talks About",
@@ -235,7 +150,7 @@ const POSTS_META = {
     title: "Link Building Quality vs Quantity: Which Wins?",
     desc: "100 weak links won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality that moves rankings.",
   },
-  // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
+  added 5 slugs that were in sitemap.xml but missing from POSTS_META —
   // without entries here the worker serves the unmodified template whose canonical
   // is /post (not /post?p=SLUG), causing "Non-canonical page in sitemap" in Ahrefs.
   "solar-guest-post-cost-2026": {
@@ -258,7 +173,7 @@ const POSTS_META = {
     title: "Guest Posting vs PBN Links: What's the Real Difference?",
     desc: "Both place links on external sites, but risks and long-term results differ completely. Here's what actually separates a real guest post from a PBN link.",
   },
-  // v28: 8 missing September 2026 slugs added — these were in posts.js but absent
+  8 missing September 2026 slugs added — these were in posts.js but absent
   // from POSTS_META so the Worker was serving noindex for all of them.
   "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": {
     title: "Longi vs Canadian Solar vs Jinko: Solar Brand Comparison",
@@ -299,64 +214,7 @@ const POSTS_META = {
   "link-building-solar-companies-guide": { title: "Link Building for Solar Companies: What Actually Works in 2026", desc: "Solar is one of the most competitive niches for SEO \u2014 but most solar companies are doing link building wrong. Here's what the top-ranking installers and ma" },
 };
 
-// v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"
-//   warning. External platforms (LaunchNest, ProductHunt, etc.) link to the homepage
-//   with a ?ref= tracking parameter. Ahrefs crawls these as separate pages and flags
-//   them as orphans (no internal links point to /?ref=launchnest etc.). Since the
-//   homepage canonical already covers these variants, redirecting to the clean URL
-//   consolidates them and removes the Ahrefs warning without breaking any functionality.
-// v26 (15 Sep 2026) — Fix JSON-LD injection for main pages: add CACHE_VERSION to the
-//   Workers caches.default key. "Purge Everything" in the Cloudflare dashboard clears the
-//   CDN cache but NOT the Workers Cache API (caches.default). v25 was deployed but its
-//   injection code never ran because caches.default still held v24's unmodified HTML
-//   cached under the plain URL key. Adding ?_cv=v26 to the cache key causes a miss on
-//   first request, the injection runs, and the fresh v26 HTML is stored. Next version:
-//   just bump CACHE_VERSION → automatic cache bust with no manual purge needed.
-// v25 (15 Sep 2026) — JSON-LD structured data for all 6 main static pages.
-//   Previously the Worker served /, /blog, /download, /services, /niches, /contact
-//   as-is from env.ASSETS with only a caching header added — no HTML modification.
-//   This left all 6 pages with zero structured data, which Ahrefs flags as
-//   "Missing structured data". v25 reads the HTML as text, injects a page-specific
-//   JSON-LD <script> before </head>, then caches and returns the modified HTML.
-//   Schemas added:
-//     /               → WebSite + Organization (enables sitelinks searchbox, knowledge graph)
-//     /download       → SoftwareApplication (enables "Free" badge + OS in Google results)
-//     /services       → WebPage + ItemList of service offerings
-//     /blog           → Blog schema
-//     /niches         → WebPage
-//     /contact        → ContactPage
-//   Also fixes Services page title ("Services — OutreachNest" → "Guest Posts, B2B Lead
-//   Lists & Content Writing — OutreachNest") and meta description (was too short/generic).
-//   The PAGE_SCHEMAS constant (module-level) holds all 6 serialized JSON-LD strings with
-//   XSS-safe unicode escapes on < and > — same approach as BlogPosting schema.
-// v24 (15 Sep 2026) — Dynamic sitemap.xml + internal-link "Read Next" section.
-//   (a) /sitemap.xml now generated by the Worker from POSTS_META instead of being
-//       a static file. Static file was missing/stale → GSC showed "invalid sitemap".
-//       Generated on-the-fly so every new slug in POSTS_META appears automatically.
-//       Served with a 24-hour edge cache.
-//   (b) "Read Next" section injected before </body> on every post page — adds 2-3
-//       dofollow internal links per post. Fixes Ahrefs "Page has only one dofollow
-//       incoming internal link" warning on all 27 blog post pages.
-//   Note: /robots.txt is NOT overridden here. The static robots.txt already correctly
-//   allows AI search bots (GPTBot, ClaudeBot, PerplexityBot, etc.) and blocks only
-//   training scrapers (CCBot, Bytespider, Amazonbot). Ahrefs warns about training
-//   scrapers being blocked — that is intentional and correct, not a bug.
-// v23 (15 Sep 2026) — Non-blocking cache writes via ctx.waitUntil() to cut TTFB.
-//   Both handlePostPage and the HTML_PAGES block were doing `await cache.put()`
-//   BEFORE returning the response — forcing every cold-cache request to wait for
-//   the edge-cache write to finish before the first byte was sent. Switching to
-//   ctx.waitUntil(cache.put()) fires the write in the background and returns the
-//   response immediately. This shaves 200-400ms off TTFB on first-hit requests
-//   (the ones Ahrefs flags as slow). Cache hits are unchanged (fast as before).
-// v22 (15 Sep 2026) — Added datePublished & dateModified to BlogPosting JSON-LD schema.
-//   Google Rich Results requires datePublished for Article/BlogPosting rich results.
-//   All 27 posts now include schema dates (fallback: SITE_PUB_DATE = 2026-09-01).
-//   Fixes "Structured data has Google rich results validation error" in Ahrefs.
-// v19 (Sep 2026) — Keyword-optimized titles & descriptions for all 27 posts.
-// Every title now targets a real search query (keyword-first); descriptions
-// include secondary keywords. No structural changes — only POSTS_META strings updated.
-
-// v15: 301 redirects for 8 truncated slugs that Google already indexed.
+// 301 redirects for 8 truncated slugs that Google already indexed.
 // Old URLs (cut off at 50 chars by a previous tooling bug) permanently redirect
 // to clean canonical slugs. POSTS_META keys updated to use the clean slugs.
 const SLUG_REDIRECTS = {
@@ -374,7 +232,7 @@ const OG_IMAGE = "https://public-files.gumroad.com/k51jvr84ph0hpd9lr2lghnpl7pl6"
 const SITE_PUB_DATE = "2026-09-01";
 
 
-// v28: Convert "Month YYYY" post dates to ISO YYYY-MM-01 for per-post schema dates.
+// Convert "Month YYYY" post dates to ISO YYYY-MM-01 for per-post schema dates.
 // Falls back to SITE_PUB_DATE if the date string is missing or unrecognised.
 function postDateToISO(dateStr) {
   var MONTHS = {
@@ -386,9 +244,9 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v45"; // v45: trailing slash 301 redirect (/blog/slug/ → /blog/slug) // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes
+const CACHE_VERSION = "v45";
 
-// v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
+Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
 // "Page has only one dofollow incoming internal link" on 27 blog post pages.
 // Each entry distributes link equity across the cluster, not just from /blog.
@@ -458,7 +316,7 @@ const RELATED_POSTS = {
   "link-building-solar-companies-guide": ["solar-niche-goldmine", "guest-post-outreach-email-templates-2026", "how-to-price-guest-posts-2026"],
 };
 
-// v25: JSON-LD schemas for each of the 6 main static pages.
+JSON-LD schemas for each of the 6 main static pages.
 // Injected server-side before </head> — same XSS-safe unicode-escape approach
 // as BlogPosting schema. Fixes Ahrefs "Missing structured data" on all main pages.
 const PAGE_SCHEMAS = {
@@ -665,7 +523,7 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug, postDate) {
     out = out.replace(/<\/head>/i, inject + "\n</head>");
   }
 
-  // v24: inject "Read Next" related-posts section before </body>.
+  inject "Read Next" related-posts section before </body>.
   // Adds 2-3 dofollow internal links per post — fixes Ahrefs "Page has only one
   // dofollow incoming internal link" warning on all 27 blog post pages.
   if (slug) {
@@ -701,7 +559,7 @@ async function handlePostPage(request, env, ctx, slug) {
   }
 
   let html = await assetResp.text();
-  // v41: base href so CSS/JS loads correctly from /blog/slug path
+  base href so CSS/JS loads correctly from /blog/slug path
   if (!html.includes('<base ')) {
     html = html.replace('<head>', '<head>\n<base href="/">');
   }
@@ -1412,7 +1270,7 @@ export default {
 
     const url = new URL(request.url);
 
-    // v41: redirect .html duplicates to clean canonical URLs
+    redirect .html duplicates to clean canonical URLs
     if (url.pathname === "/blog.html") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
     if (url.pathname === "/services.html") { return Response.redirect("https://getoutreachnest.com/services", 301); }
     if (url.pathname === "/niches.html") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
@@ -1501,7 +1359,7 @@ export default {
     // this intercepts the request and returns a version with correct values
     // injected for the specific slug before any JavaScript runs, so Ahrefs,
     // Google, and all social OG bots see unique metadata per post.
-    // v28: 301 redirect /post.html → /post to eliminate the duplicate-URL issue.
+    301 redirect /post.html → /post to eliminate the duplicate-URL issue.
     // /post.html and /post serve identical content; having both indexable creates
     // canonical ambiguity. Redirect to the clean canonical form.
     
@@ -1533,7 +1391,7 @@ export default {
     }
 
     if (url.pathname === "/post.html") {
-      // v41: Direct redirect to canonical /blog/slug (skip double-hop via /post)
+      Direct redirect to canonical /blog/slug (skip double-hop via /post)
       const slug = url.searchParams.get("p");
       if (slug) {
         return Response.redirect("https://getoutreachnest.com/blog/" + slug, 301);
@@ -1541,7 +1399,7 @@ export default {
       return Response.redirect("https://getoutreachnest.com/blog", 301);
     }
 
-    // v41: /blog/slug → canonical article page
+    /blog/slug → canonical article page
     // Trailing slash redirect: /blog/slug/ → /blog/slug
     if (url.pathname.match(/^\/blog\/[a-z0-9][a-z0-9-]{2,100}\/$/) ) {
       return Response.redirect("https://getoutreachnest.com" + url.pathname.slice(0, -1), 301);
@@ -1562,7 +1420,7 @@ export default {
             301
           );
         }
-        // v41: permanent redirect to canonical /blog/slug
+        permanent redirect to canonical /blog/slug
         return Response.redirect("https://getoutreachnest.com/blog/" + slug, 301);
       }
       // /post with no ?p= param — serve the template with noindex so the bare
@@ -1588,7 +1446,7 @@ export default {
       });
     }
 
-    // v24: Dynamic sitemap.xml — generated from POSTS_META so it is always in sync.
+    Dynamic sitemap.xml — generated from POSTS_META so it is always in sync.
     // GSC "invalid sitemap" was caused by the static sitemap.xml file being missing
     // or outdated. Now the Worker generates it on the fly from the canonical list.
     if (url.pathname === "/sitemap.xml") {
@@ -1603,7 +1461,7 @@ export default {
         { loc: `${BASE}/niches`,   lastmod: today,         priority: "0.8", changefreq: "monthly" },
         { loc: `${BASE}/contact`,  lastmod: today,         priority: "0.7", changefreq: "monthly" },
       ];
-      // v28: per-post lastmod from posts-data.json; fall back to SITE_PUB_DATE
+      per-post lastmod from posts-data.json; fall back to SITE_PUB_DATE
       let postDatesMap = {};
       try {
         const pdResp = await env.ASSETS.fetch(
@@ -1649,7 +1507,7 @@ export default {
     // scrapers together with search bots — the configuration is correct as-is.
     // Fall through to env.ASSETS.fetch() below to serve the static file unchanged.
 
-    // v27: 301 redirect for homepage ?ref= variants → clean canonical URL.
+    301 redirect for homepage ?ref= variants → clean canonical URL.
     // /?ref=launchnest, /?ref=producthunt, /?ref=logit.show etc. are how external
     // listing platforms link to this site. Ahrefs crawls them as separate pages and
     // flags them as orphans (no internal links). Redirect to / to consolidate.
@@ -1667,7 +1525,7 @@ export default {
     if(url.pathname==='/admin/forgot'){if(request.method==='GET')return new Response(forgotPageHtml(),{headers:{'Content-Type':'text/html; charset=UTF-8'}});if(request.method==='POST'){const tok=await generateRecoveryToken();try{await env.LICENSE_KV.put('admin_recovery_token',tok,{expirationTtl:900});}catch(e){}const sent=await sendRecoveryEmail(tok,request);return new Response(recoveryConfirmHtml(sent),{headers:{'Content-Type':'text/html; charset=UTF-8'}});}}
     if(url.pathname==='/admin/recover'){const tok=url.searchParams.get('token')||'';if(!tok)return Response.redirect('/admin',302);let valid=false;try{const stored=await env.LICENSE_KV.get('admin_recovery_token');if(stored&&stored===tok){valid=await verifyRecoveryToken(tok);if(valid)await env.LICENSE_KV.delete('admin_recovery_token');}}catch(e){}if(!valid)return new Response(invalidTokenHtml(),{headers:{'Content-Type':'text/html; charset=UTF-8'}});const st=await makeSessionToken();return new Response(null,{status:302,headers:{Location:'/admin','Set-Cookie':`${COOKIE_NAME}=${st}; Path=/; HttpOnly; Secure; SameSite=Lax`}});}
 
-    // v45: trailing slash redirect — /blog/slug/ → /blog/slug (301)
+    trailing slash redirect — /blog/slug/ → /blog/slug (301)
     // Cloudflare Pages does NOT strip trailing slashes automatically when a Worker
     // is in front. Any link or bookmark with a trailing slash returns 404 instead
     // of the post. This catch-all redirect fixes it for all paths site-wide.
@@ -1693,7 +1551,7 @@ export default {
       const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact"]);
       if (HTML_PAGES.has(url.pathname) && request.method === "GET") {
         const cache = caches.default;
-        // v26: include CACHE_VERSION in the key so bumping the version busts the Workers cache.
+        include CACHE_VERSION in the key so bumping the version busts the Workers cache.
         // caches.default is NOT cleared by "Purge Everything" in the Cloudflare dashboard —
         // it's a separate Workers Cache API store. Without this, re-deploying a new worker version
         // that modifies HTML leaves the old cached HTML in place until its TTL expires (24h).
@@ -1704,20 +1562,20 @@ export default {
         if (cached) return cached;
         const resp = await env.ASSETS.fetch(request);
         if (resp.ok) {
-          // v25: inject JSON-LD schema for each main page.
+          inject JSON-LD schema for each main page.
           // Normalize /index.html → / for schema lookup; all other paths are canonical.
           const normPath = url.pathname === "/index.html" ? "/" : url.pathname;
           const schema = PAGE_SCHEMAS[normPath];
           let bodyText = await resp.text();
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
-            // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours
+            strip ALL existing JSON-LD blocks (global g flag), then insert ours
             // before </head>. The old single-replace + !== comparison was fragile —
             // if the regex failed to match (or matched but produced the same string
             // length by coincidence), the fallback path produced a double-schema page.
             bodyText = bodyText.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>\n?/gi, '');
             bodyText = bodyText.replace(/<\/head>/i, schemaTag + "\n</head>");
-            // v25: also fix Services page title and meta description (too generic in static HTML)
+            also fix Services page title and meta description (too generic in static HTML)
             if (normPath === "/services") {
               const fiverrBanner = `\n<!-- Fiverr Banner -->\n<section style="padding:20px 0 0"><div class="wrap" style="text-align:center"><div style="display:inline-flex;align-items:center;gap:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:14px 24px;flex-wrap:wrap;justify-content:center"><span style="font-size:15px;color:var(--muted)">Need a single blog post?</span><a href="https://www.fiverr.com/s/VrYj9jx" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:#1dbf73;color:#fff;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none">🛒 Order on Fiverr — from $15</a></div></div></section>`;
               bodyText = bodyText
@@ -1725,21 +1583,21 @@ export default {
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
             }
-            // v33: fix homepage meta description (was 208 chars — over 155-char limit)
+            fix homepage meta description (was 208 chars — over 155-char limit)
             if (normPath === "/") {
               bodyText = bodyText
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">')
-                // v44: LaunchIgniter badge after Product Hunt in AS FEATURED ON section
+                LaunchIgniter badge after Product Hunt in AS FEATURED ON section
                 .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a>$2');
             }
-            // v44: LaunchIgniter badge on /download — inject before footer
+            LaunchIgniter badge on /download — inject before footer
             if (normPath === "/download") {
               bodyText = bodyText.replace(
                 '<div id="footer-holder">',
                 '<section style="padding:16px 0;text-align:center"><a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a></section><div id="footer-holder">'
               );
             }
-            // v33: fix /blog title (73 chars) and meta description (164 chars) — both over limit
+            fix /blog title (73 chars) and meta description (164 chars) — both over limit
             if (normPath === "/blog") {
               bodyText = bodyText
                 .replace(/<title>[^<]*<\/title>/i, "<title>SEO, Link Building &amp; Guest Posting Blog — OutreachNest</title>")
@@ -1753,7 +1611,7 @@ export default {
               "Cache-Control": "public, max-age=3600, s-maxage=86400",
             },
           });
-          // v23: non-blocking cache write — return immediately, write in background
+          non-blocking cache write — return immediately, write in background
           ctx.waitUntil(cache.put(cacheKey, toCache.clone()));
           return toCache;
         }

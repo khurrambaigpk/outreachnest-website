@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v47"; // v47: /download schema updated to 7-day trial (no sign-up); download.html auto-trial copy update // v46: title+desc fixes for 8 posts // v45: trailing slash 301 redirect
+const CACHE_VERSION = "v48"; // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial (no sign-up) // v46: title+desc fixes for 8 posts
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1483,6 +1483,45 @@ export default {
     // Also handle direct .html access without redirect loop
     if (url.pathname === "/databank.html" || url.pathname === "/databank-admin.html") {
       return env.ASSETS.fetch(request);
+    }
+
+    // POST /api/track-download — simple download click counter stored in KV
+    if (url.pathname === "/api/track-download" && request.method === "POST") {
+      try {
+        const body = await request.json().catch(() => ({}));
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const key = `dl_count_${today}`;
+        const existing = parseInt(await env.ON_KV.get(key) || "0");
+        await env.ON_KV.put(key, String(existing + 1), { expirationTtl: 60 * 60 * 24 * 90 }); // 90 days
+        return new Response(JSON.stringify({ ok: true, count: existing + 1, date: today }), {
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        });
+      } catch(e) {
+        return new Response(JSON.stringify({ ok: false }), { status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    }
+
+    // GET /api/track-download — see total counts (admin use)
+    if (url.pathname === "/api/track-download" && request.method === "GET") {
+      try {
+        const { keys } = await env.ON_KV.list({ prefix: "dl_count_" });
+        const counts = {};
+        let total = 0;
+        for (const k of keys) {
+          const val = parseInt(await env.ON_KV.get(k.name) || "0");
+          counts[k.name.replace("dl_count_", "")] = val;
+          total += val;
+        }
+        return new Response(JSON.stringify({ ok: true, total, daily: counts }), {
+          headers: { "Content-Type": "application/json" }
+        });
+      } catch(e) {
+        return new Response(JSON.stringify({ ok: false }), { status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
     }
 
     if (url.pathname === "/api/activate") {

@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v46"; // v45: trailing slash 301 redirect (/blog/slug/ → /blog/slug) // v44: LaunchIgniter badge on homepage + download // v41: complete /blog/slug migration + all SEO fixes
+const CACHE_VERSION = "v47"; // v47: /download schema updated to 7-day trial (no sign-up); download.html auto-trial copy update // v46: title+desc fixes for 8 posts // v45: trailing slash 301 redirect
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -483,9 +483,9 @@ const PAGE_SCHEMAS = {
   "/download": JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Download OutreachNest Finder — Free 3-Day Trial",
+    "name": "Download OutreachNest Finder — Free 7-Day Trial",
     "url": "https://getoutreachnest.com/download",
-    "description": "Download OutreachNest Finder for Windows and start the 3-day free trial. Find SEO prospects, check DA, PA and DR, extract emails and export prospect data.",
+    "description": "Download OutreachNest Finder for Windows and start the 7-day free trial automatically — no sign-up needed. Find SEO prospects, check DA, PA and DR, extract emails and export prospect data.",
     "about": {
       "@type": "Thing",
       "name": "OutreachNest Finder"

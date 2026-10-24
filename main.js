@@ -96,6 +96,20 @@ function injectShared(active){
   });
   document.querySelectorAll('[data-download]').forEach(el=>{
     if(el.tagName==='A') el.href = DOWNLOAD_URL;
+    el.addEventListener('click', function(){
+      // Track download clicks
+      try {
+        // Ahrefs custom event
+        if(window.ahrefs) window.ahrefs.track('download_click', { version: 'V12.19.33', type: 'free_trial' });
+      } catch(e){}
+      try {
+        // Fallback: send to our own worker for counting
+        fetch('/api/track-download', { method: 'POST', keepalive: true,
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ event: 'download_click', version: 'V12.19.33', ts: Date.now() })
+        }).catch(()=>{});
+      } catch(e){}
+    });
   });
   document.querySelectorAll('[data-price]').forEach(el=>{
     const key = el.getAttribute('data-price');

@@ -2,11 +2,11 @@
 const EMAIL = "queries@getoutreachnest.com";
 const WHATSAPP = "923006321406"; // international format, no +
 const ADDRESS = "Multan, Punjab Pakistan";
-const DOWNLOAD_URL = "https://mariyamk5.gumroad.com/l/outreachnest-finder?price=0";
+const DOWNLOAD_URL = "https://github.com/khurrambaigpk/Outreachnest-releases/releases/download/v12.19.33/Setup_OutreachNestFinder_V12.19.33.exe";
 
 // Prices — change here to update all pages
 const PRICES = {
-  trial: { label: "Free Trial", price: "FREE", dur: "3 Days", days: 3 },
+  trial: { label: "Free Trial", price: "FREE", dur: "7 Days", days: 7 },
   monthly: { label: "Monthly", price: "$15", dur: "30 Days", days: 30 },
   halfyear: { label: "6-Month", price: "$29", dur: "180 Days", days: 180},
   annual: { label: "Annual", price: "$49", dur: "365 Days", days: 365},

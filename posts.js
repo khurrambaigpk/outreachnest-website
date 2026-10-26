@@ -61,7 +61,7 @@ content:`<h3>Why Guest Post Pricing Makes No Sense at First Glance</h3>
 {
 slug:"outreachnest-finder-vs-manual-prospecting",
 cat:"SEO & Tools", cover:"g2", icon:"\ud83d\udd0d",
-title:"OutreachNest Finder vs Manual Prospecting",
+title:"OutreachNest Finder vs Manual Prospecting: Which Wins for SEO Lead Gen?",
 author:"OutreachNest", date:"September 2026", read:"5 min read",
 excerpt:"Manual prospecting vs OutreachNest Finder: an honest look at where each wins and when to switch.",
 content:`<h3>Why We're Writing This</h3>
@@ -644,9 +644,9 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"finding-electronics-appliance-repair-businesses",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"Find Electronics Repair Businesses for Outreach",
+    title:"How to Find Electronics & Appliance Repair Businesses for Outreach",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
-    excerpt:"Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale — with verified contact info and SEO metrics.",
+    excerpt:"Build targeted lists of consumer electronics repair shops — TV, laptop, mobile, UPS, and CCTV — across cities at scale, with verified contact info and SEO metrics.",
     content:`<p>Electronics and appliance repair shops don't show up on the same directories as solar companies or IT firms. They're scattered across Google Maps, local business directories, niche forums, and sometimes nothing more than a Facebook page — which makes finding them a research exercise in itself. If you're trying to reach these businesses for outreach, partnerships, or link-building, here's what actually works.</p>
 <h2>Search the categories separately, not all at once</h2>
 <p>The electronics repair space splits into distinct sub-niches: appliance repair (washing machines, refrigerators, ovens), TV repair, laptop and mobile repair, UPS and inverter repair, CCTV repair, and electronics parts suppliers. Each type has its own terminology and its own corner of the web. Searching "electronics repair businesses" in bulk gives you noise. Searching "TV repair shops in [city]" gives you the people you're actually looking for.</p>
@@ -973,9 +973,9 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electrical-contractors-online-growth",
     cat:"Electrical", cover:"g4", icon:"⚡",
-    title:"Electrical Contractors: An Underrated Niche",
+    title:"Why Electrical Contractors Are an Underrated Online Marketing Niche",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
-    excerpt:"Electrical contractors form one of the largest, most stable B2B markets — and most of them are barely visible online.",
+    excerpt:"Electrical contractors form one of the largest, most stable B2B markets — and most of them are barely visible online. Here's the opportunity for marketers.",
     content:`<p>Electrical contracting is a huge, steady industry, yet a surprising number of these businesses have almost no online presence beyond a basic listing. That gap is both a challenge and an opportunity for anyone selling services, tools, or marketing to this market.</p>
     <h2>A market built on referrals</h2>
     <p>Most electrical contractors have historically grown through word of mouth and repeat commercial clients. That works, but it leaves them exposed when a new generation of buyers starts every search online. The contractors who build even a modest web presence tend to pull ahead quickly.</p>
@@ -1005,9 +1005,9 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electronics-repair-steady-demand",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"Electronics Repair Niche: Low Competition Win",
+    title:"Consumer Electronics Repair: A Low-Competition Outreach Niche Worth Targeting",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
-    excerpt:"Repair shops fly under the radar — but they're everywhere, always need new customers, and rarely have strong online competition.",
+    excerpt:"Consumer electronics repair shops fly under the radar — but they're everywhere, always need new customers, and rarely have strong online competition. Here's why this niche works.",
     content:`<p>Electronics and appliance repair rarely makes headlines, yet demand for it never really goes away. As long as people own devices and appliances, some of them will break, and someone needs to fix them. That steadiness makes repair a quietly reliable niche to work in.</p>
     <h2>Local trust drives the business</h2>
     <p>Repair customers overwhelmingly choose based on trust and convenience. A shop with strong local reviews and a reputation for honest pricing wins far more work than one relying on flashy advertising. That makes reputation and visibility the real battleground.</p>
@@ -1293,7 +1293,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"industrial-automation-seo-untapped-potential",
     cat:"Automation, SEO & Tools", cover:"g4", icon:"⚙️",
-    title:"Industrial Automation SEO: Untapped Potential",
+    title:"Industrial Automation SEO: Untapped Potential for B2B Link Building",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"PLC integrators, SCADA vendors, and panel builders rank on Google — but almost none have a real link building strategy.",
     content:`<p>Industrial automation is one of those niches where the businesses are real, the contracts are large, and the digital marketing is still stuck a decade behind. PLC integrators, SCADA system vendors, control panel builders, and industrial instrumentation companies often run websites that look like they were designed around 2014 — contact forms that may or may not work, no blog, no content strategy, and no backlinks beyond a few trade directories. For SEO professionals and link builders, that underdevelopment isn't a barrier. It's a structural opportunity.</p>

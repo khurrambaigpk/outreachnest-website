@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v48"; // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial (no sign-up) // v46: title+desc fixes for 8 posts
+const CACHE_VERSION = "v49"; // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1687,6 +1687,14 @@ export default {
     // no SEO value. Ahrefs "AI bots blocked" warning fires because it lumps training
     // scrapers together with search bots — the configuration is correct as-is.
     // Fall through to env.ASSETS.fetch() below to serve the static file unchanged.
+
+    // 301 redirect for /8443 → / (port number URL crawled by some bots)
+    if (url.pathname === "/8443") {
+      return new Response(null, {
+        status: 301,
+        headers: { "Location": "https://getoutreachnest.com/", "Cache-Control": "public, max-age=86400" },
+      });
+    }
 
     // 301 redirect for homepage tracking parameter variants → clean canonical URL.
     // /?ref=*, /?via=*, /?utm_source=* are how external listing platforms link to

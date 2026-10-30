@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v51"; // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
+const CACHE_VERSION = "v52"; // v52: explicit clean URL handler // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1418,6 +1418,24 @@ export default {
     if (url.pathname === "/niches.html") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
     if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
     if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
+
+    // V13.1: Explicit clean URL → .html file serving
+    // Must come BEFORE HTML_PAGES block and BEFORE env.ASSETS.fetch()
+    // This handles /download, /services, /niches, /contact, /blog
+    // when Cloudflare Assets cannot auto-map clean URLs to .html files
+    const CLEAN_URL_MAP = {
+      "/download": "download.html",
+      "/services": "services.html", 
+      "/niches": "niches.html",
+      "/contact": "contact.html",
+    };
+    if (CLEAN_URL_MAP[url.pathname] && request.method === "GET") {
+      const fileUrl = new URL(request.url);
+      fileUrl.pathname = "/" + CLEAN_URL_MAP[url.pathname];
+      fileUrl.search = "";
+      const fileResp = await env.ASSETS.fetch(new Request(fileUrl.toString(), {method: "GET"}));
+      if (fileResp.ok) return fileResp;
+    }
 
     // Databank config API — save/load settings server-side via KV
     // GET /api/databank-config — returns current config JSON

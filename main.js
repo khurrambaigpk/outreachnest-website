@@ -2,7 +2,7 @@
 const EMAIL = "queries@getoutreachnest.com";
 const WHATSAPP = "923006321406"; // international format, no +
 const ADDRESS = "Multan, Punjab Pakistan";
-const DOWNLOAD_URL = "https://github.com/khurrambaigpk/Outreachnest-releases/releases/download/v12.19.33/Setup_OutreachNestFinder_V12.19.33.exe";
+const DOWNLOAD_URL = "https://github.com/khurrambaigpk/Outreachnest-releases/releases/latest/download/Setup_OutreachNestFinder.exe";
 
 // Prices — change here to update all pages
 const PRICES = {
@@ -84,9 +84,6 @@ function injectShared(active){
   if(nh) nh.innerHTML = buildNav(active);
   if(fh) fh.innerHTML = buildFooter();
   document.querySelectorAll('[data-email]').forEach(el=>{
-    // Only replace text on empty, childless placeholders (e.g. <span data-email></span>).
-    // Elements that already have their own icon/children (e.g. the mail-pill button) or
-    // their own static label (e.g. "Get in touch →") must keep that content untouched.
     if(!el.children.length && !el.textContent.trim()) el.textContent = EMAIL;
     if(el.tagName==='A') el.href = "mailto:"+EMAIL;
   });
@@ -97,16 +94,13 @@ function injectShared(active){
   document.querySelectorAll('[data-download]').forEach(el=>{
     if(el.tagName==='A') el.href = DOWNLOAD_URL;
     el.addEventListener('click', function(){
-      // Track download clicks
       try {
-        // Ahrefs custom event
-        if(window.ahrefs) window.ahrefs.track('download_click', { version: 'V12.19.33', type: 'free_trial' });
+        if(window.ahrefs) window.ahrefs.track('download_click', { version: 'V13.1', type: 'free_trial' });
       } catch(e){}
       try {
-        // Fallback: send to our own worker for counting
         fetch('/api/track-download', { method: 'POST', keepalive: true,
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ event: 'download_click', version: 'V12.19.33', ts: Date.now() })
+          body: JSON.stringify({ event: 'download_click', version: 'V13.1', ts: Date.now() })
         }).catch(()=>{});
       } catch(e){}
     });

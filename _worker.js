@@ -386,7 +386,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v50"; // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
+const CACHE_VERSION = "v51"; // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning

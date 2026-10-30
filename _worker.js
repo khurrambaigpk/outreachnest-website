@@ -1469,6 +1469,21 @@ export default {
       return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Admin-Token" } });
     }
 
+    // V13.1 fix: explicitly serve static HTML pages that Workers may not
+    // auto-map to their .html counterparts when a Worker intercepts all requests.
+    const STATIC_PAGE_MAP = {
+      "/download": "/download.html",
+      "/services": "/services.html",
+      "/niches":   "/niches.html",
+      "/contact":  "/contact.html",
+      "/blog":     "/blog.html",
+    };
+    if (STATIC_PAGE_MAP[url.pathname] && request.method === "GET") {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = STATIC_PAGE_MAP[url.pathname];
+      return env.ASSETS.fetch(new Request(assetUrl.toString(), { method: "GET", headers: request.headers }));
+    }
+
     // Databank routes — serve .html files directly, no redirect loop
     if (url.pathname === "/databank" || url.pathname === "/databank/") {
       const assetUrl = new URL(request.url);

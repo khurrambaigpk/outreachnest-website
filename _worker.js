@@ -1469,21 +1469,6 @@ export default {
       return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Admin-Token" } });
     }
 
-    // V13.1 fix: explicitly serve static HTML pages that Workers may not
-    // auto-map to their .html counterparts when a Worker intercepts all requests.
-    const STATIC_PAGE_MAP = {
-      "/download": "/download.html",
-      "/services": "/services.html",
-      "/niches":   "/niches.html",
-      "/contact":  "/contact.html",
-      "/blog":     "/blog.html",
-    };
-    if (STATIC_PAGE_MAP[url.pathname] && request.method === "GET") {
-      const assetUrl = new URL(request.url);
-      assetUrl.pathname = STATIC_PAGE_MAP[url.pathname];
-      return env.ASSETS.fetch(new Request(assetUrl.toString(), { method: "GET", headers: request.headers }));
-    }
-
     // Databank routes — serve .html files directly, no redirect loop
     if (url.pathname === "/databank" || url.pathname === "/databank/") {
       const assetUrl = new URL(request.url);
@@ -1764,7 +1749,12 @@ export default {
         const cacheKey = new Request(versionedUrl.href, { method: "GET" });
         const cached = await cache.match(cacheKey);
         if (cached) return cached;
-        const resp = await env.ASSETS.fetch(request);
+        // V13.1: fetch .html file directly — avoids redirect loop
+        // (/download.html → /download → /download.html → 404)
+        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html"};
+        const _assetUrl = new URL(request.url);
+        _assetUrl.pathname = _HTML_MAP[url.pathname] || url.pathname;
+        const resp = await env.ASSETS.fetch(new Request(_assetUrl.toString(), {method:"GET",headers:request.headers}));
         if (resp.ok) {
           // v25: inject JSON-LD schema for each main page.
           // Normalize /index.html → / for schema lookup; all other paths are canonical.

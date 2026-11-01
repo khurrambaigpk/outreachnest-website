@@ -3,6 +3,9 @@ User-agent: *
 Allow: / 
 Disallow: /admin.html
 Disallow: /admin
+Disallow: /*?utm_*
+Disallow: /*?href=*
+Disallow: /*?ref=*
 
 # Allow AI-powered SEARCH bots (appear in AI-generated search results — good for SEO)
 User-agent: GPTBot

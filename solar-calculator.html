@@ -596,6 +596,44 @@ footer a{color:var(--leaf);text-decoration:none}
 
       <div class="app-grid" id="app-grid"></div>
 
+      <!-- BACKUP DURATION SELECTOR -->
+      <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:10px">⏱️ Battery Backup Duration</label>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:10px" id="backup-grid">
+          <button type="button" class="backup-btn" data-hrs="12" style="padding:8px 4px;border:2px solid var(--line);border-radius:9px;background:var(--card);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">🌙</div>12 hrs<div style="font-size:10px;color:var(--muted)">Half day</div>
+          </button>
+          <button type="button" class="backup-btn" data-hrs="18" style="padding:8px 4px;border:2px solid var(--line);border-radius:9px;background:var(--card);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">🕐</div>18 hrs<div style="font-size:10px;color:var(--muted)">Night</div>
+          </button>
+          <button type="button" class="backup-btn active-backup" data-hrs="36" style="padding:8px 4px;border:2px solid var(--leaf);border-radius:9px;background:var(--leaf-soft);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">☀️</div>36 hrs<div style="font-size:10px;color:var(--leaf)">1.5 days</div>
+          </button>
+          <button type="button" class="backup-btn" data-hrs="48" style="padding:8px 4px;border:2px solid var(--line);border-radius:9px;background:var(--card);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">📅</div>48 hrs<div style="font-size:10px;color:var(--muted)">2 days</div>
+          </button>
+          <button type="button" class="backup-btn" data-hrs="72" style="padding:8px 4px;border:2px solid var(--line);border-radius:9px;background:var(--card);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">🗓️</div>72 hrs<div style="font-size:10px;color:var(--muted)">3 days</div>
+          </button>
+          <button type="button" class="backup-btn" data-hrs="120" style="padding:8px 4px;border:2px solid var(--line);border-radius:9px;background:var(--card);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">📆</div>120 hrs<div style="font-size:10px;color:var(--muted)">5 days</div>
+          </button>
+          <button type="button" class="backup-btn" data-hrs="168" style="padding:8px 4px;border:2px solid var(--line);border-radius:9px;background:var(--card);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s">
+            <div style="font-size:16px">🏭</div>168 hrs<div style="font-size:10px;color:var(--muted)">7 days</div>
+          </button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:12px;color:var(--muted);white-space:nowrap">Custom:</label>
+          <input type="number" id="backup-custom" min="1" max="99999" value="36" 
+            style="width:70px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;background:var(--card);color:var(--ink)">
+          <span style="font-size:12px;color:var(--muted)">hours</span>
+          <span id="backup-days-label" style="font-size:12px;font-weight:600;color:var(--leaf)">= 1.5 days</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">
+          💡 Ghar ke liye: 18–36 hrs kaafi hai. Industrial/commercial: 72–168 hrs. Custom mein 1 hr se 99,999 hrs tak type kar sakte hain — koi limit nahi.
+        </div>
+      </div>
+
       <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
         <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">🔋 Battery Type — Kaun si battery use karein?</label>
         <select id="bat-type" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);cursor:pointer">
@@ -905,7 +943,11 @@ footer a{color:var(--leaf);text-decoration:none}
       var costStr = cost.low === cost.high
         ? fmtCost(cost.low, cost.sym)
         : fmtCost(cost.low, cost.sym) + ' – ' + fmtCost(cost.high, cost.sym);
-      costHtml = rr('Estimated system cost (' + cost.label + ')', costStr, '');
+      costHtml = rr('Estimated system cost (' + cost.label + ')', costStr, '')
+      + '<div style="font-size:11px;color:var(--muted);padding:6px 0 4px;line-height:1.5">'
+      + '<strong>Calculation basis:</strong> System size (kW) × cost per watt (' + cost.sym + cost.low + '–' + cost.sym + cost.high + '/W) = total installed cost (panels + inverter + labor + wiring).'
+      + '<br>Pakistan ke liye: ' + cost.sym + cost.low + '–' + cost.sym + cost.high + '/W rate market average hai (2026). Actual price brand, installer aur city ke hisaab se vary karta hai.'
+      + '</div>';
     }
 
     el.innerHTML = '<h2>Your Results</h2>'
@@ -1445,7 +1487,10 @@ footer a{color:var(--leaf);text-decoration:none}
     var batAhR  = parseFloat(batParts[2]) || 100;
     var batDoD  = parseFloat(batParts[3]) || 0.50;
     var batLife = batParts[4] || '4-6 yrs';
-    var energyNeeded = dayKwh * 1.5; // kWh
+    // Get backup hours from custom selector
+    var backupHrs = parseFloat(document.getElementById('backup-custom')?.value) || 36;
+    var backupDays = backupHrs / 24;
+    var energyNeeded = dayKwh * backupDays; // kWh
     var usablePerBat = (batV * batAhR * batDoD) / 1000; // kWh usable per battery
     var batCnt  = Math.ceil(energyNeeded / usablePerBat);
     var batAh   = batCnt * batAhR; // total Ah
@@ -1538,8 +1583,8 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Recommended system size', sysKw.toFixed(1), 'kW (incl. 25% buffer)')
       + rr('Solar panels ('+watt+'W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
-      + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
-      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed (1.5 days backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Pakistan ke liye suggestion:</strong> Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai — 10+ saal, koi maintenance nahi. Bigger DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Energy same rehti hai — battery type change karne se sirf <strong>battery count</strong> change hoti hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
+      + rr('Battery bank ('+backupDays.toFixed(1)+' days / '+backupHrs+'h backup)', batCnt, '× '+batLabel)
+      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed ('+backupDays.toFixed(1)+' days / '+backupHrs+'h backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Pakistan ke liye suggestion:</strong> Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai — 10+ saal, koi maintenance nahi. Bigger DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Energy same rehti hai — battery type change karne se sirf <strong>battery count</strong> change hoti hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
   });
 
   // Sync button
@@ -1579,6 +1624,53 @@ footer a{color:var(--leaf);text-decoration:none}
   }
 
 
+
+  // ── BACKUP DURATION SELECTOR ───────────────────────────────
+  var backupCustomInp = document.getElementById('backup-custom');
+  var backupDaysLbl   = document.getElementById('backup-days-label');
+
+  function updateBackupLabel() {
+    var hrs = parseFloat(backupCustomInp?.value) || 36;
+    var days = hrs / 24;
+    var label = days === Math.floor(days)
+      ? days + ' day' + (days===1?'':'s')
+      : days.toFixed(1) + ' days';
+    if (backupDaysLbl) backupDaysLbl.textContent = '= ' + label;
+  }
+
+  document.querySelectorAll('.backup-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var hrs = parseFloat(this.getAttribute('data-hrs'));
+      // Update custom input
+      if (backupCustomInp) backupCustomInp.value = hrs;
+      updateBackupLabel();
+      // Update button styles
+      document.querySelectorAll('.backup-btn').forEach(function(b) {
+        b.style.border = '2px solid var(--line)';
+        b.style.background = 'var(--card)';
+        b.querySelector('div:last-child').style.color = 'var(--muted)';
+      });
+      this.style.border = '2px solid var(--leaf)';
+      this.style.background = 'var(--leaf-soft)';
+      this.querySelector('div:last-child').style.color = 'var(--leaf)';
+    });
+  });
+
+  if (backupCustomInp) {
+    backupCustomInp.addEventListener('input', function() {
+      updateBackupLabel();
+      // Deselect all preset buttons if custom value
+      var val = parseFloat(this.value);
+      document.querySelectorAll('.backup-btn').forEach(function(b) {
+        var match = parseFloat(b.getAttribute('data-hrs')) === val;
+        b.style.border = match ? '2px solid var(--leaf)' : '2px solid var(--line)';
+        b.style.background = match ? 'var(--leaf-soft)' : 'var(--card)';
+        b.querySelector('div:last-child').style.color = match ? 'var(--leaf)' : 'var(--muted)';
+      });
+    });
+  }
+
+  updateBackupLabel(); // init
 
   // ── BATTERY DROPDOWN ─────────────────────────────────────
   var BAT_HINTS = {

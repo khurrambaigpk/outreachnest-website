@@ -1250,8 +1250,34 @@ footer a{color:var(--leaf);text-decoration:none}
       +bomTr('📦','IP65 Enclosure','Outdoor rated box','For CC & DC components', 1)
       +'</tbody></table>';
 
+    // Digital load display
+    var kw = (total/1000).toFixed(3);
+    var mw = (total/1000000).toFixed(6);
+    var loadDisplay = '<div style="background:linear-gradient(145deg,#0a0e1a,#111827);border-radius:14px;padding:16px 20px;border:2px solid #1e293b;box-shadow:0 0 0 1px #1e3a5f,0 8px 24px rgba(0,0,0,.4);margin-bottom:16px">'
+      + '<div style="font-size:9px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.25);font-family:Courier New,monospace;margin-bottom:10px">TOTAL LOAD SUMMARY</div>'
+      + '<div style="display:flex;gap:0;align-items:center;flex-wrap:wrap">'
+      + '<div style="flex:1;min-width:80px;text-align:center">'
+        + '<div style="font-size:8px;font-weight:700;letter-spacing:.14em;color:rgba(251,191,36,.55);font-family:Courier New,monospace;margin-bottom:3px">WATTS</div>'
+        + '<div style="font-family:Courier New,monospace;font-size:clamp(18px,3vw,28px);font-weight:700;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.5)">'+total+'</div>'
+        + '<div style="font-size:9px;color:rgba(251,191,36,.4);font-family:Courier New,monospace">W</div>'
+      + '</div>'
+      + '<div style="color:rgba(255,255,255,.08);font-size:24px;padding:0 6px;font-family:Courier New,monospace">|</div>'
+      + '<div style="flex:1;min-width:80px;text-align:center">'
+        + '<div style="font-size:8px;font-weight:700;letter-spacing:.14em;color:rgba(52,211,153,.55);font-family:Courier New,monospace;margin-bottom:3px">KILOWATTS</div>'
+        + '<div style="font-family:Courier New,monospace;font-size:clamp(18px,3vw,28px);font-weight:700;color:#34d399;text-shadow:0 0 10px rgba(52,211,153,.5)">'+kw+'</div>'
+        + '<div style="font-size:9px;color:rgba(52,211,153,.4);font-family:Courier New,monospace">kW</div>'
+      + '</div>'
+      + '<div style="color:rgba(255,255,255,.08);font-size:24px;padding:0 6px;font-family:Courier New,monospace">|</div>'
+      + '<div style="flex:1;min-width:80px;text-align:center">'
+        + '<div style="font-size:8px;font-weight:700;letter-spacing:.14em;color:rgba(99,179,237,.55);font-family:Courier New,monospace;margin-bottom:3px">MEGAWATTS</div>'
+        + '<div style="font-family:Courier New,monospace;font-size:clamp(18px,3vw,28px);font-weight:700;color:#63b3ed;text-shadow:0 0 10px rgba(99,179,237,.5)">'+mw+'</div>'
+        + '<div style="font-size:9px;color:rgba(99,179,237,.4);font-family:Courier New,monospace">MW</div>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+
     el.innerHTML = '<h2>Recommended System</h2>'
-      + hl('Total Load', total, 'Watts')
+      + loadDisplay
       + '<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:14px">'
         + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Load Breakdown</div>'
         + breakdown

@@ -292,11 +292,11 @@ const POSTS_META = {
     title: "Guest Post Niche Relevance Explained",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
-  "guest-post-outreach-email-templates-2026": { title: "Guest Post Outreach Email Templates 2026", desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails that actually get replies \u2014 " },
-  "how-to-price-guest-posts-2026": { title: "How to Price Guest Posts in 2026", desc: "Guest post pricing varies wildly \u2014 from $30 to $3,000 for what looks like the same thing. Here's what actually drives the price and how to evaluate whether" },
-  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting", desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense, what each one costs in time and money, and" },
-  "b2b-lead-generation-electrical-contractors": { title: "B2B Leads for Electrical Contractors", desc: "Electrical contractors are one of the most reliable B2B markets for lead generation \u2014 but finding the right contacts requires a different approach than mos" },
-  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies (2026)", desc: "Solar is one of the most competitive niches for SEO \u2014 but most solar companies are doing link building wrong. Here's what the top-ranking installers and ma" },
+  "guest-post-outreach-email-templates-2026": { title: "Guest Post Outreach Email Templates 2026", desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails that actually get replies." },
+  "how-to-price-guest-posts-2026": { title: "How to Price Guest Posts in 2026", desc: "Guest post pricing varies wildly — from $30 to $3,000. Here's what actually drives the price and how to evaluate whether you're getting real value." },
+  "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting", desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense and what each costs in time and money." },
+  "b2b-lead-generation-electrical-contractors": { title: "B2B Leads for Electrical Contractors", desc: "Electrical contractors are one of the most reliable B2B markets for lead generation — but finding the right contacts requires a different approach." },
+  "link-building-solar-companies-guide": { title: "Link Building for Solar Companies (2026)", desc: "Solar is one of the most competitive niches for SEO — but most solar companies are doing link building wrong. Here's what actually works in 2026." },
 };
 
 // v27 (21 Sep 2026) — 301 redirect for /?ref=* → / to resolve Ahrefs "Orphan page"

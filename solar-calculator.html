@@ -630,12 +630,12 @@ footer a{color:var(--leaf);text-decoration:none}
           <span id="backup-days-label" style="font-size:12px;font-weight:600;color:var(--leaf)">= 1.5 days</span>
         </div>
         <div style="font-size:11px;color:var(--muted);margin-top:6px">
-          💡 Ghar ke liye: 18–36 hrs kaafi hai. Industrial/commercial: 72–168 hrs. Custom mein 1 hr se 99,999 hrs tak type kar sakte hain — koi limit nahi.
+          💡 <strong>For home use:</strong> 18–36 hrs is sufficient. Industrial/commercial: 72–168 hrs. Custom field accepts 1 hr to 99,999 hrs — no limit.<br><small style="color:var(--muted)">Ghar ke liye: 18–36 hrs kaafi hai. Industrial/commercial: 72–168 hrs. Custom mein 1 hr se 99,999 hrs tak type kar sakte hain.</small>
         </div>
       </div>
 
       <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">🔋 Battery Type — Kaun si battery use karein?</label>
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">🔋 Battery Type — Which battery should I use?</label>
         <select id="bat-type" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);cursor:pointer">
           <option value="agm|12|100|0.50|4-6 yrs">✅ AGM Sealed (12V 100Ah) — Most popular in Pakistan, maintenance-free</option>
           <option value="flooded|12|100|0.50|3-5 yrs">💰 Lead Acid Flooded (12V 100Ah) — Cheapest, needs water top-up</option>
@@ -647,7 +647,7 @@ footer a{color:var(--leaf);text-decoration:none}
           <option value="nmc|48|100|0.90|8-10 yrs">⚡ Lithium NMC (48V 100Ah) — Premium, high energy density</option>
           <option value="nife|12|100|0.80|20-30 yrs">🏆 Nickel Iron NiFe (12V 100Ah) — 20-30 year life, off-grid</option>
         </select>
-        <div id="bat-type-hint" style="font-size:12px;color:var(--muted);margin-top:7px;padding:8px 11px;background:var(--card);border:1px solid var(--line);border-radius:8px;line-height:1.5">✅ Best choice for Pakistan. Sealed, no water top-up needed, no gas fumes — safe indoors. 4–6 year life.<br><small style="color:var(--muted)">✅ Pakistan ke liye sabse behtareen choice. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.</small></div>
+        <div id="bat-type-hint" style="font-size:12px;color:var(--muted);margin-top:7px;padding:8px 11px;background:var(--card);border:1px solid var(--line);border-radius:8px;line-height:1.5">✅ <strong>Best choice for Pakistan.</strong> Sealed, maintenance-free, no water top-up, no fumes — safe indoors. 4–6 year life.<br><small style="color:var(--muted)">✅ Pakistan ke liye sabse behtareen. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.</small></div>
       </div>
 
       <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">
@@ -946,7 +946,7 @@ footer a{color:var(--leaf);text-decoration:none}
       costHtml = rr('Estimated system cost (' + cost.label + ')', costStr, '')
       + '<div style="font-size:11px;color:var(--muted);padding:6px 0 4px;line-height:1.5">'
       + '<strong>Calculation basis:</strong> System size (kW) × cost per watt (' + cost.sym + cost.low + '–' + cost.sym + cost.high + '/W) = total installed cost (panels + inverter + labor + wiring).'
-      + '<br>Pakistan ke liye: ' + cost.sym + cost.low + '–' + cost.sym + cost.high + '/W rate market average hai (2026). Actual price brand, installer aur city ke hisaab se vary karta hai.'
+      + '<br><strong>Pakistan:</strong> ' + cost.sym + cost.low + '–' + cost.sym + cost.high + '/W is the 2026 market average (panels + inverter + labor). Actual price varies by brand, installer and city.' + '<br><small style="color:var(--muted)">Pakistan mein ' + cost.sym + cost.low + '–' + cost.sym + cost.high + '/W market average hai (2026). Price brand, installer aur city ke hisaab se vary karta hai.</small>'
       + '</div>';
     }
 
@@ -1169,10 +1169,10 @@ footer a{color:var(--leaf);text-decoration:none}
       if(lkh) parts.push(lkh + ' Lakh');
       if(th)  parts.push(th  + ' Hazar');
       if(rem) parts.push(rem + '');
-      var urdu = parts.join(' ') + ' Rupay Only';
+      var urdu = parts.join(' ') + ' Rupees Only';
       wordsDiv.innerHTML = '<span style="color:var(--leaf);font-weight:600;font-size:12px">'
         + eng + '</span>'
-        + '<br><span style="color:var(--muted);font-size:11px">' + urdu + '</span>';
+        + '<br><span style="color:var(--muted);font-size:11px">Rs. in words: ' + urdu + '</span>';
     } else {
       wordsDiv.innerHTML = '';
     }
@@ -1584,7 +1584,7 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Solar panels ('+watt+'W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
       + rr('Battery bank ('+backupDays.toFixed(1)+' days / '+backupHrs+'h backup)', batCnt, '× '+batLabel)
-      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed ('+backupDays.toFixed(1)+' days / '+backupHrs+'h backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Pakistan ke liye suggestion:</strong> Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai — 10+ saal, koi maintenance nahi. Bigger DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Energy same rehti hai — battery type change karne se sirf <strong>battery count</strong> change hoti hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
+      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed ('+backupDays.toFixed(1)+' days / '+backupHrs+'h backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Pakistan Tip:</strong> For budget, choose AGM or Gel. For long-term, LiFePO4 is best — 10+ years life, zero maintenance. Higher DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Pakistan ke liye: Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ This is an estimate only. Always verify and install with a licensed electrician.</strong><br><small style="color:var(--muted)">Yeh sirf estimate hai. Licensed electrician se zaroor check karwayen۔ تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔</small>');
   });
 
   // Sync button
@@ -1674,22 +1674,22 @@ footer a{color:var(--leaf);text-decoration:none}
 
   // ── BATTERY DROPDOWN ─────────────────────────────────────
   var BAT_HINTS = {
-    'agm':         '✅ Best choice for Pakistan. Sealed, no water top-up needed, no gas fumes — safe indoors. 4–6 year life.\n✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.',
-    'flooded':     '💰 Cheapest option. Requires monthly water top-up and ventilation — keep outdoors or in open shed. 3–5 year life.\n💰 Sab se sasta option. Mahine mein pani dalna padta hai, hawa zaroori hai — bahar ya khuli jagah rakho. 3–5 saal.',
-    'vrla':        '🏠 Same performance as AGM. Valve-regulated, sealed, no fumes — suitable for indoor installation. 4–6 year life.\n🏠 AGM jaisi performance. Sealed hai, gas nahi — ghar ke andar lagane ke liye theek hai. 4–6 saal.',
-    'gel':         '🌡️ Handles heat better than flooded — good for Pakistan climate. Do not use fast chargers. 5–7 year life.\n🌡️ Garmi mein behtar kaam karti hai — Pakistan ke liye achi. Fast charger bilkul mat lagao. 5–7 saal.',
-    'tubular':     '⚡ Very popular in Pakistan and South Asia. Built for daily deep cycling — ideal for daily solar use. 7–10 year life.\n⚡ Pakistan aur South Asia mein bahut popular. Roz charge/discharge ke liye bani hai. 7–10 saal.',
-    'lifepo4_100': '🔋 Best long-term investment. 95% usable capacity, 10+ year life, zero maintenance. Higher upfront cost.\n🔋 Long-term ke liye sabse acha option. 95% use hoti hai, 10+ saal chalti hai, koi maintenance nahi. Price zyada hai.',
-    'lifepo4_200': '🔋 Same LiFePO4 chemistry in a larger 200Ah cell — fewer batteries needed, more compact installation. 10+ years.\n🔋 Same LiFePO4 — 200Ah cell hai, isliye kam batteries lagengi. Installation compact rehti hai. 10+ saal.',
-    'nmc':         '⚡ Premium lithium with higher energy density. Used in large home storage systems. 8–10 year life.\n⚡ Premium lithium — zyada energy ek jagah. Bade ghar ke storage systems ke liye. 8–10 saal.',
-    'nife':        '🏆 Longest-lasting battery available — 20 to 30 year life. Ideal for off-grid systems. Rare in Pakistan.\n🏆 Sab se zyada tikau battery — 20–30 saal chalti hai. Off-grid ke liye ideal. Pakistan mein rare hai.',
+    'agm':         '✅ <strong>Best choice for Pakistan.</strong> Sealed, maintenance-free, no water top-up, no fumes — safe indoors. 4–6 year life.<br><small>✅ Pakistan ke liye sabse behtareen. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.</small>',
+    'flooded':     '💰 <strong>Cheapest option.</strong> Requires monthly water top-up and ventilation — keep outdoors or in open shed. 3–5 year life.<br><small>💰 Sab se sasta option. Mahine mein pani dalna padta hai, hawa zaroori hai — bahar rakho. 3–5 saal.</small>',
+    'vrla':        '🏠 <strong>Same performance as AGM.</strong> Valve-regulated, sealed, no fumes — safe for indoor installation. 4–6 year life.<br><small>🏠 AGM jaisi performance. Sealed hai, gas nahi — ghar ke andar lagane ke liye theek hai. 4–6 saal.</small>',
+    'gel':         '🌡️ <strong>Best for hot climates like Pakistan.</strong> Handles heat better than flooded. Never use fast chargers. 5–7 year life.<br><small>🌡️ Garmi mein behtar kaam karti hai — Pakistan ke liye achi. Fast charger bilkul mat lagao. 5–7 saal.</small>',
+    'tubular':     '⚡ <strong>Very popular in Pakistan and South Asia.</strong> Built for daily deep cycling — ideal for daily solar use. 7–10 year life.<br><small>⚡ Pakistan aur South Asia mein bahut popular. Roz charge/discharge ke liye bani hai. 7–10 saal.</small>',
+    'lifepo4_100': '🔋 <strong>Best long-term investment.</strong> 95% usable capacity, 10+ year life, zero maintenance. Higher upfront cost.<br><small>🔋 Sab se acha long-term option. 95% use hoti hai, 10+ saal, koi maintenance nahi. Price zyada hai.</small>',
+    'lifepo4_200': '🔋 <strong>Same LiFePO4 in larger 200Ah cell</strong> — fewer batteries needed, more compact installation. 10+ year life.<br><small>🔋 Same LiFePO4 — 200Ah hai isliye kam batteries lagengi. Compact installation. 10+ saal.</small>',
+    'nmc':         '⚡ <strong>Premium lithium — highest energy density.</strong> Used in large home and commercial storage. 8–10 year life.<br><small>⚡ Premium lithium — zyada energy ek jagah. Bade ghar ke storage systems ke liye. 8–10 saal.</small>',
+    'nife':        '🏆 <strong>Longest-lasting battery — 20 to 30 year life.</strong> Ideal for off-grid systems. Heavy, requires strong mounting. Rare in Pakistan.<br><small>🏆 Duniya ki sab se zyada tikau — 20–30 saal! Off-grid ke liye ideal. Pakistan mein rare aur bhaari hoti hai.</small>',
   };
   var batDd = document.getElementById('bat-type');
   var batHintEl = document.getElementById('bat-type-hint');
   if (batDd) {
     batDd.addEventListener('change', function() {
       var key = this.value.split('|')[0];
-      if (batHintEl) batHintEl.innerHTML = (BAT_HINTS[key] || '').replace(/\\n/g, '<br><small style="color:var(--muted)">').replace(/$/, BAT_HINTS[key] ? '</small>' : '');
+      if (batHintEl) batHintEl.innerHTML = BAT_HINTS[key] || '';
     });
   }
 

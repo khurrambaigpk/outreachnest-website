@@ -392,7 +392,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v59"; // v59: activate links, all issues resolved
+const CACHE_VERSION = "v60"; // v60: activate all pages, redirect chain fix
 
 // ─────────────────────────────────────────────────────────────────
 // CENTRAL NAV — edit here ONLY. Worker injects this into every page.
@@ -1451,11 +1451,11 @@ export default {
     const url = new URL(request.url);
 
     // v41: redirect .html duplicates to clean canonical URLs
-    if (url.pathname === "/blog.html") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
-    if (url.pathname === "/services.html") { return Response.redirect("https://getoutreachnest.com/services", 301); }
-    if (url.pathname === "/niches.html") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
-    if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
-    if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
+    if (url.pathname === "/blog.html" || url.pathname === "/blog.html/") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
+    if (url.pathname === "/services.html" || url.pathname === "/services.html/") { return Response.redirect("https://getoutreachnest.com/services", 301); }
+    if (url.pathname === "/niches.html" || url.pathname === "/niches.html/") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
+    if (url.pathname === "/contact.html" || url.pathname === "/contact.html/") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
+    if (url.pathname === "/download.html" || url.pathname === "/download.html/") { return Response.redirect("https://getoutreachnest.com/download", 301); }
 
     // V13.1: Explicit clean URL → .html file serving
     // Must come BEFORE HTML_PAGES block and BEFORE env.ASSETS.fetch()

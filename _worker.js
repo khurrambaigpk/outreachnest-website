@@ -392,7 +392,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v58"; // v58: posts-data.json titles fixed, orphans fixed, speed
+const CACHE_VERSION = "v59"; // v59: activate links, all issues resolved
 
 // ─────────────────────────────────────────────────────────────────
 // CENTRAL NAV — edit here ONLY. Worker injects this into every page.

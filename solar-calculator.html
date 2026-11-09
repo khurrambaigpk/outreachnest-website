@@ -7,6 +7,8 @@
 <meta name="description" content="Free solar panel calculator: estimate daily output, find optimal tilt angle for summer and winter, calculate roof capacity and monthly electricity savings.">
 <link rel="canonical" href="https://getoutreachnest.com/solar-calculator">
 <meta name="robots" content="index, follow">
+  <meta name="copyright" content="© 2026 OutreachNest. All rights reserved.">
+  <meta name="author" content="OutreachNest — getoutreachnest.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -299,6 +301,9 @@ footer a{color:var(--leaf);text-decoration:none}
 </section>
 
 <div class="wrap">
+  <div style="text-align:center;margin-bottom:6px;font-size:11px;color:var(--muted)">
+    © 2026 <a href="/" style="color:var(--leaf);text-decoration:none;font-weight:600">OutreachNest</a> &nbsp;·&nbsp; Free to use &nbsp;·&nbsp; Not for redistribution
+  </div>
   <div class="tabs" id="tabs">
     <button class="tab on" data-target="p-output">⚡ Output</button>
     <button class="tab" data-target="p-tilt">📐 Tilt Angle</button>
@@ -490,7 +495,7 @@ footer a{color:var(--leaf);text-decoration:none}
           <label>Currency & Region</label>
           <select id="sv-currency" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--paper);color:var(--ink)">
             <option value="USD|$|0.13|0.16">🇺🇸 USD — United States</option>
-            <option value="PKR|Rs.|25|35" selected>🇵🇰 PKR — Pakistan</option>
+            <option value="PKR|Rs|25|35" selected>🇵🇰 PKR — Pakistan (Rs)</option>
             <option value="GBP|£|0.28|0.34">🇬🇧 GBP — United Kingdom</option>
             <option value="EUR|€|0.25|0.35">🇪🇺 EUR — Europe</option>
             <option value="AUD|A$|0.28|0.35">🇦🇺 AUD — Australia</option>
@@ -506,12 +511,13 @@ footer a{color:var(--leaf);text-decoration:none}
         </div>
         <div class="field">
           <label>Monthly electricity bill</label>
-          <div class="inp-wrap"><input type="number" id="sv-bill" value="5000" min="1" max="9999999"><span class="unit-lbl" id="sv-bill-unit">Rs.</span></div>
+          <div class="inp-wrap"><input type="number" id="sv-bill" value="5000" min="1" max="9999999"><span class="unit-lbl" id="sv-bill-unit">Rs</span></div>
+          <div class="hint" id="sv-bill-words" data-static="Enter your monthly WAPDA/LESCO bill amount"></div>
         </div>
         <div class="field">
           <label>Electricity rate</label>
-          <div class="inp-wrap"><input type="number" id="sv-rate" value="30" min="0.001" max="99999" step="0.01"><span class="unit-lbl" id="sv-rate-unit">Rs./kWh</span></div>
-          <div class="hint" id="sv-rate-hint">Pakistan avg: Rs. 25–35 per kWh</div>
+          <div class="inp-wrap"><input type="number" id="sv-rate" value="30" min="0.001" max="99999" step="0.01"><span class="unit-lbl" id="sv-rate-unit">Rs/kWh</span></div>
+          <div class="hint" id="sv-rate-hint">Pakistan avg: Rs 25–35 per kWh</div>
         </div>
         <div class="field">
           <label>System size</label>
@@ -523,7 +529,7 @@ footer a{color:var(--leaf);text-decoration:none}
         </div>
         <div class="field">
           <label>System cost (optional — for payback)</label>
-          <div class="inp-wrap"><input type="number" id="sv-cost" value="0" min="0" max="999999999"><span class="unit-lbl" id="sv-cost-unit">Rs.</span></div>
+          <div class="inp-wrap"><input type="number" id="sv-cost" value="0" min="0" max="999999999"><span class="unit-lbl" id="sv-cost-unit">Rs</span></div>
           <div class="hint" id="sv-cost-hint">Pakistan avg: Rs. 150,000–250,000 for 5kW system installed</div>
         </div>
         <button class="go-btn" id="btn-savings">Calculate Savings 💰</button>
@@ -632,8 +638,9 @@ footer a{color:var(--leaf);text-decoration:none}
 
 <footer>
   <div class="wrap">
-    <p>© 2026 <a href="/">OutreachNest</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a></p>
+    <p>© 2026 <a href="/">OutreachNest</a> · <a href="/blog">Blog</a> · <a href="/contact">Contact</a> · <a href="/solar-calculator">Solar Calculator</a></p>
     <p style="margin-top:5px;font-size:12px">Results are estimates. Actual output depends on local conditions, shading, and installation quality. Always consult a licensed electrician.</p>
+    <p style="margin-top:6px;font-size:11px;color:var(--muted)">Solar Calculator is an original tool by OutreachNest. © 2026 All rights reserved. Free to use — not for redistribution or resale.</p>
   </div>
 </footer>
 
@@ -674,7 +681,7 @@ footer a{color:var(--leaf);text-decoration:none}
 
   // ── COST REGIONS (price per watt installed, local currency) ──
   var COST_REGIONS = {
-    'pk': { label:'PKR', low:55,  high:75,  sym:'Rs.',  note:'Pakistan avg installed cost per watt (panel+inverter+labor)' },
+    'pk': { label:'PKR', low:55,  high:75,  sym:'Rs',   note:'Pakistan avg installed cost per watt (panel+inverter+labor)' },
     'us': { label:'USD', low:0.80,high:1.20, sym:'$',    note:'USA residential avg per watt installed' },
     'uk': { label:'GBP', low:0.90,high:1.40, sym:'£',    note:'UK residential avg per watt installed' },
     'au': { label:'AUD', low:1.00,high:1.50, sym:'A$',   note:'Australia residential avg per watt installed' },
@@ -1042,12 +1049,64 @@ footer a{color:var(--leaf);text-decoration:none}
       + infoBox('<strong>Tip:</strong> Leave 0.5m (1.6ft) clearance from roof edges. Avoid vents, chimneys and skylights. South-facing sections produce the most output in the northern hemisphere.');
   });
 
+  // ── NUMBER FORMATTING HELPERS ───────────────────────────
+  function fmtComma(n) {
+    // Format with commas: 900000 → 900,000
+    return Math.round(n).toLocaleString('en-PK');
+  }
+
+  function numToWords(n) {
+    // Convert number to English words (Pakistani style: lakh, crore)
+    n = Math.round(n);
+    if (n === 0) return 'Zero';
+    var cr  = Math.floor(n / 10000000);
+    var lkh = Math.floor((n % 10000000) / 100000);
+    var th  = Math.floor((n % 100000) / 1000);
+    var rem = n % 1000;
+
+    var ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine',
+                'Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen',
+                'Seventeen','Eighteen','Nineteen'];
+    var tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+    function below1000(n) {
+      if (n === 0) return '';
+      if (n < 20) return ones[n];
+      if (n < 100) return tens[Math.floor(n/10)] + (n%10 ? ' '+ones[n%10] : '');
+      return ones[Math.floor(n/100)] + ' Hundred' + (n%100 ? ' '+below1000(n%100) : '');
+    }
+
+    var parts = [];
+    if (cr)  parts.push(below1000(cr)  + ' Crore');
+    if (lkh) parts.push(below1000(lkh) + ' Lakh');
+    if (th)  parts.push(below1000(th)  + ' Thousand');
+    if (rem) parts.push(below1000(rem));
+    return parts.join(' ') + ' Only';
+  }
+
+  function showAmountWords(inputId, hintId) {
+    var inp = document.getElementById(inputId);
+    var hint = document.getElementById(hintId);
+    if (!inp || !hint) return;
+    inp.addEventListener('input', function() {
+      var val = parseFloat(this.value) || 0;
+      if (val > 0) {
+        var existing = hint.getAttribute('data-static') || hint.textContent;
+        hint.setAttribute('data-static', existing);
+        hint.innerHTML = existing + '<br><span style="color:var(--leaf);font-weight:600">' 
+          + fmtComma(val) + ' — ' + numToWords(val) + '</span>';
+      } else {
+        hint.textContent = hint.getAttribute('data-static') || hint.textContent;
+      }
+    });
+  }
+
   // ── SAVINGS ──────────────────────────────────────────────
   // Currency selector auto-fill
   var svCurrency = document.getElementById('sv-currency');
   var COST_DEFAULTS = {
     'USD': {cost:'8000',   hint:'USA avg: $8,000–12,000 for 5kW installed'},
-    'PKR': {cost:'900000', hint:'Pakistan avg: Rs. 700,000–1,100,000 for 5kW installed'},
+    'PKR': {cost:'900000', hint:'Pakistan avg: Rs 700,000–1,100,000 for 5kW installed'},
     'GBP': {cost:'6000',   hint:'UK avg: £5,000–8,000 for 5kW installed'},
     'EUR': {cost:'7000',   hint:'Europe avg: €6,000–9,000 for 5kW installed'},
     'AUD': {cost:'10000',  hint:'Australia avg: A$9,000–13,000 for 5kW installed'},
@@ -1080,7 +1139,7 @@ footer a{color:var(--leaf);text-decoration:none}
     if (rateInp)  rateInp.value = avgRate;
     if (billUnit) billUnit.textContent = sym;
     if (rateUnit) rateUnit.textContent = sym+'/kWh';
-    if (rateHint) rateHint.textContent = 'Avg: '+sym+rateL+' – '+sym+rateH+' per kWh';
+    if (rateHint) rateHint.textContent = 'Avg: '+sym+' '+rateL+' – '+sym+' '+rateH+' per kWh';
     if (costUnit) costUnit.textContent = sym;
 
     var cd = COST_DEFAULTS[code];
@@ -1519,6 +1578,10 @@ footer a{color:var(--leaf);text-decoration:none}
   // Init
   buildGrid();
   addCust();
+
+  // Amount words on bill and cost inputs
+  showAmountWords('sv-bill', 'sv-bill-words');
+  showAmountWords('sv-cost', 'sv-cost-hint');
 
 
 })();

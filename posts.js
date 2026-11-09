@@ -646,7 +646,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
     title:"Find Electronics & Appliance Repair Businesses for Outreach",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
-    excerpt:"Build targeted lists of consumer electronics repair shops — TV, laptop, mobile, UPS, and CCTV — across cities at scale, with verified contact info and SEO metrics.",
+    excerpt:"Build targeted lists of electronics repair shops — TV, laptop, mobile and CCTV — across cities, with verified contact info and SEO metrics.",
     content:`<p>Electronics and appliance repair shops don't show up on the same directories as solar companies or IT firms. They're scattered across Google Maps, local business directories, niche forums, and sometimes nothing more than a Facebook page — which makes finding them a research exercise in itself. If you're trying to reach these businesses for outreach, partnerships, or link-building, here's what actually works.</p>
 <h2>Search the categories separately, not all at once</h2>
 <p>The electronics repair space splits into distinct sub-niches: appliance repair (washing machines, refrigerators, ovens), TV repair, laptop and mobile repair, UPS and inverter repair, CCTV repair, and electronics parts suppliers. Each type has its own terminology and its own corner of the web. Searching "electronics repair businesses" in bulk gives you noise. Searching "TV repair shops in [city]" gives you the people you're actually looking for.</p>
@@ -1007,7 +1007,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
     title:"Consumer Electronics Repair: Low-Competition Outreach Niche",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
-    excerpt:"Consumer electronics repair shops fly under the radar — but they're everywhere, always need new customers, and rarely have strong online competition. Here's why this niche works.",
+    excerpt:"Consumer electronics repair shops are everywhere, always need new customers, and rarely face strong online competition. Here's why this niche works.",
     content:`<p>Electronics and appliance repair rarely makes headlines, yet demand for it never really goes away. As long as people own devices and appliances, some of them will break, and someone needs to fix them. That steadiness makes repair a quietly reliable niche to work in.</p>
     <h2>Local trust drives the business</h2>
     <p>Repair customers overwhelmingly choose based on trust and convenience. A shop with strong local reviews and a reputation for honest pricing wins far more work than one relying on flashy advertising. That makes reputation and visibility the real battleground.</p>
@@ -1024,7 +1024,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     cat:"SEO & Tools, Research", cover:"g6", icon:"📈",
     title:"Quality vs Quantity Backlinks: Why Fewer Great Links Win",
     author:"OutreachNest", date:"July 2026", read:"8 min read",
-    excerpt:"Quality link building beats bulk every time. 100 weak backlinks won't beat 5 relevant links from real, trusted sites — here's the data-backed reason quality always wins, and how to put it into practice.",
+    excerpt:"Quality beats quantity in link building. 5 relevant links from real trusted sites beat 100 weak backlinks — here's the data-backed reason and how to apply it.",
     content:`<p>If you've ever been pitched a package of "500 backlinks for $99," you already know something is off. But most site owners can't articulate exactly <em>why</em> it's a bad deal — only that it feels wrong. The reality is more specific than gut instinct: link quality and link quantity operate through completely different mechanisms in Google's algorithm, and confusing them is one of the most expensive mistakes in SEO.</p>
 <p>This post breaks down exactly how Google evaluates links, what separates a quality backlink from a weak one, and why a handful of strong placements will almost always outperform a flood of weak ones.</p>
 <h2>What "quality" actually means in a backlink</h2>

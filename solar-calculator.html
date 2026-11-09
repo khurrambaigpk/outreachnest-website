@@ -38,8 +38,8 @@ nav{background:var(--card);border-bottom:1px solid var(--line);padding:14px 0;po
 /* TABS */
 .tabs{display:flex;gap:3px;background:var(--line);border-radius:12px;padding:4px;margin:36px 0 28px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;padding:9px 14px;border:none;border-radius:9px;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .18s;text-align:center;white-space:nowrap}
-.tab.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.tab{flex:1 1 0;min-width:max-content;padding:9px 14px;border:none;border-radius:9px;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .18s;text-align:center;white-space:nowrap}
+.tab.on{background:#fff;color:var(--ink);box-shadow:0 1px 6px rgba(0,0,0,.12)}
 .tab:hover:not(.on){color:var(--ink)}
 
 /* PANELS */
@@ -278,6 +278,7 @@ footer a{color:var(--leaf);text-decoration:none}
     <div class="nav-links">
       <a href="/">Home</a><a href="/services">Services</a>
       <a href="/download">Download</a><a href="/blog">Blog</a>
+      <a href="/solar-calculator" style="color:var(--sun-deep);font-weight:700">☀️ Free Tools</a>
       <a href="/contact" class="nav-cta">Get in touch</a>
     </div>
   </div>
@@ -1463,15 +1464,8 @@ footer a{color:var(--leaf);text-decoration:none}
               var uPer = (bt.v * bt.ah * bt.dod) / 1000;
               var cnt = Math.ceil(energyNeeded / uPer);
               // match selected battery by type key extracted from dropdown value
-            var selKey = batParts[0];
-            var btKey = bt.n.toLowerCase().replace(/[^a-z0-9]/g,'');
-            var keyMap = {
-              'leadacidflooded':'flooded','agmsealed':'agm','vrladry':'vrla',
-              'gelbattery':'gel','tubularleadacid':'tubular',
-              'lifepo4100ah':'lifepo4_100','lifepo4200ah':'lifepo4_200',
-              'lithiumnmc':'nmc','nickelironnife':'nife'
-            };
-            var isSel = (keyMap[btKey] === selKey);
+            // Direct match: compare bt's v/ah/dod against selected battery
+            var isSel = (bt.v === batV && bt.ah === batAhR && Math.abs(bt.dod - batDoD) < 0.01);
               rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;margin-bottom:5px;background:' + (isSel ? 'var(--leaf-soft)' : 'transparent') + ';border:1px solid ' + (isSel ? 'var(--leaf)' : 'var(--line)') + '">'
                 + '<div><div style="font-size:13px;font-weight:' + (isSel ? '700' : '600') + ';color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + bt.n + (isSel ? ' ✓' : '') + '</div>'
                 + '<div style="font-size:11px;color:var(--muted)">' + parseFloat((bt.dod*100).toFixed(1)) + '% DoD · ' + bt.life + ' · ' + bt.note + '</div></div>'
@@ -1498,7 +1492,7 @@ footer a{color:var(--leaf);text-decoration:none}
     });
   }
 
-  // Show sync button when switching to Output tab if load has data
+  // Show sync button when switching to Output tab; rebuild bat cards on Load tab
   document.querySelectorAll('.tab').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var target = btn.getAttribute('data-target');
@@ -1506,6 +1500,9 @@ footer a{color:var(--leaf);text-decoration:none}
         var totalWatts = parseFloat(document.getElementById('ld-total').textContent) || 0;
         var sb = document.getElementById('sync-from-load-btn');
         if (sb) sb.style.display = totalWatts > 0 ? 'inline-block' : 'none';
+      }
+      if (target === 'p-load') {
+        selectBat('agm|12|100|0.50|4-6 yrs'); // set default + render cards + set hint
       }
     });
   });
@@ -1550,14 +1547,14 @@ footer a{color:var(--leaf);text-decoration:none}
   function buildBatCards() {
     var grid = document.getElementById('bat-cards');
     if (!grid) return;
-    grid.innerHTML = BAT_OPTIONS.map(function(b) {
+    grid.innerHTML = BAT_OPTIONS.map(function(b, i) {
       var isSel = (b.val === selBatVal);
-      var border = isSel ? 'var(--leaf)' : 'var(--line)';
-      var bg     = isSel ? 'var(--leaf-soft)' : 'var(--card)';
-      var nmClr  = isSel ? 'var(--leaf)' : 'var(--ink)';
-      var tagBg  = isSel ? 'var(--leaf)' : 'var(--line)';
-      var tagClr = isSel ? '#fff' : 'var(--muted)';
-      return '<div data-val="' + b.val + '" style="'
+      var border = isSel ? '#1c7a4d' : 'var(--line)';
+      var bg     = isSel ? '#dcfce7' : 'var(--card)';
+      var nmClr  = isSel ? '#1c7a4d' : 'var(--ink)';
+      var tagBg  = isSel ? '#1c7a4d' : '#e2e8f0';
+      var tagClr = isSel ? '#fff' : '#64748b';
+      return '<div data-idx="' + i + '" style="'
         + 'border:2px solid ' + border + ';'
         + 'background:' + bg + ';'
         + 'border-radius:10px;padding:9px 10px;cursor:pointer;transition:all .15s;">'
@@ -1566,13 +1563,15 @@ footer a{color:var(--leaf);text-decoration:none}
           + '<span style="font-size:12px;font-weight:700;color:' + nmClr + '">' + b.nm + '</span>'
           + '<span style="margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;background:' + tagBg + ';color:' + tagClr + '">' + b.tag + '</span>'
         + '</div>'
-        + '<div style="font-size:10px;color:var(--muted)">' + b.sub + '</div>'
+        + '<div style="font-size:10px;color:#64748b">' + b.sub + '</div>'
         + '</div>';
     }).join('');
-    // Attach click via event delegation (no inline onclick — avoids quote issues)
+    // Click via index — no pipe char issues in selector
     grid.onclick = function(e) {
-      var card = e.target.closest('[data-val]');
-      if (card) selectBat(card.getAttribute('data-val'));
+      var card = e.target.closest('[data-idx]');
+      if (!card) return;
+      var idx = parseInt(card.getAttribute('data-idx'));
+      if (!isNaN(idx) && BAT_OPTIONS[idx]) selectBat(BAT_OPTIONS[idx].val);
     };
   }
 

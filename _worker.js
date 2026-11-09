@@ -296,6 +296,7 @@ const POSTS_META = {
   "how-to-price-guest-posts-2026": { title: "How to Price Guest Posts in 2026", desc: "Guest post pricing varies wildly — from $30 to $3,000. Here's what actually drives the price and how to evaluate whether you're getting real value." },
   "outreachnest-finder-vs-manual-prospecting": { title: "OutreachNest Finder vs Manual Prospecting", desc: "Manual prospecting works. So does OutreachNest Finder. Here's an honest look at where each approach makes sense and what each costs in time and money." },
   "b2b-lead-generation-electrical-contractors": { title: "B2B Leads for Electrical Contractors", desc: "Electrical contractors are one of the most reliable B2B markets for lead generation — but finding the right contacts requires a different approach." },
+  "electrical-contractor-lead-generation": { title: "Electrical Contractor Lead Generation Guide", desc: "Electrical contractor lead generation is different from most B2B outreach. Here's what works, what doesn't, and how to build a consistent pipeline." },
   "link-building-solar-companies-guide": { title: "Link Building for Solar Companies (2026)", desc: "Solar is one of the most competitive niches for SEO — but most solar companies are doing link building wrong. Here's what actually works in 2026." },
 };
 
@@ -455,6 +456,7 @@ const RELATED_POSTS = {
   "how-to-price-guest-posts-2026": ["spot-real-guest-post-site", "solar-guest-post-cost-2026", "signs-guest-post-site-hurt-rankings"],
   "outreachnest-finder-vs-manual-prospecting": ["industrial-automation-leads", "how-agencies-manage-10-niches-without-losing-track", "lead-list-google-sheet"],
   "b2b-lead-generation-electrical-contractors": ["electrical-contractors-panel-builders", "electrical-contractors-online-growth", "electrical-contractor-seo-backlinks"],
+  "electrical-contractor-lead-generation": ["b2b-lead-generation-electrical-contractors", "electrical-contractors-online-growth", "electrical-contractor-seo-backlinks"],
   "link-building-solar-companies-guide": ["solar-niche-goldmine", "guest-post-outreach-email-templates-2026", "how-to-price-guest-posts-2026"],
 };
 

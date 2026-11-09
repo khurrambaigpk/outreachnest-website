@@ -590,22 +590,19 @@ footer a{color:var(--leaf);text-decoration:none}
       <div class="app-grid" id="app-grid"></div>
 
       <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:10px">🔋 Battery Type — Kaun si battery use karein?</label>
-        <!-- hidden select keeps JS compatibility -->
-        <select id="bat-type" style="display:none">
-          <option value="agm|12|100|0.50|4-6 yrs" selected>AGM</option>
-          <option value="flooded|12|100|0.50|3-5 yrs">Flooded</option>
-          <option value="vrla|12|100|0.50|4-6 yrs">VRLA</option>
-          <option value="gel|12|100|0.55|5-7 yrs">Gel</option>
-          <option value="tubular|12|100|0.60|7-10 yrs">Tubular</option>
-          <option value="lifepo4_100|48|100|0.95|10+ yrs">LiFePO4 100Ah</option>
-          <option value="lifepo4_200|48|200|0.95|10+ yrs">LiFePO4 200Ah</option>
-          <option value="nmc|48|100|0.90|8-10 yrs">NMC</option>
-          <option value="nife|12|100|0.80|20-30 yrs">NiFe</option>
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">🔋 Battery Type — Kaun si battery use karein?</label>
+        <select id="bat-type" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);cursor:pointer">
+          <option value="agm|12|100|0.50|4-6 yrs">✅ AGM Sealed (12V 100Ah) — Most popular in Pakistan, maintenance-free</option>
+          <option value="flooded|12|100|0.50|3-5 yrs">💰 Lead Acid Flooded (12V 100Ah) — Cheapest, needs water top-up</option>
+          <option value="vrla|12|100|0.50|4-6 yrs">🏠 VRLA / Dry Battery (12V 100Ah) — Indoor safe, no fumes</option>
+          <option value="gel|12|100|0.55|5-7 yrs">🌡️ Gel Battery (12V 100Ah) — Best for hot climate like Pakistan</option>
+          <option value="tubular|12|100|0.60|7-10 yrs">⚡ Tubular Lead Acid (12V 100Ah) — Deep cycle, popular in South Asia</option>
+          <option value="lifepo4_100|48|100|0.95|10+ yrs">🔋 LiFePO4 Lithium (48V 100Ah) — Best long-term, 10+ years life</option>
+          <option value="lifepo4_200|48|200|0.95|10+ yrs">🔋 LiFePO4 Lithium (48V 200Ah) — Fewer batteries needed, compact</option>
+          <option value="nmc|48|100|0.90|8-10 yrs">⚡ Lithium NMC (48V 100Ah) — Premium, high energy density</option>
+          <option value="nife|12|100|0.80|20-30 yrs">🏆 Nickel Iron NiFe (12V 100Ah) — 20-30 year life, off-grid</option>
         </select>
-        <!-- visual battery card grid -->
-        <div id="bat-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px"></div>
-        <div id="bat-type-hint" style="font-size:12px;color:var(--muted);padding:9px 11px;background:var(--card);border:1px solid var(--line);border-radius:8px;line-height:1.5">✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi. 4-6 saal chalti hai.</div>
+        <div id="bat-type-hint" style="font-size:12px;color:var(--muted);margin-top:7px;padding:8px 11px;background:var(--card);border:1px solid var(--line);border-radius:8px;line-height:1.5">✅ Best choice for Pakistan. Sealed, no water top-up needed, no gas fumes — safe indoors. 4–6 year life.<br><small style="color:var(--muted)">✅ Pakistan ke liye sabse behtareen choice. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.</small></div>
       </div>
 
       <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">
@@ -1501,9 +1498,7 @@ footer a{color:var(--leaf);text-decoration:none}
         var sb = document.getElementById('sync-from-load-btn');
         if (sb) sb.style.display = totalWatts > 0 ? 'inline-block' : 'none';
       }
-      if (target === 'p-load') {
-        selectBat('agm|12|100|0.50|4-6 yrs'); // set default + render cards + set hint
-      }
+
     });
   });
 
@@ -1523,73 +1518,49 @@ footer a{color:var(--leaf);text-decoration:none}
   }
 
 
-  // Battery hints handled by selectBat() card system
+
+  // ── BATTERY DROPDOWN ─────────────────────────────────────
+  var BAT_HINTS = {
+    'agm':         '✅ Best choice for Pakistan. Sealed, no water top-up needed, no gas fumes — safe indoors. 4–6 year life.\n✅ Pakistan ke liye sabse behtareen choice. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.',
+    'flooded':     '💰 Cheapest option. Requires monthly water top-up and ventilation — keep outdoors or in open shed. 3–5 year life.\n💰 Sab se sasta option. Mahine mein pani dalna padta hai, hawa zaroori hai — bahar ya khuli jagah rakho. 3–5 saal.',
+    'vrla':        '🏠 Same performance as AGM. Valve-regulated, sealed, no fumes — suitable for indoor installation. 4–6 year life.\n🏠 AGM jaisi performance. Sealed hai, gas nahi — ghar ke andar lagane ke liye theek hai. 4–6 saal.',
+    'gel':         '🌡️ Handles heat better than flooded — good for Pakistan climate. Do not use fast chargers. 5–7 year life.\n🌡️ Garmi mein behtar kaam karti hai — Pakistan ke liye achi. Fast charger bilkul mat lagao. 5–7 saal.',
+    'tubular':     '⚡ Very popular in Pakistan and South Asia. Built for daily deep cycling — ideal for daily solar use. 7–10 year life.\n⚡ Pakistan aur South Asia mein bahut popular. Roz charge/discharge ke liye bani hai. 7–10 saal.',
+    'lifepo4_100': '🔋 Best long-term investment. 95% usable capacity, 10+ year life, zero maintenance. Higher upfront cost.\n🔋 Long-term ke liye sabse acha option. 95% use hoti hai, 10+ saal chalti hai, koi maintenance nahi. Price zyada hai.',
+    'lifepo4_200': '🔋 Same LiFePO4 chemistry in a larger 200Ah cell — fewer batteries needed, more compact installation. 10+ years.\n🔋 Same LiFePO4 — 200Ah cell hai, isliye kam batteries lagengi. Installation compact rehti hai. 10+ saal.',
+    'nmc':         '⚡ Premium lithium with higher energy density. Used in large home storage systems. 8–10 year life.\n⚡ Premium lithium — zyada energy ek jagah. Bade ghar ke storage systems ke liye. 8–10 saal.',
+    'nife':        '🏆 Longest-lasting battery available — 20 to 30 year life. Ideal for off-grid systems. Rare in Pakistan.\n🏆 Sab se zyada tikau battery — 20–30 saal chalti hai. Off-grid ke liye ideal. Pakistan mein rare hai.',
+  };
+  var batDd = document.getElementById('bat-type');
+  var batHintEl = document.getElementById('bat-type-hint');
+  if (batDd) {
+    batDd.addEventListener('change', function() {
+      var key = this.value.split('|')[0];
+      if (batHintEl) batHintEl.innerHTML = (BAT_HINTS[key] || '').replace(/\\n/g, '<br><small style="color:var(--muted)">').replace(/$/, BAT_HINTS[key] ? '</small>' : '');
+    });
+  }
+
+  // Auto update panel wattage dropdown changes sync hint
+  var owSel2 = document.getElementById('o-watt-select');
+  if (owSel2) {
+    owSel2.addEventListener('change', function() {
+      var totalWatts = parseFloat(document.getElementById('ld-total').textContent) || 0;
+      if (totalWatts > 0) {
+        var badge = document.getElementById('load-link-badge');
+        var hint = document.getElementById('load-link-hint');
+        if (badge && badge.style.display !== 'none') {
+          syncPanelsFromLoad();
+        }
+      }
+    });
+  }
+
+
 
   // Init
   buildGrid();
   addCust();
 
-  // ── BATTERY CARD SELECTOR ────────────────────────────────
-  var BAT_OPTIONS = [
-    {val:'agm|12|100|0.50|4-6 yrs',    ico:'✅', nm:'AGM Sealed',       sub:'12V 100Ah · 50% DoD · 4-6 yrs', tag:'Most popular PK', hint:'✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi. 4-6 saal chalti hai.'},
-    {val:'flooded|12|100|0.50|3-5 yrs', ico:'💰', nm:'Lead Acid Flooded', sub:'12V 100Ah · 50% DoD · 3-5 yrs', tag:'Budget',          hint:'💰 Sab se sasta option. Lekin mahine mein pani dalna padta hai, hawa zaroori hai (bahar rakho). 3-5 saal.'},
-    {val:'vrla|12|100|0.50|4-6 yrs',    ico:'🏠', nm:'VRLA / Dry',        sub:'12V 100Ah · 50% DoD · 4-6 yrs', tag:'Indoor safe',      hint:'🏠 AGM jaisi hi hai. Sealed, gas nahi, ghar ke andar safe. 4-6 saal chalti hai.'},
-    {val:'gel|12|100|0.55|5-7 yrs',     ico:'🌡️', nm:'Gel Battery',       sub:'12V 100Ah · 55% DoD · 5-7 yrs', tag:'Hot climate',      hint:'🌡️ Garmi mein behtar — Pakistan ke liye achi. Fast charger mat lagao. 5-7 saal.'},
-    {val:'tubular|12|100|0.60|7-10 yrs',ico:'⚡', nm:'Tubular Lead Acid', sub:'12V 100Ah · 60% DoD · 7-10 yrs',tag:'Deep cycle',       hint:'⚡ Pakistan aur India mein bahut popular. Deep cycle, roz use ke liye bani. 7-10 saal.'},
-    {val:'lifepo4_100|48|100|0.95|10+ yrs',ico:'🔋',nm:'LiFePO4 100Ah',  sub:'48V 100Ah · 95% DoD · 10+ yrs', tag:'Best long-term',   hint:'🔋 Sab se acha long-term option. 95% use, 10+ saal, koi maintenance nahi. Lekin price zyada.'},
-    {val:'lifepo4_200|48|200|0.95|10+ yrs',ico:'🔋',nm:'LiFePO4 200Ah',  sub:'48V 200Ah · 95% DoD · 10+ yrs', tag:'Compact',          hint:'🔋 Same LiFePO4 — 200Ah hai, isliye kam batteries lagengi. Compact. 10+ saal.'},
-    {val:'nmc|48|100|0.90|8-10 yrs',    ico:'⚡', nm:'Lithium NMC',       sub:'48V 100Ah · 90% DoD · 8-10 yrs',tag:'Premium',          hint:'⚡ Premium lithium — zyada energy ek jagah. Bade storage systems ke liye. 8-10 saal.'},
-    {val:'nife|12|100|0.80|20-30 yrs',  ico:'🏆', nm:'Nickel Iron NiFe',  sub:'12V 100Ah · 80% DoD · 20-30 yrs',tag:'30yr life',       hint:'🏆 Duniya ki sab se zyada tikau battery — 20-30 saal! Off-grid ke liye. Pakistan mein rare.'},
-  ];
-
-  var selBatVal = 'agm|12|100|0.50|4-6 yrs';
-
-  function buildBatCards() {
-    var grid = document.getElementById('bat-cards');
-    if (!grid) return;
-    grid.innerHTML = BAT_OPTIONS.map(function(b, i) {
-      var isSel = (b.val === selBatVal);
-      var border = isSel ? '#1c7a4d' : 'var(--line)';
-      var bg     = isSel ? '#dcfce7' : 'var(--card)';
-      var nmClr  = isSel ? '#1c7a4d' : 'var(--ink)';
-      var tagBg  = isSel ? '#1c7a4d' : '#e2e8f0';
-      var tagClr = isSel ? '#fff' : '#64748b';
-      return '<div data-idx="' + i + '" style="'
-        + 'border:2px solid ' + border + ';'
-        + 'background:' + bg + ';'
-        + 'border-radius:10px;padding:9px 10px;cursor:pointer;transition:all .15s;">'
-        + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
-          + '<span style="font-size:16px">' + b.ico + '</span>'
-          + '<span style="font-size:12px;font-weight:700;color:' + nmClr + '">' + b.nm + '</span>'
-          + '<span style="margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;background:' + tagBg + ';color:' + tagClr + '">' + b.tag + '</span>'
-        + '</div>'
-        + '<div style="font-size:10px;color:#64748b">' + b.sub + '</div>'
-        + '</div>';
-    }).join('');
-    // Click via index — no pipe char issues in selector
-    grid.onclick = function(e) {
-      var card = e.target.closest('[data-idx]');
-      if (!card) return;
-      var idx = parseInt(card.getAttribute('data-idx'));
-      if (!isNaN(idx) && BAT_OPTIONS[idx]) selectBat(BAT_OPTIONS[idx].val);
-    };
-  }
-
-  window.selectBat = function(val) {
-    selBatVal = val;
-    var sel = document.getElementById('bat-type');
-    if (sel) {
-      for (var i = 0; i < sel.options.length; i++) {
-        if (sel.options[i].value === val) { sel.selectedIndex = i; break; }
-      }
-    }
-    var opt = BAT_OPTIONS.find(function(b) { return b.val === val; });
-    var hint = document.getElementById('bat-type-hint');
-    if (hint && opt) hint.textContent = opt.hint;
-    buildBatCards();
-  };
-
-  buildBatCards();
 
 })();
 </script>

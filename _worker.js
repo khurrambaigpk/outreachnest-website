@@ -392,7 +392,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v60"; // v60: activate all pages, redirect chain fix
+const CACHE_VERSION = "v61"; // v61: static blog HTML — instant TTFB, zero SSR
 
 // ─────────────────────────────────────────────────────────────────
 // CENTRAL NAV — edit here ONLY. Worker injects this into every page.
@@ -1643,7 +1643,23 @@ export default {
     }
     const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9-]{2,100})$/);
     if (blogSlugMatch) {
-      return handlePostPage(request, env, ctx, blogSlugMatch[1]);
+      const slug = blogSlugMatch[1];
+      // v61: Try static pre-rendered /blog/slug.html first (zero SSR overhead, instant TTFB)
+      try {
+        const staticReq = new Request(new URL("/blog/" + slug + ".html", request.url).href, {method:"GET"});
+        const staticResp = await env.ASSETS.fetch(staticReq);
+        if (staticResp.ok) {
+          return new Response(await staticResp.text(), {
+            status: 200,
+            headers: {
+              "Content-Type": "text/html; charset=UTF-8",
+              "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+            }
+          });
+        }
+      } catch(e) {}
+      // Fallback: SSR via worker
+      return handlePostPage(request, env, ctx, slug);
     }
 
     if (url.pathname === "/post") {

@@ -418,16 +418,22 @@ footer a{color:var(--leaf);text-decoration:none}
         <h2>Roof Capacity Calculator</h2>
         <div class="field">
           <label>Usable roof area</label>
-          <div class="inp-wrap"><input type="number" id="rf-area" value="50" min="5" max="2000"><span class="unit-lbl">m²</span></div>
-          <div class="hint">Usable = unshaded area minus vents. Typically 60–70% of total roof.</div>
+          <div style="display:flex;gap:7px;margin-bottom:5px">
+            <div class="inp-wrap" style="flex:1"><input type="number" id="rf-area" value="50" min="1" max="20000"><span class="unit-lbl" id="rf-area-unit">m²</span></div>
+            <div style="display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;font-size:12px;font-weight:600">
+              <button type="button" id="rf-unit-m2" onclick="setRoofUnit('m2')" style="padding:0 11px;border:none;background:var(--sun);color:#fff;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700">m²</button>
+              <button type="button" id="rf-unit-ft2" onclick="setRoofUnit('ft2')" style="padding:0 11px;border:none;background:var(--paper);color:var(--muted);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600">ft²</button>
+            </div>
+          </div>
+          <div class="hint" id="rf-area-hint">Usable = unshaded area minus vents. Typically 60–70% of total roof.</div>
         </div>
         <div class="field">
           <label>Panel size</label>
           <select id="rf-size">
-            <option value="1.7">Standard (1.7 m² — 60-cell)</option>
-            <option value="2.0" selected>Large (2.0 m² — 72-cell)</option>
-            <option value="2.5">XL Commercial (2.5 m²)</option>
-            <option value="1.4">Compact (1.4 m² — 54-cell)</option>
+            <option value="1.4">Compact (1.4 m² / 15 ft² — 54-cell)</option>
+            <option value="1.7">Standard (1.7 m² / 18 ft² — 60-cell)</option>
+            <option value="2.0" selected>Large (2.0 m² / 21.5 ft² — 72-cell)</option>
+            <option value="2.5">XL Commercial (2.5 m² / 27 ft² — commercial)</option>
           </select>
         </div>
         <div class="field">
@@ -582,19 +588,22 @@ footer a{color:var(--leaf);text-decoration:none}
       <div class="app-grid" id="app-grid"></div>
 
       <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔋 Battery Type — Kaun si battery use karein?</label>
-        <select id="bat-type" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)">
-          <option value="agm|12|100|0.50|4-6 yrs">✅ AGM Sealed (12V 100Ah) — Maintenance-free, Most popular in Pakistan</option>
-          <option value="flooded|12|100|0.50|3-5 yrs">💰 Lead Acid Flooded (12V 100Ah) — Cheapest, needs water top-up</option>
-          <option value="vrla|12|100|0.50|4-6 yrs">🏠 VRLA / Dry Battery (12V 100Ah) — Indoor safe, no fumes</option>
-          <option value="gel|12|100|0.55|5-7 yrs">🌡️ Gel Battery (12V 100Ah) — Best for hot climates like Pakistan</option>
-          <option value="tubular|12|100|0.60|7-10 yrs">⚡ Tubular Lead Acid (12V 100Ah) — Deep cycle, popular in South Asia</option>
-          <option value="lifepo4_100|48|100|0.95|10+ yrs">🔋 LiFePO4 Lithium (48V 100Ah) — Best long-term, 10+ years life</option>
-          <option value="lifepo4_200|48|200|0.95|10+ yrs">🔋 LiFePO4 Lithium (48V 200Ah) — Fewer batteries needed, compact</option>
-          <option value="nmc|48|100|0.90|8-10 yrs">⚡ Lithium NMC (48V 100Ah) — Premium, high energy density</option>
-          <option value="nife|12|100|0.80|20-30 yrs">🏆 Nickel Iron NiFe (12V 100Ah) — 20-30 year life, off-grid</option>
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:10px">🔋 Battery Type — Kaun si battery use karein?</label>
+        <!-- hidden select keeps JS compatibility -->
+        <select id="bat-type" style="display:none">
+          <option value="agm|12|100|0.50|4-6 yrs" selected>AGM</option>
+          <option value="flooded|12|100|0.50|3-5 yrs">Flooded</option>
+          <option value="vrla|12|100|0.50|4-6 yrs">VRLA</option>
+          <option value="gel|12|100|0.55|5-7 yrs">Gel</option>
+          <option value="tubular|12|100|0.60|7-10 yrs">Tubular</option>
+          <option value="lifepo4_100|48|100|0.95|10+ yrs">LiFePO4 100Ah</option>
+          <option value="lifepo4_200|48|200|0.95|10+ yrs">LiFePO4 200Ah</option>
+          <option value="nmc|48|100|0.90|8-10 yrs">NMC</option>
+          <option value="nife|12|100|0.80|20-30 yrs">NiFe</option>
         </select>
-        <div class="hint" id="bat-type-hint">Maintenance-free, sealed, no fumes. Most popular for home solar in Pakistan.</div>
+        <!-- visual battery card grid -->
+        <div id="bat-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px"></div>
+        <div id="bat-type-hint" style="font-size:12px;color:var(--muted);padding:9px 11px;background:var(--card);border:1px solid var(--line);border-radius:8px;line-height:1.5">✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi. 4-6 saal chalti hai.</div>
       </div>
 
       <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">
@@ -974,9 +983,40 @@ footer a{color:var(--leaf);text-decoration:none}
 
   document.getElementById('btn-tilt').addEventListener('click', calcTilt);
 
+  // ── ROOF UNIT TOGGLE ─────────────────────────────────────
+  var roofUnit = 'm2';
+  window.setRoofUnit = function(unit) {
+    roofUnit = unit;
+    var inp = document.getElementById('rf-area');
+    var lbl = document.getElementById('rf-area-unit');
+    var hint = document.getElementById('rf-area-hint');
+    var btnM = document.getElementById('rf-unit-m2');
+    var btnF = document.getElementById('rf-unit-ft2');
+    var curVal = parseFloat(inp.value) || 0;
+    if (unit === 'ft2') {
+      if (lbl) lbl.textContent = 'ft²';
+      if (hint) hint.textContent = 'Usable = unshaded area minus vents. Typically 60–70% of total roof. (1 m² = 10.764 ft²)';
+      if (btnM) { btnM.style.background='var(--paper)'; btnM.style.color='var(--muted)'; }
+      if (btnF) { btnF.style.background='var(--sun)'; btnF.style.color='#fff'; }
+      // convert current value m²→ft²
+      if (curVal > 0) inp.value = Math.round(curVal * 10.764);
+      inp.max = 21528; // ~2000m²
+    } else {
+      if (lbl) lbl.textContent = 'm²';
+      if (hint) hint.textContent = 'Usable = unshaded area minus vents. Typically 60–70% of total roof.';
+      if (btnM) { btnM.style.background='var(--sun)'; btnM.style.color='#fff'; }
+      if (btnF) { btnF.style.background='var(--paper)'; btnF.style.color='var(--muted)'; }
+      // convert current value ft²→m²
+      if (curVal > 0) inp.value = Math.round(curVal / 10.764 * 10) / 10;
+      inp.max = 2000;
+    }
+  };
+
   // ── ROOF ─────────────────────────────────────────────────
   document.getElementById('btn-roof').addEventListener('click', function() {
-    var area = Math.max(0, getVal('rf-area'));
+    var rawArea = Math.max(0, getVal('rf-area'));
+    // convert ft² to m² for calculation
+    var area = roofUnit === 'ft2' ? rawArea / 10.764 : rawArea;
     var ps   = parseFloat(document.getElementById('rf-size').value) || 2.0;
     var watt = getWatt('rf-watt-select', 'rf-watt-custom');
     var gap  = Math.min(50, Math.max(0, getVal('rf-gap')));
@@ -992,13 +1032,15 @@ footer a{color:var(--leaf);text-decoration:none}
     var sys     = (pCount * watt) / 1000;
     var covPct  = ((pCount * ps) / area * 100).toFixed(0);
 
+    var usableFt = (usable * 10.764).toFixed(0);
+    var inputAreaFt = roofUnit === 'ft2' ? rawArea.toFixed(0)+' ft²' : (rawArea * 10.764).toFixed(0)+' ft²';
     el.innerHTML = '<h2>Roof Capacity</h2>'
       + hl('Panels that fit', pCount, 'panels')
       + rr('System size', sys.toFixed(1), 'kW')
-      + rr('Usable area', usable.toFixed(1), 'm²')
+      + rr('Usable area', usable.toFixed(1)+' m² / '+usableFt, 'ft²')
       + rr('Roof coverage', covPct, '%')
-      + rr('Per-panel area', ps.toFixed(1), 'm²')
-      + infoBox('<strong>Tip:</strong> Leave 0.5m clearance from roof edges. Avoid vents, chimneys and skylights. South-facing sections produce the most output in the northern hemisphere.');
+      + rr('Per-panel area', ps.toFixed(1)+' m² / '+(ps*10.764).toFixed(1), 'ft²')
+      + infoBox('<strong>Tip:</strong> Leave 0.5m (1.6ft) clearance from roof edges. Avoid vents, chimneys and skylights. South-facing sections produce the most output in the northern hemisphere.');
   });
 
   // ── SAVINGS ──────────────────────────────────────────────
@@ -1419,7 +1461,16 @@ footer a{color:var(--leaf);text-decoration:none}
             btypes.forEach(function(bt) {
               var uPer = (bt.v * bt.ah * bt.dod) / 1000;
               var cnt = Math.ceil(energyNeeded / uPer);
-              var isSel = (batV === bt.v && batAhR === bt.ah && Math.abs(batDoD - bt.dod) < 0.01);
+              // match selected battery by type key extracted from dropdown value
+            var selKey = batParts[0];
+            var btKey = bt.n.toLowerCase().replace(/[^a-z0-9]/g,'');
+            var keyMap = {
+              'leadacidflooded':'flooded','agmsealed':'agm','vrladry':'vrla',
+              'gelbattery':'gel','tubularleadacid':'tubular',
+              'lifepo4100ah':'lifepo4_100','lifepo4200ah':'lifepo4_200',
+              'lithiumnmc':'nmc','nickelironnife':'nife'
+            };
+            var isSel = (keyMap[btKey] === selKey);
               rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;margin-bottom:5px;background:' + (isSel ? 'var(--leaf-soft)' : 'transparent') + ';border:1px solid ' + (isSel ? 'var(--leaf)' : 'var(--line)') + '">'
                 + '<div><div style="font-size:13px;font-weight:' + (isSel ? '700' : '600') + ';color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + bt.n + (isSel ? ' ✓' : '') + '</div>'
                 + '<div style="font-size:11px;color:var(--muted)">' + parseFloat((bt.dod*100).toFixed(1)) + '% DoD · ' + bt.life + ' · ' + bt.note + '</div></div>'
@@ -1473,30 +1524,63 @@ footer a{color:var(--leaf);text-decoration:none}
     });
   }
 
-  // Battery type hint
-  var batTypeSel = document.getElementById('bat-type');
-  var batHints = {
-    'agm':        '✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi. Ghar ke andar rakh sakte hain. 4-6 saal chalti hai.',
-    'flooded':    '💰 Sab se sasta option. Lekin dhyan rakho: mahine mein pani dalna padta hai aur hawa ki zaroorat hai (bahar rakho). 3-5 saal chalti hai.',
-    'vrla':       '🏠 AGM jaisi hi hai. Sealed hai, gas nahi, ghar ke andar safe hai. Dono ka kaam ek jesa hai. 4-6 saal chalti hai.',
-    'gel':        '🌡️ Garmi mein behtar kaam karti hai — Pakistan ke liye achi. Thoda zyada mahenga. Charge slowly — fast charger mat lagao. 5-7 saal.',
-    'tubular':    '⚡ Pakistan aur India mein bahut popular. Deep cycle hai — roz charge/discharge ke liye bani hai. 7-10 saal chalti hai.',
-    'lifepo4_100':'🔋 Sab se acha long-term option. Halka, 95% use ho sakta hai, 10+ saal, koi maintenance nahi. Lekin price zyada hai.',
-    'lifepo4_200':'🔋 Same LiFePO4 — bas ek battery 200Ah hai, isliye kam batteries lagengi. Installation compact rehti hai. 10+ saal.',
-    'nmc':        '⚡ Premium lithium — zyada energy ek jagah. Ghar ke bade storage systems mein use hoti hai. 8-10 saal.',
-    'nife':       '🏆 Duniya ki sab se zyada tikau battery — 20-30 saal! Off-grid systems ke liye. Pakistan mein rare hai, aur heavy bhi hai.',
-  };
-  if (batTypeSel) {
-    batTypeSel.addEventListener('change', function() {
-      var key = this.value.split('|')[0];
-      var hintEl = document.getElementById('bat-type-hint');
-      if (hintEl) hintEl.textContent = batHints[key] || '';
-    });
-  }
+
+  // Battery hints handled by selectBat() card system
 
   // Init
   buildGrid();
   addCust();
+
+  // ── BATTERY CARD SELECTOR ────────────────────────────────
+  var BAT_OPTIONS = [
+    {val:'agm|12|100|0.50|4-6 yrs',    ico:'✅', nm:'AGM Sealed',       sub:'12V 100Ah · 50% DoD · 4-6 yrs', tag:'Most popular PK', hint:'✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi. 4-6 saal chalti hai.'},
+    {val:'flooded|12|100|0.50|3-5 yrs', ico:'💰', nm:'Lead Acid Flooded', sub:'12V 100Ah · 50% DoD · 3-5 yrs', tag:'Budget',          hint:'💰 Sab se sasta option. Lekin mahine mein pani dalna padta hai, hawa zaroori hai (bahar rakho). 3-5 saal.'},
+    {val:'vrla|12|100|0.50|4-6 yrs',    ico:'🏠', nm:'VRLA / Dry',        sub:'12V 100Ah · 50% DoD · 4-6 yrs', tag:'Indoor safe',      hint:'🏠 AGM jaisi hi hai. Sealed, gas nahi, ghar ke andar safe. 4-6 saal chalti hai.'},
+    {val:'gel|12|100|0.55|5-7 yrs',     ico:'🌡️', nm:'Gel Battery',       sub:'12V 100Ah · 55% DoD · 5-7 yrs', tag:'Hot climate',      hint:'🌡️ Garmi mein behtar — Pakistan ke liye achi. Fast charger mat lagao. 5-7 saal.'},
+    {val:'tubular|12|100|0.60|7-10 yrs',ico:'⚡', nm:'Tubular Lead Acid', sub:'12V 100Ah · 60% DoD · 7-10 yrs',tag:'Deep cycle',       hint:'⚡ Pakistan aur India mein bahut popular. Deep cycle, roz use ke liye bani. 7-10 saal.'},
+    {val:'lifepo4_100|48|100|0.95|10+ yrs',ico:'🔋',nm:'LiFePO4 100Ah',  sub:'48V 100Ah · 95% DoD · 10+ yrs', tag:'Best long-term',   hint:'🔋 Sab se acha long-term option. 95% use, 10+ saal, koi maintenance nahi. Lekin price zyada.'},
+    {val:'lifepo4_200|48|200|0.95|10+ yrs',ico:'🔋',nm:'LiFePO4 200Ah',  sub:'48V 200Ah · 95% DoD · 10+ yrs', tag:'Compact',          hint:'🔋 Same LiFePO4 — 200Ah hai, isliye kam batteries lagengi. Compact. 10+ saal.'},
+    {val:'nmc|48|100|0.90|8-10 yrs',    ico:'⚡', nm:'Lithium NMC',       sub:'48V 100Ah · 90% DoD · 8-10 yrs',tag:'Premium',          hint:'⚡ Premium lithium — zyada energy ek jagah. Bade storage systems ke liye. 8-10 saal.'},
+    {val:'nife|12|100|0.80|20-30 yrs',  ico:'🏆', nm:'Nickel Iron NiFe',  sub:'12V 100Ah · 80% DoD · 20-30 yrs',tag:'30yr life',       hint:'🏆 Duniya ki sab se zyada tikau battery — 20-30 saal! Off-grid ke liye. Pakistan mein rare.'},
+  ];
+
+  var selBatVal = 'agm|12|100|0.50|4-6 yrs';
+
+  function buildBatCards() {
+    var grid = document.getElementById('bat-cards');
+    if (!grid) return;
+    grid.innerHTML = BAT_OPTIONS.map(function(b) {
+      var isSel = (b.val === selBatVal);
+      return '<div class="bat-card' + (isSel ? ' bat-card-on' : '') + '" data-val="' + b.val + '" onclick="selectBat('' + b.val.replace(/'/g,"\'") + '')" style="'
+        + 'border:2px solid ' + (isSel ? 'var(--leaf)' : 'var(--line)') + ';'
+        + 'background:' + (isSel ? 'var(--leaf-soft)' : 'var(--card)') + ';'
+        + 'border-radius:10px;padding:9px 10px;cursor:pointer;transition:all .15s;'
+        + '">'
+        + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
+          + '<span style="font-size:16px">' + b.ico + '</span>'
+          + '<span style="font-size:12px;font-weight:700;color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + b.nm + '</span>'
+          + '<span style="margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;background:' + (isSel ? 'var(--leaf)' : 'var(--line)') + ';color:' + (isSel ? '#fff' : 'var(--muted)') + '">' + b.tag + '</span>'
+        + '</div>'
+        + '<div style="font-size:10px;color:var(--muted)">' + b.sub + '</div>'
+      + '</div>';
+    }).join('');
+  }
+
+  window.selectBat = function(val) {
+    selBatVal = val;
+    var sel = document.getElementById('bat-type');
+    if (sel) {
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === val) { sel.selectedIndex = i; break; }
+      }
+    }
+    var opt = BAT_OPTIONS.find(function(b) { return b.val === val; });
+    var hint = document.getElementById('bat-type-hint');
+    if (hint && opt) hint.textContent = opt.hint;
+    buildBatCards();
+  };
+
+  buildBatCards();
 
 })();
 </script>

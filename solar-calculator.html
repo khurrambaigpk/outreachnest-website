@@ -479,13 +479,31 @@ footer a{color:var(--leaf);text-decoration:none}
       <div class="card">
         <h2>Monthly Savings Calculator</h2>
         <div class="field">
+          <label>Currency & Region</label>
+          <select id="sv-currency" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--paper);color:var(--ink)">
+            <option value="USD|$|0.13|0.16">🇺🇸 USD — United States</option>
+            <option value="PKR|Rs.|25|35" selected>🇵🇰 PKR — Pakistan</option>
+            <option value="GBP|£|0.28|0.34">🇬🇧 GBP — United Kingdom</option>
+            <option value="EUR|€|0.25|0.35">🇪🇺 EUR — Europe</option>
+            <option value="AUD|A$|0.28|0.35">🇦🇺 AUD — Australia</option>
+            <option value="INR|₹|6|9">🇮🇳 INR — India</option>
+            <option value="SAR|SR|0.08|0.12">🇸🇦 SAR — Saudi Arabia</option>
+            <option value="AED|AED|0.08|0.12">🇦🇪 AED — UAE</option>
+            <option value="BDT|৳|8|12">🇧🇩 BDT — Bangladesh</option>
+            <option value="MYR|RM|0.22|0.28">🇲🇾 MYR — Malaysia</option>
+            <option value="NGN|₦|65|90">🇳🇬 NGN — Nigeria</option>
+            <option value="ZAR|R|2.5|3.5">🇿🇦 ZAR — South Africa</option>
+            <option value="CUSTOM|$|0.13|0.13">✏️ Custom currency</option>
+          </select>
+        </div>
+        <div class="field">
           <label>Monthly electricity bill</label>
-          <div class="inp-wrap"><input type="number" id="sv-bill" value="150" min="10" max="5000"><span class="unit-lbl">$</span></div>
+          <div class="inp-wrap"><input type="number" id="sv-bill" value="5000" min="1" max="9999999"><span class="unit-lbl" id="sv-bill-unit">Rs.</span></div>
         </div>
         <div class="field">
           <label>Electricity rate</label>
-          <div class="inp-wrap"><input type="number" id="sv-rate" value="0.13" min="0.01" max="1" step="0.01"><span class="unit-lbl">$/kWh</span></div>
-          <div class="hint">US avg: $0.13 · UK: £0.28 · Australia: A$0.30 · Pakistan: $0.03–0.09</div>
+          <div class="inp-wrap"><input type="number" id="sv-rate" value="30" min="0.001" max="99999" step="0.01"><span class="unit-lbl" id="sv-rate-unit">Rs./kWh</span></div>
+          <div class="hint" id="sv-rate-hint">Pakistan avg: Rs. 25–35 per kWh</div>
         </div>
         <div class="field">
           <label>System size</label>
@@ -497,7 +515,8 @@ footer a{color:var(--leaf);text-decoration:none}
         </div>
         <div class="field">
           <label>System cost (optional — for payback)</label>
-          <div class="inp-wrap"><input type="number" id="sv-cost" value="8000" min="0" max="500000"><span class="unit-lbl">$</span></div>
+          <div class="inp-wrap"><input type="number" id="sv-cost" value="0" min="0" max="999999999"><span class="unit-lbl" id="sv-cost-unit">Rs.</span></div>
+          <div class="hint" id="sv-cost-hint">Pakistan avg: Rs. 150,000–250,000 for 5kW system installed</div>
         </div>
         <button class="go-btn" id="btn-savings">Calculate Savings 💰</button>
       </div>
@@ -561,6 +580,22 @@ footer a{color:var(--leaf);text-decoration:none}
       </div>
 
       <div class="app-grid" id="app-grid"></div>
+
+      <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔋 Battery Type — Kaun si battery use karein?</label>
+        <select id="bat-type" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)">
+          <option value="agm|12|100|0.50|4-6 yrs">✅ AGM Sealed (12V 100Ah) — Maintenance-free, Most popular in Pakistan</option>
+          <option value="flooded|12|100|0.50|3-5 yrs">💰 Lead Acid Flooded (12V 100Ah) — Cheapest, needs water top-up</option>
+          <option value="vrla|12|100|0.50|4-6 yrs">🏠 VRLA / Dry Battery (12V 100Ah) — Indoor safe, no fumes</option>
+          <option value="gel|12|100|0.55|5-7 yrs">🌡️ Gel Battery (12V 100Ah) — Best for hot climates like Pakistan</option>
+          <option value="tubular|12|100|0.60|7-10 yrs">⚡ Tubular Lead Acid (12V 100Ah) — Deep cycle, popular in South Asia</option>
+          <option value="lifepo4_100|48|100|0.95|10+ yrs">🔋 LiFePO4 Lithium (48V 100Ah) — Best long-term, 10+ years life</option>
+          <option value="lifepo4_200|48|200|0.95|10+ yrs">🔋 LiFePO4 Lithium (48V 200Ah) — Fewer batteries needed, compact</option>
+          <option value="nmc|48|100|0.90|8-10 yrs">⚡ Lithium NMC (48V 100Ah) — Premium, high energy density</option>
+          <option value="nife|12|100|0.80|20-30 yrs">🏆 Nickel Iron NiFe (12V 100Ah) — 20-30 year life, off-grid</option>
+        </select>
+        <div class="hint" id="bat-type-hint">Maintenance-free, sealed, no fumes. Most popular for home solar in Pakistan.</div>
+      </div>
 
       <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">
         <div style="font-size:13px;font-weight:600;margin-bottom:8px">+ Custom appliance</div>
@@ -967,6 +1002,56 @@ footer a{color:var(--leaf);text-decoration:none}
   });
 
   // ── SAVINGS ──────────────────────────────────────────────
+  // Currency selector auto-fill
+  var svCurrency = document.getElementById('sv-currency');
+  var COST_DEFAULTS = {
+    'USD': {cost:'8000',   hint:'USA avg: $8,000–12,000 for 5kW installed'},
+    'PKR': {cost:'900000', hint:'Pakistan avg: Rs. 700,000–1,100,000 for 5kW installed'},
+    'GBP': {cost:'6000',   hint:'UK avg: £5,000–8,000 for 5kW installed'},
+    'EUR': {cost:'7000',   hint:'Europe avg: €6,000–9,000 for 5kW installed'},
+    'AUD': {cost:'10000',  hint:'Australia avg: A$9,000–13,000 for 5kW installed'},
+    'INR': {cost:'250000', hint:'India avg: ₹2,00,000–3,50,000 for 5kW installed'},
+    'SAR': {cost:'30000',  hint:'Saudi avg: SR 25,000–40,000 for 5kW installed'},
+    'AED': {cost:'30000',  hint:'UAE avg: AED 25,000–38,000 for 5kW installed'},
+    'BDT': {cost:'700000', hint:'Bangladesh avg: ৳6,00,000–9,00,000 for 5kW installed'},
+    'MYR': {cost:'25000',  hint:'Malaysia avg: RM 20,000–30,000 for 5kW installed'},
+    'NGN': {cost:'4000000',hint:'Nigeria avg: ₦3M–5M for 5kW installed'},
+    'ZAR': {cost:'120000', hint:'South Africa avg: R100,000–150,000 for 5kW installed'},
+  };
+
+  function updateSvCurrency() {
+    if (!svCurrency) return;
+    var parts = svCurrency.value.split('|');
+    var code = parts[0] || 'USD';
+    var sym  = parts[1] || '$';
+    var rateL = parseFloat(parts[2]) || 0.13;
+    var rateH = parseFloat(parts[3]) || 0.16;
+    var avgRate = ((rateL + rateH) / 2).toFixed(2);
+
+    var rateInp   = document.getElementById('sv-rate');
+    var billUnit  = document.getElementById('sv-bill-unit');
+    var rateUnit  = document.getElementById('sv-rate-unit');
+    var rateHint  = document.getElementById('sv-rate-hint');
+    var costUnit  = document.getElementById('sv-cost-unit');
+    var costInp   = document.getElementById('sv-cost');
+    var costHint  = document.getElementById('sv-cost-hint');
+
+    if (rateInp)  rateInp.value = avgRate;
+    if (billUnit) billUnit.textContent = sym;
+    if (rateUnit) rateUnit.textContent = sym+'/kWh';
+    if (rateHint) rateHint.textContent = 'Avg: '+sym+rateL+' – '+sym+rateH+' per kWh';
+    if (costUnit) costUnit.textContent = sym;
+
+    var cd = COST_DEFAULTS[code];
+    if (cd) {
+      if (costInp) costInp.value = cd.cost;
+      if (costHint) costHint.textContent = cd.hint;
+    } else {
+      if (costUnit) costUnit.textContent = sym;
+    }
+  }
+  if (svCurrency) { svCurrency.addEventListener('change', updateSvCurrency); updateSvCurrency(); }
+
   document.getElementById('btn-savings').addEventListener('click', function() {
     var bill = Math.max(0, getVal('sv-bill'));
     var rate = Math.max(0.001, getVal('sv-rate'));
@@ -989,13 +1074,25 @@ footer a{color:var(--leaf);text-decoration:none}
     var payback = cost > 0 ? (cost/annSav).toFixed(1) : null;
     var roi25   = cost > 0 ? ((annSav*25-cost)/cost*100).toFixed(0) : null;
 
+    var svSym = '$';
+    if (document.getElementById('sv-currency')) {
+      var svParts = document.getElementById('sv-currency').value.split('|');
+      svSym = svParts[1] || '$';
+    }
+    function fmtLocal(n) {
+      if (n >= 10000000) return svSym+(n/1000000).toFixed(1)+'M';
+      if (n >= 100000)   return svSym+(n/1000).toFixed(0)+'K';
+      if (n >= 10000)    return svSym+(n/1000).toFixed(1)+'K';
+      return svSym+n.toFixed(0);
+    }
     el.innerHTML = '<h2>Your Savings</h2>'
-      + hl('Monthly saving', fmtC(monSav), '/month')
-      + rr('Annual saving', fmtC(annSav), '/year')
+      + hl('Monthly saving', fmtLocal(monSav), '/month')
+      + rr('Annual saving', fmtLocal(annSav), '/year')
       + rr('Monthly solar generation', monKwh.toFixed(0), 'kWh')
       + rr('Bill offset', covPct, '%')
       + (payback ? rr('Payback period', payback, 'years') : '')
       + (roi25 ? rr('25-year ROI (est.)', roi25, '%') : '')
+      + (cost > 0 ? rr('System cost', fmtLocal(cost), '') : '')
       + infoBox('<strong>Note:</strong> Assumes 80% system efficiency and all generated power offsets grid consumption. Feed-in tariffs can further improve returns.');
   });
 
@@ -1096,7 +1193,7 @@ footer a{color:var(--leaf);text-decoration:none}
     if (elW) elW.textContent = t;
     if (elKw) elKw.textContent = (t/1000).toFixed(3);
     var elMw = document.getElementById('ld-total-mw');
-    if (elMw) elMw.textContent = (t/1000000).toFixed(6);
+    if (elMw) elMw.textContent = (t/1000000).toFixed(4);
     if (elDay) elDay.textContent = ((t/1000)*hrs).toFixed(1);
     var pct = Math.min(100, (t/5000)*100);
     if (bar) bar.style.width = pct+'%';
@@ -1195,10 +1292,21 @@ footer a{color:var(--leaf);text-decoration:none}
 
     var dayKwh  = (total * hrs) / 1000;
     var sysKw   = (total / 1000) * 1.25;
-    var panels  = Math.ceil(sysKw * 1000 / 400);
+    var watt    = getWatt('o-watt-select', 'o-watt-custom');
+    var panels  = Math.ceil(sysKw * 1000 / watt);
     var invKw   = Math.ceil(sysKw * 1.3 * 10) / 10;
-    var batAh   = Math.ceil((dayKwh * 1.5 * 1000) / 48);
-    var batCnt  = Math.ceil(batAh / 100) * 4;
+    // Battery calculation with DoD factor
+    var batSel = document.getElementById('bat-type');
+    var batParts = batSel ? batSel.value.split('|') : ['agm','12','100','0.50','4-6 yrs'];
+    var batV    = parseFloat(batParts[1]) || 12;
+    var batAhR  = parseFloat(batParts[2]) || 100;
+    var batDoD  = parseFloat(batParts[3]) || 0.50;
+    var batLife = batParts[4] || '4-6 yrs';
+    var energyNeeded = dayKwh * 1.5; // kWh
+    var usablePerBat = (batV * batAhR * batDoD) / 1000; // kWh usable per battery
+    var batCnt  = Math.ceil(energyNeeded / usablePerBat);
+    var batAh   = batCnt * batAhR; // total Ah
+    var batLabel = batV+'V '+batAhR+'Ah';
 
     // Wire calcs at 48V system
     var acAmps  = Math.ceil(total / 220);
@@ -1220,14 +1328,14 @@ footer a{color:var(--leaf);text-decoration:none}
       +'<thead><tr><th>Component</th><th>Specification</th><th>Notes</th><th>Qty</th></tr></thead>'
       +'<tbody>'
       +secTr('☀️ Solar Panels')
-      +bomTr('🔆','Solar Panel', Math.ceil(sysKw*1000/panels)+'W Mono', 'Min 20V Voc', panels)
+      +bomTr('🔆','Solar Panel', watt+'W', 'Min 20V Voc, Monocrystalline', panels)
       +bomTr('🔗','MC4 Connectors','MC4 pair IP67','UV resistant waterproof', panels*2)
       +bomTr('🔧','Mounting Rails','Aluminium profile','Roof/ground mount', Math.ceil(panels/2)+' sets')
       +secTr('⚡ Charge Controller')
       +bomTr('⚡','MPPT Controller', mpptSz+'A MPPT 48V','Input: up to '+Math.ceil(sysKw*1.3)+'kW PV', 1)
       +bomTr('📦','PV Combiner Box','DC fused combiner','For PV strings', 1)
-      +secTr('🔋 Battery Bank (48V System)')
-      +bomTr('🔋','Deep Cycle Battery','12V 100Ah AGM','4 in series = 48V', batCnt)
+      +secTr('🔋 Battery Bank — '+batV+'V '+batAhR+'Ah System')
+      +bomTr('🔋','Battery Bank', batV+'V '+batAhR+'Ah', (batV===48 ? 'Direct 48V system' : '4 in series = 48V'), batCnt)
       +bomTr('🛡️','Battery Fuse', brkSize(batAmps)+' DC fuse','Battery to inverter', 1)
       +bomTr('🌡️','Battery Monitor','Shunt BMS monitor','SOC & current display', 1)
       +secTr('🔄 Inverter')
@@ -1238,7 +1346,7 @@ footer a{color:var(--leaf);text-decoration:none}
       +bomTr('🔴🔵','Battery to Inverter', batWire+' flexible copper','Keep under 1m, fused', '1.5m each')
       +secTr('🏠 AC Wiring & Distribution')
       +bomTr('🟡','AC Output Cable', acWire+' 3-core copper','Inverter to DB board', '5m')
-      +bomTr('📦','Distribution Board','4-way MCB DB box','Circuit distribution', 1)
+      +bomTr('📦','Distribution Board', Math.ceil(total/1500)+'-way MCB DB box','Circuit distribution', 1)
       +bomTr('🛡️','Main AC Breaker', brkSize(acAmps*1.1)+' DP MCB','Double-pole main', 1)
       +bomTr('🛡️','Circuit Breakers','16A single-pole MCB','One per branch circuit', Math.ceil(total/1500))
       +bomTr('🌍','Earth Cable','4mm² green/yellow','Ground all metal parts', '10m')
@@ -1252,7 +1360,7 @@ footer a{color:var(--leaf);text-decoration:none}
 
     // Digital load display
     var kw = (total/1000).toFixed(3);
-    var mw = (total/1000000).toFixed(6);
+    var mw = (total/1000000).toFixed(4);
     var loadDisplay = '<div style="background:linear-gradient(145deg,#0a0e1a,#111827);border-radius:14px;padding:16px 20px;border:2px solid #1e293b;box-shadow:0 0 0 1px #1e3a5f,0 8px 24px rgba(0,0,0,.4);margin-bottom:16px">'
       + '<div style="font-size:9px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.25);font-family:Courier New,monospace;margin-bottom:10px">TOTAL LOAD SUMMARY</div>'
       + '<div style="display:flex;gap:0;align-items:center;flex-wrap:wrap">'
@@ -1285,13 +1393,49 @@ footer a{color:var(--leaf);text-decoration:none}
       + '</div>'
       + rr('Daily energy usage', dayKwh.toFixed(1), 'kWh/day')
       + rr('Recommended system size', sysKw.toFixed(1), 'kW (incl. 25% buffer)')
-      + rr('Solar panels (400W)', panels, 'panels')
+      + rr('Solar panels ('+watt+'W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
-      + rr('Battery bank (1.5 days backup)', batCnt, '× 12V 100Ah')
+      + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
+      + '<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'
+        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Summary — '+batLabel+' ('+parseFloat((batDoD*100).toFixed(1))+'% DoD, '+batLife+')</div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed (1.5 days)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Usable per battery ('+parseFloat((batDoD*100).toFixed(1))+'% DoD)</span><span style="font-weight:600">'+usablePerBat.toFixed(2)+' kWh</span></div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Batteries required</span><span style="font-weight:700;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span></div>'
+        + '<div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">All Options Compared:</div>'
+
+        + (function() {
+            var btypes = [
+              {n:'Lead Acid Flooded',  v:12, ah:100, dod:0.50, life:'3-5 yrs', note:'Budget. Needs ventilation & water top-up.'},
+              {n:'AGM Sealed',         v:12, ah:100, dod:0.50, life:'4-6 yrs', note:'Maintenance-free. Most popular in Pakistan.'},
+              {n:'VRLA / Dry',         v:12, ah:100, dod:0.50, life:'4-6 yrs', note:'Indoor safe, sealed, no fumes.'},
+              {n:'Gel Battery',        v:12, ah:100, dod:0.55, life:'5-7 yrs', note:'Hot climate. Good for Pakistan.'},
+              {n:'Tubular Lead Acid',  v:12, ah:100, dod:0.60, life:'7-10 yrs',note:'Very popular in South Asia. Deep cycle.'},
+              {n:'LiFePO4 (100Ah)',    v:48, ah:100, dod:0.95, life:'10+ yrs', note:'Best long-term. 95% usable. No maintenance.'},
+              {n:'LiFePO4 (200Ah)',    v:48, ah:200, dod:0.95, life:'10+ yrs', note:'Fewer units needed. Compact.'},
+              {n:'Lithium NMC',        v:48, ah:100, dod:0.90, life:'8-10 yrs',note:'Premium. Higher energy density.'},
+              {n:'Nickel Iron (NiFe)', v:12, ah:100, dod:0.80, life:'20-30 yrs',note:'Longest life. Off-grid systems.'},
+            ];
+            var rows = '';
+            btypes.forEach(function(bt) {
+              var uPer = (bt.v * bt.ah * bt.dod) / 1000;
+              var cnt = Math.ceil(energyNeeded / uPer);
+              var isSel = (batV === bt.v && batAhR === bt.ah && Math.abs(batDoD - bt.dod) < 0.01);
+              rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;margin-bottom:5px;background:' + (isSel ? 'var(--leaf-soft)' : 'transparent') + ';border:1px solid ' + (isSel ? 'var(--leaf)' : 'var(--line)') + '">'
+                + '<div><div style="font-size:13px;font-weight:' + (isSel ? '700' : '600') + ';color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + bt.n + (isSel ? ' ✓' : '') + '</div>'
+                + '<div style="font-size:11px;color:var(--muted)">' + parseFloat((bt.dod*100).toFixed(1)) + '% DoD · ' + bt.life + ' · ' + bt.note + '</div></div>'
+                + '<div style="text-align:right;white-space:nowrap;margin-left:10px"><strong style="color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + cnt + '× ' + bt.v + 'V ' + bt.ah + 'Ah</strong></div>'
+                + '</div>';
+            });
+            return rows;
+          })()
+        + '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:12px;color:#166534"><strong>💡 Pakistan ke liye suggestion:</strong> Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai — 10+ saal chalti hai, roz charge karo koi masla nahi.</div>'
+        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × 1.5 days)</span></div>'
+      + '</div>'
+
       + '<div class="bom-wrap"><div class="bom-title">🔧 Full Parts List &amp; Wire Sizes</div>'
         + '<div style="overflow-x:auto">' + bomHtml + '</div>'
       + '</div>'
-      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>Always have a licensed electrician verify and install the system.</strong>');
+      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
   });
 
   // Sync button
@@ -1326,6 +1470,27 @@ footer a{color:var(--leaf);text-decoration:none}
           syncPanelsFromLoad();
         }
       }
+    });
+  }
+
+  // Battery type hint
+  var batTypeSel = document.getElementById('bat-type');
+  var batHints = {
+    'agm':        '✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi. Ghar ke andar rakh sakte hain. 4-6 saal chalti hai.',
+    'flooded':    '💰 Sab se sasta option. Lekin dhyan rakho: mahine mein pani dalna padta hai aur hawa ki zaroorat hai (bahar rakho). 3-5 saal chalti hai.',
+    'vrla':       '🏠 AGM jaisi hi hai. Sealed hai, gas nahi, ghar ke andar safe hai. Dono ka kaam ek jesa hai. 4-6 saal chalti hai.',
+    'gel':        '🌡️ Garmi mein behtar kaam karti hai — Pakistan ke liye achi. Thoda zyada mahenga. Charge slowly — fast charger mat lagao. 5-7 saal.',
+    'tubular':    '⚡ Pakistan aur India mein bahut popular. Deep cycle hai — roz charge/discharge ke liye bani hai. 7-10 saal chalti hai.',
+    'lifepo4_100':'🔋 Sab se acha long-term option. Halka, 95% use ho sakta hai, 10+ saal, koi maintenance nahi. Lekin price zyada hai.',
+    'lifepo4_200':'🔋 Same LiFePO4 — bas ek battery 200Ah hai, isliye kam batteries lagengi. Installation compact rehti hai. 10+ saal.',
+    'nmc':        '⚡ Premium lithium — zyada energy ek jagah. Ghar ke bade storage systems mein use hoti hai. 8-10 saal.',
+    'nife':       '🏆 Duniya ki sab se zyada tikau battery — 20-30 saal! Off-grid systems ke liye. Pakistan mein rare hai, aur heavy bhi hai.',
+  };
+  if (batTypeSel) {
+    batTypeSel.addEventListener('change', function() {
+      var key = this.value.split('|')[0];
+      var hintEl = document.getElementById('bat-type-hint');
+      if (hintEl) hintEl.textContent = batHints[key] || '';
     });
   }
 

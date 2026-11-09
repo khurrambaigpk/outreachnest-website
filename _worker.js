@@ -232,8 +232,8 @@ const POSTS_META = {
     desc: "Repair shops fly under the radar but they're everywhere and always need marketing help. Here's how to tap the electronics repair niche for outreach.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Link Building: Quality vs Quantity",
-    desc: "100 weak links won't beat 5 relevant links from trusted, real sites. Here's how to shift your link building strategy toward quality that moves rankings.",
+    title: "Quality Link Building: Why Fewer Links Win",
+    desc: "100 weak links won't beat 5 relevant links from trusted real sites. Here's why quality link building beats volume every time — and how to do it right.",
   },
   // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
   // without entries here the worker serves the unmodified template whose canonical

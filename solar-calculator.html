@@ -1437,48 +1437,7 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Solar panels ('+watt+'W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
       + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
-      + '<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'
-        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Summary — '+batLabel+' ('+parseFloat((batDoD*100).toFixed(1))+'% DoD, '+batLife+')</div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed (1.5 days)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Usable per battery ('+parseFloat((batDoD*100).toFixed(1))+'% DoD)</span><span style="font-weight:600">'+usablePerBat.toFixed(2)+' kWh</span></div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Batteries required</span><span style="font-weight:700;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span></div>'
-        + '<div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">All Options Compared:</div>'
-
-        + (function() {
-            var btypes = [
-              {n:'Lead Acid Flooded',  v:12, ah:100, dod:0.50, life:'3-5 yrs', note:'Budget. Needs ventilation & water top-up.'},
-              {n:'AGM Sealed',         v:12, ah:100, dod:0.50, life:'4-6 yrs', note:'Maintenance-free. Most popular in Pakistan.'},
-              {n:'VRLA / Dry',         v:12, ah:100, dod:0.50, life:'4-6 yrs', note:'Indoor safe, sealed, no fumes.'},
-              {n:'Gel Battery',        v:12, ah:100, dod:0.55, life:'5-7 yrs', note:'Hot climate. Good for Pakistan.'},
-              {n:'Tubular Lead Acid',  v:12, ah:100, dod:0.60, life:'7-10 yrs',note:'Very popular in South Asia. Deep cycle.'},
-              {n:'LiFePO4 (100Ah)',    v:48, ah:100, dod:0.95, life:'10+ yrs', note:'Best long-term. 95% usable. No maintenance.'},
-              {n:'LiFePO4 (200Ah)',    v:48, ah:200, dod:0.95, life:'10+ yrs', note:'Fewer units needed. Compact.'},
-              {n:'Lithium NMC',        v:48, ah:100, dod:0.90, life:'8-10 yrs',note:'Premium. Higher energy density.'},
-              {n:'Nickel Iron (NiFe)', v:12, ah:100, dod:0.80, life:'20-30 yrs',note:'Longest life. Off-grid systems.'},
-            ];
-            var rows = '';
-            btypes.forEach(function(bt) {
-              var uPer = (bt.v * bt.ah * bt.dod) / 1000;
-              var cnt = Math.ceil(energyNeeded / uPer);
-              // match selected battery by type key extracted from dropdown value
-            // Direct match: compare bt's v/ah/dod against selected battery
-            var isSel = (bt.v === batV && bt.ah === batAhR && Math.abs(bt.dod - batDoD) < 0.01);
-              rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;margin-bottom:5px;background:' + (isSel ? 'var(--leaf-soft)' : 'transparent') + ';border:1px solid ' + (isSel ? 'var(--leaf)' : 'var(--line)') + '">'
-                + '<div><div style="font-size:13px;font-weight:' + (isSel ? '700' : '600') + ';color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + bt.n + (isSel ? ' ✓' : '') + '</div>'
-                + '<div style="font-size:11px;color:var(--muted)">' + parseFloat((bt.dod*100).toFixed(1)) + '% DoD · ' + bt.life + ' · ' + bt.note + '</div></div>'
-                + '<div style="text-align:right;white-space:nowrap;margin-left:10px"><strong style="color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + cnt + '× ' + bt.v + 'V ' + bt.ah + 'Ah</strong></div>'
-                + '</div>';
-            });
-            return rows;
-          })()
-        + '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:12px;color:#166534"><strong>💡 Pakistan ke liye suggestion:</strong> Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai — 10+ saal chalti hai, roz charge karo koi masla nahi.</div>'
-        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × 1.5 days)</span></div>'
-      + '</div>'
-
-      + '<div class="bom-wrap"><div class="bom-title">🔧 Full Parts List &amp; Wire Sizes</div>'
-        + '<div style="overflow-x:auto">' + bomHtml + '</div>'
-      + '</div>'
-      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
+      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed (1.5 days backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Note:</strong> Energy needed stays the same — changing battery type only changes <strong>how many batteries</strong> you need. Bigger DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Energy same rehti hai — battery type change karne se sirf <strong>battery count</strong> change hoti hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
   });
 
   // Sync button

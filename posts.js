@@ -644,7 +644,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"finding-electronics-appliance-repair-businesses",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"How to Find Electronics & Appliance Repair Businesses for Outreach",
+    title:"Find Electronics & Appliance Repair Businesses for Outreach",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
     excerpt:"Build targeted lists of consumer electronics repair shops — TV, laptop, mobile, UPS, and CCTV — across cities at scale, with verified contact info and SEO metrics.",
     content:`<p>Electronics and appliance repair shops don't show up on the same directories as solar companies or IT firms. They're scattered across Google Maps, local business directories, niche forums, and sometimes nothing more than a Facebook page — which makes finding them a research exercise in itself. If you're trying to reach these businesses for outreach, partnerships, or link-building, here's what actually works.</p>
@@ -973,7 +973,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electrical-contractors-online-growth",
     cat:"Electrical", cover:"g4", icon:"⚡",
-    title:"Why Electrical Contractors Are an Underrated Online Marketing Niche",
+    title:"Electrical Contractors: An Underrated Online Marketing Niche",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Electrical contractors form one of the largest, most stable B2B markets — and most of them are barely visible online. Here's the opportunity for marketers.",
     content:`<p>Electrical contracting is a huge, steady industry, yet a surprising number of these businesses have almost no online presence beyond a basic listing. That gap is both a challenge and an opportunity for anyone selling services, tools, or marketing to this market.</p>
@@ -1005,7 +1005,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electronics-repair-steady-demand",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"Consumer Electronics Repair: A Low-Competition Outreach Niche Worth Targeting",
+    title:"Consumer Electronics Repair: Low-Competition Outreach Niche",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
     excerpt:"Consumer electronics repair shops fly under the radar — but they're everywhere, always need new customers, and rarely have strong online competition. Here's why this niche works.",
     content:`<p>Electronics and appliance repair rarely makes headlines, yet demand for it never really goes away. As long as people own devices and appliances, some of them will break, and someone needs to fix them. That steadiness makes repair a quietly reliable niche to work in.</p>
@@ -1022,7 +1022,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"quality-over-quantity-backlinks",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g6", icon:"📈",
-    title:"Quality Link Building vs Quantity: Why Fewer Great Backlinks Win in SEO",
+    title:"Quality vs Quantity Backlinks: Why Fewer Great Links Win",
     author:"OutreachNest", date:"July 2026", read:"8 min read",
     excerpt:"Quality link building beats bulk every time. 100 weak backlinks won't beat 5 relevant links from real, trusted sites — here's the data-backed reason quality always wins, and how to put it into practice.",
     content:`<p>If you've ever been pitched a package of "500 backlinks for $99," you already know something is off. But most site owners can't articulate exactly <em>why</em> it's a bad deal — only that it feels wrong. The reality is more specific than gut instinct: link quality and link quantity operate through completely different mechanisms in Google's algorithm, and confusing them is one of the most expensive mistakes in SEO.</p>
@@ -1293,7 +1293,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"industrial-automation-seo-untapped-potential",
     cat:"Automation, SEO & Tools", cover:"g4", icon:"⚙️",
-    title:"Industrial Automation SEO: Untapped Potential for B2B Link Building",
+    title:"Industrial Automation SEO: Untapped B2B Link Building",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"PLC integrators, SCADA vendors, and panel builders rank on Google — but almost none have a real link building strategy.",
     content:`<p>Industrial automation is one of those niches where the businesses are real, the contracts are large, and the digital marketing is still stuck a decade behind. PLC integrators, SCADA system vendors, control panel builders, and industrial instrumentation companies often run websites that look like they were designed around 2014 — contact forms that may or may not work, no blog, no content strategy, and no backlinks beyond a few trade directories. For SEO professionals and link builders, that underdevelopment isn't a barrier. It's a structural opportunity.</p>

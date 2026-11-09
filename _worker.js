@@ -147,6 +147,11 @@ const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const POSTS_META = {
   // v19: All 27 titles & descriptions rewritten to match real search queries.
   // Primary keyword placed early in title; secondary keywords in description.
+    "electrical-contractor-lead-generation": {
+    title: "Electrical Contractor Lead Generation Guide",
+    desc: "Electrical contractor lead generation is different from most B2B outreach. Here\'s what works, what doesn\'t, and how to build a consistent pipeline.",
+    date: "2026-11-01"
+  },
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
     title: "Why Cold Outreach Fails: Hidden Mistakes",
     desc: "Cold outreach fails for the same reasons again and again — and most guides miss them. Learn the real reasons your cold emails and DMs don't get replies.",

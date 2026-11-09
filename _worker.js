@@ -392,7 +392,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v54"; // v54: centralized nav — change once, updates everywhere
+const CACHE_VERSION = "v55"; // v55: title fixes, post cache TTL, AI bot headers
 
 // ─────────────────────────────────────────────────────────────────
 // CENTRAL NAV — edit here ONLY. Worker injects this into every page.
@@ -780,7 +780,7 @@ async function handlePostPage(request, env, ctx, slug) {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=UTF-8",
-        "Cache-Control": "public, max-age=60",
+        "Cache-Control": "public, max-age=3600, s-maxage=86400",
       },
     });
   }

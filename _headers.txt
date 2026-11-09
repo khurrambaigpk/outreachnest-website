@@ -1,7 +1,8 @@
 /*
   Content-Security-Policy: img-src 'self' https: data:
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, s-maxage=86400
   X-Robots-Tag: index, follow
+  Vary: Accept-Encoding
 
 /blog/*
   Cache-Control: public, max-age=3600, s-maxage=86400

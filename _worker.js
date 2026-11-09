@@ -387,7 +387,38 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v52"; // v52: explicit clean URL handler // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
+const CACHE_VERSION = "v54"; // v54: centralized nav — change once, updates everywhere
+
+// ─────────────────────────────────────────────────────────────────
+// CENTRAL NAV — edit here ONLY. Worker injects this into every page.
+// To add a link: add one line to NAV_LINKS array below.
+// To remove: delete that line.
+// ─────────────────────────────────────────────────────────────────
+const NAV_LINKS = [
+  { href: "/",                 label: "Home"        },
+  { href: "/services",         label: "Services"    },
+  { href: "/niches",           label: "Niches"      },
+  { href: "/download",         label: "Download"    },
+  { href: "/blog",             label: "Blog"        },
+  { href: "/solar-calculator", label: "☀️ Free Tools" },
+];
+const NAV_CTA = { href: "/contact", label: "Get in touch" };
+
+function buildNav(activePath) {
+  const links = NAV_LINKS.map(l => {
+    const isActive = l.href === activePath || (l.href !== "/" && activePath.startsWith(l.href));
+    return `<a href="${l.href}" class="${isActive ? "active" : ""}">${l.label}</a>`;
+  }).join("");
+  const mobileLinks = NAV_LINKS.map(l => {
+    const isActive = l.href === activePath || (l.href !== "/" && activePath.startsWith(l.href));
+    return `<a href="${l.href}" class="${isActive ? "active" : ""}">${l.label}</a>`;
+  }).join("") + `<a href="${NAV_CTA.href}" class="m-cta">${NAV_CTA.label}</a>`;
+
+  return {
+    desktop: `<div class="nav-links">${links}<a href="${NAV_CTA.href}" class="nav-cta">${NAV_CTA.label}</a></div>`,
+    mobile:  `<div class="mobile-menu" id="mobile-menu">${mobileLinks}</div>`,
+  };
+} // v52: explicit clean URL handler // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1781,12 +1812,14 @@ export default {
           const normPath = url.pathname === "/index.html" ? "/" : url.pathname;
           const schema = PAGE_SCHEMAS[normPath];
           let bodyText = await resp.text();
+
+          // v54: Inject central nav — replaces nav-links and mobile-menu on every page
+          const nav = buildNav(normPath);
+          bodyText = bodyText.replace(/<div class="nav-links">[\s\S]*?<\/div>(?=.*<button class="menu-btn")/, nav.desktop);
+          bodyText = bodyText.replace(/<div class="mobile-menu"[^>]*>[\s\S]*?<\/div>(?=<\/nav>)/, nav.mobile);
+
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
-            // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours
-            // before </head>. The old single-replace + !== comparison was fragile —
-            // if the regex failed to match (or matched but produced the same string
-            // length by coincidence), the fallback path produced a double-schema page.
             bodyText = bodyText.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>\n?/gi, '');
             bodyText = bodyText.replace(/<\/head>/i, schemaTag + "\n</head>");
             // v25: also fix Services page title and meta description (too generic in static HTML)
@@ -1816,6 +1849,11 @@ export default {
               bodyText = bodyText
                 .replace(/<title>[^<]*<\/title>/i, "<title>SEO, Link Building &amp; Guest Posting Blog — OutreachNest</title>")
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies for finding better prospects.">');
+            }
+            // v54: inject solar-calculator banner on /services and /niches
+            if (normPath === "/services" || normPath === "/niches") {
+              const calcBanner = '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-bottom:1px solid #fcd34d;padding:10px 0;text-align:center"><div class="wrap"><span style="font-size:13px;color:#92400e">☀️ Free Solar Calculator — </span><a href="/solar-calculator" style="font-size:13px;font-weight:700;color:#d97706;text-decoration:none">Calculate panels, battery bank & parts list →</a></div></div>';
+              bodyText = bodyText.replace(/<\/nav>/, "</nav>" + calcBanner);
             }
           }
           const toCache = new Response(bodyText, {

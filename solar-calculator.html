@@ -278,9 +278,9 @@ footer a{color:var(--leaf);text-decoration:none}
   <div class="wrap nav-inner">
     <a href="/" class="logo">☀️ OutreachNest</a>
     <div class="nav-links">
-      <a href="/">Home</a><a href="/services">Services</a>
+      <a href="/">Home</a><a href="/services">Services</a><a href="/niches">Niches</a>
       <a href="/download">Download</a><a href="/blog">Blog</a>
-      <a href="/solar-calculator" style="color:var(--sun-deep);font-weight:700">☀️ Free Tools</a>
+      <a href="/solar-calculator" class="active" style="color:var(--sun-deep);font-weight:700">☀️ Free Tools</a>
       <a href="/contact" class="nav-cta">Get in touch</a>
     </div>
   </div>
@@ -530,7 +530,8 @@ footer a{color:var(--leaf);text-decoration:none}
         <div class="field">
           <label>System cost (optional — for payback)</label>
           <div class="inp-wrap"><input type="number" id="sv-cost" value="0" min="0" max="999999999"><span class="unit-lbl" id="sv-cost-unit">Rs</span></div>
-          <div class="hint" id="sv-cost-hint">Pakistan avg: Rs. 150,000–250,000 for 5kW system installed</div>
+          <div class="hint" id="sv-cost-hint">Pakistan avg: Rs 150,000–250,000 for 5kW system installed</div>
+          <div class="hint" id="sv-cost-words" style="margin-top:3px"></div>
         </div>
         <button class="go-btn" id="btn-savings">Calculate Savings 💰</button>
       </div>
@@ -633,6 +634,30 @@ footer a{color:var(--leaf);text-decoration:none}
     <h2>Building in the solar niche?</h2>
     <p>OutreachNest helps solar installers get guest posts on real niche sites — DR, traffic and spam score checked before you pay.</p>
     <a href="/services" class="cta-link">View guest post services →</a>
+  </div>
+</div>
+
+<div style="background:var(--paper);border-top:1px solid var(--line);padding:28px 0;margin-top:20px">
+  <div class="wrap">
+    <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">📚 Related Solar Guides</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+      <a href="/blog/topcon-vs-perc-vs-hjt-solar-panel-technology" style="display:block;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px;text-decoration:none;transition:border-color .15s" onmouseover="this.style.borderColor='var(--sun)'" onmouseout="this.style.borderColor='var(--line)'">
+        <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px">TOPCon vs PERC vs HJT Solar Panels</div>
+        <div style="font-size:12px;color:var(--muted)">Which panel technology is best for Pakistan?</div>
+      </a>
+      <a href="/blog/string-inverter-vs-hybrid-vs-microinverter-comparison" style="display:block;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px;text-decoration:none;transition:border-color .15s" onmouseover="this.style.borderColor='var(--sun)'" onmouseout="this.style.borderColor='var(--line)'">
+        <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px">String vs Hybrid vs Microinverter</div>
+        <div style="font-size:12px;color:var(--muted)">Complete inverter comparison guide 2026</div>
+      </a>
+      <a href="/blog/longi-vs-canadian-solar-vs-jinko-panel-brand-comparison" style="display:block;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px;text-decoration:none;transition:border-color .15s" onmouseover="this.style.borderColor='var(--sun)'" onmouseout="this.style.borderColor='var(--line)'">
+        <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px">Longi vs Canadian Solar vs Jinko</div>
+        <div style="font-size:12px;color:var(--muted)">Top panel brands compared for quality & price</div>
+      </a>
+      <a href="/download" style="display:block;padding:12px 14px;background:var(--sun-soft);border:1px solid #fcd34d;border-radius:10px;text-decoration:none;transition:border-color .15s" onmouseover="this.style.borderColor='var(--sun-deep)'" onmouseout="this.style.borderColor='#fcd34d'">
+        <div style="font-size:13px;font-weight:600;color:var(--sun-deep);margin-bottom:3px">⚡ OutreachNest Finder — Free Trial</div>
+        <div style="font-size:12px;color:var(--muted)">Find solar guest post sites & B2B leads in minutes</div>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -1084,21 +1109,39 @@ footer a{color:var(--leaf);text-decoration:none}
     return parts.join(' ') + ' Only';
   }
 
-  function showAmountWords(inputId, hintId) {
+  function updateAmountWords(inputId, wordsId) {
     var inp = document.getElementById(inputId);
-    var hint = document.getElementById(hintId);
-    if (!inp || !hint) return;
-    inp.addEventListener('input', function() {
-      var val = parseFloat(this.value) || 0;
-      if (val > 0) {
-        var existing = hint.getAttribute('data-static') || hint.textContent;
-        hint.setAttribute('data-static', existing);
-        hint.innerHTML = existing + '<br><span style="color:var(--leaf);font-weight:600">' 
-          + fmtComma(val) + ' — ' + numToWords(val) + '</span>';
-      } else {
-        hint.textContent = hint.getAttribute('data-static') || hint.textContent;
-      }
-    });
+    var wordsDiv = document.getElementById(wordsId);
+    if (!inp || !wordsDiv) return;
+    var val = parseFloat(inp.value) || 0;
+    if (val > 0) {
+      var eng = fmtComma(val) + ' — ' + numToWords(val);
+      // Urdu translation of amount
+      var urduNum = '';
+      var cr  = Math.floor(val / 10000000);
+      var lkh = Math.floor((val % 10000000) / 100000);
+      var th  = Math.floor((val % 100000) / 1000);
+      var rem = val % 1000;
+      var parts = [];
+      if(cr)  parts.push(cr  + ' Crore');
+      if(lkh) parts.push(lkh + ' Lakh');
+      if(th)  parts.push(th  + ' Hazar');
+      if(rem) parts.push(rem + '');
+      var urdu = parts.join(' ') + ' Rupay Only';
+      wordsDiv.innerHTML = '<span style="color:var(--leaf);font-weight:600;font-size:12px">'
+        + eng + '</span>'
+        + '<br><span style="color:var(--muted);font-size:11px">' + urdu + '</span>';
+    } else {
+      wordsDiv.innerHTML = '';
+    }
+  }
+
+  function showAmountWords(inputId, wordsId) {
+    var inp = document.getElementById(inputId);
+    if (!inp) return;
+    inp.addEventListener('input', function() { updateAmountWords(inputId, wordsId); });
+    // Fire on page load for default value
+    updateAmountWords(inputId, wordsId);
   }
 
   // ── SAVINGS ──────────────────────────────────────────────
@@ -1144,7 +1187,7 @@ footer a{color:var(--leaf);text-decoration:none}
 
     var cd = COST_DEFAULTS[code];
     if (cd) {
-      if (costInp) costInp.value = cd.cost;
+      if (costInp) { costInp.value = cd.cost; updateAmountWords('sv-cost','sv-cost-words'); }
       if (costHint) costHint.textContent = cd.hint;
     } else {
       if (costUnit) costUnit.textContent = sym;
@@ -1496,7 +1539,7 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Solar panels ('+watt+'W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
       + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
-      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed (1.5 days backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Note:</strong> Energy needed stays the same — changing battery type only changes <strong>how many batteries</strong> you need. Bigger DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Energy same rehti hai — battery type change karne se sirf <strong>battery count</strong> change hoti hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
+      + '<div style="background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Bank Required</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Selected battery type</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+batLabel+' '+batParts[0].toUpperCase()+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Depth of Discharge (DoD)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+parseFloat((batDoD*100).toFixed(1))+'% — '+batLife+'</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Energy needed (1.5 days backup)</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">'          + '<span style="font-size:13px;color:var(--muted)">Usable energy per battery</span>'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">'+usablePerBat.toFixed(2)+' kWh</span>'        + '</div>'        + '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 4px 0">'          + '<span style="font-size:14px;font-weight:700;color:var(--ink)">Total batteries required</span>'          + '<span style="font-size:22px;font-weight:800;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span>'        + '</div>'        + '<div style="margin-top:10px;padding:9px 11px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:12px;color:#166534">'          + '💡 <strong>Pakistan ke liye suggestion:</strong> Budget mein AGM ya Gel lein. Long-term ke liye LiFePO4 behtar hai — 10+ saal, koi maintenance nahi. Bigger DoD = fewer batteries needed.'          + '<br><small style="color:#166534;opacity:.8">Energy same rehti hai — battery type change karne se sirf <strong>battery count</strong> change hoti hai. Zyada DoD = kam batteries.</small>'        + '</div>'      + '</div>'      + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>⚠️ Yeh list estimate hai. Licensed electrician se zaroor check karwayen.</strong><br><small style="color:var(--muted)">تمام وائر سائز NEC/IEC معیار کے مطابق ہیں۔ 10 میٹر سے زیادہ لمبائی پر اگلا سائز استعمال کریں۔</small>');
   });
 
   // Sync button
@@ -1539,7 +1582,7 @@ footer a{color:var(--leaf);text-decoration:none}
 
   // ── BATTERY DROPDOWN ─────────────────────────────────────
   var BAT_HINTS = {
-    'agm':         '✅ Best choice for Pakistan. Sealed, no water top-up needed, no gas fumes — safe indoors. 4–6 year life.\n✅ Pakistan ke liye sabse behtareen choice. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.',
+    'agm':         '✅ Best choice for Pakistan. Sealed, no water top-up needed, no gas fumes — safe indoors. 4–6 year life.\n✅ Sabse better choice Pakistan mein. Sealed hai, pani nahi dalna, koi gas nahi — ghar ke andar safe. 4–6 saal.',
     'flooded':     '💰 Cheapest option. Requires monthly water top-up and ventilation — keep outdoors or in open shed. 3–5 year life.\n💰 Sab se sasta option. Mahine mein pani dalna padta hai, hawa zaroori hai — bahar ya khuli jagah rakho. 3–5 saal.',
     'vrla':        '🏠 Same performance as AGM. Valve-regulated, sealed, no fumes — suitable for indoor installation. 4–6 year life.\n🏠 AGM jaisi performance. Sealed hai, gas nahi — ghar ke andar lagane ke liye theek hai. 4–6 saal.',
     'gel':         '🌡️ Handles heat better than flooded — good for Pakistan climate. Do not use fast chargers. 5–7 year life.\n🌡️ Garmi mein behtar kaam karti hai — Pakistan ke liye achi. Fast charger bilkul mat lagao. 5–7 saal.',
@@ -1581,7 +1624,7 @@ footer a{color:var(--leaf);text-decoration:none}
 
   // Amount words on bill and cost inputs
   showAmountWords('sv-bill', 'sv-bill-words');
-  showAmountWords('sv-cost', 'sv-cost-hint');
+  showAmountWords('sv-cost', 'sv-cost-words');
 
 
 })();

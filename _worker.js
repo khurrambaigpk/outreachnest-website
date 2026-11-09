@@ -631,7 +631,7 @@ function injectPostMeta(html, title, desc, canonical, h1Text, slug, postDate) {
   // unicode escapes to < and > on the final JSON string for XSS safety only.
   const blogPostingSchema = JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "Article",
     "headline": h1Text || title,
     "description": desc,
     "image": OG_IMAGE,

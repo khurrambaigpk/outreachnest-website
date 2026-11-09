@@ -3,7 +3,7 @@ window.POSTS = [
 {
 slug:"guest-post-outreach-email-templates-2026",
 cat:"Outreach", cover:"g1", icon:"\u2709\ufe0f",
-title:"Guest Post Outreach Email Templates That Actually Work",
+title:"Guest Post Outreach Email Templates 2026",
 author:"OutreachNest", date:"September 2026", read:"6 min read",
 excerpt:"Most outreach emails get ignored for being generic. Here are the exact templates that get replies in 2026.",
 content:`<h3>Why Most Outreach Emails Fail Immediately</h3>
@@ -61,7 +61,7 @@ content:`<h3>Why Guest Post Pricing Makes No Sense at First Glance</h3>
 {
 slug:"outreachnest-finder-vs-manual-prospecting",
 cat:"SEO & Tools", cover:"g2", icon:"\ud83d\udd0d",
-title:"OutreachNest Finder vs Manual Prospecting: Which Wins for SEO Lead Gen?",
+title:"OutreachNest Finder vs Manual Prospecting",
 author:"OutreachNest", date:"September 2026", read:"5 min read",
 excerpt:"Manual prospecting vs OutreachNest Finder: an honest look at where each wins and when to switch.",
 content:`<h3>Why We're Writing This</h3>
@@ -85,7 +85,7 @@ content:`<h3>Why We're Writing This</h3>
 {
 slug:"b2b-lead-generation-electrical-contractors",
 cat:"Electrical", cover:"g4", icon:"\u26a1",
-title:"B2B Lead Generation for Electrical Contractors",
+title:"B2B Leads for Electrical Contractors",
 author:"OutreachNest", date:"September 2026", read:"6 min read",
 excerpt:"Electrical contractors are a reliable B2B market. Here's how to find verified contacts and build a list that converts.",
 content:`<h3>Why Electrical Contractors Are a Strong B2B Target</h3>
@@ -280,7 +280,7 @@ content:`<p>Most solar panel comparison guides read like sponsored content — e
 {
 slug:"string-inverter-vs-hybrid-vs-microinverter-comparison",
 cat:"Solar", cover:"g2", icon:"⚡",
-title:"String vs Hybrid vs Microinverter: The Real Truth",
+title:"String vs Hybrid vs Microinverter Guide",
 author:"OutreachNest", date:"September 2026", read:"6 min read",
 excerpt:"Most solar buyers choose the wrong inverter type because installers push margin, not fit. This guide breaks down the real cost, failure rates",
 content:`<p>The solar industry has a dirty little secret: most people choose the wrong inverter type — not because they're uninformed, but because installers often recommend whatever gives them the best margin, not whatever fits your roof.</p>
@@ -426,7 +426,7 @@ content:`<p>The solar industry has a dirty little secret: most people choose the
 {
 slug:"topcon-vs-perc-vs-hjt-solar-panel-technology",
 cat:"Solar, Industry", cover:"g4", icon:"🔬",
-title:"TOPCon vs PERC vs HJT: Solar Panel Technology War",
+title:"TOPCon vs PERC vs HJT Solar Panels",
 author:"OutreachNest", date:"September 2026", read:"7 min read",
 excerpt:"PERC was the standard. TOPCon took over. HJT is next. Here's what each technology actually means for your electricity output, degradation over 25 years",
 content:`<p>In 2022, virtually every solar panel sold used PERC technology. By 2026, TOPCon has taken over — and HJT is quietly waiting to replace it. If you're buying solar panels this year and nobody has explained what these acronyms actually mean for your electricity bill, this guide is for you.</p>
@@ -626,7 +626,7 @@ content:`<p>In 2022, virtually every solar panel sold used PERC technology. By 2
  {
 slug:"the-awkward-truth-about-cold-outreach-nobody-tells",
 cat:"Outreach, Cold Outreach", cover:"g5", icon:"🎯",
-title:"Why Cold Outreach Fails: Mistakes Nobody Talks About",
+title:"Why Cold Outreach Fails: Hidden Mistakes",
 author:"OutreachNest", date:"August 2026", read:"3 min read",
 excerpt:"Cold outreach campaigns fail for the same reasons again and again — most guides miss them. Here's what actually kills reply rates",
 content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox of anyone who runs a small business is a graveyard of messages that all sound suspiciously similar — "Hi, hope you're doing well," followed by a pitch nobody asked for. If you've ever sent a hundred of these and heard back from two people, the problem probably isn't your product. It's everything that happened before you hit send.</p>

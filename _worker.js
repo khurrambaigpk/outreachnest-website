@@ -392,7 +392,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v55"; // v55: title fixes, post cache TTL, AI bot headers
+const CACHE_VERSION = "v56"; // v56: orphan fixes, related posts, schema fixes
 
 // ─────────────────────────────────────────────────────────────────
 // CENTRAL NAV — edit here ONLY. Worker injects this into every page.
@@ -431,7 +431,7 @@ function buildNav(activePath) {
 // Each entry distributes link equity across the cluster, not just from /blog.
 const RELATED_POSTS = {
   // Cold outreach / email cluster
-  "the-awkward-truth-about-cold-outreach-nobody-tells": ["cold-email-that-gets-replies", "warm-up-new-email-domain", "whatsapp-outreach-response-rates"],
+  "the-awkward-truth-about-cold-outreach-nobody-tells": ["cold-email-that-gets-replies", "warm-up-new-email-domain", "guest-post-outreach-email-templates-2026"],
   "cold-email-that-gets-replies":    ["warm-up-new-email-domain", "the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates"],
   "warm-up-new-email-domain":        ["cold-email-that-gets-replies", "the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates"],
   "whatsapp-outreach-response-rates":["cold-email-that-gets-replies", "warm-up-new-email-domain", "how-to-find-seo-clients-fast-in-2026"],
@@ -441,7 +441,7 @@ const RELATED_POSTS = {
   "how-agencies-manage-10-niches-without-losing-track": ["how-to-find-seo-clients-fast-in-2026", "link-building-prospects", "outreachnest-finder-features"],
 
   // Link building cluster
-  "link-building-prospects":              ["quality-over-quantity-backlinks", "spot-real-guest-post-site", "b2b-lead-list-worth-buying"],
+  "link-building-prospects":              ["quality-over-quantity-backlinks", "spot-real-guest-post-site", "how-to-price-guest-posts-2026"],
   "quality-over-quantity-backlinks":      ["spot-real-guest-post-site", "guest-posting-vs-pbn-links-difference", "link-building-prospects"],
   "spot-real-guest-post-site":            ["guest-posting-vs-pbn-links-difference", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
   "guest-posting-vs-pbn-links-difference":["spot-real-guest-post-site", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
@@ -449,7 +449,7 @@ const RELATED_POSTS = {
   "b2b-lead-list-worth-buying":           ["link-building-prospects", "outreachnest-finder-features", "quality-over-quantity-backlinks"],
 
   // Solar cluster
-  "solar-guest-post-sites":       ["solar-niche-goldmine", "solar-guest-post-cost-2026", "spot-real-guest-post-site"],
+  "solar-guest-post-sites":       ["solar-niche-goldmine", "choosing-solar-installer-guide", "spot-real-guest-post-site"],
   "solar-niche-goldmine":         ["solar-guest-post-sites", "solar-guest-post-cost-2026", "link-building-prospects"],
   "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings"],
   "choosing-solar-installer-guide":["solar-niche-goldmine", "solar-guest-post-sites", "electrical-contractors-online-growth"],
@@ -460,7 +460,7 @@ const RELATED_POSTS = {
   "vet-electronics-repair-guest-post-site":          ["electronics-repair-steady-demand", "signs-guest-post-site-hurt-rankings", "guest-posting-vs-pbn-links-difference"],
 
   // Electrical contractors cluster
-  "electrical-contractors-panel-builders":  ["electrical-contractors-online-growth", "electrical-contractor-seo-backlinks", "finding-electronics-appliance-repair-businesses"],
+  "electrical-contractors-panel-builders":  ["b2b-lead-generation-electrical-contractors", "electrical-contractor-seo-backlinks", "finding-electronics-appliance-repair-businesses"],
   "electrical-contractors-online-growth":   ["electrical-contractors-panel-builders", "electrical-contractor-seo-backlinks", "how-to-find-seo-clients-fast-in-2026"],
   "electrical-contractor-seo-backlinks":    ["electrical-contractors-panel-builders", "electrical-contractors-online-growth", "link-building-prospects"],
 

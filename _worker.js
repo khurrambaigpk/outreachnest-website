@@ -392,7 +392,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v57"; // v57: POSTS_META title sync, all titles ≤60
+const CACHE_VERSION = "v58"; // v58: posts-data.json titles fixed, orphans fixed, speed
 
 // ─────────────────────────────────────────────────────────────────
 // CENTRAL NAV — edit here ONLY. Worker injects this into every page.
@@ -446,10 +446,10 @@ const RELATED_POSTS = {
   "spot-real-guest-post-site":            ["guest-posting-vs-pbn-links-difference", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
   "guest-posting-vs-pbn-links-difference":["spot-real-guest-post-site", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
   "signs-guest-post-site-hurt-rankings":  ["spot-real-guest-post-site", "guest-posting-vs-pbn-links-difference", "vet-electronics-repair-guest-post-site"],
-  "b2b-lead-list-worth-buying":           ["link-building-prospects", "outreachnest-finder-features", "quality-over-quantity-backlinks"],
+  "b2b-lead-list-worth-buying":           ["build-b2b-lead-list-from-scratch-2026", "link-building-prospects", "outreachnest-finder-features"],
 
   // Solar cluster
-  "solar-guest-post-sites":       ["solar-niche-goldmine", "choosing-solar-installer-guide", "spot-real-guest-post-site"],
+  "solar-guest-post-sites":       ["link-building-solar-companies-guide", "solar-niche-goldmine", "choosing-solar-installer-guide"],
   "solar-niche-goldmine":         ["solar-guest-post-sites", "solar-guest-post-cost-2026", "link-building-prospects"],
   "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings"],
   "choosing-solar-installer-guide":["solar-niche-goldmine", "solar-guest-post-sites", "electrical-contractors-online-growth"],
@@ -460,12 +460,12 @@ const RELATED_POSTS = {
   "vet-electronics-repair-guest-post-site":          ["electronics-repair-steady-demand", "signs-guest-post-site-hurt-rankings", "guest-posting-vs-pbn-links-difference"],
 
   // Electrical contractors cluster
-  "electrical-contractors-panel-builders":  ["b2b-lead-generation-electrical-contractors", "electrical-contractor-seo-backlinks", "finding-electronics-appliance-repair-businesses"],
+  "electrical-contractors-panel-builders":  ["electrical-contractor-lead-generation", "b2b-lead-generation-electrical-contractors", "electrical-contractor-seo-backlinks"],
   "electrical-contractors-online-growth":   ["electrical-contractors-panel-builders", "electrical-contractor-seo-backlinks", "how-to-find-seo-clients-fast-in-2026"],
   "electrical-contractor-seo-backlinks":    ["electrical-contractors-panel-builders", "electrical-contractors-online-growth", "link-building-prospects"],
 
   // Industrial automation cluster
-  "industrial-automation-leads":           ["industrial-automation-high-value-niche", "how-agencies-manage-10-niches-without-losing-track", "link-building-prospects"],
+  "industrial-automation-leads":           ["industrial-automation-seo-untapped-potential", "industrial-automation-high-value-niche", "how-agencies-manage-10-niches-without-losing-track"],
   "industrial-automation-high-value-niche":["industrial-automation-leads", "how-agencies-manage-10-niches-without-losing-track", "b2b-lead-list-worth-buying"],
 
 
@@ -485,7 +485,7 @@ const RELATED_POSTS = {
   // Industrial automation SEO (new Sep 2026)
   "industrial-automation-seo-untapped-potential": ["industrial-automation-leads", "industrial-automation-high-value-niche", "link-building-prospects"],
   // OutreachNest tool cluster
-  "outreachnest-finder-features":                ["how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet", "how-to-find-seo-clients-fast-in-2026"],
+  "outreachnest-finder-features":                ["outreachnest-finder-vs-manual-prospecting", "how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet"],
   "how-to-check-da-pa-dr-without-paying-for-tools":["outreachnest-finder-features", "lead-list-google-sheet", "link-building-prospects"],
   "lead-list-google-sheet":                       ["outreachnest-finder-features", "how-to-check-da-pa-dr-without-paying-for-tools", "b2b-lead-list-worth-buying"],
   "guest-post-outreach-email-templates-2026": ["the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates", "cold-email-that-gets-replies"],
@@ -780,7 +780,7 @@ async function handlePostPage(request, env, ctx, slug) {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=UTF-8",
-        "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
       },
     });
   }
@@ -824,7 +824,7 @@ async function handlePostPage(request, env, ctx, slug) {
       "Content-Type": "text/html; charset=UTF-8",
       // 1-hour browser cache, 24-hour CDN edge cache — long enough to serve AI
       // crawlers from cache instantly, short enough to pick up post additions.
-      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+      "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
     },
   });
 
@@ -1731,7 +1731,7 @@ export default {
         status: 200,
         headers: {
           "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=3600, s-maxage=86400",
+          "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
         },
       });
     }
@@ -1865,7 +1865,7 @@ export default {
             status: 200,
             headers: {
               "Content-Type": "text/html; charset=UTF-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=86400",
+              "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
             },
           });
           // v23: non-blocking cache write — return immediately, write in background

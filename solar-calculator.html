@@ -1325,6 +1325,7 @@ footer a{color:var(--leaf);text-decoration:none}
     return t;
   }
 
+  document.getElementById('btn-load').addEventListener('click', runLoadCalc);
   document.getElementById('ld-hrs').addEventListener('input', updateTotal);
 
   // Custom load rows
@@ -1391,8 +1392,7 @@ footer a{color:var(--leaf);text-decoration:none}
     var c = document.getElementById('bk-custom');
     if (c) c.value = hrs;
     updateBkLabel(hrs);
-    var btn = document.getElementById('btn-load');
-    if (btn) btn.click();
+    if (typeof runLoadCalc === 'function') runLoadCalc();
   }
 
   function setBkCustom(input) {
@@ -1401,8 +1401,7 @@ footer a{color:var(--leaf);text-decoration:none}
       p.classList.toggle('active', parseFloat(p.getAttribute('data-hrs')) === hrs);
     });
     updateBkLabel(hrs);
-    var btn = document.getElementById('btn-load');
-    if (btn) btn.click();
+    if (typeof runLoadCalc === 'function') runLoadCalc();
   }
 
   function updateBkLabel(hrs) {
@@ -1413,7 +1412,7 @@ footer a{color:var(--leaf);text-decoration:none}
   }
 
   // ── CALC LOAD ─────────────────────────────────────────────
-  document.getElementById('btn-load').addEventListener('click', function() {
+  function runLoadCalc() {
     var total = 0;
     var items = [];
 

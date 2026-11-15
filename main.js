@@ -29,9 +29,12 @@ function buildNav(active){
     {href:"/niches", label:"Niches", key:"niches"},
     {href:"/download", label:"Download", key:"download"},
     {href:"/blog", label:"Blog", key:"blog"},
-    {href:"/solar-calculator", label:"Free Tools", key:"solar-calculator"},
+    {href:"/solar-calculator", label:"Free Tools", key:"solar-calculator", badge:true},
   ];
-  const items = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
+  const items = links.map(l=>{
+    if(l.badge) return `<a href="${l.href}" class="${active===l.key?'active':''}" style="display:inline-flex;align-items:center;gap:5px;background:var(--sun-soft,#fef3c7);color:var(--sun-deep,#92400e);border:1.5px solid var(--sun,#f59e0b);border-radius:20px;padding:3px 12px;font-weight:700;font-size:13px">${l.label}</a>`;
+    return `<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`;
+  }).join("");
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   return `<nav><div class="wrap nav-inner">
   <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>

@@ -616,6 +616,7 @@ footer a{color:var(--leaf);text-decoration:none}
         <div style="margin-bottom:18px">
           <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">🕐 Battery Backup Duration</div>
           <div class="bk-pills" id="bk-pills">
+            <div class="bk-pill" data-hrs="8" onclick="setBkPill(this)"><span class="bk-ico">⚡</span><span class="bk-hrs">8 hrs</span><span class="bk-lbl">Basic</span></div>
             <div class="bk-pill" data-hrs="12" onclick="setBkPill(this)"><span class="bk-ico">🌙</span><span class="bk-hrs">12 hrs</span><span class="bk-lbl">Half day</span></div>
             <div class="bk-pill" data-hrs="18" onclick="setBkPill(this)"><span class="bk-ico">🌃</span><span class="bk-hrs">18 hrs</span><span class="bk-lbl">Night</span></div>
             <div class="bk-pill active" data-hrs="36" onclick="setBkPill(this)"><span class="bk-ico">☀️</span><span class="bk-hrs">36 hrs</span><span class="bk-lbl">1.5 days</span></div>
@@ -1390,6 +1391,8 @@ footer a{color:var(--leaf);text-decoration:none}
     var c = document.getElementById('bk-custom');
     if (c) c.value = hrs;
     updateBkLabel(hrs);
+    var btn = document.getElementById('btn-load');
+    if (btn) btn.click();
   }
 
   function setBkCustom(input) {
@@ -1398,6 +1401,8 @@ footer a{color:var(--leaf);text-decoration:none}
       p.classList.toggle('active', parseFloat(p.getAttribute('data-hrs')) === hrs);
     });
     updateBkLabel(hrs);
+    var btn = document.getElementById('btn-load');
+    if (btn) btn.click();
   }
 
   function updateBkLabel(hrs) {

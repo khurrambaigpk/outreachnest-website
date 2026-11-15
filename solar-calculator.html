@@ -1364,7 +1364,7 @@ footer a{color:var(--leaf);text-decoration:none}
     // auto-recalc if results already shown
     var res = document.getElementById('r-load');
     if (res && res.querySelector('.hl')) {
-      document.getElementById('btn-load').click();
+      runLoadCalc();
     }
   }
 
@@ -1382,7 +1382,7 @@ footer a{color:var(--leaf);text-decoration:none}
     updateBkLabel(_bkHrs);
     var res = document.getElementById('r-load');
     if (res && res.querySelector('.hl')) {
-      document.getElementById('btn-load').click();
+      runLoadCalc();
     }
   }
 
@@ -1390,7 +1390,7 @@ footer a{color:var(--leaf);text-decoration:none}
   updateBkLabel(36);
 
 
-  document.getElementById('btn-load').addEventListener('click', function() {
+  function runLoadCalc() {
     var total = 0;
     var items = [];
 
@@ -1565,7 +1565,8 @@ footer a{color:var(--leaf);text-decoration:none}
         + '<div style="overflow-x:auto">' + bomHtml + '</div>'
       + '</div>'
       + infoBox('<strong>Wire sizing:</strong> DC side at 48V, AC at 220V. All sizes include 25% safety margin (NEC/IEC). For runs over 10m increase one size to keep voltage drop below 3%.<br><strong>Always have a licensed electrician verify and install the system.</strong>');
-  });
+  }
+  document.getElementById('btn-load').addEventListener('click', runLoadCalc);
 
   // Sync button
   var syncBtn = document.getElementById('sync-from-load-btn');

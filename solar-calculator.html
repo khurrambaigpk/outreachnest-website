@@ -114,12 +114,10 @@ nav{background:var(--card);border-bottom:1px solid var(--line);padding:14px 0;po
 
 /* LOAD */
 .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px}
-.app-c{border:2px solid var(--line);border-radius:14px;padding:12px 8px 10px;text-align:center;cursor:pointer;transition:all .22s cubic-bezier(.34,1.56,.64,1);position:relative;background:var(--card);user-select:none;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.app-c:hover{border-color:var(--sun);box-shadow:0 4px 16px rgba(245,158,11,.18);transform:translateY(-2px)}
-.app-c.sel{border-color:var(--leaf);background:linear-gradient(145deg,#f0fdf4,#dcfce7);box-shadow:0 4px 18px rgba(34,197,94,.2);transform:translateY(-2px)}
+.app-c{border:2px solid var(--line);border-radius:11px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .18s;position:relative;background:var(--card);user-select:none}
 .app-c:hover{border-color:var(--sun)}
 .app-c.on{border-color:var(--sun);background:var(--sun-soft)}
-.app-ico{font-size:34px;display:block;margin-bottom:5px;line-height:1.1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.12))}
+.app-ico{font-size:26px;display:block;margin-bottom:3px}
 .app-nm{font-size:11px;font-weight:600}
 .app-w{font-size:11px;color:var(--muted)}
 .app-qty-ctrl{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:5px}
@@ -247,16 +245,6 @@ nav{background:var(--card);border-bottom:1px solid var(--line);padding:14px 0;po
 .dd-hrs-input::-webkit-outer-spin-button,
 .dd-hrs-input::-webkit-inner-spin-button{-webkit-appearance:none}
 .dd-hrs-input:focus{outline:none;border-color:var(--sun);box-shadow:0 0 0 2px rgba(245,158,11,.2)}
-  .bk-pills{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 6px}
-  .bk-pill{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:62px;padding:8px 10px;border:2px solid var(--line);border-radius:12px;cursor:pointer;transition:all .18s;background:var(--card);user-select:none;gap:2px}
-  .bk-pill:hover{border-color:var(--sun);background:var(--sun-soft)}
-  .bk-pill.active{border-color:var(--sun);background:var(--sun-soft);box-shadow:0 0 0 3px rgba(245,158,11,.18)}
-  .bk-pill .bk-ico{font-size:18px;line-height:1}
-  .bk-pill .bk-hrs{font-size:12px;font-weight:800;color:var(--ink)}
-  .bk-pill .bk-lbl{font-size:10px;color:var(--muted);line-height:1.2}
-  .bk-custom-row{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;color:var(--muted)}
-  .bk-custom-row input{width:70px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;text-align:center;background:var(--card);color:var(--ink);font-family:inherit}
-  .bk-hint{font-size:11px;color:var(--muted);margin-top:6px;padding:6px 10px;background:var(--paper);border-radius:8px;line-height:1.6}
 .dd-hrs-sub{font-size:9px;color:rgba(245,158,11,.35);font-family:'Courier New',monospace;letter-spacing:.08em}
 
 @media(max-width:500px){
@@ -289,7 +277,7 @@ footer a{color:var(--leaf);text-decoration:none}
     <div class="nav-links">
       <a href="/">Home</a><a href="/services">Services</a>
       <a href="/download">Download</a><a href="/blog">Blog</a>
-      <a href="/solar-calculator" class="" style="display:inline-flex;align-items:center;gap:5px;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:20px;padding:3px 12px;font-weight:700;font-size:13px">☀️ Free Tools</a><a href="/contact" class="nav-cta">Get in touch</a>
+      <a href="/solar-calculator" style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">☀️ Free Tools</a><a href="/contact" class="nav-cta">Get in touch</a>
     </div>
   </div>
 </nav>
@@ -589,73 +577,15 @@ footer a{color:var(--leaf);text-decoration:none}
           <input type="number" id="ld-hrs" value="8" min="1" max="24" class="dd-hrs-input">
           <div class="dd-hrs-sub">usage hours</div>
         </div>
-
       </div>
 
       <div class="app-grid" id="app-grid"></div>
 
-      <div style="margin-bottom:14px;padding:14px 14px 12px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:2px solid #f97316;border-radius:14px;box-shadow:0 2px 12px rgba(249,115,22,.1)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="font-size:20px">⚡</span>
-          <div>
-            <div style="font-size:14px;font-weight:800;color:#c2410c;line-height:1.2">Heavy Loads — Battery Backup?</div>
-            <div style="font-size:11px;color:#9a3412;margin-top:1px">بھاری لوڈ — بیٹری بیک اپ میں شامل کریں؟</div>
-          </div>
-        </div>
-        <p style="font-size:12px;color:#9a3412;margin-bottom:10px;padding:6px 10px;background:rgba(255,255,255,.5);border-radius:8px">Tap to toggle — <strong>Orange = battery backup ON</strong> for that load</p>
-        <div id="heavy-load-checks" style="display:flex;flex-wrap:wrap;gap:7px"></div>
-        <div style="font-size:11px;color:#9a3412;margin-top:10px;display:flex;gap:12px;flex-wrap:wrap">
-          <span>🟠 Included in battery sizing</span>
-          <span>⚪ Solar only — no battery backup</span>
-        </div>
-      </div>
-
       <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔋 Battery Type</label>
-        <!-- Battery Backup Duration -->
-        <div style="margin-bottom:18px">
-          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">🕐 Battery Backup Duration</div>
-          <div class="bk-pills" id="bk-pills">
-            <div class="bk-pill" data-hrs="8" onclick="setBkPill(this)"><span class="bk-ico">⚡</span><span class="bk-hrs">8 hrs</span><span class="bk-lbl">Basic</span></div>
-            <div class="bk-pill" data-hrs="12" onclick="setBkPill(this)"><span class="bk-ico">🌙</span><span class="bk-hrs">12 hrs</span><span class="bk-lbl">Half day</span></div>
-            <div class="bk-pill" data-hrs="18" onclick="setBkPill(this)"><span class="bk-ico">🌃</span><span class="bk-hrs">18 hrs</span><span class="bk-lbl">Night</span></div>
-            <div class="bk-pill active" data-hrs="36" onclick="setBkPill(this)"><span class="bk-ico">☀️</span><span class="bk-hrs">36 hrs</span><span class="bk-lbl">1.5 days</span></div>
-            <div class="bk-pill" data-hrs="48" onclick="setBkPill(this)"><span class="bk-ico">📅</span><span class="bk-hrs">48 hrs</span><span class="bk-lbl">2 days</span></div>
-            <div class="bk-pill" data-hrs="72" onclick="setBkPill(this)"><span class="bk-ico">📅</span><span class="bk-hrs">72 hrs</span><span class="bk-lbl">3 days</span></div>
-            <div class="bk-pill" data-hrs="120" onclick="setBkPill(this)"><span class="bk-ico">📆</span><span class="bk-hrs">120 hrs</span><span class="bk-lbl">5 days</span></div>
-            <div class="bk-pill" data-hrs="168" onclick="setBkPill(this)"><span class="bk-ico">🗓️</span><span class="bk-hrs">168 hrs</span><span class="bk-lbl">7 days</span></div>
-          </div>
-          <div class="bk-custom-row">
-            <span>Custom:</span>
-            <input type="number" id="bk-custom" value="36" min="1" max="99999" oninput="setBkCustom(this)">
-            <span>hours = <strong id="bk-days-label">1.5 days</strong></span>
-          </div>
-          <div class="bk-hint">
-            💡 For home use: 18–36 hrs is sufficient. Industrial/commercial: 72–168 hrs. Custom field accepts 1 hr to 99,999 hrs — no limit.<br>
-            <span style="font-size:10px;color:var(--muted)">Ghar ke liye: 18–36 hrs kaafi hai. Industrial/commercial: 72–168 hrs. Custom mein 1 hr se 99,999 tak type kar sakte hain.</span>
-          </div>
-        </div>
-
-        <select id="bat-type" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)">
-          <option value="agm|12|100|0.50|4-6 yrs">AGM Sealed Lead Acid — 12V 100Ah (Most popular Pakistan)</option>
-          <option value="flooded|12|100|0.50|3-5 yrs">Lead Acid Flooded — 12V 100Ah (Budget option)</option>
-          <option value="vrla|12|100|0.50|4-6 yrs">VRLA / Dry Battery — 12V 100Ah (Indoor safe)</option>
-          <option value="gel|12|100|0.55|5-7 yrs">Gel Battery — 12V 100Ah (Hot climate, Pakistan)</option>
-          <option value="tubular|12|100|0.60|7-10 yrs">Tubular Lead Acid — 12V 100Ah (South Asia popular)</option>
-          <option value="lifepo4_100|48|100|0.95|10+ yrs">LiFePO4 Lithium — 48V 100Ah (Best long-term value)</option>
-          <option value="lifepo4_200|48|200|0.95|10+ yrs">LiFePO4 Lithium — 48V 200Ah (Fewer units needed)</option>
-          <option value="nmc|48|100|0.90|8-10 yrs">Lithium NMC — 48V 100Ah (Premium)</option>
-          <option value="nife|12|100|0.80|20-30 yrs">Nickel Iron NiFe — 12V 100Ah (20-30 year life)</option>
-        </select>
-        <div class="hint" id="bat-type-hint">Maintenance-free, sealed, no fumes. Most popular for home solar in Pakistan.</div>
-      </div>
-
-      <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔆 Panel Wattage</label>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:0">پینل کی واٹ کیپیسٹی</p>
-        <select id="ld-watt-select" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);margin-top:8px">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">☀️ Solar Panel Wattage</label>
+        <select id="ld-watt-select" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);margin-bottom:6px">
           <optgroup label="── Monofacial Panels ──">
-            <option value="300">300W — Budget Mono (small homes, tight roofs)</option>
+            <option value="300">300W — Budget Mono (small homes)</option>
             <option value="350">350W — Standard Mono (residential)</option>
             <option value="400" selected>400W — Premium Mono (most common)</option>
             <option value="450">450W — High-efficiency Mono</option>
@@ -670,14 +600,29 @@ footer a{color:var(--leaf);text-decoration:none}
             <option value="550">550W — Bifacial Large Format</option>
             <option value="600">600W — Bifacial High Power</option>
             <option value="670">670W — Bifacial Commercial</option>
-            <option value="720bf">720W — Bifacial Industrial</option>
+            <option value="720">720W — Bifacial Industrial</option>
           </optgroup>
           <optgroup label="── Other ──">
             <option value="custom">✏️ Custom Wattage / کسٹم واٹ</option>
           </optgroup>
         </select>
-        <input type="number" id="ld-watt-custom" placeholder="Enter wattage / واٹ درج کریں" min="50" max="1000" style="display:none;width:100%;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);box-sizing:border-box">
-        <div class="hint" id="ld-watt-hint">Most common residential panel. Typical efficiency: 20–22%.</div>
+        <div id="ld-watt-custom-wrap" style="display:none;margin-top:6px"><input type="number" id="ld-watt-custom" placeholder="Enter watts e.g. 500" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)"></div>
+      </div>
+
+      <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔋 Battery Type</label>
+        <select id="bat-type" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)">
+          <option value="agm|12|100|0.50|4-6 yrs">AGM Sealed Lead Acid — 12V 100Ah (Most popular Pakistan)</option>
+          <option value="flooded|12|100|0.50|3-5 yrs">Lead Acid Flooded — 12V 100Ah (Budget option)</option>
+          <option value="vrla|12|100|0.50|4-6 yrs">VRLA / Dry Battery — 12V 100Ah (Indoor safe)</option>
+          <option value="gel|12|100|0.55|5-7 yrs">Gel Battery — 12V 100Ah (Hot climate, Pakistan)</option>
+          <option value="tubular|12|100|0.60|7-10 yrs">Tubular Lead Acid — 12V 100Ah (South Asia popular)</option>
+          <option value="lifepo4_100|48|100|0.95|10+ yrs">LiFePO4 Lithium — 48V 100Ah (Best long-term value)</option>
+          <option value="lifepo4_200|48|200|0.95|10+ yrs">LiFePO4 Lithium — 48V 200Ah (Fewer units needed)</option>
+          <option value="nmc|48|100|0.90|8-10 yrs">Lithium NMC — 48V 100Ah (Premium)</option>
+          <option value="nife|12|100|0.80|20-30 yrs">Nickel Iron NiFe — 12V 100Ah (20-30 year life)</option>
+        </select>
+        <div class="hint" id="bat-type-hint">Maintenance-free, sealed, no fumes. Most popular for home solar in Pakistan.</div>
       </div>
 
       <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">
@@ -1205,39 +1150,6 @@ footer a{color:var(--leaf);text-decoration:none}
 
   var qty = {};
 
-  // Heavy load IDs — shown as separate checkboxes for battery sizing
-  var HEAVY_IDS = ['ac1','ac15','iron','kettle','wash','pump','pump1','mwave','ups'];
-  var heavyInBat = {}; // track checked state
-
-  function buildHeavyChecks() {
-    var el = document.getElementById('heavy-load-checks');
-    if (!el) return;
-    var heavyApps = APPS.filter(function(a){ return HEAVY_IDS.indexOf(a.id) >= 0; });
-    el.innerHTML = heavyApps.map(function(a) {
-      var checked = (heavyInBat[a.id] !== false);
-      return '<div class="hv-chip" id="hvc-'+a.id+'" data-id="'+a.id+'" data-on="'+(checked?'1':'0')+'" '
-        +'style="display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;transition:all .18s;'
-        +(checked
-          ? 'background:#f97316;color:white;box-shadow:0 2px 8px rgba(249,115,22,.35);border:2px solid #ea580c'
-          : 'background:rgba(255,255,255,.7);color:#9a3412;border:2px solid #fed7aa'
-        )+'">'
-        +'<span style="font-size:14px">'+a.ico+'</span> '+a.nm+' <span style="opacity:.75;font-size:11px">('+a.w+'W)</span>'
-        +'</div>';
-    }).join('');
-    // Tap toggle
-    el.querySelectorAll('.hv-chip').forEach(function(chip) {
-      chip.addEventListener('click', function() {
-        var on = this.getAttribute('data-on') === '1';
-        var newOn = !on;
-        this.setAttribute('data-on', newOn ? '1' : '0');
-        this.style.background    = newOn ? '#f97316' : 'rgba(255,255,255,.7)';
-        this.style.color         = newOn ? 'white'   : '#9a3412';
-        this.style.border        = newOn ? '2px solid #ea580c' : '2px solid #fed7aa';
-        this.style.boxShadow     = newOn ? '0 2px 8px rgba(249,115,22,.35)' : 'none';
-      });
-    });
-  }
-
   function buildGrid() {
     var g = document.getElementById('app-grid');
     if (!g) return;
@@ -1325,7 +1237,6 @@ footer a{color:var(--leaf);text-decoration:none}
     return t;
   }
 
-  document.getElementById('btn-load').addEventListener('click', runLoadCalc);
   document.getElementById('ld-hrs').addEventListener('input', updateTotal);
 
   // Custom load rows
@@ -1376,43 +1287,26 @@ footer a{color:var(--leaf);text-decoration:none}
   }
 
   function secTr(label) {
-    return '<tr class="bom-sec"><td colspan="4" style="padding:8px 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(90deg,var(--sun-soft),transparent);color:var(--sun-deep);border-left:3px solid var(--sun)">'+label+'</td></tr>';
-  }
-
-  // ── BATTERY BACKUP DURATION HELPERS ─────────────────────
-  function getBkHrs() {
-    var c = document.getElementById('bk-custom');
-    return c ? (parseFloat(c.value) || 36) : 36;
-  }
-
-  function setBkPill(el) {
-    document.querySelectorAll('#bk-pills .bk-pill').forEach(function(p){ p.classList.remove('active'); });
-    el.classList.add('active');
-    var hrs = parseFloat(el.getAttribute('data-hrs')) || 36;
-    var c = document.getElementById('bk-custom');
-    if (c) c.value = hrs;
-    updateBkLabel(hrs);
-    if (typeof runLoadCalc === 'function') runLoadCalc();
-  }
-
-  function setBkCustom(input) {
-    var hrs = parseFloat(input.value) || 36;
-    document.querySelectorAll('#bk-pills .bk-pill').forEach(function(p){
-      p.classList.toggle('active', parseFloat(p.getAttribute('data-hrs')) === hrs);
-    });
-    updateBkLabel(hrs);
-    if (typeof runLoadCalc === 'function') runLoadCalc();
-  }
-
-  function updateBkLabel(hrs) {
-    var lbl = document.getElementById('bk-days-label');
-    if (!lbl) return;
-    if (hrs % 24 === 0) lbl.textContent = (hrs/24) + ' day' + (hrs/24===1?'':'s');
-    else lbl.textContent = (hrs/24).toFixed(1) + ' days';
+    return '<tr class="bom-sec"><td colspan="4">'+label+'</td></tr>';
   }
 
   // ── CALC LOAD ─────────────────────────────────────────────
-  function runLoadCalc() {
+  function getLdPanelW() {
+    var sel = document.getElementById('ld-watt-select');
+    if (!sel) return 400;
+    if (sel.value === 'custom') {
+      var c = document.getElementById('ld-watt-custom');
+      return (c && parseFloat(c.value) > 0) ? parseFloat(c.value) : 400;
+    }
+    return parseFloat(sel.value) || 400;
+  }
+
+  document.getElementById('ld-watt-select').addEventListener('change', function() {
+    var wrap = document.getElementById('ld-watt-custom-wrap');
+    if (wrap) wrap.style.display = this.value === 'custom' ? 'block' : 'none';
+  });
+
+  document.getElementById('btn-load').addEventListener('click', function() {
     var total = 0;
     var items = [];
 
@@ -1439,25 +1333,9 @@ footer a{color:var(--leaf);text-decoration:none}
       return;
     }
 
-    // Separate heavy load watts for battery sizing
-    var heavyWatts = 0;
-    APPS.forEach(function(a) {
-      if (HEAVY_IDS.indexOf(a.id) >= 0) {
-        var n = qty[a.id]||0;
-        if (n > 0) {
-          var chip = document.getElementById('hvc-'+a.id);
-          var on = chip ? chip.getAttribute('data-on') === '1' : true;
-          if (!on) heavyWatts += n * a.w; // excluded from battery
-        }
-      }
-    });
-    var totalForBat = total - heavyWatts; // only non-excluded loads
-
     var dayKwh  = (total * hrs) / 1000;
-    var dayKwhBat = (totalForBat * hrs) / 1000; // for battery sizing
     var sysKw   = (total / 1000) * 1.25;
-    var panelW  = getLdPanelW();
-    var panels  = Math.ceil(sysKw * 1000 / panelW);
+    var panels  = Math.ceil(sysKw * 1000 / getLdPanelW());
     var invKw   = Math.ceil(sysKw * 1.3 * 10) / 10;
     // Battery calculation with DoD factor
     var batSel = document.getElementById('bat-type');
@@ -1466,9 +1344,7 @@ footer a{color:var(--leaf);text-decoration:none}
     var batAhR  = parseFloat(batParts[2]) || 100;
     var batDoD  = parseFloat(batParts[3]) || 0.50;
     var batLife = batParts[4] || '4-6 yrs';
-    var bkHrs = getBkHrs();
-    var bkDays = bkHrs / Math.max(1, hrs);
-    var energyNeeded = dayKwhBat * bkDays; // kWh — based on battery-included loads only
+    var energyNeeded = dayKwh * 1.5; // kWh
     var usablePerBat = (batV * batAhR * batDoD) / 1000; // kWh usable per battery
     var batCnt  = Math.ceil(energyNeeded / usablePerBat);
     var batAh   = batCnt * batAhR; // total Ah
@@ -1494,7 +1370,7 @@ footer a{color:var(--leaf);text-decoration:none}
       +'<thead><tr><th>Component</th><th>Specification</th><th>Notes</th><th>Qty</th></tr></thead>'
       +'<tbody>'
       +secTr('☀️ Solar Panels')
-      +bomTr('🔆','Solar Panel', panelW+'W Mono', 'Min 20V Voc', panels)
+      +bomTr('🔆','Solar Panel', Math.ceil(sysKw*1000/panels)+'W Mono', 'Min 20V Voc', panels)
       +bomTr('🔗','MC4 Connectors','MC4 pair IP67','UV resistant waterproof', panels*2)
       +bomTr('🔧','Mounting Rails','Aluminium profile','Roof/ground mount', Math.ceil(panels/2)+' sets')
       +secTr('⚡ Charge Controller')
@@ -1522,30 +1398,6 @@ footer a{color:var(--leaf);text-decoration:none}
       +bomTr('⚡','AC Surge Protector','275V AC SPD','AC output protection', 1)
       +bomTr('🌍','Earthing Rod','2.4m copper clad','System grounding', 1)
       +bomTr('📦','IP65 Enclosure','Outdoor rated box','For CC & DC components', 1)
-      +secTr('🔩 Accessories & Safety Hardware')
-      +bomTr('⚡','DC Disconnect Switch','32A DC isolator','PV array disconnect', 1)
-      +bomTr('🛡️','PV String Fuse','10A DC fuse per string','Overcurrent protection', Math.max(1,Math.ceil(panels/4)))
-      +bomTr('🌍','Earthing Rod','2.4m copper-clad rod','System grounding', 1)
-      +bomTr('🌍','Earth Bar/Busbar','Earth terminal block','Connect all grounds', 1)
-      +bomTr('🔴','Earth Cable','6mm² green/yellow','All metal frames to earth', '15m')
-      +bomTr('⚡','DC Surge Protector (SPD)','1000V Class II DC SPD','PV string lightning protect', 1)
-      +bomTr('⚡','AC Surge Protector (SPD)','275V AC Class II SPD','AC output protection', 1)
-      +bomTr('📦','IP65 Outdoor Enclosure','300×250×120mm ABS IP65','House CC + DC components', 1)
-      +bomTr('🔀','Manual Changeover Switch', brkSize(acAmps*1.2)+' 2-pole MCS','Grid ↔ Solar changeover', 1)
-      +bomTr('🌡️','Battery Temperature Sensor','NTC sensor lead','Temp-compensated charging', 1)
-      +secTr('🔴🔵 Wiring — DC Side')
-      +bomTr('🔴','PV+ Cable (Red)','6mm² DC solar cable','Panel strings to MPPT', Math.max(10,panels*2)+'m')
-      +bomTr('🔵','PV− Cable (Black)','6mm² DC solar cable','Panel strings to MPPT', Math.max(10,panels*2)+'m')
-      +bomTr('🔴','Battery+ Cable (Red)',batWire+' flexible copper','Battery bank to inverter', '2m')
-      +bomTr('🔵','Battery− Cable (Black)',batWire+' flexible copper','Battery bank to inverter', '2m')
-      +bomTr('🔗','MC4 Connectors (pair)','IP67 MC4 pair','PV connections', panels*2)
-      +bomTr('📎','Cable Lugs',batWire+' copper lug','For battery connections', 8)
-      +bomTr('🔩','Cable Ties & Clips','UV-resistant nylon','Cable management', '1 bag')
-      +secTr('🟡 Wiring — AC Side')
-      +bomTr('🟡','AC Output Cable',acWire+' 3-core copper','Inverter to changeover/DB', '5m')
-      +bomTr('📦','Distribution Board (DB)','4-way MCB DB box + cover','Circuit distribution', 1)
-      +bomTr('🛡️','Main DP MCB', brkSize(acAmps*1.1)+' double-pole MCB','Main AC breaker', 1)
-      +bomTr('🛡️','Branch MCBs','16A single-pole MCB','One per circuit (lights/fans/etc)', Math.max(2,Math.ceil(total/1500)))
       +'</tbody></table>';
 
     // Digital load display
@@ -1583,14 +1435,13 @@ footer a{color:var(--leaf);text-decoration:none}
       + '</div>'
       + rr('Daily energy usage', dayKwh.toFixed(1), 'kWh/day')
       + rr('Recommended system size', sysKw.toFixed(1), 'kW (incl. 25% buffer)')
-      + rr('Solar panels ('+panelW+'W)', panels, 'panels')
+      + rr('Solar panels (400W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
-      + rr('Battery backup load'+(heavyWatts>0?' (excl. '+heavyWatts+'W heavy)':''), totalForBat, 'W')
-      + rr('Battery bank ('+bkHrs+'h backup)', batCnt, '× '+batLabel)
+      + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
       + '<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'
-        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Summary — '+batLabel+' ('+Math.round(batDoD*100)+'% DoD, '+batLife+')</div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed ('+bkHrs+'h)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Usable per battery ('+Math.round(batDoD*100)+'% DoD)</span><span style="font-weight:600">'+usablePerBat.toFixed(2)+' kWh</span></div>'
+        + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Summary — '+batLabel+' ('+batDoD*100+'% DoD, '+batLife+')</div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed (1.5 days)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Usable per battery ('+batDoD*100+'% DoD)</span><span style="font-weight:600">'+usablePerBat.toFixed(2)+' kWh</span></div>'
         + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Batteries required</span><span style="font-weight:700;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span></div>'
         + '<div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">All Options Compared:</div>'
 
@@ -1613,13 +1464,13 @@ footer a{color:var(--leaf);text-decoration:none}
               var isSel = (batV === bt.v && batAhR === bt.ah && Math.abs(batDoD - bt.dod) < 0.01);
               rows += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;margin-bottom:5px;background:' + (isSel ? 'var(--leaf-soft)' : 'transparent') + ';border:1px solid ' + (isSel ? 'var(--leaf)' : 'var(--line)') + '">'
                 + '<div><div style="font-size:13px;font-weight:' + (isSel ? '700' : '600') + ';color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + bt.n + (isSel ? ' ✓' : '') + '</div>'
-                + '<div style="font-size:11px;color:var(--muted)">' + Math.round(bt.dod*100) + '% DoD · ' + bt.life + ' · ' + bt.note + '</div></div>'
+                + '<div style="font-size:11px;color:var(--muted)">' + bt.dod*100 + '% DoD · ' + bt.life + ' · ' + bt.note + '</div></div>'
                 + '<div style="text-align:right;white-space:nowrap;margin-left:10px"><strong style="color:' + (isSel ? 'var(--leaf)' : 'var(--ink)') + '">' + cnt + '× ' + bt.v + 'V ' + bt.ah + 'Ah</strong></div>'
                 + '</div>';
             });
             return rows;
           })()
-        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × '+bkHrs+'h)</span></div>'
+        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × 1.5 days)</span></div>'
       + '</div>'
 
       + '<div class="bom-wrap"><div class="bom-title">🔧 Full Parts List &amp; Wire Sizes</div>'
@@ -1629,49 +1480,6 @@ footer a{color:var(--leaf);text-decoration:none}
   });
 
   // Sync button
-  // Load Planner panel wattage dropdown — custom toggle + hints
-  var ldWattSel = document.getElementById('ld-watt-select');
-  var ldWattCustom = document.getElementById('ld-watt-custom');
-  var ldWattHint = document.getElementById('ld-watt-hint');
-  var ldWattHints = {
-    '300': 'Budget mono panel. Good for small homes or tight roofs.',
-    '350': 'Standard mono panel. Common in residential installations.',
-    '400': 'Most common residential panel. Typical efficiency: 20–22%.',
-    '450': 'High-efficiency mono. Good balance of cost and output.',
-    '540': 'Half-cut cell mono. Better shade tolerance, commercial use.',
-    '580': 'Large format mono. Fewer panels needed for same output.',
-    '620': 'High power mono. Used in utility and large rooftop systems.',
-    '720': 'Ultra high power mono. Latest gen, fewer panels required.',
-    '420': 'Bifacial residential. Front + rear generation, +10–15% yield.',
-    '480': 'Bifacial half-cut. Dual-side + reduced shading loss.',
-    '550': 'Bifacial large format. High yield, needs tilt/ground mount.',
-    '600': 'Bifacial high power. Commercial grade, high efficiency.',
-    '670': 'Bifacial commercial. Large projects, low LCOE.',
-    '720bf': 'Bifacial industrial. Utility-scale, maximum output per m².'
-  };
-  if (ldWattSel) {
-    ldWattSel.addEventListener('change', function() {
-      if (this.value === 'custom') {
-        if (ldWattCustom) ldWattCustom.style.display = 'block';
-        if (ldWattHint) ldWattHint.textContent = 'Enter your panel wattage manually.';
-      } else {
-        if (ldWattCustom) ldWattCustom.style.display = 'none';
-        if (ldWattHint) ldWattHint.textContent = ldWattHints[this.value] || '';
-      }
-    });
-  }
-
-  function getLdPanelW() {
-    var sel = document.getElementById('ld-watt-select');
-    if (!sel) return 400;
-    if (sel.value === 'custom') {
-      var c = document.getElementById('ld-watt-custom');
-      return (c && parseFloat(c.value) > 0) ? parseFloat(c.value) : 400;
-    }
-    // '720bf' bifacial industrial → numeric 720
-    return parseFloat(sel.value) || 400;
-  }
-
   var syncBtn = document.getElementById('sync-from-load-btn');
   if (syncBtn) {
     syncBtn.addEventListener('click', function() {
@@ -1729,7 +1537,6 @@ footer a{color:var(--leaf);text-decoration:none}
 
   // Init
   buildGrid();
-  buildHeavyChecks();
   addCust();
 
 })();

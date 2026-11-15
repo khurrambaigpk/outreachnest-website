@@ -619,13 +619,27 @@ footer a{color:var(--leaf);text-decoration:none}
         <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔆 Panel Wattage</label>
         <p style="font-size:12px;color:var(--muted);margin-bottom:0">پینل کی واٹ کیپیسٹی</p>
         <select id="ld-watt-select" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);margin-top:8px">
-          <option value="300">300W — Budget Mono (small homes, tight roofs)</option>
-          <option value="350">350W — Standard Mono (common residential)</option>
-          <option value="400" selected>400W — Premium Mono (most common)</option>
-          <option value="450">450W — High Efficiency Mono</option>
-          <option value="480">480W — Bifacial Half-cut (commercial)</option>
-          <option value="580">580W — Large Format Mono (fewer panels needed)</option>
-          <option value="custom">Custom Wattage / کسٹم واٹ</option>
+          <optgroup label="── Monofacial Panels ──">
+            <option value="300">300W — Budget Mono (small homes, tight roofs)</option>
+            <option value="350">350W — Standard Mono (residential)</option>
+            <option value="400" selected>400W — Premium Mono (most common)</option>
+            <option value="450">450W — High-efficiency Mono</option>
+            <option value="540">540W — Half-cut Mono (commercial)</option>
+            <option value="580">580W — Large Format Mono</option>
+            <option value="620">620W — High Power Mono</option>
+            <option value="720">720W — Ultra High Power Mono</option>
+          </optgroup>
+          <optgroup label="── Bifacial Panels (front + rear) ──">
+            <option value="420">420W — Bifacial Mono (residential)</option>
+            <option value="480">480W — Bifacial Half-cut</option>
+            <option value="550">550W — Bifacial Large Format</option>
+            <option value="600">600W — Bifacial High Power</option>
+            <option value="670">670W — Bifacial Commercial</option>
+            <option value="720bf">720W — Bifacial Industrial</option>
+          </optgroup>
+          <optgroup label="── Other ──">
+            <option value="custom">✏️ Custom Wattage / کسٹم واٹ</option>
+          </optgroup>
         </select>
         <input type="number" id="ld-watt-custom" placeholder="Enter wattage / واٹ درج کریں" min="50" max="1000" style="display:none;width:100%;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);box-sizing:border-box">
         <div class="hint" id="ld-watt-hint">Most common residential panel. Typical efficiency: 20–22%.</div>
@@ -1554,8 +1568,16 @@ footer a{color:var(--leaf);text-decoration:none}
     '350': 'Standard mono panel. Common in residential installations.',
     '400': 'Most common residential panel. Typical efficiency: 20–22%.',
     '450': 'High-efficiency mono. Good balance of cost and output.',
-    '480': 'Bifacial half-cut — dual-side + reduced shading loss.',
-    '580': 'Large format mono. Fewer panels needed for same output.'
+    '540': 'Half-cut cell mono. Better shade tolerance, commercial use.',
+    '580': 'Large format mono. Fewer panels needed for same output.',
+    '620': 'High power mono. Used in utility and large rooftop systems.',
+    '720': 'Ultra high power mono. Latest gen, fewer panels required.',
+    '420': 'Bifacial residential. Front + rear generation, +10–15% yield.',
+    '480': 'Bifacial half-cut. Dual-side + reduced shading loss.',
+    '550': 'Bifacial large format. High yield, needs tilt/ground mount.',
+    '600': 'Bifacial high power. Commercial grade, high efficiency.',
+    '670': 'Bifacial commercial. Large projects, low LCOE.',
+    '720bf': 'Bifacial industrial. Utility-scale, maximum output per m².'
   };
   if (ldWattSel) {
     ldWattSel.addEventListener('change', function() {
@@ -1576,6 +1598,7 @@ footer a{color:var(--leaf);text-decoration:none}
       var c = document.getElementById('ld-watt-custom');
       return (c && parseFloat(c.value) > 0) ? parseFloat(c.value) : 400;
     }
+    // '720bf' bifacial industrial → numeric 720
     return parseFloat(sel.value) || 400;
   }
 

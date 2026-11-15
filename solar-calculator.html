@@ -579,20 +579,7 @@ footer a{color:var(--leaf);text-decoration:none}
           <input type="number" id="ld-hrs" value="8" min="1" max="24" class="dd-hrs-input">
           <div class="dd-hrs-sub">usage hours</div>
         </div>
-        <div class="dd-hrs-box" style="flex-direction:column;min-width:120px">
-          <div class="dd-hrs-label">BATTERY BACKUP</div>
-          <select id="ld-backup-hrs" style="width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink);margin-top:4px;cursor:pointer" onchange="loadCalc()">
-            <option value="4">4 hrs backup</option>
-            <option value="6">6 hrs backup</option>
-            <option value="8" selected>8 hrs backup</option>
-            <option value="12">12 hrs backup (half day)</option>
-            <option value="18">18 hrs backup</option>
-            <option value="24">24 hrs — 1 day</option>
-            <option value="36">36 hrs — 1.5 days</option>
-            <option value="48">48 hrs — 2 days</option>
-          </select>
-          <div class="dd-hrs-sub">battery autonomy</div>
-        </div>
+
       </div>
 
       <div class="app-grid" id="app-grid"></div>
@@ -1412,9 +1399,7 @@ footer a{color:var(--leaf);text-decoration:none}
     var batAhR  = parseFloat(batParts[2]) || 100;
     var batDoD  = parseFloat(batParts[3]) || 0.50;
     var batLife = batParts[4] || '4-6 yrs';
-    var backupHrs = Math.max(1, parseFloat(document.getElementById('ld-backup-hrs') ? document.getElementById('ld-backup-hrs').value : 36) || 36);
-    var backupDays = backupHrs / (hrs || 8);
-    var energyNeeded = dayKwhBat * backupDays; // kWh — based on battery-included loads only
+    var energyNeeded = dayKwhBat * 1.5; // kWh — based on battery-included loads only
     var usablePerBat = (batV * batAhR * batDoD) / 1000; // kWh usable per battery
     var batCnt  = Math.ceil(energyNeeded / usablePerBat);
     var batAh   = batCnt * batAhR; // total Ah
@@ -1532,10 +1517,10 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Solar panels ('+panelW+'W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
       + rr('Battery backup load'+(heavyWatts>0?' (excl. '+heavyWatts+'W heavy)':''), totalForBat, 'W')
-      + rr('Battery bank ('+backupHrs+'h backup)', batCnt, '× '+batLabel)
+      + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
       + '<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'
         + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Summary — '+batLabel+' ('+Math.round(batDoD*100)+'% DoD, '+batLife+')</div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed ('+backupHrs+'h)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed (1.5 days)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
         + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Usable per battery ('+Math.round(batDoD*100)+'% DoD)</span><span style="font-weight:600">'+usablePerBat.toFixed(2)+' kWh</span></div>'
         + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Batteries required</span><span style="font-weight:700;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span></div>'
         + '<div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">All Options Compared:</div>'
@@ -1565,7 +1550,7 @@ footer a{color:var(--leaf);text-decoration:none}
             });
             return rows;
           })()
-        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × '+backupHrs+'h)</span></div>'
+        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × 1.5 days)</span></div>'
       + '</div>'
 
       + '<div class="bom-wrap"><div class="bom-title">🔧 Full Parts List &amp; Wire Sizes</div>'

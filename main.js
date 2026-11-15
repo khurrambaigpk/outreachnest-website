@@ -29,7 +29,6 @@ function buildNav(active){
     {href:"/niches", label:"Niches", key:"niches"},
     {href:"/download", label:"Download", key:"download"},
     {href:"/blog", label:"Blog", key:"blog"},
-    {href:"/solar-calculator", label:"☀️ Free Tools", key:"solar-calculator"},
   ];
   const items = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");

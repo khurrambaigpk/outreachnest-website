@@ -610,6 +610,26 @@ footer a{color:var(--leaf);text-decoration:none}
       </div>
 
       <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">⏱️ Battery Backup Duration</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="bk-pills">
+          <button type="button" class="bk-pill" data-hrs="8"  onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">8h</button>
+          <button type="button" class="bk-pill" data-hrs="12" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">12h</button>
+          <button type="button" class="bk-pill" data-hrs="18" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">18h</button>
+          <button type="button" class="bk-pill" data-hrs="36" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid #f59e0b;border-radius:20px;background:#fef3c7;font-size:12px;font-weight:700;cursor:pointer;color:#92400e">36h</button>
+          <button type="button" class="bk-pill" data-hrs="48" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">48h</button>
+          <button type="button" class="bk-pill" data-hrs="72" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">72h</button>
+          <button type="button" class="bk-pill" data-hrs="120" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">120h</button>
+          <button type="button" class="bk-pill" data-hrs="168" onclick="setBkPill(this)" style="padding:5px 12px;border:1.5px solid var(--line);border-radius:20px;background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted)">168h</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <label style="font-size:12px;color:var(--muted)">Custom:</label>
+          <input type="number" id="bk-custom" placeholder="e.g. 24" min="1" max="720" style="width:80px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper);color:var(--ink)" oninput="setBkCustom(this)">
+          <span style="font-size:12px;color:var(--muted)">hours</span>
+          <span id="bk-label" style="font-size:12px;font-weight:700;color:var(--sun-deep);margin-left:4px">36h selected</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px">
         <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">🔋 Battery Type</label>
         <select id="bat-type" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)">
           <option value="agm|12|100|0.50|4-6 yrs">AGM Sealed Lead Acid — 12V 100Ah (Most popular Pakistan)</option>
@@ -1306,6 +1326,70 @@ footer a{color:var(--leaf);text-decoration:none}
     if (wrap) wrap.style.display = this.value === 'custom' ? 'block' : 'none';
   });
 
+  // ── Battery Backup Duration Pills ──────────────────────────────
+  var _bkHrs = 36; // default 36h
+
+  function getBkHrs() { return _bkHrs; }
+
+  function updateBkLabel(hrs) {
+    var lbl = document.getElementById('bk-label');
+    if (!lbl) return;
+    var days = hrs / 24;
+    if (days >= 1) {
+      var d = Math.floor(days), h = hrs % 24;
+      lbl.textContent = h > 0 ? d+'d '+h+'h selected' : d+'d selected';
+    } else {
+      lbl.textContent = hrs+'h selected';
+    }
+  }
+
+  function setBkPill(el) {
+    _bkHrs = parseFloat(el.getAttribute('data-hrs'));
+    // reset all pills
+    document.querySelectorAll('.bk-pill').forEach(function(p) {
+      p.style.background = 'var(--card)';
+      p.style.borderColor = 'var(--line)';
+      p.style.color = 'var(--muted)';
+      p.style.fontWeight = '600';
+    });
+    // highlight selected
+    el.style.background = '#fef3c7';
+    el.style.borderColor = '#f59e0b';
+    el.style.color = '#92400e';
+    el.style.fontWeight = '700';
+    // clear custom input
+    var ci = document.getElementById('bk-custom');
+    if (ci) ci.value = '';
+    updateBkLabel(_bkHrs);
+    // auto-recalc if results already shown
+    var res = document.getElementById('r-load');
+    if (res && res.querySelector('.hl')) {
+      document.getElementById('btn-load').click();
+    }
+  }
+
+  function setBkCustom(inp) {
+    var v = parseFloat(inp.value);
+    if (!v || v < 1) return;
+    _bkHrs = v;
+    // deselect all pills
+    document.querySelectorAll('.bk-pill').forEach(function(p) {
+      p.style.background = 'var(--card)';
+      p.style.borderColor = 'var(--line)';
+      p.style.color = 'var(--muted)';
+      p.style.fontWeight = '600';
+    });
+    updateBkLabel(_bkHrs);
+    var res = document.getElementById('r-load');
+    if (res && res.querySelector('.hl')) {
+      document.getElementById('btn-load').click();
+    }
+  }
+
+  // init label on page load
+  updateBkLabel(36);
+
+
   document.getElementById('btn-load').addEventListener('click', function() {
     var total = 0;
     var items = [];
@@ -1344,7 +1428,9 @@ footer a{color:var(--leaf);text-decoration:none}
     var batAhR  = parseFloat(batParts[2]) || 100;
     var batDoD  = parseFloat(batParts[3]) || 0.50;
     var batLife = batParts[4] || '4-6 yrs';
-    var energyNeeded = dayKwh * 1.5; // kWh
+    var bkHrs = getBkHrs();
+    var bkDays = bkHrs / 24;
+    var energyNeeded = dayKwh * bkDays; // kWh
     var usablePerBat = (batV * batAhR * batDoD) / 1000; // kWh usable per battery
     var batCnt  = Math.ceil(energyNeeded / usablePerBat);
     var batAh   = batCnt * batAhR; // total Ah
@@ -1437,10 +1523,10 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Recommended system size', sysKw.toFixed(1), 'kW (incl. 25% buffer)')
       + rr('Solar panels (400W)', panels, 'panels')
       + rr('Inverter size', invKw.toFixed(1), 'kW min')
-      + rr('Battery bank (1.5 days backup)', batCnt, '× '+batLabel)
+      + rr('Battery bank ('+bkHrs+'h backup)', batCnt, '× '+batLabel)
       + '<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;margin-bottom:8px">'
         + '<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">🔋 Battery Summary — '+batLabel+' ('+batDoD*100+'% DoD, '+batLife+')</div>'
-        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed (1.5 days)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
+        + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Energy needed ('+bkHrs+'h backup)</span><span style="font-weight:600;color:var(--leaf)">'+energyNeeded.toFixed(1)+' kWh</span></div>'
         + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Usable per battery ('+batDoD*100+'% DoD)</span><span style="font-weight:600">'+usablePerBat.toFixed(2)+' kWh</span></div>'
         + '<div class="r-row" style="font-size:13px"><span class="r-lbl">Batteries required</span><span style="font-weight:700;color:var(--sun-deep)">'+batCnt+' × '+batLabel+'</span></div>'
         + '<div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">All Options Compared:</div>'
@@ -1470,7 +1556,7 @@ footer a{color:var(--leaf);text-decoration:none}
             });
             return rows;
           })()
-        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' × 1.5 days)</span></div>'
+        + '<div class="r-row" style="border-top:2px solid var(--line);margin-top:6px;padding-top:10px;border-bottom:none"><span style="font-weight:700;color:var(--leaf)">Energy needed</span><span style="font-weight:700;color:var(--leaf)">' + energyNeeded.toFixed(1) + ' kWh (' + dayKwh.toFixed(1) + ' kWh/day × ' + bkDays.toFixed(2) + ' days)</span></div>'
       + '</div>'
 
       + '<div class="bom-wrap"><div class="bom-title">🔧 Full Parts List &amp; Wire Sizes</div>'

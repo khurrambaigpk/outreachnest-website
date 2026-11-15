@@ -147,25 +147,20 @@ const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const POSTS_META = {
   // v19: All 27 titles & descriptions rewritten to match real search queries.
   // Primary keyword placed early in title; secondary keywords in description.
-    "electrical-contractor-lead-generation": {
-    title: "Guest Posting vs PBN Links: Real Difference",
-    desc: "Electrical contractor lead generation is different from most B2B outreach. Here\'s what works, what doesn\'t, and how to build a consistent pipeline.",
-    date: "2026-11-01"
-  },
   "the-awkward-truth-about-cold-outreach-nobody-tells": {
     title: "Why Cold Outreach Fails: Hidden Mistakes",
     desc: "Cold outreach fails for the same reasons again and again — and most guides miss them. Learn the real reasons your cold emails and DMs don't get replies.",
   },
   "finding-electronics-appliance-repair-businesses": {
-    title: "Find Electronics Repair Businesses",
+    title: "Find Electronics & Appliance Repair Shops",
     desc: "Build targeted lists of TV, laptop, mobile, UPS, and CCTV repair shops across cities at scale. Ideal for link building, lead gen, and local outreach.",
   },
   "industrial-automation-leads": {
-    title: "How to Find Industrial Automation Leads",
+    title: "Find Industrial Automation Leads: PLC & SCADA",
     desc: "Build B2B lead lists of PLC integrators, SCADA vendors, and instrumentation firms for outreach and link building in the industrial automation niche.",
   },
   "electrical-contractors-panel-builders": {
-    title: "Find Electrical Contractors for Outreach",
+    title: "Find Electrical Contractors & Panel Builders",
     desc: "Find residential, commercial, and industrial electricians, panel builders, and switchgear companies in bulk for link building and B2B outreach campaigns.",
   },
   "solar-guest-post-sites": {
@@ -173,100 +168,100 @@ const POSTS_META = {
     desc: "Find solar energy blogs, installer sites, and inverter or battery companies for guest posting and link building — in minutes, not days of manual searching.",
   },
   "how-agencies-manage-10-niches-without-losing-track": {
-    title: "write for us",
+    title: "How SEO Agencies Manage 10+ Niches",
     desc: "Running outreach across many industries creates chaos. Here's how SEO agencies use niche profiles to stay organized and scale without confusion.",
   },
   "lead-list-google-sheet": {
-    title: "How SEO Agencies Manage 10+ Niches",
+    title: "Export Lead Lists to Google Sheets",
     desc: "Stop copying leads manually into spreadsheets. Learn how OutreachNest auto-exports your lead list to a live Google Sheet, updated in real time.",
   },
   "whatsapp-outreach-response-rates": {
-    title: "How to Export Your Lead List to Google Sheets",
+    title: "WhatsApp Outreach vs Email: More Replies",
     desc: "Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's how to run WhatsApp outreach that actually gets replies.",
   },
   "outreachnest-finder-features": {
-    title: "WhatsApp vs Email Outreach: Response Rates",
+    title: "OutreachNest Finder: Features Guide",
     desc: "Full walkthrough of every OutreachNest Finder feature: 4-engine business search, bulk email extraction, DA/PA/DR metrics, Chrome Bridge, and Sheets export.",
   },
   "how-to-find-seo-clients-fast-in-2026": {
-    title: "OutreachNest Finder: Complete Feature Guide",
+    title: "How to Find SEO Clients Fast in 2026",
     desc: "A repeatable, no-ads system for finding and closing SEO clients in 2026. Build a prospect list, send targeted outreach, and land your next client fast.",
   },
   "link-building-prospects": {
-    title: "Find SEO Clients Fast in 2026",
+    title: "Build 1,000 Link Building Prospects Fast",
     desc: "Most SEO freelancers waste days building prospect lists by hand. Here's a faster method to find 1,000+ real link building opportunities quickly.",
   },
   "how-to-check-da-pa-dr-without-paying-for-tools": {
-    title: "Build 1,000 Link Prospects in Minutes",
+    title: "Check DA, PA & DR Without Paid Tools",
     desc: "Check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest's Chrome Bridge — no Moz or Ahrefs subscription required.",
   },
   "spot-real-guest-post-site": {
-    title: "Check DA, PA & DR Without Paid Tools",
+    title: "How to Spot Real Guest Post Sites vs PBNs",
     desc: "Not every 'write for us' site is safe. Learn how to identify real guest post opportunities versus link farms and private blog networks before you publish.",
   },
   "b2b-lead-list-worth-buying": {
-    title: "How to Spot a Real Guest Post Site vs a PBN",
+    title: "What Makes a B2B Lead List Worth Buying",
     desc: "Most B2B lead lists are stale and full of bounced emails. Here's what separates a lead list worth paying for from one that wastes your outreach budget.",
   },
   "solar-niche-goldmine": {
-    title: "B2B Lead List: What Makes It Worth Buying",
+    title: "Solar Niche: A Goldmine for Link Building",
     desc: "Solar is competitive, high-budget, and packed with companies actively investing in SEO. Here's why it's one of the best niches for link builders in 2026.",
   },
   "cold-email-that-gets-replies": {
-    title: "Solar Niche: Goldmine for Link Building",
+    title: "Cold Email That Gets Replies (Framework)",
     desc: "Long, salesy cold emails get ignored. Short, specific, human ones get replies. Here's the cold email framework that consistently gets responses.",
   },
   "warm-up-new-email-domain": {
-    title: "Cold Email Framework That Gets Replies",
+    title: "How to Warm Up a New Email Domain",
     desc: "Sending cold emails from a brand-new domain without warming it up sends you straight to spam. Here's the right way to warm up an email domain.",
   },
   "choosing-solar-installer-guide": {
-    title: "Warm Up a New Email Domain for Outreach",
+    title: "How Homeowners Choose a Solar Installer",
     desc: "Understanding the buyer journey for solar installations reveals what content and trust signals help marketers, installers, and SEOs win more business.",
   },
   "electrical-contractors-online-growth": {
-    title: "How Homeowners Pick a Solar Installer",
+    title: "Electrical Contractors: Underrated Niche",
     desc: "Electrical contractors are a massive, stable B2B sector that most marketers ignore. Here's why that creates real opportunity — and how to reach them.",
   },
   "industrial-automation-high-value-niche": {
-    title: "Electrical Contractors: Underrated Niche",
+    title: "Industrial Automation: High-Value Niche",
     desc: "Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find these firms.",
   },
   "electronics-repair-steady-demand": {
-    title: "Industrial Automation: High-Value Niche",
+    title: "Electronics Repair: Low Competition Niche",
     desc: "Repair shops fly under the radar but they're everywhere and always need marketing help. Here's how to tap the electronics repair niche for outreach.",
   },
   "quality-over-quantity-backlinks": {
-    title: "Electronics Repair: Low-Competition Niche",
+    title: "Quality Link Building: Why Fewer Links Win",
     desc: "100 weak links won't beat 5 relevant links from trusted real sites. Here's why quality link building beats volume every time — and how to do it right.",
   },
   // v8: added 5 slugs that were in sitemap.xml but missing from POSTS_META —
   // without entries here the worker serves the unmodified template whose canonical
   // is /post (not /post?p=SLUG), causing "Non-canonical page in sitemap" in Ahrefs.
   "solar-guest-post-cost-2026": {
-    title: "Quality vs Quantity Backlinks in SEO",
+    title: "Solar Guest Post Cost in 2026",
     desc: "Solar guest post prices range from $25 to $500+. Here's what drives the price difference and how to find quality placements at fair market rates.",
   },
   "signs-guest-post-site-hurt-rankings": {
-    title: "Solar Guest Post Cost in 2026",
+    title: "5 Signs a Guest Post Site Is Harmful",
     desc: "Some guest post sites do more harm than good. Learn how to spot thin content, PBN patterns, and unnatural link profiles before you publish and pay.",
   },
   "electrical-contractor-seo-backlinks": {
-    title: "5 Signs a Guest Post Site Hurts Rankings",
+    title: "Electrical Contractors: SEO Backlinks Guide",
     desc: "Electrical contractors rarely do link building — which creates a real opportunity for SEOs. Here's how to earn and build backlinks in this niche.",
   },
   "vet-electronics-repair-guest-post-site": {
-    title: "Electrical Contractors: Build SEO Backlinks",
+    title: "Electronics Repair Guest Post Site Checklist",
     desc: "Electronics repair blogs can be link farms in disguise. Here's a fast vetting checklist to find sites actually worth publishing on vs ones to skip.",
   },
   "guest-posting-vs-pbn-links-difference": {
-    title: "Guest Post Niche Relevance Explained",
+    title: "Guest Posting vs PBN Links: Key Differences",
     desc: "Both place links on external sites, but risks and long-term results differ completely. Here's what actually separates a real guest post from a PBN link.",
   },
   // v28: 8 missing September 2026 slugs added — these were in posts.js but absent
   // from POSTS_META so the Worker was serving noindex for all of them.
   "longi-vs-canadian-solar-vs-jinko-panel-brand-comparison": {
-    title: "Longi vs Canadian Solar vs Jinko: Comparison",
+    title: "Longi vs Canadian Solar vs Jinko Panels",
     desc: "Which solar panel brand wins on degradation, warranty, and hot-climate performance? An honest comparison of Longi, Canadian Solar, Jinko, and Risen.",
   },
   "string-inverter-vs-hybrid-vs-microinverter-comparison": {
@@ -278,23 +273,23 @@ const POSTS_META = {
     desc: "PERC was the standard. TOPCon took over. HJT is next. Here's what each technology means for output, 25-year degradation, and your actual payback period.",
   },
   "high-da-zero-traffic-explained": {
-    title: "How to Vet an Electronics Repair Blog",
+    title: "High DA Zero Traffic: What's Happening?",
     desc: "A site with DA 45 and barely 30 monthly visitors — strong metric, no rankings. Here's why this happens and what it means before you pay for a link.",
   },
   "da-dr-traffic-which-matters-guest-posting": {
-    title: "High DA, Zero Traffic: What Causes It",
+    title: "DA vs DR vs Traffic for Guest Posting",
     desc: "Three metrics every link builder watches — but they measure different things. Here's which to prioritize when DA, DR, and traffic conflict.",
   },
   "build-b2b-lead-list-from-scratch-2026": {
-    title: "DA vs DR vs Traffic: Which Metric Matters",
+    title: "Build a B2B Lead List From Scratch 2026",
     desc: "Buying a generic database gets you bad emails and wasted outreach. Here's how to build your own verified B2B lead list in the right niches from scratch.",
   },
   "industrial-automation-seo-untapped-potential": {
-    title: "Build a B2B Lead List From Scratch 2026",
+    title: "Industrial Automation SEO: Link Building",
     desc: "PLC integrators and SCADA vendors rank on Google but almost none do link building. Here's why the gap exists and how SEOs are capitalizing on it in 2026.",
   },
   "niche-relevance-guest-posts-explained": {
-    title: "Industrial Automation SEO: Untapped Niche",
+    title: "Guest Post Niche Relevance Explained",
     desc: "A solar company placing a link on a home improvement blog — high DA, but not solar. Here's what actually matters for niche relevance and when it doesn't.",
   },
   "guest-post-outreach-email-templates-2026": { title: "Guest Post Outreach Email Templates 2026", desc: "Most guest post outreach emails get ignored because they're generic. Here are the exact templates and principles behind emails that actually get replies." },
@@ -392,38 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v62"; // v62: CLS fix, font-display:swap
-
-// ─────────────────────────────────────────────────────────────────
-// CENTRAL NAV — edit here ONLY. Worker injects this into every page.
-// To add a link: add one line to NAV_LINKS array below.
-// To remove: delete that line.
-// ─────────────────────────────────────────────────────────────────
-const NAV_LINKS = [
-  { href: "/",                 label: "Home"        },
-  { href: "/services",         label: "Services"    },
-  { href: "/niches",           label: "Niches"      },
-  { href: "/download",         label: "Download"    },
-  { href: "/blog",             label: "Blog"        },
-  { href: "/solar-calculator", label: "☀️ Free Tools" },
-];
-const NAV_CTA = { href: "/contact", label: "Get in touch" };
-
-function buildNav(activePath) {
-  const links = NAV_LINKS.map(l => {
-    const isActive = l.href === activePath || (l.href !== "/" && activePath.startsWith(l.href));
-    return `<a href="${l.href}" class="${isActive ? "active" : ""}">${l.label}</a>`;
-  }).join("");
-  const mobileLinks = NAV_LINKS.map(l => {
-    const isActive = l.href === activePath || (l.href !== "/" && activePath.startsWith(l.href));
-    return `<a href="${l.href}" class="${isActive ? "active" : ""}">${l.label}</a>`;
-  }).join("") + `<a href="${NAV_CTA.href}" class="m-cta">${NAV_CTA.label}</a>`;
-
-  return {
-    desktop: `<div class="nav-links">${links}<a href="${NAV_CTA.href}" class="nav-cta">${NAV_CTA.label}</a></div>`,
-    mobile:  `<div class="mobile-menu" id="mobile-menu">${mobileLinks}</div>`,
-  };
-} // v52: explicit clean URL handler // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
+const CACHE_VERSION = "v52"; // v52: explicit clean URL handler // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -431,7 +395,7 @@ function buildNav(activePath) {
 // Each entry distributes link equity across the cluster, not just from /blog.
 const RELATED_POSTS = {
   // Cold outreach / email cluster
-  "the-awkward-truth-about-cold-outreach-nobody-tells": ["cold-email-that-gets-replies", "warm-up-new-email-domain", "guest-post-outreach-email-templates-2026"],
+  "the-awkward-truth-about-cold-outreach-nobody-tells": ["cold-email-that-gets-replies", "warm-up-new-email-domain", "whatsapp-outreach-response-rates"],
   "cold-email-that-gets-replies":    ["warm-up-new-email-domain", "the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates"],
   "warm-up-new-email-domain":        ["cold-email-that-gets-replies", "the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates"],
   "whatsapp-outreach-response-rates":["cold-email-that-gets-replies", "warm-up-new-email-domain", "how-to-find-seo-clients-fast-in-2026"],
@@ -441,15 +405,15 @@ const RELATED_POSTS = {
   "how-agencies-manage-10-niches-without-losing-track": ["how-to-find-seo-clients-fast-in-2026", "link-building-prospects", "outreachnest-finder-features"],
 
   // Link building cluster
-  "link-building-prospects":              ["quality-over-quantity-backlinks", "spot-real-guest-post-site", "how-to-price-guest-posts-2026"],
+  "link-building-prospects":              ["quality-over-quantity-backlinks", "spot-real-guest-post-site", "b2b-lead-list-worth-buying"],
   "quality-over-quantity-backlinks":      ["spot-real-guest-post-site", "guest-posting-vs-pbn-links-difference", "link-building-prospects"],
   "spot-real-guest-post-site":            ["guest-posting-vs-pbn-links-difference", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
   "guest-posting-vs-pbn-links-difference":["spot-real-guest-post-site", "signs-guest-post-site-hurt-rankings", "quality-over-quantity-backlinks"],
   "signs-guest-post-site-hurt-rankings":  ["spot-real-guest-post-site", "guest-posting-vs-pbn-links-difference", "vet-electronics-repair-guest-post-site"],
-  "b2b-lead-list-worth-buying":           ["build-b2b-lead-list-from-scratch-2026", "link-building-prospects", "outreachnest-finder-features"],
+  "b2b-lead-list-worth-buying":           ["link-building-prospects", "outreachnest-finder-features", "quality-over-quantity-backlinks"],
 
   // Solar cluster
-  "solar-guest-post-sites":       ["link-building-solar-companies-guide", "solar-niche-goldmine", "choosing-solar-installer-guide"],
+  "solar-guest-post-sites":       ["solar-niche-goldmine", "solar-guest-post-cost-2026", "spot-real-guest-post-site"],
   "solar-niche-goldmine":         ["solar-guest-post-sites", "solar-guest-post-cost-2026", "link-building-prospects"],
   "solar-guest-post-cost-2026":   ["solar-guest-post-sites", "solar-niche-goldmine", "signs-guest-post-site-hurt-rankings"],
   "choosing-solar-installer-guide":["solar-niche-goldmine", "solar-guest-post-sites", "electrical-contractors-online-growth"],
@@ -460,12 +424,12 @@ const RELATED_POSTS = {
   "vet-electronics-repair-guest-post-site":          ["electronics-repair-steady-demand", "signs-guest-post-site-hurt-rankings", "guest-posting-vs-pbn-links-difference"],
 
   // Electrical contractors cluster
-  "electrical-contractors-panel-builders":  ["electrical-contractor-lead-generation", "b2b-lead-generation-electrical-contractors", "electrical-contractor-seo-backlinks"],
+  "electrical-contractors-panel-builders":  ["electrical-contractors-online-growth", "electrical-contractor-seo-backlinks", "finding-electronics-appliance-repair-businesses"],
   "electrical-contractors-online-growth":   ["electrical-contractors-panel-builders", "electrical-contractor-seo-backlinks", "how-to-find-seo-clients-fast-in-2026"],
   "electrical-contractor-seo-backlinks":    ["electrical-contractors-panel-builders", "electrical-contractors-online-growth", "link-building-prospects"],
 
   // Industrial automation cluster
-  "industrial-automation-leads":           ["industrial-automation-seo-untapped-potential", "industrial-automation-high-value-niche", "how-agencies-manage-10-niches-without-losing-track"],
+  "industrial-automation-leads":           ["industrial-automation-high-value-niche", "how-agencies-manage-10-niches-without-losing-track", "link-building-prospects"],
   "industrial-automation-high-value-niche":["industrial-automation-leads", "how-agencies-manage-10-niches-without-losing-track", "b2b-lead-list-worth-buying"],
 
 
@@ -485,7 +449,7 @@ const RELATED_POSTS = {
   // Industrial automation SEO (new Sep 2026)
   "industrial-automation-seo-untapped-potential": ["industrial-automation-leads", "industrial-automation-high-value-niche", "link-building-prospects"],
   // OutreachNest tool cluster
-  "outreachnest-finder-features":                ["outreachnest-finder-vs-manual-prospecting", "how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet"],
+  "outreachnest-finder-features":                ["how-to-check-da-pa-dr-without-paying-for-tools", "lead-list-google-sheet", "how-to-find-seo-clients-fast-in-2026"],
   "how-to-check-da-pa-dr-without-paying-for-tools":["outreachnest-finder-features", "lead-list-google-sheet", "link-building-prospects"],
   "lead-list-google-sheet":                       ["outreachnest-finder-features", "how-to-check-da-pa-dr-without-paying-for-tools", "b2b-lead-list-worth-buying"],
   "guest-post-outreach-email-templates-2026": ["the-awkward-truth-about-cold-outreach-nobody-tells", "whatsapp-outreach-response-rates", "cold-email-that-gets-replies"],
@@ -780,7 +744,7 @@ async function handlePostPage(request, env, ctx, slug) {
       status: 200,
       headers: {
         "Content-Type": "text/html; charset=UTF-8",
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+        "Cache-Control": "public, max-age=60",
       },
     });
   }
@@ -824,7 +788,7 @@ async function handlePostPage(request, env, ctx, slug) {
       "Content-Type": "text/html; charset=UTF-8",
       // 1-hour browser cache, 24-hour CDN edge cache — long enough to serve AI
       // crawlers from cache instantly, short enough to pick up post additions.
-      "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
     },
   });
 
@@ -1451,11 +1415,11 @@ export default {
     const url = new URL(request.url);
 
     // v41: redirect .html duplicates to clean canonical URLs
-    if (url.pathname === "/blog.html" || url.pathname === "/blog.html/") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
-    if (url.pathname === "/services.html" || url.pathname === "/services.html/") { return Response.redirect("https://getoutreachnest.com/services", 301); }
-    if (url.pathname === "/niches.html" || url.pathname === "/niches.html/") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
-    if (url.pathname === "/contact.html" || url.pathname === "/contact.html/") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
-    if (url.pathname === "/download.html" || url.pathname === "/download.html/") { return Response.redirect("https://getoutreachnest.com/download", 301); }
+    if (url.pathname === "/blog.html") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
+    if (url.pathname === "/services.html") { return Response.redirect("https://getoutreachnest.com/services", 301); }
+    if (url.pathname === "/niches.html") { return Response.redirect("https://getoutreachnest.com/niches", 301); }
+    if (url.pathname === "/contact.html") { return Response.redirect("https://getoutreachnest.com/contact", 301); }
+    if (url.pathname === "/download.html") { return Response.redirect("https://getoutreachnest.com/download", 301); }
 
     // V13.1: Explicit clean URL → .html file serving
     // Must come BEFORE HTML_PAGES block and BEFORE env.ASSETS.fetch()
@@ -1643,23 +1607,7 @@ export default {
     }
     const blogSlugMatch = url.pathname.match(/^\/blog\/([a-z0-9][a-z0-9-]{2,100})$/);
     if (blogSlugMatch) {
-      const slug = blogSlugMatch[1];
-      // v61: Try static pre-rendered /blog/slug.html first (zero SSR overhead, instant TTFB)
-      try {
-        const staticReq = new Request(new URL("/blog/" + slug + ".html", request.url).href, {method:"GET"});
-        const staticResp = await env.ASSETS.fetch(staticReq);
-        if (staticResp.ok) {
-          return new Response(await staticResp.text(), {
-            status: 200,
-            headers: {
-              "Content-Type": "text/html; charset=UTF-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
-            }
-          });
-        }
-      } catch(e) {}
-      // Fallback: SSR via worker
-      return handlePostPage(request, env, ctx, slug);
+      return handlePostPage(request, env, ctx, blogSlugMatch[1]);
     }
 
     if (url.pathname === "/post") {
@@ -1747,7 +1695,7 @@ export default {
         status: 200,
         headers: {
           "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+          "Cache-Control": "public, max-age=3600, s-maxage=86400",
         },
       });
     }
@@ -1809,7 +1757,7 @@ export default {
       // "Slow server response for AI crawlers" warnings on those pages.
       // Static assets (CSS/JS/images) are cached natively by Cloudflare Pages CDN
       // and never reach this Worker, so we only need to cache HTML pages here.
-      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact", "/solar-calculator", "/activate"]);
+      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact"]);
       if (HTML_PAGES.has(url.pathname) && request.method === "GET") {
         const cache = caches.default;
         // v26: include CACHE_VERSION in the key so bumping the version busts the Workers cache.
@@ -1823,7 +1771,7 @@ export default {
         if (cached) return cached;
         // V13.1: fetch .html file directly — avoids redirect loop
         // (/download.html → /download → /download.html → 404)
-        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html","/solar-calculator":"/solar-calculator.html","/activate":"/activate.html"};
+        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html"};
         const _assetUrl = new URL(request.url);
         _assetUrl.pathname = _HTML_MAP[url.pathname] || url.pathname;
         const resp = await env.ASSETS.fetch(new Request(_assetUrl.toString(), {method:"GET",headers:request.headers}));
@@ -1833,14 +1781,12 @@ export default {
           const normPath = url.pathname === "/index.html" ? "/" : url.pathname;
           const schema = PAGE_SCHEMAS[normPath];
           let bodyText = await resp.text();
-
-          // v54: Inject central nav — replaces nav-links and mobile-menu on every page
-          const nav = buildNav(normPath);
-          bodyText = bodyText.replace(/<div class="nav-links">[\s\S]*?<\/div>(?=.*<button class="menu-btn")/, nav.desktop);
-          bodyText = bodyText.replace(/<div class="mobile-menu"[^>]*>[\s\S]*?<\/div>(?=<\/nav>)/, nav.mobile);
-
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
+            // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours
+            // before </head>. The old single-replace + !== comparison was fragile —
+            // if the regex failed to match (or matched but produced the same string
+            // length by coincidence), the fallback path produced a double-schema page.
             bodyText = bodyText.replace(/<script\s+type="application\/ld\+json">[\s\S]*?<\/script>\n?/gi, '');
             bodyText = bodyText.replace(/<\/head>/i, schemaTag + "\n</head>");
             // v25: also fix Services page title and meta description (too generic in static HTML)
@@ -1871,17 +1817,12 @@ export default {
                 .replace(/<title>[^<]*<\/title>/i, "<title>SEO, Link Building &amp; Guest Posting Blog — OutreachNest</title>")
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Practical SEO, link building, guest posting and outreach guides, original research, and field-tested strategies for finding better prospects.">');
             }
-            // v54: inject solar-calculator banner on /services and /niches
-            if (normPath === "/services" || normPath === "/niches") {
-              const calcBanner = '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-bottom:1px solid #fcd34d;padding:10px 0;text-align:center"><div class="wrap"><span style="font-size:13px;color:#92400e">☀️ Free Solar Calculator — </span><a href="/solar-calculator" style="font-size:13px;font-weight:700;color:#d97706;text-decoration:none">Calculate panels, battery bank & parts list →</a></div></div>';
-              bodyText = bodyText.replace(/<\/nav>/, "</nav>" + calcBanner);
-            }
           }
           const toCache = new Response(bodyText, {
             status: 200,
             headers: {
               "Content-Type": "text/html; charset=UTF-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400",
+              "Cache-Control": "public, max-age=3600, s-maxage=86400",
             },
           });
           // v23: non-blocking cache write — return immediately, write in background

@@ -1367,9 +1367,17 @@ footer a{color:var(--leaf);text-decoration:none}
     return parseFloat(sel.value) || 400;
   }
 
+  var _wattSyncing = false;
   document.getElementById('ld-watt-select').addEventListener('change', function() {
     var wrap = document.getElementById('ld-watt-custom-wrap');
     if (wrap) wrap.style.display = this.value === 'custom' ? 'block' : 'none';
+    // Sync to Output tab
+    if (!_wattSyncing && this.value !== 'custom') {
+      _wattSyncing = true;
+      var oSel = document.getElementById('o-watt-select');
+      if (oSel) { oSel.value = this.value; oSel.dispatchEvent(new Event('change')); }
+      _wattSyncing = false;
+    }
     if (this.value !== 'custom') runLoadCalc();
   });
 
@@ -1637,7 +1645,21 @@ footer a{color:var(--leaf);text-decoration:none}
   });
   var owSel2 = document.getElementById('o-watt-select');
   if (owSel2) {
-    owSel2.addEventListener('change', runOutput);
+    owSel2.addEventListener('change', function() {
+      // Sync to Load Planner tab
+      if (!_wattSyncing && this.value !== '0') {
+        _wattSyncing = true;
+        var ldSel = document.getElementById('ld-watt-select');
+        if (ldSel) {
+          ldSel.value = this.value;
+          var ldWrap = document.getElementById('ld-watt-custom-wrap');
+          if (ldWrap) ldWrap.style.display = 'none';
+          ldSel.dispatchEvent(new Event('change'));
+        }
+        _wattSyncing = false;
+      }
+      runOutput();
+    });
   }
   var oCostReg = document.getElementById('o-cost-region');
   if (oCostReg) {

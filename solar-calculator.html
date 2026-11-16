@@ -320,7 +320,6 @@ footer a{color:var(--leaf);text-decoration:none}
           </label>
           <div class="inp-wrap"><input type="number" id="o-panels" value="10" min="1" max="500"><span class="unit-lbl">panels</span></div>
           <div id="load-link-hint" style="display:none;font-size:12px;color:var(--leaf);margin-top:4px;font-weight:500"></div>
-          <button type="button" id="sync-from-load-btn" style="margin-top:7px;padding:7px 14px;border:1px solid var(--leaf);border-radius:8px;background:var(--leaf-soft);color:var(--leaf);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:none">🔗 Sync from Load Planner</button>
         </div>
         <div class="field">
           <label>Panel wattage</label>
@@ -376,7 +375,7 @@ footer a{color:var(--leaf);text-decoration:none}
           </div>
           <div class="hint" id="cost-hint">Pakistan avg: ~PKR 55–75 per watt installed</div>
         </div>
-        <button class="go-btn" id="btn-output">Calculate Output ☀️</button>
+        <button class="go-btn" id="btn-output" style="display:none">Calculate Output ☀️</button>
       </div>
       <div class="res-card" id="r-output">
         <h2>Your Results</h2>
@@ -892,7 +891,25 @@ footer a{color:var(--leaf);text-decoration:none}
   }
 
   // ── OUTPUT ───────────────────────────────────────────────
-  document.getElementById('btn-output').addEventListener('click', function() {
+  function runOutput() {
+    // Auto-sync panels from Load Planner if load data exists
+    var totalWatts = parseFloat(document.getElementById('ld-total').textContent) || 0;
+    if (totalWatts > 0) {
+      var wattForSync = getWatt('o-watt-select', 'o-watt-custom');
+      var sysKw = (totalWatts / 1000) * 1.25;
+      var autoP = Math.ceil(sysKw * 1000 / wattForSync);
+      document.getElementById('o-panels').value = autoP;
+      var badge = document.getElementById('load-link-badge');
+      var hint  = document.getElementById('load-link-hint');
+      if (badge) badge.style.display = 'inline';
+      if (hint)  { hint.style.display = 'block'; hint.textContent = '📊 Based on your ' + totalWatts + 'W load — ' + autoP + ' × ' + wattForSync + 'W panels needed (incl. 25% buffer)'; }
+    } else {
+      var badge2 = document.getElementById('load-link-badge');
+      var hint2  = document.getElementById('load-link-hint');
+      if (badge2) badge2.style.display = 'none';
+      if (hint2)  hint2.style.display = 'none';
+    }
+
     var panels = Math.max(0, getVal('o-panels'));
     var watt   = getWatt('o-watt-select', 'o-watt-custom');
     var sun    = Math.min(24, Math.max(0, getVal('o-sun')));
@@ -929,7 +946,9 @@ footer a{color:var(--leaf);text-decoration:none}
       + rr('Efficiency after losses', (eff*100).toFixed(0), '%')
       + costHtml
       + infoBox('<strong>Peak sun hours</strong> = daily hours of equivalent full-sun irradiance (1,000 W/m²). Your location\'s average determines actual energy production. <strong>Cost estimate</strong> includes panels, inverter and basic installation.');
-  });
+  }
+
+  document.getElementById('btn-output').addEventListener('click', runOutput);
 
   // ── TILT ─────────────────────────────────────────────────
   document.getElementById('loc-btn').addEventListener('click', function() {
@@ -1601,39 +1620,28 @@ footer a{color:var(--leaf);text-decoration:none}
   }
   document.getElementById('btn-load').addEventListener('click', runLoadCalc);
 
-  // Sync button
-  var syncBtn = document.getElementById('sync-from-load-btn');
-  if (syncBtn) {
-    syncBtn.addEventListener('click', function() {
-      syncPanelsFromLoad();
-    });
-  }
-
-  // Show sync button when switching to Output tab if load has data
+  // Auto-calculate Output when switching to Output tab
   document.querySelectorAll('.tab').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var target = btn.getAttribute('data-target');
       if (target === 'p-output') {
-        var totalWatts = parseFloat(document.getElementById('ld-total').textContent) || 0;
-        var sb = document.getElementById('sync-from-load-btn');
-        if (sb) sb.style.display = totalWatts > 0 ? 'inline-block' : 'none';
+        runOutput();
       }
     });
   });
 
-  // Auto update panel wattage dropdown changes sync hint
+  // Auto-calculate Output when any Output tab input changes
+  ['o-panels','o-sun','o-loss'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', runOutput);
+  });
   var owSel2 = document.getElementById('o-watt-select');
   if (owSel2) {
-    owSel2.addEventListener('change', function() {
-      var totalWatts = parseFloat(document.getElementById('ld-total').textContent) || 0;
-      if (totalWatts > 0) {
-        var badge = document.getElementById('load-link-badge');
-        var hint = document.getElementById('load-link-hint');
-        if (badge && badge.style.display !== 'none') {
-          syncPanelsFromLoad();
-        }
-      }
-    });
+    owSel2.addEventListener('change', runOutput);
+  }
+  var oCostReg = document.getElementById('o-cost-region');
+  if (oCostReg) {
+    oCostReg.addEventListener('change', runOutput);
   }
 
   // Battery type hint

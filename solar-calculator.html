@@ -1174,17 +1174,17 @@ footer a{color:var(--leaf);text-decoration:none}
     {id:'tv32',   ico:'📺', nm:'LED TV 32"',       w:50},
     {id:'tv55',   ico:'📺', nm:'LED TV 55"',       w:100},
     {id:'fridge', ico:'🧊', nm:'Refrigerator',     w:150},
-    {id:'ac1',    ico:'❄️', nm:'AC 1 ton',         w:1200},
-    {id:'ac15',   ico:'❄️', nm:'AC 1.5 ton',       w:1800},
-    {id:'wash',   ico:'🫧', nm:'Washing Machine',  w:500},
-    {id:'iron',   ico:'👔', nm:'Electric Iron',    w:1000},
+    {id:'ac1',    ico:'❄️', nm:'AC 1 ton',         w:1200, heavy:true},
+    {id:'ac15',   ico:'❄️', nm:'AC 1.5 ton',       w:1800, heavy:true},
+    {id:'wash',   ico:'🫧', nm:'Washing Machine',  w:500,  heavy:true},
+    {id:'iron',   ico:'👔', nm:'Electric Iron',    w:1000, heavy:true},
     {id:'pc',     ico:'🖥️', nm:'Desktop PC',      w:200},
     {id:'laptop', ico:'💻', nm:'Laptop',           w:65},
     {id:'router', ico:'📡', nm:'WiFi Router',      w:10},
-    {id:'pump',   ico:'💧', nm:'Water Pump 0.5HP', w:750},
-    {id:'pump1',  ico:'💧', nm:'Water Pump 1HP',   w:1500},
-    {id:'mwave',  ico:'📡', nm:'Microwave',        w:1200},
-    {id:'kettle', ico:'☕', nm:'Electric Kettle',  w:1500},
+    {id:'pump',   ico:'💧', nm:'Water Pump 0.5HP', w:750,  heavy:true},
+    {id:'pump1',  ico:'💧', nm:'Water Pump 1HP',   w:1500, heavy:true},
+    {id:'mwave',  ico:'📡', nm:'Microwave',        w:1200, heavy:true},
+    {id:'kettle', ico:'☕', nm:'Electric Kettle',  w:1500, heavy:true},
     {id:'phone',  ico:'🔋', nm:'Phone Charger',    w:10},
     {id:'cctv',   ico:'📷', nm:'CCTV Camera',      w:5},
     {id:'nvr',    ico:'🎥', nm:'DVR/NVR',          w:30},
@@ -1208,7 +1208,7 @@ footer a{color:var(--leaf);text-decoration:none}
           +'<button class="qb" data-id="'+a.id+'" data-d="1">+</button>'
         +'</div>'
         +'<div class="app-badge" id="ab-'+a.id+'">0</div>'
-        +'<div class="app-excl" id="ex-'+a.id+'" data-id="'+a.id+'" title="Exclude from calculation">Exclude</div>'
+        +(a.heavy ? '<div class="app-excl" id="ex-'+a.id+'" data-id="'+a.id+'" title="Exclude heavy load from calculation">Exclude</div>' : '')
       +'</div>';
     }).join('');
 

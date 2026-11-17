@@ -1841,6 +1841,8 @@ export default {
         headers: {
           "Content-Type": "text/html; charset=UTF-8",
           "Set-Cookie": `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`,
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "Pragma": "no-cache",
         },
       });
     }

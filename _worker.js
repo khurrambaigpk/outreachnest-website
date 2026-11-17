@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v52"; // v52: explicit clean URL handler // v51: fix /download route direct .html fetch // v50: download page updated with V13.1 link // v49: /8443 redirect added // v48: download click tracking endpoint added // v47: /download schema updated to 7-day trial
+const CACHE_VERSION = "v53"; // v53: run_worker_first=true + static asset pass-through + admin logout fix // v52: explicit clean URL handler // v51: fix /download route direct .html fetch
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1414,6 +1414,21 @@ export default {
 
     const url = new URL(request.url);
 
+    // v53: Fast pass-through for static assets — with run_worker_first=true the Worker
+    // runs for every request, so we immediately hand off static files (CSS, JS, images,
+    // fonts, etc.) to env.ASSETS without any further processing.  Admin paths are
+    // explicitly excluded so the auth gate below always fires for them.
+    const _p = url.pathname;
+    const _isAdmin = _p === "/admin" || _p === "/admin.html";
+    if (!_isAdmin && /\.(?:css|js|mjs|map|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|otf|eot|pdf|zip|exe|txt|xml|json|webmanifest)$/i.test(_p)) {
+      return env.ASSETS.fetch(request);
+    }
+
+    // v53: redirect orphan page (in sitemap but no content) to canonical equivalent
+    if (_p === "/blog/electrical-contractor-lead-generation") {
+      return Response.redirect("https://getoutreachnest.com/blog/b2b-lead-generation-electrical-contractors", 301);
+    }
+
     // v41: redirect .html duplicates to clean canonical URLs
     if (url.pathname === "/blog.html") { return Response.redirect("https://getoutreachnest.com/blog", 301); }
     if (url.pathname === "/services.html") { return Response.redirect("https://getoutreachnest.com/services", 301); }
@@ -1899,6 +1914,15 @@ export default {
       });
     }
 
-    return env.ASSETS.fetch(request);
+    // Serve admin.html with no-cache headers so logout always shows login form
+    const adminResp = await env.ASSETS.fetch(request);
+    return new Response(adminResp.body, {
+      status: adminResp.status,
+      headers: {
+        ...Object.fromEntries(adminResp.headers),
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+        "Pragma": "no-cache",
+      },
+    });
   },
 };

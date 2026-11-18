@@ -39,6 +39,48 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Timpibot
+Allow: /
+
+User-agent: iaskspider
+Allow: /
+
+User-agent: Omgilibot
+Allow: /
+
+User-agent: Kangaroo Bot
+Allow: /
+
+User-agent: PetalBot
+Allow: /
+
+User-agent: BrightEdgeBot
+Allow: /
+
+User-agent: SemrushBot
+Allow: /
+
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: DataForSeoBot
+Allow: /
+
+User-agent: MJ12bot
+Allow: /
+
+User-agent: DotBot
+Allow: /
+
 # Block pure AI TRAINING scrapers (no SEO benefit — these only harvest data for model training)
 User-agent: CCBot
 Disallow: /

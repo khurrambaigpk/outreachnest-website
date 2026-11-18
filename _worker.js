@@ -1532,9 +1532,42 @@ export default {
       }
     }
 
+    // POST /api/databank-change-password — change databank admin password
+    if (url.pathname === "/api/databank-change-password" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const DEFAULT_ADMIN_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
+        const currentToken = request.headers.get("X-Admin-Token") || "";
+        let storedHash = DEFAULT_ADMIN_HASH;
+        try { storedHash = await env.LICENSE_KV.get("databank_admin_hash") || DEFAULT_ADMIN_HASH; } catch(e) {}
+        const enc = new TextEncoder().encode(currentToken);
+        const buf = await crypto.subtle.digest("SHA-256", enc);
+        const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+        if (hash !== storedHash) {
+          return new Response('{"error":"Current password is incorrect"}', { status: 401, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+        }
+        const newPass = (body.newPassword || "").trim();
+        if (newPass.length < 6) {
+          return new Response('{"error":"New password must be at least 6 characters"}', { status: 400, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+        }
+        const newEnc = new TextEncoder().encode(newPass);
+        const newBuf = await crypto.subtle.digest("SHA-256", newEnc);
+        const newHash = Array.from(new Uint8Array(newBuf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+        await env.LICENSE_KV.put("databank_admin_hash", newHash);
+        return new Response('{"ok":true}', { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+      } catch(e) {
+        return new Response('{"error":"' + e.message + '"}', { status: 500, headers: { "Content-Type": "application/json" } });
+      }
+    }
+
     // OPTIONS preflight for config API
     if (url.pathname === "/api/databank-config" && request.method === "OPTIONS") {
       return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Admin-Token" } });
+    }
+
+    // OPTIONS preflight for change-password API
+    if (url.pathname === "/api/databank-change-password" && request.method === "OPTIONS") {
+      return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Admin-Token" } });
     }
 
     // Databank routes — serve .html files directly, no redirect loop

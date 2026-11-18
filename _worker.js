@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v54"; // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix // v52: explicit clean URL handler // v51: fix /download route direct .html fetch
+const CACHE_VERSION = "v55"; // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -477,8 +477,20 @@ const PAGE_SCHEMAS = {
       "@type": "Organization",
       "name": "OutreachNest",
       "url": "https://getoutreachnest.com",
-      "logo": "https://getoutreachnest.com/favicon.png",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://getoutreachnest.com/favicon.png"
+      },
       "description": "OutreachNest builds SEO prospecting and link building tools for freelancers and agencies.",
+      "email": "support@getoutreachnest.com",
+      "sameAs": [
+        "https://gumroad.com/l/outreachnest"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://getoutreachnest.com/contact"
+      }
     },
   ]).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
 
@@ -530,14 +542,30 @@ const PAGE_SCHEMAS = {
     },
   }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
 
-  "/niches": JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Niches — OutreachNest | Solar · Electrical · Automation · Electronics",
-    "url": "https://getoutreachnest.com/niches",
-    "description": "OutreachNest specializes in four high-value B2B niches: solar energy, electrical contractors, industrial automation, and electronics repair.",
-    "isPartOf": { "@type": "WebSite", "url": "https://getoutreachnest.com" },
-  }).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
+  "/niches": JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Niches — OutreachNest | Solar · Electrical · Automation · Electronics",
+      "url": "https://getoutreachnest.com/niches",
+      "description": "OutreachNest specializes in four high-value B2B niches: solar energy, electrical contractors, industrial automation, and electronics repair.",
+      "isPartOf": { "@type": "WebSite", "url": "https://getoutreachnest.com" },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "OutreachNest Niches: Solar, Electrical, Automation & Electronics",
+      "description": "OutreachNest specializes in four high-value B2B niches: solar energy, electrical contractors, industrial automation, and electronics repair.",
+      "url": "https://getoutreachnest.com/niches",
+      "publisher": {
+        "@type": "Organization",
+        "name": "OutreachNest",
+        "url": "https://getoutreachnest.com",
+        "logo": { "@type": "ImageObject", "url": "https://getoutreachnest.com/favicon.png" }
+      },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getoutreachnest.com/niches" }
+    }
+  ]).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
 
   "/contact": JSON.stringify({
     "@context": "https://schema.org",

@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v58"; // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v59"; // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -718,12 +718,16 @@ async function handlePostPage(request, env, ctx, slug) {
   const cachedResp = await cache.match(cacheKey);
   if (cachedResp) return cachedResp;
 
-  // Fetch the static post.html template (without the query string, which is
-  // irrelevant to static-file serving — Cloudflare Pages maps /post → post.html).
+  // Fetch template + posts-data.json in PARALLEL to minimize cold-start latency
   const templateUrl = new URL(request.url);
   templateUrl.pathname = "/post";
   templateUrl.search = "";
-  const assetResp = await env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" }));
+  const dataUrl = new URL("/posts-data.json", request.url).href;
+
+  const [assetResp, dataResp] = await Promise.all([
+    env.ASSETS.fetch(new Request(templateUrl.toString(), { method: "GET" })),
+    env.ASSETS.fetch(new Request(dataUrl, { method: "GET" })).catch(() => null),
+  ]);
 
   if (!assetResp.ok) {
     // Template fetch failed — pass through the error response unchanged.
@@ -737,18 +741,9 @@ async function handlePostPage(request, env, ctx, slug) {
   }
 
   // ── v28 permanent fix: posts-data.json is the single source of truth ──────
-  // Previously, POSTS_META (a static object in this file) controlled which slugs
-  // got "index, follow". New posts published via admin updated posts-data.json but
-  // NOT POSTS_META, so every new post received noindex until _worker.js was manually
-  // edited. Now we fetch posts-data.json first (already fetched for SSR anyway) and
-  // use it as the authoritative slug registry. POSTS_META is kept as a fast fallback
-  // for the edge case where posts-data.json is not yet deployed.
   let postData = null;
   try {
-    const dataResp = await env.ASSETS.fetch(
-      new Request(new URL("/posts-data.json", request.url).href, { method: "GET" })
-    );
-    if (dataResp.ok) {
+    if (dataResp && dataResp.ok) {
       const allPosts = await dataResp.json();
       postData = allPosts.find(p => p.slug === slug) || null;
     }

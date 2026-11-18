@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v55"; // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v56"; // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1492,11 +1492,23 @@ export default {
     if (url.pathname === "/api/databank-config" && request.method === "GET") {
       try {
         const cfg = await env.LICENSE_KV.get("databank_config");
-        const data = cfg ? cfg : JSON.stringify({
+        const DEFAULT_CFG = {
           cols: ["Domain","Niche","Category","DA","DR","Traffic","Emails","Phone","Country","Type","Status"],
           niches: [],
           pub_hash: "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
-        });
+        };
+        let parsed = cfg ? JSON.parse(cfg) : DEFAULT_CFG;
+        // Sanitize niches: only keep values that match actual API sheet names
+        // If niches contains unrecognized values, reset to [] (show all)
+        const VALID_NICHES = ["Solar Sites","Electrical Contractors","Industrial Automation","Electronics Repair","GBOB Tracker","Publisher Inventory"];
+        if (parsed.niches && parsed.niches.length > 0) {
+          const filtered = parsed.niches.filter(n => VALID_NICHES.includes(n));
+          if (filtered.length !== parsed.niches.length) {
+            // Some invalid niches were present — reset to show all
+            parsed.niches = [];
+          }
+        }
+        const data = JSON.stringify(parsed);
         return new Response(data, {
           headers: {
             "Content-Type": "application/json",

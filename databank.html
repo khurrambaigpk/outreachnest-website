@@ -182,7 +182,6 @@ tbody td { padding: 10px 14px; font-size: 13px; vertical-align: middle; }
     <div class="stat"><div class="n" id="s-solar">—</div><div class="l">Solar Sites</div></div>
     <div class="stat"><div class="n" id="s-elec">—</div><div class="l">Electronics</div></div>
     <div class="stat"><div class="n" id="s-auto">—</div><div class="l">Automation</div></div>
-    <div class="stat"><div class="n" id="s-mob">—</div><div class="l">Mobile Screen</div></div>
   </div>
 
   <!-- TOOLBAR -->
@@ -542,12 +541,17 @@ function goPage(p) {
 
 // ─── STATS ────────────────────────────────────────────────
 function updateStats() {
-  document.getElementById("s-total").textContent = allRows.length;
   const count = sheet => allRows.filter(r => (r._sheet||"").toLowerCase().includes(sheet)).length;
-  document.getElementById("s-ec").textContent    = count("electrical");
-  document.getElementById("s-solar").textContent = count("solar");
-  document.getElementById("s-elec").textContent  = count("electron");
-  document.getElementById("s-auto").textContent  = count("autom");
+  const ec    = count("electrical");
+  const solar = count("solar");
+  const elec  = count("electron");
+  const auto  = count("autom");
+  // Total Vendors = only the 4 main vendor niches (excludes GBOB Tracker & Publisher Inventory)
+  document.getElementById("s-total").textContent = ec + solar + elec + auto;
+  document.getElementById("s-ec").textContent    = ec;
+  document.getElementById("s-solar").textContent = solar;
+  document.getElementById("s-elec").textContent  = elec;
+  document.getElementById("s-auto").textContent  = auto;
   document.getElementById("s-mob").textContent   = count("mobile");
 }
 

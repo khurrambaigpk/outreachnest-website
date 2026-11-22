@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v62"; // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v63"; // v63: fix services & homepage meta desc over 155 chars; solar-calculator title shortened to 54 chars // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1947,12 +1947,12 @@ export default {
               bodyText = bodyText
                 .replace(/<!-- CTA -->/, fiverrBanner + '\n<!-- CTA -->')
                 .replace(/<title>[^<]*<\/title>/i, "<title>Guest Posts, B2B Lead Lists &amp; Content Writing — OutreachNest</title>")
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Guest posts on real niche sites ($70–$250), verified B2B lead lists ($75/100 contacts), SEO content writing ($45/1,000 words). Solar, electrical &amp; automation niches.">');
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="Niche guest posts ($70–$250), B2B lead lists ($75/100 contacts), SEO content writing ($45/1k words). Solar, electrical &amp; automation niches.">');
             }
             // v33: fix homepage meta description (was 208 chars — over 155-char limit)
             if (normPath === "/") {
               bodyText = bodyText
-                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">')
+                .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest: niche guest posts, B2B lead lists, and content writing for Solar, Electrical &amp; Automation niches. Free Windows prospecting tool included.">')
                 // v44: LaunchIgniter badge after Product Hunt in AS FEATURED ON section
                 .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><span style="display:inline-flex;align-items:center;gap:6px;background:#1e1b4b;color:#fff;border-radius:8px;padding:8px 16px;font-weight:600;font-size:13px;border:1px solid #3730a3">🚀 Featured on LaunchIgniter</span></a>$2');
             }

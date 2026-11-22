@@ -250,9 +250,45 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 
   </div><!-- /grid-2 -->
 
+  <!-- ── Gold & Metals ── -->
+  <div class="section-title">🥇 Precious Metals — Live Spot Prices</div>
+  <div class="grid-2" style="margin-bottom:24px">
+
+    <!-- Gold -->
+    <div class="card">
+      <div class="card-title">
+        🥇 Gold (XAU)
+        <span id="gold-ts">Loading…</span>
+      </div>
+      <div id="gold-body"><div class="loading">Fetching gold price…</div></div>
+      <div class="last-updated" id="gold-source"></div>
+    </div>
+
+    <!-- Silver + PKR gold -->
+    <div class="card">
+      <div class="card-title">
+        🥈 Silver (XAG) &amp; PKR Gold
+        <span id="silver-ts"></span>
+      </div>
+      <div id="silver-body"><div class="loading">Fetching…</div></div>
+      <div class="last-updated" id="silver-source"></div>
+    </div>
+
+  </div>
+
 </div><!-- /wrap -->
 
-<div class="footer">OutreachNest Owner Dashboard — Private. Do not share this URL.</div>
+<div class="footer">
+  OutreachNest Owner Dashboard — Private &amp; Personal Use Only. Do not share this URL.<br>
+  <span style="margin-top:5px;display:inline-block;font-size:10px;color:#4a6a4a">
+    Data sources (all rights reserved by respective owners):
+    Exchange rates © <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="color:#4a7a6a;text-decoration:none">ExchangeRate-API</a> —
+    Gold &amp; Silver spot prices © <a href="https://xaus.com" target="_blank" rel="noopener" style="color:#4a7a6a;text-decoration:none">XAUS.com</a> —
+    Fuel prices: <a href="https://www.ogra.org.pk" target="_blank" rel="noopener" style="color:#4a7a6a;text-decoration:none">OGRA (Pakistan)</a> —
+    Site analytics: <a href="https://search.google.com/search-console" target="_blank" rel="noopener" style="color:#4a7a6a;text-decoration:none">Google Search Console</a>.
+    Data shown for personal reference only. Not for redistribution.
+  </span>
+</div>
 
 <script>
 // ── Live clock ──────────────────────────────────────────────────────
@@ -418,6 +454,71 @@ function saveFuel() {
   setTimeout(function(){ msg.style.display='none'; }, 2500);
 }
 
+// ── Gold & Silver ────────────────────────────────────────────────────
+function renderGold(d, pkrRate) {
+  // d = xaus.com/api/v1/spot response
+  // pkrRate = PKR per USD (from exchangerate-api)
+  var usdOz   = d.xau && d.xau.usd ? Number(d.xau.usd).toFixed(2) : null;
+  var usdGram = d.xau && d.xau.gram_usd ? Number(d.xau.gram_usd).toFixed(3) : null;
+  var pkrOz   = (usdOz && pkrRate) ? '₨' + (usdOz * pkrRate).toLocaleString('en-PK',{maximumFractionDigits:0}) : null;
+  var pkrGram = (usdGram && pkrRate) ? '₨' + (usdGram * pkrRate).toLocaleString('en-PK',{maximumFractionDigits:0}) : null;
+  var pkr10g  = (usdGram && pkrRate) ? '₨' + (usdGram * pkrRate * 10).toLocaleString('en-PK',{maximumFractionDigits:0}) : null;
+  var pkrTola = (usdGram && pkrRate) ? '₨' + (usdGram * pkrRate * 11.664).toLocaleString('en-PK',{maximumFractionDigits:0}) : null;
+
+  var html = '';
+  if (usdOz) {
+    html += '<div class="rate-row"><div class="rate-name">🌍 International (Troy Oz)</div><div><span class="rate-val" style="color:#fbbf24">$' + usdOz + '</span><span class="rate-unit">USD</span></div></div>';
+    if (pkrOz) html += '<div class="rate-row"><div class="rate-name">🇵🇰 Pakistan (Troy Oz)</div><div><span class="rate-val" style="color:#fbbf24">' + pkrOz + '</span></div></div>';
+    if (pkrGram) html += '<div class="rate-row"><div class="rate-name">⚖️ Per Gram</div><div><span class="rate-val" style="color:#fbbf24">' + pkrGram + '</span></div></div>';
+    if (pkr10g) html += '<div class="rate-row"><div class="rate-name">📦 Per 10 Gram</div><div><span class="rate-val" style="color:#fbbf24">' + pkr10g + '</span></div></div>';
+    if (pkrTola) html += '<div class="rate-row"><div class="rate-name">🏅 Per Tola (11.664g)</div><div><span class="rate-val" style="color:#fbbf24">' + pkrTola + '</span></div></div>';
+  } else {
+    html = '<div class="error-msg">Gold data unavailable.</div>';
+  }
+  document.getElementById('gold-body').innerHTML = html;
+
+  // Silver
+  var xagUsd  = d.xag && d.xag.usd ? Number(d.xag.usd).toFixed(2) : null;
+  var xagGram = d.xag && d.xag.gram_usd ? Number(d.xag.gram_usd).toFixed(3) : null;
+  var ratio   = d.xau && d.xag && d.xau.usd && d.xag.usd ? (Number(d.xau.usd)/Number(d.xag.usd)).toFixed(1) : null;
+  var xagPkrGram = (xagGram && pkrRate) ? '₨' + (xagGram * pkrRate).toFixed(2) : null;
+  var xagPkrOz   = (xagUsd && pkrRate) ? '₨' + (xagUsd * pkrRate).toLocaleString('en-PK',{maximumFractionDigits:0}) : null;
+
+  var html2 = '';
+  if (xagUsd) {
+    html2 += '<div class="rate-row"><div class="rate-name">🌍 Silver (Troy Oz)</div><div><span class="rate-val" style="color:#a0bda0">$' + xagUsd + '</span><span class="rate-unit">USD</span></div></div>';
+    if (xagPkrOz)   html2 += '<div class="rate-row"><div class="rate-name">🇵🇰 Silver (Troy Oz)</div><div><span class="rate-val" style="color:#a0bda0">' + xagPkrOz + '</span></div></div>';
+    if (xagPkrGram) html2 += '<div class="rate-row"><div class="rate-name">⚖️ Silver Per Gram</div><div><span class="rate-val" style="color:#a0bda0">' + xagPkrGram + '</span></div></div>';
+    if (ratio)      html2 += '<div class="rate-row"><div class="rate-name">📊 Gold/Silver Ratio</div><div><span class="rate-val" style="color:#60a5fa">' + ratio + 'x</span></div></div>';
+  } else {
+    html2 = '<div class="error-msg">Silver data unavailable.</div>';
+  }
+  document.getElementById('silver-body').innerHTML = html2;
+
+  // Update ticker with gold
+  save('gold_cache', { usdOz, pkrOz, pkrTola, xagUsd, ts: Date.now() });
+}
+
+function fetchGold(pkrRate) {
+  // xaus.com — free, no API key, accurate spot price
+  fetch('https://xaus.com/api/v1/spot?compact=1')
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      renderGold(d, pkrRate);
+      var upd = d.updated_at || '';
+      document.getElementById('gold-ts').textContent = upd ? 'Updated: ' + upd.substring(0,10) : 'Live';
+      document.getElementById('gold-source').textContent = 'Source: xaus.com — indicative mid-market spot price. © XAUS. For reference only.';
+      document.getElementById('silver-ts').textContent = '';
+      document.getElementById('silver-source').textContent = 'Source: xaus.com — indicative mid-market spot price. © XAUS. For reference only.';
+    })
+    .catch(function() {
+      var cached = load('gold_cache', null);
+      var msg = cached ? '⚠️ Cached (live fetch failed)' : 'Could not load gold price. Check internet.';
+      document.getElementById('gold-body').innerHTML = '<div class="error-msg">' + msg + '</div>';
+      document.getElementById('silver-body').innerHTML = '<div class="error-msg">' + msg + '</div>';
+    });
+}
+
 // ── Ticker ───────────────────────────────────────────────────────────
 function buildTicker(rates, fuelData) {
   var items = [];
@@ -447,6 +548,14 @@ function buildTicker(rates, fuelData) {
     if (fuelData.kerosene) items.push('<span class="ticker-item">🔵 Kerosene <span class="tval neutral">₨' + Number(fuelData.kerosene).toFixed(0) + '/L</span></span>');
   }
 
+  // Gold price from cache
+  var goldC = load('gold_cache', null);
+  if (goldC) {
+    if (goldC.pkrTola) items.push('<span class="ticker-item">🥇 Gold / Tola <span class="tval neutral">' + goldC.pkrTola + '</span></span>');
+    if (goldC.usdOz)   items.push('<span class="ticker-item">🥇 Gold / oz <span class="tval neutral">$' + Number(goldC.usdOz).toFixed(0) + '</span></span>');
+    if (goldC.xagUsd)  items.push('<span class="ticker-item">🥈 Silver / oz <span class="tval neutral">$' + Number(goldC.xagUsd).toFixed(2) + '</span></span>');
+  }
+
   // Site stats (static)
   items.push('<span class="ticker-item">🌿 Ahrefs Health <span class="tval up">100/100</span></span>');
   items.push('<span class="ticker-item">📝 Blog Posts <span class="tval neutral">42</span></span>');
@@ -460,35 +569,42 @@ function buildTicker(rates, fuelData) {
 loadGsc();
 loadFuel();
 
-// Fetch rates and build ticker together
 (function init() {
   var cachedRates = load('rates_cache', null);
-  var fuelData = load('fuel', null);
+  var fuelData    = load('fuel', null);
 
-  // Show cached ticker immediately while fetching
+  // Show cached ticker immediately
   if (cachedRates && cachedRates.rates) buildTicker(cachedRates.rates, fuelData);
 
+  // 1) Fetch exchange rates first — we need PKR rate for gold conversion
   fetch('https://api.exchangerate-api.com/v4/latest/USD')
     .then(function(r){ return r.json(); })
     .then(function(data) {
-      var rates = data.rates || {};
+      var rates   = data.rates || {};
+      var pkrRate = rates['PKR'] || 278; // fallback if PKR missing
       renderRates(rates);
       var dateStr = data.date || new Date().toLocaleDateString();
       document.getElementById('currency-ts').textContent = 'Updated: ' + dateStr;
-      document.getElementById('currency-source').textContent = 'Source: exchangerate-api.com (free tier, daily update)';
+      document.getElementById('currency-source').textContent = '© ExchangeRate-API — indicative mid-market rates. Updated daily. For reference only.';
       save('rates_cache', { rates: rates, ts: Date.now(), date: dateStr });
       buildTicker(rates, load('fuel', null));
+
+      // 2) Fetch gold using live PKR rate
+      fetchGold(pkrRate);
     })
     .catch(function(e) {
-      var cached = load('rates_cache', null);
+      var cached  = load('rates_cache', null);
+      var pkrRate = (cached && cached.rates && cached.rates['PKR']) || 278;
       if (cached && cached.rates) {
         renderRates(cached.rates);
         document.getElementById('currency-ts').textContent = 'Cached: ' + new Date(cached.ts).toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
-        document.getElementById('currency-source').textContent = '⚠️ Using cached data (live fetch failed)';
+        document.getElementById('currency-source').textContent = '⚠️ Cached data — © ExchangeRate-API. Live fetch failed.';
         buildTicker(cached.rates, load('fuel', null));
       } else {
         document.getElementById('currency-body').innerHTML = '<div class="error-msg">Could not load rates. Check internet.</div>';
       }
+      // Still try gold with cached/fallback PKR rate
+      fetchGold(pkrRate);
     });
 })();
 </script>

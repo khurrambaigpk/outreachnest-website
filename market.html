@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pakistan Market Rates — Currency, Fuel, Gold, PSX KSE-100 | OutreachNest</title>
+<meta name="description" content="Live Pakistan market rates: USD/PKR, EUR/PKR, SAR/PKR exchange rates, OGRA fuel prices (petrol, diesel), gold & silver spot prices, PSX KSE-100 index, and solar panel market prices in Pakistan.">
+<link rel="canonical" href="https://getoutreachnest.com/market">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Pakistan Market Rates — Currency, Fuel, Gold, PSX KSE-100">
+<meta property="og:description" content="Live Pakistan currency exchange rates, OGRA fuel prices, gold & silver prices, PSX KSE-100 stock index, and solar market prices.">
+<meta property="og:url" content="https://getoutreachnest.com/market">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pakistan Market Rates — Currency, Fuel, Gold, PSX">
+<meta name="twitter:description" content="Live Pakistan currency, fuel, gold, PSX KSE-100 and solar prices updated daily.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a1a0f;--surface:#111f16;--card:#162014;--border:#1e3523;
+  --green:#4ade80;--yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;
+  --muted:#6b8f72;--dim:#a3c4a8;--text:#e8f5ea;
+  --rad:14px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+/* NAV */
+nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:99}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-weight:800;font-size:18px;color:var(--green);text-decoration:none;letter-spacing:-.3px}
+.nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:14px;font-weight:500;padding:5px 10px;border-radius:8px;transition:.15s}
+.nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(74,222,128,.08)}
+.nav-cta{background:var(--green)!important;color:#0a1a0f!important;font-weight:700!important;padding:6px 14px!important;border-radius:20px!important}
+.nav-cta:hover{opacity:.88!important}
+
+/* TICKER */
+.ticker-bar{background:#0d1a10;border-bottom:1px solid var(--border);padding:7px 0;overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-flex;gap:0;animation:scroll-left 40s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{padding:0 22px;font-size:12px;font-weight:600;color:var(--dim);border-right:1px solid var(--border)}
+.tval{margin-left:5px;font-weight:700}
+.tval.up{color:var(--green)}
+.tval.dn{color:var(--red)}
+.tval.neu{color:var(--yellow)}
+@keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* HERO */
+.hero{padding:48px 0 32px;text-align:center}
+.hero-badge{display:inline-block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green);font-size:12px;font-weight:700;letter-spacing:.06em;padding:4px 14px;border-radius:20px;margin-bottom:16px;text-transform:uppercase}
+.hero h1{font-size:clamp(26px,5vw,42px);font-weight:800;line-height:1.15;color:#f0fdf4;margin-bottom:12px}
+.hero p{font-size:16px;color:var(--dim);max-width:580px;margin:0 auto 20px}
+.hero-meta{font-size:12px;color:var(--muted)}
+.live-dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:5px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;padding:0 0 40px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:20px;overflow:hidden}
+.card-title{font-size:13px;font-weight:700;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.card-title .badge-src{font-size:10px;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0}
+
+/* ROWS */
+.row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.row-label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--dim)}
+.row-flag{font-size:16px;line-height:1}
+.row-val{font-size:15px;font-weight:700;color:var(--yellow)}
+.row-unit{font-size:11px;color:var(--muted);margin-left:3px;font-weight:400}
+.row-change{font-size:12px;font-weight:600;margin-left:8px}
+.row-change.up{color:var(--green)}
+.row-change.dn{color:var(--red)}
+
+/* PSX CARD */
+.psx-price{font-size:38px;font-weight:800;color:#f0fdf4;line-height:1}
+.psx-change{font-size:15px;font-weight:700;margin-top:6px}
+.psx-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.psx-stat-label{font-size:10px;color:var(--muted)}
+.psx-stat-val{font-size:14px;font-weight:600;color:#f0fdf4;margin-top:2px}
+
+/* GOLD */
+.gold-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.gold-row:last-child{border-bottom:none}
+.gold-name{font-size:14px;color:var(--dim)}
+.gold-pkr{font-size:15px;font-weight:700;color:var(--yellow)}
+.gold-usd{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* SOLAR */
+.solar-section-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;padding-top:12px;border-top:1px solid var(--border)}
+.solar-section-title:first-child{margin-top:0;padding-top:0;border-top:none}
+.solar-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,53,35,.5)}
+.solar-row:last-child{border-bottom:none}
+.solar-name{font-size:13px;color:var(--dim)}
+.solar-price{font-size:14px;font-weight:700;color:var(--yellow)}
+.solar-unit{font-size:10px;color:var(--muted);margin-left:4px}
+
+/* SOURCE */
+.source-line{font-size:10px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.source-line a{color:#4a7a6a;text-decoration:none}
+.source-line a:hover{text-decoration:underline}
+
+/* LOADING */
+.loading{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
+.loading::after{content:'';display:block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;margin:12px auto 0;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 0;text-align:center;font-size:12px;color:var(--muted)}
+footer a{color:#4a7a6a;text-decoration:none}
+
+/* MOBILE */
+@media(max-width:600px){
+  .nav-links a:not(.nav-cta):not(.active){display:none}
+  .hero h1{font-size:26px}
+  .psx-price{font-size:30px}
+}
+
+/* DISCLAIMER */
+.disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="/" class="logo">OutreachNest</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/services">Services</a>
+      <a href="/niches">Niches</a>
+      <a href="/market" class="active">📈 Market</a>
+      <a href="/solar-calculator" style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">☀️ Free Tools</a>
+      <a href="/contact" class="nav-cta">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="ticker-track">
+    <span class="ticker-item">⏳ Loading live rates…</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-badge">🇵🇰 Pakistan Live Rates</div>
+    <h1>Market Rates — <span style="color:var(--green)">Updated Daily</span></h1>
+    <p>Currency exchange rates, OGRA fuel prices, gold & silver spot prices, PSX KSE-100 index, and solar market prices — all in one place.</p>
+    <div class="hero-meta"><span class="live-dot"></span> Auto-refreshed · <span id="page-time">—</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="disclaimer">
+    ⚠️ All rates are indicative and for reference only. Not for financial or trading decisions. Currency rates: mid-market. Gold: spot price. Fuel: OGRA notified prices. PSX: 15-min delay.
+  </div>
+
+  <div class="grid">
+
+    <!-- Currency -->
+    <div class="card">
+      <div class="card-title">💱 Live Exchange Rates (PKR) <span class="badge-src" id="cur-updated">—</span></div>
+      <div id="currency-body"><div class="loading"></div></div>
+      <div class="source-line">📡 Source: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a> — indicative mid-market rates. Updated daily.</div>
+    </div>
+
+    <!-- Fuel -->
+    <div class="card">
+      <div class="card-title">⛽ Pakistan Fuel Prices (OGRA) <span class="badge-src">PKR / Litre</span></div>
+      <div id="fuel-body"><div class="loading"></div></div>
+      <div class="source-line">📡 Source: <a href="https://www.ogra.org.pk" target="_blank" rel="noopener">ogra.org.pk</a> via <a href="https://www.dailyfuels.com/pakistan/" target="_blank" rel="noopener">dailyfuels.com</a> — OGRA notified prices.</div>
+    </div>
+
+    <!-- Gold & Silver -->
+    <div class="card">
+      <div class="card-title">🥇 Gold &amp; Silver Spot <span class="badge-src">XAU / XAG</span></div>
+      <div id="gold-body"><div class="loading"></div></div>
+      <div class="source-line">📡 Source: <a href="https://xaus.com" target="_blank" rel="noopener">xaus.com</a> — indicative spot price. © XAUS. For reference only.</div>
+    </div>
+
+    <!-- PSX -->
+    <div class="card">
+      <div class="card-title">📊 Pakistan Stock Exchange — KSE-100 <span class="badge-src">15-min delay</span></div>
+      <div id="psx-body"><div class="loading"></div></div>
+      <div class="source-line">📡 Source: <a href="https://finance.yahoo.com/quote/%5EKSE100" target="_blank" rel="noopener">Yahoo Finance</a> — 15-minute delayed data.</div>
+    </div>
+
+    <!-- Solar -->
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-title">☀️ Solar Market — Pakistan Approximate Retail Prices <span class="badge-src">Nov 2026 estimates</span></div>
+      <div id="solar-body"><div class="loading"></div></div>
+      <div class="source-line">📡 Approximate market averages — prices vary by vendor and region. <a href="/solar-calculator" style="color:#4a7a6a">Use our Solar Calculator →</a></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 <a href="/">OutreachNest</a> · Rates are indicative and for reference only · <a href="/contact">Contact</a></p>
+    <p style="margin-top:6px">Currency: ExchangeRate-API · Fuel: ogra.org.pk via dailyfuels.com · Gold: xaus.com · PSX: Yahoo Finance (15-min delay)</p>
+  </div>
+</footer>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────────
+function todayPK(){
+  return new Date().toLocaleDateString('en-PK',{timeZone:'Asia/Karachi',day:'numeric',month:'short',year:'numeric'});
+}
+function fmt(n,dec){ return n!=null ? Number(n).toLocaleString('en-PK',{minimumFractionDigits:dec||2,maximumFractionDigits:dec||2}) : '—'; }
+
+// Page time
+document.getElementById('page-time').textContent = 'As of ' + new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
+
+// ── Ticker ───────────────────────────────────────────────────────────
+var _tickerData = { rates:{}, fuel:{}, gold:{} };
+function buildTicker(){
+  var items = [];
+  var r = _tickerData.rates;
+  if(r.USD_PKR) items.push('🇺🇸 USD/PKR <span class="tval up">Rs'+fmt(r.USD_PKR,2)+'</span>');
+  if(r.EUR_PKR) items.push('🇪🇺 EUR/PKR <span class="tval up">Rs'+fmt(r.EUR_PKR,2)+'</span>');
+  if(r.GBP_PKR) items.push('🇬🇧 GBP/PKR <span class="tval up">Rs'+fmt(r.GBP_PKR,2)+'</span>');
+  if(r.SAR_PKR) items.push('🇸🇦 SAR/PKR <span class="tval up">Rs'+fmt(r.SAR_PKR,2)+'</span>');
+  if(r.AED_PKR) items.push('🇦🇪 AED/PKR <span class="tval up">Rs'+fmt(r.AED_PKR,2)+'</span>');
+  var f = _tickerData.fuel;
+  if(f.petrol)   items.push('🟡 Petrol <span class="tval neu">Rs'+fmt(f.petrol,0)+'/L</span>');
+  if(f.diesel)   items.push('🔴 Diesel <span class="tval neu">Rs'+fmt(f.diesel,0)+'/L</span>');
+  var g = _tickerData.gold;
+  if(g.goldPKR)  items.push('🥇 Gold <span class="tval up">Rs'+Math.round(g.goldPKR).toLocaleString()+'/toz</span>');
+  if(g.silverPKR)items.push('🥈 Silver <span class="tval up">Rs'+Math.round(g.silverPKR).toLocaleString()+'/toz</span>');
+  if(!items.length) return;
+  var html = items.map(function(i){ return '<span class="ticker-item">'+i+'</span>'; }).join('');
+  html = html + html; // duplicate for seamless loop
+  document.getElementById('ticker-track').innerHTML = html;
+}
+
+// ── Currency ─────────────────────────────────────────────────────────
+var PAIRS = [
+  {code:'USD',flag:'🇺🇸',name:'US Dollar'},
+  {code:'EUR',flag:'🇪🇺',name:'Euro'},
+  {code:'GBP',flag:'🇬🇧',name:'British Pound'},
+  {code:'SAR',flag:'🇸🇦',name:'Saudi Riyal'},
+  {code:'AED',flag:'🇦🇪',name:'UAE Dirham'},
+  {code:'CNY',flag:'🇨🇳',name:'Chinese Yuan'},
+  {code:'JPY',flag:'🇯🇵',name:'Japanese Yen'},
+  {code:'INR',flag:'🇮🇳',name:'Indian Rupee'},
+];
+fetch('https://api.exchangerate-api.com/v4/latest/USD')
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var rates = data.rates||{};
+    var pkr = rates.PKR||278;
+    var html='';
+    PAIRS.forEach(function(p){
+      var rate = p.code==='USD' ? pkr : (pkr/(rates[p.code]||1));
+      html+='<div class="row"><div class="row-label"><span class="row-flag">'+p.flag+'</span>'+p.name+' ('+p.code+')</div>'
+        +'<div><span class="row-val">Rs'+fmt(rate,2)+'</span></div></div>';
+      if(p.code==='USD') _tickerData.rates.USD_PKR=rate;
+      if(p.code==='EUR') _tickerData.rates.EUR_PKR=rate;
+      if(p.code==='GBP') _tickerData.rates.GBP_PKR=rate;
+      if(p.code==='SAR') _tickerData.rates.SAR_PKR=rate;
+      if(p.code==='AED') _tickerData.rates.AED_PKR=rate;
+    });
+    document.getElementById('currency-body').innerHTML=html;
+    document.getElementById('cur-updated').textContent='Updated: '+data.date;
+    buildTicker();
+    // Now fetch gold with PKR rate
+    fetchGold(pkr);
+  })
+  .catch(function(){
+    document.getElementById('currency-body').innerHTML='<div class="loading" style="color:var(--red)">Could not load rates</div>';
+  });
+
+// ── Fuel ─────────────────────────────────────────────────────────────
+var FUEL_FALLBACK = {petrol:322,diesel:357,kerosene:177.59,effective:todayPK()};
+fetch('/api/fuel')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.error||!d.petrol) throw new Error('no data');
+    renderFuel(d);
+    _tickerData.fuel={petrol:d.petrol,diesel:d.diesel};
+    buildTicker();
+  })
+  .catch(function(){
+    renderFuel(FUEL_FALLBACK);
+    _tickerData.fuel={petrol:FUEL_FALLBACK.petrol,diesel:FUEL_FALLBACK.diesel};
+    buildTicker();
+  });
+
+function renderFuel(d){
+  var items=[
+    {key:'petrol',  icon:'🟡',name:'Petrol (MS)'},
+    {key:'diesel',  icon:'🔴',name:'Hi-Speed Diesel'},
+    {key:'kerosene',icon:'🔵',name:'Kerosene (SKO)'},
+  ];
+  var html='';
+  items.forEach(function(item){
+    var price=d[item.key]; if(!price) return;
+    html+='<div class="row"><div class="row-label">'+item.icon+' '+item.name+'</div>'
+      +'<div><span class="row-val">Rs'+fmt(price,2)+'</span><span class="row-unit">/ litre</span></div></div>';
+  });
+  if(d.effective) html+='<div style="font-size:11px;color:var(--muted);margin-top:10px">OGRA effective: '+d.effective+'</div>';
+  document.getElementById('fuel-body').innerHTML=html;
+}
+
+// ── Gold & Silver ─────────────────────────────────────────────────────
+function fetchGold(pkrRate){
+  fetch('/api/gold')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var goldUSD   = d.XAU || d.gold || null;
+      var silverUSD = d.XAG || d.silver || null;
+      if(!goldUSD) throw new Error('no gold data');
+      var goldPKR   = goldUSD   * pkrRate;
+      var silverPKR = silverUSD ? silverUSD * pkrRate : null;
+      var html='';
+      html+='<div class="gold-row"><div><div class="gold-name">🥇 Gold (XAU) — per troy oz</div></div>'
+        +'<div style="text-align:right"><div class="gold-pkr">Rs'+Math.round(goldPKR).toLocaleString()+'</div>'
+        +'<div class="gold-usd">$'+fmt(goldUSD,2)+' USD</div></div></div>';
+      if(silverPKR){
+        html+='<div class="gold-row"><div><div class="gold-name">🥈 Silver (XAG) — per troy oz</div></div>'
+          +'<div style="text-align:right"><div class="gold-pkr">Rs'+Math.round(silverPKR).toLocaleString()+'</div>'
+          +'<div class="gold-usd">$'+fmt(silverUSD,2)+' USD</div></div></div>';
+      }
+      // 24K / 10g conversions
+      var gold10g  = goldPKR * 10 / 31.1035;
+      html+='<div style="font-size:11px;color:var(--muted);margin-top:10px">24K Gold per 10g ≈ Rs'+Math.round(gold10g).toLocaleString()+'</div>';
+      document.getElementById('gold-body').innerHTML=html;
+      _tickerData.gold={goldPKR:goldPKR,silverPKR:silverPKR||0};
+      buildTicker();
+    })
+    .catch(function(){
+      document.getElementById('gold-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Gold data unavailable</div>';
+    });
+}
+
+// ── PSX KSE-100 ───────────────────────────────────────────────────────
+fetch('/api/psx')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.error||!d.price) throw new Error(d.error||'no data');
+    var chg    = d.change ? parseFloat(d.change) : 0;
+    var chgPct = d.changePct ? parseFloat(d.changePct) : 0;
+    var up     = chg>=0;
+    var clr    = up?'var(--green)':'var(--red)';
+    var arrow  = up?'▲':'▼';
+    var ts     = d.ts ? new Date(d.ts*1000).toLocaleString('en-PK',{timeZone:'Asia/Karachi'}) : '—';
+    var html   =
+      '<div class="psx-price">'+Math.round(d.price).toLocaleString()+'</div>'
+      +'<div class="psx-change" style="color:'+clr+'">'+arrow+' '+Math.abs(chg).toLocaleString()+' ('+Math.abs(chgPct).toFixed(2)+'%)</div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-top:4px">vs Prev Close: '+Math.round(d.prev||0).toLocaleString()+' PKR</div>'
+      +'<div class="psx-grid">'
+      +'<div><div class="psx-stat-label">Day High</div><div class="psx-stat-val">'+(d.dayHigh?Math.round(d.dayHigh).toLocaleString():'—')+'</div></div>'
+      +'<div><div class="psx-stat-label">Day Low</div><div class="psx-stat-val">'+(d.dayLow?Math.round(d.dayLow).toLocaleString():'—')+'</div></div>'
+      +'<div><div class="psx-stat-label">52W High</div><div class="psx-stat-val">'+(d.fiftyTwoHigh?Math.round(d.fiftyTwoHigh).toLocaleString():'—')+'</div></div>'
+      +'<div><div class="psx-stat-label">52W Low</div><div class="psx-stat-val">'+(d.fiftyTwoLow?Math.round(d.fiftyTwoLow).toLocaleString():'—')+'</div></div>'
+      +'</div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:12px">'+ts+'</div>';
+    document.getElementById('psx-body').innerHTML=html;
+  })
+  .catch(function(e){
+    document.getElementById('psx-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 KSE-100 data unavailable<br><small>'+( e.message||'')+'</small></div>';
+  });
+
+// ── Solar Prices (static — same as dashboard defaults) ────────────────
+var SOLAR={
+  panels:[
+    {name:'Longi 550W Mono PERC',        price:'38,500', unit:'per panel'},
+    {name:'Jinko 540W Bifacial',          price:'41,000', unit:'per panel'},
+    {name:'Canadian Solar 580W',          price:'44,500', unit:'per panel'},
+    {name:'Local Brand 400W',             price:'18,000', unit:'per panel'},
+  ],
+  inverters:[
+    {name:'Growatt 5kW Hybrid',           price:'145,000',unit:'per unit'},
+    {name:'Solis 8kW Hybrid',             price:'185,000',unit:'per unit'},
+    {name:'Fronius Primo 6kW',            price:'260,000',unit:'per unit'},
+    {name:'Tesla/NOYA 5kW (local)',        price:'95,000', unit:'per unit'},
+    {name:'PV Star 3kW PCU',              price:'55,000', unit:'per unit'},
+  ],
+  batteries:[
+    {name:'AGS 200Ah Tubular',            price:'72,000', unit:'per battery'},
+    {name:'Phoenix 150Ah Tubular',        price:'58,000', unit:'per battery'},
+    {name:'BYD LiFePO4 5kWh',            price:'380,000',unit:'per unit'},
+    {name:'Pylontech US3000C 3.5kWh',    price:'275,000',unit:'per unit'},
+    {name:'Pylontech US5000 4.8kWh',     price:'340,000',unit:'per unit'},
+    {name:'Local Lithium 100Ah 48V',      price:'120,000',unit:'per unit'},
+  ]
+};
+(function renderSolar(){
+  function section(title, items){
+    var h='<div class="solar-section-title">'+title+'</div>';
+    items.forEach(function(item){
+      h+='<div class="solar-row"><div class="solar-name">'+item.name+'</div>'
+        +'<div><span class="solar-price">Rs '+item.price+'</span><span class="solar-unit">'+item.unit+'</span></div></div>';
+    });
+    return h;
+  }
+  var html=section('🔆 Solar Panels',SOLAR.panels)+section('⚡ Inverters',SOLAR.inverters)+section('🔋 Batteries',SOLAR.batteries);
+  html+='<div style="font-size:11px;color:var(--muted);margin-top:14px">⚠️ Approximate market averages (Nov 2026). Prices vary by vendor and city.</div>';
+  document.getElementById('solar-body').innerHTML=html;
+})();
+</script>
+</body>
+</html>

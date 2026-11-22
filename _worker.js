@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v74"; // v74: fix /api/fuel scraper — row-based extraction prevents petrol price bleeding into diesel // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v75"; // v75: public /market page — live currency, fuel, gold, PSX, solar prices // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2034,7 +2034,7 @@ export default {
       // "Slow server response for AI crawlers" warnings on those pages.
       // Static assets (CSS/JS/images) are cached natively by Cloudflare Pages CDN
       // and never reach this Worker, so we only need to cache HTML pages here.
-      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact", "/solar-calculator", "/activate"]);
+      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact", "/solar-calculator", "/market", "/activate"]);
       if (HTML_PAGES.has(url.pathname) && request.method === "GET") {
         const cache = caches.default;
         // v26: include CACHE_VERSION in the key so bumping the version busts the Workers cache.
@@ -2048,7 +2048,7 @@ export default {
         if (cached) return cached;
         // V13.1: fetch .html file directly — avoids redirect loop
         // (/download.html → /download → /download.html → 404)
-        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html","/solar-calculator":"/solar-calculator.html","/activate":"/activate.html"};
+        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html","/solar-calculator":"/solar-calculator.html","/market":"/market.html","/activate":"/activate.html"};
         const _assetUrl = new URL(request.url);
         _assetUrl.pathname = _HTML_MAP[url.pathname] || url.pathname;
         const resp = await env.ASSETS.fetch(new Request(_assetUrl.toString(), {method:"GET",headers:request.headers}));

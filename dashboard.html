@@ -15,6 +15,18 @@
 }
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;padding:0}
 
+/* ── Ticker ── */
+.ticker-wrap{background:#0a1208;border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;height:30px;display:flex;align-items:center}
+.ticker-label{background:#1f4d3a;color:#4ade80;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:0 14px;height:100%;display:flex;align-items:center;flex-shrink:0;border-right:1px solid var(--border)}
+.ticker-track{display:inline-flex;animation:ticker-scroll 40s linear infinite;gap:0}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{display:inline-flex;align-items:center;padding:0 28px;font-size:12px;gap:8px;color:var(--dim);border-right:1px solid var(--border)}
+.ticker-item .tval{font-weight:700;font-size:13px}
+.ticker-item .tval.up{color:#4ade80}
+.ticker-item .tval.down{color:#f87171}
+.ticker-item .tval.neutral{color:#fbbf24}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
 /* ── Top bar ── */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .topbar-left{display:flex;align-items:center;gap:10px}
@@ -105,6 +117,16 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 </style>
 </head>
 <body>
+
+<!-- Live Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker-label">⚡ LIVE</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-item">Loading rates… <span class="tval neutral">—</span></span>
+    </div>
+  </div>
+</div>
 
 <!-- Top Bar -->
 <div class="topbar">
@@ -332,7 +354,20 @@ function fetchRates() {
     });
 }
 
-function refreshRates() { fetchRates(); }
+function refreshRates() {
+  document.getElementById('currency-body').innerHTML = '<div class="loading">Fetching live rates…</div>';
+  fetch('https://api.exchangerate-api.com/v4/latest/USD')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var rates = data.rates || {};
+      renderRates(rates);
+      document.getElementById('currency-ts').textContent = 'Updated: ' + (data.date || '');
+      document.getElementById('currency-source').textContent = 'Source: exchangerate-api.com (free tier, daily update)';
+      save('rates_cache', { rates: rates, ts: Date.now(), date: data.date });
+      buildTicker(rates, load('fuel', null));
+    })
+    .catch(function(){ document.getElementById('currency-body').innerHTML = '<div class="error-msg">Fetch failed.</div>'; });
+}
 
 // ── Fuel prices ──────────────────────────────────────────────────────
 function renderFuel(d) {
@@ -383,10 +418,79 @@ function saveFuel() {
   setTimeout(function(){ msg.style.display='none'; }, 2500);
 }
 
+// ── Ticker ───────────────────────────────────────────────────────────
+function buildTicker(rates, fuelData) {
+  var items = [];
+
+  // Currency pairs
+  var pairs = [
+    { code:'USD', flag:'🇺🇸', label:'USD/PKR' },
+    { code:'EUR', flag:'🇪🇺', label:'EUR/PKR' },
+    { code:'SAR', flag:'🇸🇦', label:'SAR/PKR' },
+    { code:'AED', flag:'🇦🇪', label:'AED/PKR' },
+    { code:'GBP', flag:'🇬🇧', label:'GBP/PKR' },
+    { code:'CNY', flag:'🇨🇳', label:'CNY/PKR' },
+  ];
+  if (rates && rates['PKR']) {
+    pairs.forEach(function(p) {
+      var r = rates[p.code];
+      if (!r) return;
+      var pkr = (rates['PKR'] / r).toFixed(2);
+      items.push('<span class="ticker-item">' + p.flag + ' ' + p.label + ' <span class="tval neutral">₨' + pkr + '</span></span>');
+    });
+  }
+
+  // Fuel prices
+  if (fuelData) {
+    if (fuelData.petrol)   items.push('<span class="ticker-item">🟡 Petrol <span class="tval up">₨' + Number(fuelData.petrol).toFixed(0) + '/L</span></span>');
+    if (fuelData.diesel)   items.push('<span class="ticker-item">🔴 HSD <span class="tval down">₨' + Number(fuelData.diesel).toFixed(0) + '/L</span></span>');
+    if (fuelData.kerosene) items.push('<span class="ticker-item">🔵 Kerosene <span class="tval neutral">₨' + Number(fuelData.kerosene).toFixed(0) + '/L</span></span>');
+  }
+
+  // Site stats (static)
+  items.push('<span class="ticker-item">🌿 Ahrefs Health <span class="tval up">100/100</span></span>');
+  items.push('<span class="ticker-item">📝 Blog Posts <span class="tval neutral">42</span></span>');
+
+  // Double items for seamless loop
+  var html = items.join('') + items.join('');
+  document.getElementById('tickerTrack').innerHTML = html;
+}
+
 // ── Init ─────────────────────────────────────────────────────────────
 loadGsc();
 loadFuel();
-fetchRates();
+
+// Fetch rates and build ticker together
+(function init() {
+  var cachedRates = load('rates_cache', null);
+  var fuelData = load('fuel', null);
+
+  // Show cached ticker immediately while fetching
+  if (cachedRates && cachedRates.rates) buildTicker(cachedRates.rates, fuelData);
+
+  fetch('https://api.exchangerate-api.com/v4/latest/USD')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var rates = data.rates || {};
+      renderRates(rates);
+      var dateStr = data.date || new Date().toLocaleDateString();
+      document.getElementById('currency-ts').textContent = 'Updated: ' + dateStr;
+      document.getElementById('currency-source').textContent = 'Source: exchangerate-api.com (free tier, daily update)';
+      save('rates_cache', { rates: rates, ts: Date.now(), date: dateStr });
+      buildTicker(rates, load('fuel', null));
+    })
+    .catch(function(e) {
+      var cached = load('rates_cache', null);
+      if (cached && cached.rates) {
+        renderRates(cached.rates);
+        document.getElementById('currency-ts').textContent = 'Cached: ' + new Date(cached.ts).toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
+        document.getElementById('currency-source').textContent = '⚠️ Using cached data (live fetch failed)';
+        buildTicker(cached.rates, load('fuel', null));
+      } else {
+        document.getElementById('currency-body').innerHTML = '<div class="error-msg">Could not load rates. Check internet.</div>';
+      }
+    });
+})();
 </script>
 </body>
 </html>

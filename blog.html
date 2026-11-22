@@ -876,9 +876,12 @@ function updateCounts() {
     // Add green dot if any post in this category is "new"
     var pill = el.closest('.cat-pill');
     if (!pill) return;
+    var now = new Date();
+    var currentMonth = now.toLocaleString('en-US', { month: 'long' });
+    var currentYear = String(now.getFullYear());
     var hasNew = cat === 'all'
-      ? window.POSTS.some(function(p){ return isNew(p.date); })
-      : window.POSTS.filter(function(p){ return matchesCat(p, cat); }).some(function(p){ return isNew(p.date); });
+      ? window.POSTS.some(function(p){ return String(p.date||'').toLowerCase() === (currentMonth+' '+currentYear).toLowerCase(); })
+      : window.POSTS.filter(function(p){ return matchesCat(p, cat); }).some(function(p){ return String(p.date||'').toLowerCase() === (currentMonth+' '+currentYear).toLowerCase(); });
     var dot = pill.querySelector('.pill-new-dot');
     if (hasNew && !dot) {
       var d = document.createElement('span');

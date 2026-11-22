@@ -27,6 +27,14 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .ticker-item .tval.neutral{color:#fbbf24}
 @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
+/* ── Tabs ── */
+.tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 24px;gap:0}
+.tab-btn{padding:12px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
 /* ── Info bar (fixed, no scroll) ── */
 .infobar{background:#111f16;border-bottom:1px solid var(--border);padding:0 24px;height:32px;display:flex;align-items:center;gap:0;overflow:hidden;white-space:nowrap}
 .infobar-item{display:inline-flex;align-items:center;gap:6px;padding:0 20px;font-size:12px;color:var(--dim);border-right:1px solid var(--border);height:100%}
@@ -138,6 +146,12 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   </div>
 </div>
 
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">🏠 Overview</button>
+  <button class="tab-btn" onclick="switchTab('market',this)">📈 Market</button>
+</div>
+
 <!-- Fixed Info Bar (site stats — no scroll) -->
 <div class="infobar">
   <div class="infobar-item">🌿 Ahrefs Health <span class="infobar-val green">100/100</span></div>
@@ -164,6 +178,9 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 </div>
 
 <div class="wrap">
+
+<!-- ════════════════ TAB: OVERVIEW ════════════════ -->
+<div class="tab-pane active" id="tab-overview">
 
   <!-- ── GSC Stats (Manual Entry or Last Saved) ── -->
   <div class="section-title">📊 Google Search Console — Last 3 Months</div>
@@ -307,6 +324,94 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     <div style="font-size:10px;color:var(--muted);margin-top:10px">© ExchangeRate-API — indicative mid-market rates. Updated daily. Not for financial/trading use.</div>
   </div>
 
+</div><!-- /tab-overview -->
+
+<!-- ════════════════ TAB: MARKET ════════════════ -->
+<div class="tab-pane" id="tab-market">
+
+  <!-- PSX Stock Exchange -->
+  <div class="section-title">📊 Pakistan Stock Exchange — KSE-100</div>
+  <div class="card" style="margin-bottom:24px;padding:0;overflow:hidden">
+    <div id="psx-widget-wrap" style="height:400px;background:#111f16">
+      <div class="loading" style="padding-top:60px">PSX chart loads when tab is opened…</div>
+    </div>
+  </div>
+
+  <!-- Currency + Gold + Fuel (live, same data as dashboard) -->
+  <div class="grid-2" style="margin-bottom:24px">
+
+    <div class="card">
+      <div class="card-title">💱 Live Currency Rates <span id="mkt-currency-ts"></span></div>
+      <div id="mkt-currency-body"><div class="loading">Tab mein aate hi load hoga…</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⛽ Fuel Prices (OGRA) <span>PKR/L</span></div>
+      <div id="mkt-fuel-body"><div class="loading">Loading…</div></div>
+    </div>
+
+  </div>
+
+  <div class="grid-2" style="margin-bottom:24px">
+
+    <div class="card">
+      <div class="card-title">🥇 Gold Rates <span id="mkt-gold-ts"></span></div>
+      <div id="mkt-gold-body"><div class="loading">Loading…</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🥈 Silver Rates <span></span></div>
+      <div id="mkt-silver-body"><div class="loading">Loading…</div></div>
+    </div>
+
+  </div>
+
+  <!-- Solar Prices -->
+  <div class="section-title">☀️ Solar Market — Pakistan Approximate Retail Prices</div>
+  <div class="card" style="margin-bottom:24px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:14px;background:#1a2a1a;padding:10px 14px;border-radius:8px">
+      ⚠️ Prices are approximate market averages (Nov 2026). Update manually when rates change. <span style="color:#fbbf24">Tap "Edit" to update any price.</span>
+    </div>
+
+    <!-- Panels -->
+    <div class="section-title" style="margin-top:4px">🔆 Solar Panels</div>
+    <div id="solar-panels-body"></div>
+
+    <!-- Inverters -->
+    <div class="section-title" style="margin-top:16px">⚡ Inverters / PCUs</div>
+    <div id="solar-inverters-body"></div>
+
+    <!-- Batteries -->
+    <div class="section-title" style="margin-top:16px">🔋 Batteries</div>
+    <div id="solar-batteries-body"></div>
+
+    <!-- Edit form (hidden by default) -->
+    <div id="solar-edit-form" style="display:none;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:700;color:var(--dim);margin-bottom:10px">✏️ Edit Solar Price</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fuel-input-group" style="flex:2;min-width:180px">
+          <label class="fuel-input-label">Item</label>
+          <input class="fuel-input" id="solar-edit-name" readonly style="color:var(--muted)">
+        </div>
+        <div class="fuel-input-group" style="flex:1;min-width:140px">
+          <label class="fuel-input-label">Price (PKR)</label>
+          <input class="fuel-input" id="solar-edit-price" type="text" placeholder="e.g. 45,000">
+        </div>
+        <div class="fuel-input-group" style="flex:1;min-width:120px">
+          <label class="fuel-input-label">Unit</label>
+          <input class="fuel-input" id="solar-edit-unit" type="text" placeholder="e.g. per panel">
+        </div>
+        <button class="btn-save-fuel" onclick="saveSolarEdit()">Save</button>
+        <button class="btn-save-fuel" onclick="document.getElementById('solar-edit-form').style.display='none'" style="background:#2a1a1a;color:#f87171">Cancel</button>
+      </div>
+      <div class="save-msg" id="solar-save-msg">✅ Saved!</div>
+    </div>
+
+    <div class="last-updated" id="solar-updated"></div>
+  </div>
+
+</div><!-- /tab-market -->
+
 </div><!-- /wrap -->
 
 <div class="footer">
@@ -335,6 +440,19 @@ setInterval(updateClock, 60000);
 
 // ── Info bar date ────────────────────────────────────────────────────
 document.getElementById('ib-date').textContent = todayPK();
+
+// ── Tab switching ────────────────────────────────────────────────────
+var _marketLoaded = false;
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'market' && !_marketLoaded) {
+    _marketLoaded = true;
+    loadMarketTab();
+  }
+}
 
 // ── Logout ──────────────────────────────────────────────────────────
 function logout() {
@@ -582,6 +700,11 @@ function renderGold(d, pkrRate) {
     html = '<div class="error-msg">Gold data unavailable.</div>';
   }
   document.getElementById('gold-body').innerHTML = html;
+  // Also update market tab if loaded
+  var mktGold = document.getElementById('mkt-gold-body');
+  if (mktGold) mktGold.innerHTML = html;
+  var mgtTs = document.getElementById('mkt-gold-ts');
+  if (mgtTs && document.getElementById('gold-ts')) mgtTs.textContent = document.getElementById('gold-ts').textContent;
 
   // Silver
   var xagUsd  = d.xag && d.xag.usd ? Number(d.xag.usd).toFixed(2) : null;
@@ -600,6 +723,8 @@ function renderGold(d, pkrRate) {
     html2 = '<div class="error-msg">Silver data unavailable.</div>';
   }
   document.getElementById('silver-body').innerHTML = html2;
+  var mktSilver = document.getElementById('mkt-silver-body');
+  if (mktSilver) mktSilver.innerHTML = html2;
 
   // Update ticker with gold
   save('gold_cache', { usdOz, pkrOz, pkrTola, xagUsd, ts: Date.now() });
@@ -665,6 +790,192 @@ function buildTicker(rates, fuelData) {
   // Double items for seamless loop
   var html = items.join('') + items.join('');
   document.getElementById('tickerTrack').innerHTML = html;
+}
+
+// ── Solar Prices ─────────────────────────────────────────────────────
+var SOLAR_DEFAULTS = {
+  panels: [
+    { id:'p1', name:'Longi 550W Mono PERC',        price:'38,500', unit:'per panel' },
+    { id:'p2', name:'Jinko 540W Bifacial',          price:'41,000', unit:'per panel' },
+    { id:'p3', name:'Canadian Solar 580W',          price:'44,500', unit:'per panel' },
+    { id:'p4', name:'Local Brand 400W',             price:'18,000', unit:'per panel' },
+  ],
+  inverters: [
+    { id:'i1', name:'Growatt 5kW Hybrid',           price:'145,000', unit:'per unit' },
+    { id:'i2', name:'Solis 8kW Hybrid',             price:'185,000', unit:'per unit' },
+    { id:'i3', name:'Fronius Primo 6kW',             price:'260,000', unit:'per unit' },
+    { id:'i4', name:'Tesla/NOYA 5kW (local)',        price:'95,000',  unit:'per unit' },
+    { id:'i5', name:'PV Star 3kW PCU',              price:'55,000',  unit:'per unit' },
+  ],
+  batteries: [
+    { id:'b1', name:'AGS 200Ah Tubular',            price:'72,000',  unit:'per battery' },
+    { id:'b2', name:'Phoenix 150Ah Tubular',        price:'58,000',  unit:'per battery' },
+    { id:'b3', name:'BYD LiFePO4 5kWh',             price:'380,000', unit:'per unit' },
+    { id:'b4', name:'Pylon US3000C 3.5kWh LiFePO4', price:'275,000', unit:'per unit' },
+    { id:'b5', name:'Local Lithium 100Ah 48V',      price:'120,000', unit:'per unit' },
+  ],
+  ts: 0
+};
+
+var _solarEditId = null;
+var _solarEditCat = null;
+
+function getSolar() {
+  return load('solar', null) || JSON.parse(JSON.stringify(SOLAR_DEFAULTS));
+}
+
+function renderSolarSection(items, containerId) {
+  var html = '';
+  items.forEach(function(item) {
+    html += '<div class="fuel-row" style="cursor:pointer" onclick="openSolarEdit(\'' + item.id + '\',\'' + containerId + '\')">' +
+      '<div class="fuel-name">' + item.name + '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:6px">' +
+        '<span class="fuel-price" style="font-size:15px">₨' + item.price + '</span>' +
+        '<span class="fuel-unit">' + item.unit + '</span>' +
+        '<span style="font-size:10px;color:var(--muted);margin-left:4px">✏️</span>' +
+      '</div></div>';
+  });
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function renderSolar() {
+  var d = getSolar();
+  renderSolarSection(d.panels,    'solar-panels-body');
+  renderSolarSection(d.inverters, 'solar-inverters-body');
+  renderSolarSection(d.batteries, 'solar-batteries-body');
+  if (d.ts) document.getElementById('solar-updated').textContent = 'Last updated: ' + new Date(d.ts).toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
+  else document.getElementById('solar-updated').textContent = '⚠️ Showing approximate Nov 2026 market prices — click any item to update.';
+}
+
+function openSolarEdit(id, cat) {
+  var d = getSolar();
+  var catKey = cat.replace('solar-','').replace('-body','');
+  var list = d[catKey];
+  var item = list && list.find(function(x){ return x.id === id; });
+  if (!item) return;
+  _solarEditId  = id;
+  _solarEditCat = catKey;
+  document.getElementById('solar-edit-name').value  = item.name;
+  document.getElementById('solar-edit-price').value = item.price;
+  document.getElementById('solar-edit-unit').value  = item.unit;
+  document.getElementById('solar-edit-form').style.display = 'flex';
+  document.getElementById('solar-edit-form').scrollIntoView({behavior:'smooth'});
+}
+
+function saveSolarEdit() {
+  var d = getSolar();
+  var list = d[_solarEditCat];
+  var item = list && list.find(function(x){ return x.id === _solarEditId; });
+  if (!item) return;
+  item.price = document.getElementById('solar-edit-price').value.trim();
+  item.unit  = document.getElementById('solar-edit-unit').value.trim();
+  d.ts = Date.now();
+  save('solar', d);
+  renderSolar();
+  document.getElementById('solar-edit-form').style.display = 'none';
+  var msg = document.getElementById('solar-save-msg');
+  msg.style.display = 'block';
+  setTimeout(function(){ msg.style.display='none'; }, 2000);
+}
+
+// ── Market Tab Loader ─────────────────────────────────────────────────
+function loadMarketTab() {
+  // 1) PSX Widget (TradingView — free, legal, live 15-min delay)
+  var wrap = document.getElementById('psx-widget-wrap');
+  wrap.innerHTML = '';
+  var container = document.createElement('div');
+  container.className = 'tradingview-widget-container';
+  container.style.height = '100%';
+  container.innerHTML = '<div class="tradingview-widget-container__widget" style="height:100%"></div>';
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.async = true;
+  script.innerHTML = JSON.stringify({
+    autosize: true,
+    symbol: "PSX:KSE100",
+    interval: "D",
+    timezone: "Asia/Karachi",
+    theme: "dark",
+    style: "1",
+    locale: "en",
+    backgroundColor: "#0f1a14",
+    gridColor: "#2a3d28",
+    allow_symbol_change: false,
+    calendar: false,
+    support_host: "https://www.tradingview.com"
+  });
+  container.appendChild(script);
+  wrap.appendChild(container);
+
+  // 2) Currency rates (use cached or fetch fresh)
+  var cached = load('rates_cache', null);
+  if (cached && cached.rates) {
+    renderMktCurrency(cached.rates, cached.date);
+  } else {
+    document.getElementById('mkt-currency-body').innerHTML = '<div class="loading">Fetching…</div>';
+  }
+  fetch('https://api.exchangerate-api.com/v4/latest/USD')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var rates = data.rates || {};
+      renderMktCurrency(rates, data.date);
+      save('rates_cache', { rates:rates, ts:Date.now(), date:data.date });
+      // Also update main tab
+      renderRates(rates);
+      populateConverterDropdowns(rates);
+      document.getElementById('currency-ts').textContent = 'Updated: ' + data.date;
+      fetchGold(rates['PKR'] || 278);
+    })
+    .catch(function(){
+      if (cached && cached.rates) renderMktCurrency(cached.rates, 'cached');
+    });
+
+  // 3) Fuel
+  renderMktFuel();
+
+  // 4) Solar
+  renderSolar();
+}
+
+function renderMktCurrency(rates, dateStr) {
+  var pairs = [
+    { code:'USD', flag:'🇺🇸', name:'US Dollar' },
+    { code:'EUR', flag:'🇪🇺', name:'Euro' },
+    { code:'GBP', flag:'🇬🇧', name:'British Pound' },
+    { code:'SAR', flag:'🇸🇦', name:'Saudi Riyal' },
+    { code:'AED', flag:'🇦🇪', name:'UAE Dirham' },
+    { code:'CNY', flag:'🇨🇳', name:'Chinese Yuan' },
+    { code:'JPY', flag:'🇯🇵', name:'Japanese Yen' },
+    { code:'INR', flag:'🇮🇳', name:'Indian Rupee' },
+  ];
+  var pkr = rates['PKR'] || 1;
+  var html = '';
+  pairs.forEach(function(p) {
+    var r = rates[p.code]; if (!r) return;
+    var val = (pkr / r).toFixed(2);
+    html += '<div class="rate-row"><div class="rate-name"><span class="rate-flag">' + p.flag + '</span>' + p.name + '</div>' +
+      '<div><span class="rate-val">₨' + val + '</span></div></div>';
+  });
+  document.getElementById('mkt-currency-body').innerHTML = html;
+  document.getElementById('mkt-currency-ts').textContent = dateStr ? 'Updated: ' + dateStr : '';
+}
+
+function renderMktFuel() {
+  var d = load('fuel', null) || FUEL_DEFAULTS;
+  var items = [
+    { key:'petrol',   name:'⛽ Petrol (MS)',     unit:'/ litre' },
+    { key:'diesel',   name:'🔴 Hi-Speed Diesel', unit:'/ litre' },
+    { key:'kerosene', name:'🔵 Kerosene (SKO)',  unit:'/ litre' },
+  ];
+  var html = '';
+  items.forEach(function(item) {
+    var price = d[item.key]; if (!price) return;
+    html += '<div class="fuel-row"><div class="fuel-name">' + item.name + '</div>' +
+      '<div><span class="fuel-price">₨' + Number(price).toFixed(2) + '</span><span class="fuel-unit">' + item.unit + '</span></div></div>';
+  });
+  if (d.effective) html += '<div style="font-size:11px;color:var(--muted);padding-top:8px">OGRA effective: ' + d.effective + '</div>';
+  document.getElementById('mkt-fuel-body').innerHTML = html;
 }
 
 // ── Init ─────────────────────────────────────────────────────────────

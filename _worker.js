@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v64"; // v64: blog audit — fix orphan post cat (Lead Generation→Electrical,Industry); admin cat dropdown replaces free-text // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v65"; // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1447,7 +1447,8 @@ export default {
     // explicitly excluded so the auth gate below always fires for them.
     const _p = url.pathname;
     const _isAdmin = _p === "/admin" || _p === "/admin.html";
-    if (!_isAdmin && /\.(?:css|js|mjs|map|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|otf|eot|pdf|zip|exe|txt|xml|json|webmanifest)$/i.test(_p)) {
+    const _isDashboard = _p === "/dashboard" || _p === "/dashboard.html";
+    if (!_isAdmin && !_isDashboard && /\.(?:css|js|mjs|map|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|otf|eot|pdf|zip|exe|txt|xml|json|webmanifest)$/i.test(_p)) {
       return env.ASSETS.fetch(request);
     }
 
@@ -2048,6 +2049,30 @@ export default {
       return new Response(loginPageHtml(false), {
         status: 401,
         headers: { "Content-Type": "text/html; charset=UTF-8" },
+      });
+    }
+
+    // ── Dashboard route — session-protected, noindex ──────────────────
+    if (_isDashboard) {
+      const dashToken = getCookie(request, COOKIE_NAME);
+      const dashValid = await verifySessionToken(dashToken);
+      if (!dashValid) {
+        return new Response(loginPageHtml(false), {
+          status: 401,
+          headers: { "Content-Type": "text/html; charset=UTF-8" },
+        });
+      }
+      const dashUrl = new URL(request.url);
+      dashUrl.pathname = "/dashboard.html";
+      const dashResp = await env.ASSETS.fetch(new Request(dashUrl.toString(), { method: "GET", headers: request.headers }));
+      return new Response(dashResp.body, {
+        status: dashResp.status,
+        headers: {
+          ...Object.fromEntries(dashResp.headers),
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "Pragma": "no-cache",
+          "X-Robots-Tag": "noindex,nofollow",
+        },
       });
     }
 

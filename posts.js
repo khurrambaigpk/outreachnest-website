@@ -1393,6 +1393,7 @@ content:`<h3>Why Electrical Contractor Lead Generation Is Different</h3>
   },
 {
 slug:"how-to-choose-solar-panel-guide",
+featured:true,
 cat:"Industry, Solar", cover:"g3", icon:"☀️",
 title:"How to Choose the Right Solar Panel — What Most Buyers Get Wrong",
 author:"OutreachNest", date:"November 2026", read:"8 min read",

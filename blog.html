@@ -394,6 +394,20 @@ body { background: var(--bg); color: var(--text); }
   font-weight: 600;
   opacity: .7;
 }
+.pill-new-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-right: 4px;
+  flex-shrink: 0;
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .6; transform: scale(.85); }
+}
 @media (max-width: 640px) {
   .filter-bar {
     flex-wrap: nowrap;
@@ -849,7 +863,7 @@ function sectionBlock(label, posts) {
   return html;
 }
 
-// ── Count posts ─────────────────────────────────────────────────────
+// ── Count posts + New dot on pills ──────────────────────────────────
 function updateCounts() {
   if (!window.POSTS) return;
   ['all','Research','LinkBuilding','Outreach','SEO','Industry','Resources'].forEach(function(cat) {
@@ -858,6 +872,22 @@ function updateCounts() {
     el.textContent = cat === 'all'
       ? window.POSTS.length
       : window.POSTS.filter(function(p){ return matchesCat(p, cat); }).length;
+
+    // Add green dot if any post in this category is "new"
+    var pill = el.closest('.cat-pill');
+    if (!pill) return;
+    var hasNew = cat === 'all'
+      ? window.POSTS.some(function(p){ return isNew(p.date); })
+      : window.POSTS.filter(function(p){ return matchesCat(p, cat); }).some(function(p){ return isNew(p.date); });
+    var dot = pill.querySelector('.pill-new-dot');
+    if (hasNew && !dot) {
+      var d = document.createElement('span');
+      d.className = 'pill-new-dot';
+      d.title = 'New post this month';
+      pill.insertBefore(d, pill.firstChild);
+    } else if (!hasNew && dot) {
+      dot.remove();
+    }
   });
 }
 

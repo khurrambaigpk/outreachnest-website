@@ -1356,7 +1356,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 
 {
 slug:"electrical-contractor-lead-generation",
-cat:"Lead Generation", cover:"g2", icon:"⚡",
+cat:"Electrical, Industry", cover:"g2", icon:"⚡",
 title:"Electrical Contractor Lead Generation Guide",
 author:"OutreachNest", date:"November 2026", read:"7 min read",
 excerpt:"Electrical contractor lead generation is different from most B2B outreach. Here's what works, what doesn't, and how to build a consistent pipeline.",

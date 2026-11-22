@@ -66,8 +66,23 @@ textarea{min-height:120px;resize:vertical}
 <label>Blog title</label>
 <input id="title" placeholder="e.g. 5 Solar Marketing Tips That Actually Work">
 
-<label>Category</label>
-<input id="cat" placeholder="e.g. Solar, Electrical, Outreach">
+<label>Primary Category <small style="font-weight:400;color:#888">(pick main one — blog auto-routes by this)</small></label>
+<select id="cat">
+  <option value="">— Select category —</option>
+  <option value="Guest Posting">🔗 Guest Posting (LinkBuilding)</option>
+  <option value="Link Building">🔗 Link Building (LinkBuilding)</option>
+  <option value="Outreach">📨 Outreach</option>
+  <option value="Cold Outreach">📨 Cold Outreach (Outreach)</option>
+  <option value="SEO & Tools">🔎 SEO &amp; Tools (SEO)</option>
+  <option value="SEO">🔎 SEO (SEO)</option>
+  <option value="Solar">🏭 Solar (Industry)</option>
+  <option value="Electrical">🏭 Electrical (Industry)</option>
+  <option value="Electronics Repair">🏭 Electronics Repair (Industry)</option>
+  <option value="Automation">🏭 Automation (Industry)</option>
+  <option value="Industry">🏭 Industry</option>
+  <option value="Research">🔬 Research</option>
+  <option value="Resources">📋 Resources</option>
+</select>
 
 <label>Short summary (shows on blog card)</label>
 <textarea id="excerpt" placeholder="One or two sentences describing the post..."></textarea>

@@ -27,6 +27,16 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .ticker-item .tval.neutral{color:#fbbf24}
 @keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
+/* ── Info bar (fixed, no scroll) ── */
+.infobar{background:#111f16;border-bottom:1px solid var(--border);padding:0 24px;height:32px;display:flex;align-items:center;gap:0;overflow:hidden;white-space:nowrap}
+.infobar-item{display:inline-flex;align-items:center;gap:6px;padding:0 20px;font-size:12px;color:var(--dim);border-right:1px solid var(--border);height:100%}
+.infobar-item:first-child{padding-left:0}
+.infobar-val{font-weight:700;font-size:13px}
+.infobar-val.green{color:var(--green)}
+.infobar-val.blue{color:var(--blue)}
+.infobar-val.yellow{color:var(--yellow)}
+.infobar-sep{flex:1}
+
 /* ── Top bar ── */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .topbar-left{display:flex;align-items:center;gap:10px}
@@ -128,6 +138,16 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   </div>
 </div>
 
+<!-- Fixed Info Bar (site stats — no scroll) -->
+<div class="infobar">
+  <div class="infobar-item">🌿 Ahrefs Health <span class="infobar-val green">100/100</span></div>
+  <div class="infobar-item">📝 Blog Posts <span class="infobar-val yellow" id="ib-posts">42</span></div>
+  <div class="infobar-item">🗺️ Sitemap URLs <span class="infobar-val blue">48</span></div>
+  <div class="infobar-item">🔴 Errors <span class="infobar-val green">0</span></div>
+  <div class="infobar-sep"></div>
+  <div class="infobar-item" style="border-right:none;font-size:10px;color:var(--muted)">📅 Updated: <span id="ib-date">—</span></div>
+</div>
+
 <!-- Top Bar -->
 <div class="topbar">
   <div class="topbar-left">
@@ -180,31 +200,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     </div>
     <div class="save-msg" id="gsc-save-msg">✅ Saved!</div>
     <div class="last-updated" id="gsc-updated"></div>
-  </div>
-
-  <!-- ── KPI Row ── -->
-  <div class="section-title">📈 Site Overview</div>
-  <div class="kpi-row">
-    <div class="kpi">
-      <div class="kpi-label">Total Blog Posts</div>
-      <div class="kpi-value green">42</div>
-      <div class="kpi-sub">Published & indexed</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Ahrefs Health</div>
-      <div class="kpi-value green">100</div>
-      <div class="kpi-sub">Last crawl: Nov 2026</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Sitemap URLs</div>
-      <div class="kpi-value blue">48</div>
-      <div class="kpi-sub">48 URLs submitted</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Ahrefs Errors</div>
-      <div class="kpi-value green">0</div>
-      <div class="kpi-sub">Fixed Nov 2026</div>
-    </div>
   </div>
 
   <!-- ── Live Rates ── -->
@@ -338,6 +333,11 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 60000);
 
+// ── Info bar date ────────────────────────────────────────────────────
+document.getElementById('ib-date').textContent = new Date().toLocaleDateString('en-PK', {
+  timeZone:'Asia/Karachi', day:'numeric', month:'short', year:'numeric'
+});
+
 // ── Logout ──────────────────────────────────────────────────────────
 function logout() {
   document.cookie = 'on_sess=; path=/; max-age=0';
@@ -464,7 +464,7 @@ function renderFuel(d) {
 }
 
 // Last known OGRA prices (Nov 2026) — used as defaults if nothing saved yet
-var FUEL_DEFAULTS = { petrol:'332.00', diesel:'360.00', kerosene:'177.59', effective:'16 Nov 2026', ts:0 };
+var FUEL_DEFAULTS = { petrol:'332.00', diesel:'360.00', kerosene:'177.59', effective:'22 Nov 2026', ts:0 };
 
 function loadFuel() {
   var d = load('fuel', null) || FUEL_DEFAULTS;
@@ -660,10 +660,6 @@ function buildTicker(rates, fuelData) {
     if (goldC.usdOz)   items.push('<span class="ticker-item">🥇 Gold / oz <span class="tval neutral">$' + Number(goldC.usdOz).toFixed(0) + '</span></span>');
     if (goldC.xagUsd)  items.push('<span class="ticker-item">🥈 Silver / oz <span class="tval neutral">$' + Number(goldC.xagUsd).toFixed(2) + '</span></span>');
   }
-
-  // Site stats (static)
-  items.push('<span class="ticker-item">🌿 Ahrefs Health <span class="tval up">100/100</span></span>');
-  items.push('<span class="ticker-item">📝 Blog Posts <span class="tval neutral">42</span></span>');
 
   // Double items for seamless loop
   var html = items.join('') + items.join('');

@@ -878,35 +878,66 @@ function saveSolarEdit() {
   setTimeout(function(){ msg.style.display='none'; }, 2000);
 }
 
+// ── PSX KSE-100 Fetcher ───────────────────────────────────────────────
+function fetchPSX(wrap) {
+  fetch('/api/psx')
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.error) throw new Error(d.error);
+      var price    = d.price  ? Math.round(d.price).toLocaleString()  : '—';
+      var prev     = d.prev   ? Math.round(d.prev).toLocaleString()   : '—';
+      var chg      = d.change ? parseFloat(d.change)                  : 0;
+      var chgPct   = d.changePct ? parseFloat(d.changePct)            : 0;
+      var up       = chg >= 0;
+      var arrow    = up ? '▲' : '▼';
+      var clr      = up ? '#4ade80' : '#f87171';
+      var hi       = d.dayHigh ? Math.round(d.dayHigh).toLocaleString()  : '—';
+      var lo       = d.dayLow  ? Math.round(d.dayLow).toLocaleString()   : '—';
+      var w52h     = d.fiftyTwoHigh ? Math.round(d.fiftyTwoHigh).toLocaleString() : '—';
+      var w52l     = d.fiftyTwoLow  ? Math.round(d.fiftyTwoLow).toLocaleString()  : '—';
+      var ts       = d.ts ? new Date(d.ts * 1000).toLocaleString('en-PK',{timeZone:'Asia/Karachi'}) : 'N/A';
+      wrap.innerHTML =
+        '<div style="padding:24px 20px">' +
+          '<div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap">' +
+            '<div>' +
+              '<div style="font-size:11px;color:var(--muted);letter-spacing:.06em;margin-bottom:4px">KSE-100 INDEX</div>' +
+              '<div style="font-size:40px;font-weight:800;color:#f0fdf4;line-height:1">' + price + '</div>' +
+              '<div style="font-size:14px;font-weight:600;color:' + clr + ';margin-top:6px">' +
+                arrow + ' ' + Math.abs(chg).toLocaleString() + ' (' + Math.abs(chgPct).toFixed(2) + '%)' +
+              '</div>' +
+              '<div style="font-size:11px;color:var(--muted);margin-top:4px">vs Prev Close: ' + prev + ' PKR</div>' +
+            '</div>' +
+            '<div style="margin-left:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;text-align:right">' +
+              '<div><div style="font-size:10px;color:var(--muted)">Day High</div><div style="font-size:14px;font-weight:600;color:#f0fdf4">' + hi + '</div></div>' +
+              '<div><div style="font-size:10px;color:var(--muted)">Day Low</div><div style="font-size:14px;font-weight:600;color:#f0fdf4">' + lo + '</div></div>' +
+              '<div><div style="font-size:10px;color:var(--muted)">52W High</div><div style="font-size:14px;font-weight:600;color:#f0fdf4">' + w52h + '</div></div>' +
+              '<div><div style="font-size:10px;color:var(--muted)">52W Low</div><div style="font-size:14px;font-weight:600;color:#f0fdf4">' + w52l + '</div></div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:10px;color:var(--muted)">' +
+            '📡 Source: Yahoo Finance (15-min delay) · ' + ts +
+          '</div>' +
+        '</div>';
+    })
+    .catch(function(err) {
+      wrap.innerHTML =
+        '<div style="padding:40px;text-align:center;color:var(--muted)">' +
+          '<div style="font-size:28px;margin-bottom:12px">📉</div>' +
+          '<div style="font-size:14px;font-weight:600">KSE-100 data unavailable</div>' +
+          '<div style="font-size:11px;margin-top:6px">' + (err.message || 'Network error') + '</div>' +
+          '<button onclick="fetchPSX(document.getElementById(\'psx-widget-wrap\'))" ' +
+            'style="margin-top:14px;padding:6px 16px;background:#1a2e1a;border:1px solid #4ade80;color:#4ade80;border-radius:6px;cursor:pointer;font-size:12px">' +
+            '↻ Retry</button>' +
+        '</div>';
+    });
+}
+
 // ── Market Tab Loader ─────────────────────────────────────────────────
 function loadMarketTab() {
-  // 1) PSX Widget (TradingView — free, legal, live 15-min delay)
+  // 1) PSX KSE-100 — fetch via Worker proxy → Yahoo Finance ^KSE100
   var wrap = document.getElementById('psx-widget-wrap');
-  wrap.innerHTML = '';
-  var container = document.createElement('div');
-  container.className = 'tradingview-widget-container';
-  container.style.height = '100%';
-  container.innerHTML = '<div class="tradingview-widget-container__widget" style="height:100%"></div>';
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src  = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-  script.async = true;
-  script.innerHTML = JSON.stringify({
-    autosize: true,
-    symbol: "PSX:KSE100",
-    interval: "D",
-    timezone: "Asia/Karachi",
-    theme: "dark",
-    style: "1",
-    locale: "en",
-    backgroundColor: "#0f1a14",
-    gridColor: "#2a3d28",
-    allow_symbol_change: false,
-    calendar: false,
-    support_host: "https://www.tradingview.com"
-  });
-  container.appendChild(script);
-  wrap.appendChild(container);
+  wrap.innerHTML = '<div class="loading" style="padding-top:60px">Loading KSE-100 data…</div>';
+  fetchPSX(wrap);
 
   // 2) Currency rates (use cached or fetch fresh)
   var cached = load('rates_cache', null);

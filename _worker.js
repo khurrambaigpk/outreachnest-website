@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v70"; // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v71"; // v71: /api/psx proxy (Yahoo Finance ^KSE100, 15-min cache) + fetchPSX() in dashboard // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1679,6 +1679,50 @@ export default {
     // four files atomically to GitHub using env.GITHUB_TOKEN (a Cloudflare Secret).
     if (url.pathname === "/api/publish" && request.method === "POST") {
       return handlePublish(request, env);
+    }
+
+    // ── PSX KSE-100 proxy ────────────────────────────────────────────────
+    if (url.pathname === "/api/psx" && request.method === "GET") {
+      const psxToken = getCookie(request, COOKIE_NAME);
+      const psxValid = await verifySessionToken(psxToken);
+      if (!psxValid) return new Response('{"error":"unauthorized"}', { status:401, headers:{'Content-Type':'application/json'} });
+      try {
+        // Yahoo Finance — free, no key, 15-min delay
+        const yResp = await fetch(
+          'https://query1.finance.yahoo.com/v8/finance/chart/%5EKSE100?interval=1d&range=30d',
+          { headers: { 'User-Agent': 'Mozilla/5.0' } }
+        );
+        const yData = await yResp.json();
+        const meta  = yData?.chart?.result?.[0]?.meta || {};
+        const result = {
+          symbol:        meta.symbol || 'KSE100',
+          price:         meta.regularMarketPrice,
+          prev:          meta.chartPreviousClose,
+          change:        meta.regularMarketPrice && meta.chartPreviousClose
+                           ? (meta.regularMarketPrice - meta.chartPreviousClose).toFixed(2)
+                           : null,
+          changePct:     meta.regularMarketPrice && meta.chartPreviousClose
+                           ? (((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100).toFixed(2)
+                           : null,
+          dayHigh:       meta.regularMarketDayHigh,
+          dayLow:        meta.regularMarketDayLow,
+          fiftyTwoHigh:  meta.fiftyTwoWeekHigh,
+          fiftyTwoLow:   meta.fiftyTwoWeekLow,
+          currency:      meta.currency,
+          exchangeName:  meta.exchangeName,
+          ts:            meta.regularMarketTime,
+        };
+        return new Response(JSON.stringify(result), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=900',
+            'Access-Control-Allow-Origin': '*',
+          }
+        });
+      } catch(e) {
+        return new Response('{"error":"fetch_failed","msg":"' + e.message + '"}', { status:502, headers:{'Content-Type':'application/json'} });
+      }
     }
 
     // ── Gold/Silver proxy (session-authenticated) ─────────────────────────

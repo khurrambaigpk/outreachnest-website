@@ -1925,13 +1925,13 @@ export default {
               bodyText = bodyText
                 .replace(/<meta\s+name="description"[^>]*>/i, '<meta name="description" content="OutreachNest delivers niche guest posts, B2B lead lists, and content writing for Solar, Electrical, Automation &amp; Electronics niches. Free Windows prospecting tool included.">')
                 // v44: LaunchIgniter badge after Product Hunt in AS FEATURED ON section
-                .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a>$2');
+                .replace(/(Product Hunt[^<]*<\/a>)(<\/div>)/, '$1<a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><span style="display:inline-flex;align-items:center;gap:6px;background:#1e1b4b;color:#fff;border-radius:8px;padding:8px 16px;font-weight:600;font-size:13px;border:1px solid #3730a3">🚀 Featured on LaunchIgniter</span></a>$2');
             }
             // v44: LaunchIgniter badge on /download — inject before footer
             if (normPath === "/download") {
               bodyText = bodyText.replace(
                 '<div id="footer-holder">',
-                '<section style="padding:16px 0;text-align:center"><a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><img src="https://launchigniter.com/api/badge/outreachnest?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" /></a></section><div id="footer-holder">'
+                '<section style="padding:16px 0;text-align:center"><a href="https://launchigniter.com/product/outreachnest?ref=badge-outreachnest" target="_blank" rel="noopener noreferrer"><span style="display:inline-flex;align-items:center;gap:6px;background:#1e1b4b;color:#fff;border-radius:8px;padding:8px 16px;font-weight:600;font-size:13px;border:1px solid #3730a3">🚀 Featured on LaunchIgniter</span></a></section><div id="footer-holder">'
               );
             }
             // v33: fix /blog title (73 chars) and meta description (164 chars) — both over limit

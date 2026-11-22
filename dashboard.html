@@ -334,9 +334,7 @@ updateClock();
 setInterval(updateClock, 60000);
 
 // ── Info bar date ────────────────────────────────────────────────────
-document.getElementById('ib-date').textContent = new Date().toLocaleDateString('en-PK', {
-  timeZone:'Asia/Karachi', day:'numeric', month:'short', year:'numeric'
-});
+document.getElementById('ib-date').textContent = todayPK();
 
 // ── Logout ──────────────────────────────────────────────────────────
 function logout() {
@@ -464,7 +462,10 @@ function renderFuel(d) {
 }
 
 // Last known OGRA prices (Nov 2026) — used as defaults if nothing saved yet
-var FUEL_DEFAULTS = { petrol:'332.00', diesel:'360.00', kerosene:'177.59', effective:'22 Nov 2026', ts:0 };
+function todayPK() {
+  return new Date().toLocaleDateString('en-PK', { timeZone:'Asia/Karachi', day:'numeric', month:'short', year:'numeric' });
+}
+var FUEL_DEFAULTS = { petrol:'332.00', diesel:'360.00', kerosene:'177.59', effective: todayPK(), ts:0 };
 
 function loadFuel() {
   var d = load('fuel', null) || FUEL_DEFAULTS;

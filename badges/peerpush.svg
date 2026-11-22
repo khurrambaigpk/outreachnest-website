@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="44" viewBox="0 0 200 44">
-  <rect width="200" height="44" rx="8" fill="#7c3aed"/>
-  <circle cx="22" cy="22" r="14" fill="rgba(255,255,255,0.15)"/>
-  <!-- people icon -->
-  <circle cx="18" cy="18" r="4" fill="#fff"/>
-  <circle cx="27" cy="18" r="4" fill="#fff"/>
-  <path d="M10 30 Q18 24 26 30" stroke="#fff" stroke-width="2.5" fill="none"/>
-  <path d="M19 30 Q27 24 35 30" stroke="#fff" stroke-width="2.5" fill="none"/>
-  <text x="44" y="16" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="700" fill="rgba(255,255,255,0.7)" letter-spacing="1">FEATURED ON</text>
-  <text x="44" y="32" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="800" fill="#ffffff">PeerPush</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="195" height="44" viewBox="0 0 195 44">
+  <rect width="195" height="44" rx="8" fill="#7c3aed"/>
+  <circle cx="22" cy="22" r="13" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="17" cy="18" r="4" fill="#ffffff"/>
+  <circle cx="27" cy="18" r="4" fill="#ffffff"/>
+  <path d="M10,30 Q17,24 24,30" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M20,30 Q27,24 34,30" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <text x="43" y="15" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" fill="rgba(255,255,255,0.65)" letter-spacing="0.9">FEATURED ON</text>
+  <text x="43" y="32" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="800" fill="#ffffff">PeerPush</text>
 </svg>

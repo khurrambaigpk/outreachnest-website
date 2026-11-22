@@ -2107,7 +2107,10 @@ export default {
             status: 200,
             headers: {
               "Content-Type": "text/html; charset=UTF-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=86400",
+              // v78: removed s-maxage=86400 — CF edge cache was serving stale HTML
+              // that bypassed Worker injection (Market nav link, schema tags, etc).
+              // Worker-level caches.default already handles caching efficiently.
+              "Cache-Control": "public, max-age=3600",
             },
           });
           // v23: non-blocking cache write — return immediately, write in background

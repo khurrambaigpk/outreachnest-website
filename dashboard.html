@@ -731,8 +731,8 @@ function renderGold(d, pkrRate) {
 }
 
 function fetchGold(pkrRate) {
-  // xaus.com — free, no API key, accurate spot price
-  fetch('https://xaus.com/api/v1/spot?compact=1')
+  // /api/gold — Worker proxies xaus.com server-side (bypasses CORS)
+  fetch('/api/gold')
     .then(function(r){ return r.json(); })
     .then(function(d) {
       renderGold(d, pkrRate);

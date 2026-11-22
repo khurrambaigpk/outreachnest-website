@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v69"; // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v70"; // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1679,6 +1679,31 @@ export default {
     // four files atomically to GitHub using env.GITHUB_TOKEN (a Cloudflare Secret).
     if (url.pathname === "/api/publish" && request.method === "POST") {
       return handlePublish(request, env);
+    }
+
+    // ── Gold/Silver proxy (session-authenticated) ─────────────────────────
+    // Dashboard fetches /api/gold — Worker fetches xaus.com server-side
+    // (no CORS issue) and returns the data with CORS headers for the dashboard.
+    if (url.pathname === "/api/gold" && request.method === "GET") {
+      const goldToken = getCookie(request, COOKIE_NAME);
+      const goldValid = await verifySessionToken(goldToken);
+      if (!goldValid) return new Response('{"error":"unauthorized"}', { status:401, headers:{'Content-Type':'application/json'} });
+      try {
+        const goldResp = await fetch('https://xaus.com/api/v1/spot?compact=1', {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest Dashboard)' }
+        });
+        const goldData = await goldResp.text();
+        return new Response(goldData, {
+          status: goldResp.status,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=900', // cache 15 min
+            'Access-Control-Allow-Origin': '*',
+          }
+        });
+      } catch(e) {
+        return new Response('{"error":"fetch_failed"}', { status:502, headers:{'Content-Type':'application/json'} });
+      }
     }
 
     // ── Blog post pages: inject per-post metadata server-side ──────────────

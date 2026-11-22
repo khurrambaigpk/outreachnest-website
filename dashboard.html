@@ -587,14 +587,46 @@ function todayPK() {
 var FUEL_DEFAULTS = { petrol:'322.00', diesel:'357.00', kerosene:'177.59', effective: todayPK(), ts:0 };
 
 function loadFuel() {
-  var d = load('fuel', null) || FUEL_DEFAULTS;
-  renderFuel(d);
-  document.getElementById('fp-petrol').value   = d.petrol   || '';
-  document.getElementById('fp-diesel').value   = d.diesel   || '';
-  document.getElementById('fp-kerosene').value = d.kerosene || '';
-  if (!load('fuel', null)) {
-    document.getElementById('fuel-updated').textContent = '⚠️ Showing last known OGRA prices — please update with current rates.';
-  }
+  // Show cached/defaults immediately
+  var cached = load('fuel', null) || FUEL_DEFAULTS;
+  renderFuel(cached);
+  document.getElementById('fp-petrol').value   = cached.petrol   || '';
+  document.getElementById('fp-diesel').value   = cached.diesel   || '';
+  document.getElementById('fp-kerosene').value = cached.kerosene || '';
+  document.getElementById('fuel-updated').textContent = '⏳ Fetching live OGRA prices…';
+
+  // Fetch live from Worker proxy → dailyfuels.com
+  fetch('/api/fuel')
+    .then(function(r){ return r.json(); })
+    .then(function(live) {
+      if (live.error || !live.petrol) throw new Error(live.error || 'no data');
+      var d = {
+        petrol:   live.petrol.toFixed(2),
+        diesel:   live.diesel  ? live.diesel.toFixed(2)   : cached.diesel,
+        kerosene: live.kerosene? live.kerosene.toFixed(2) : cached.kerosene,
+        effective: live.effective || todayPK(),
+        source:   live.source || 'dailyfuels.com',
+        ts: Date.now()
+      };
+      save('fuel', d);
+      renderFuel(d);
+      document.getElementById('fp-petrol').value   = d.petrol;
+      document.getElementById('fp-diesel').value   = d.diesel;
+      document.getElementById('fp-kerosene').value = d.kerosene;
+      document.getElementById('fuel-updated').textContent =
+        '✅ Live OGRA price — effective: ' + d.effective + ' · Source: ' + d.source;
+      // refresh market tab if loaded
+      renderMktFuel();
+    })
+    .catch(function() {
+      if (!load('fuel', null)) {
+        document.getElementById('fuel-updated').textContent =
+          '⚠️ Could not fetch live prices — showing last known OGRA rates.';
+      } else {
+        document.getElementById('fuel-updated').textContent =
+          'OGRA effective: ' + (cached.effective || '—') + ' (cached)';
+      }
+    });
 }
 
 function saveFuel() {

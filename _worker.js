@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v72"; // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v73"; // v73: /api/fuel proxy → dailyfuels.com live OGRA prices; dashboard auto-fetches on load // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1720,6 +1720,57 @@ export default {
           headers: {
             'Content-Type': 'application/json',
             'Cache-Control': 'public, max-age=900',
+            'Access-Control-Allow-Origin': '*',
+          }
+        });
+      } catch(e) {
+        return new Response('{"error":"fetch_failed","msg":"' + e.message + '"}', { status:502, headers:{'Content-Type':'application/json'} });
+      }
+    }
+
+    // ── Live Fuel Prices proxy (scrapes dailyfuels.com) ──────────────────
+    if (url.pathname === "/api/fuel" && request.method === "GET") {
+      const fuelRef = request.headers.get('Referer') || '';
+      if (!fuelRef.startsWith(url.origin)) {
+        return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
+      }
+      try {
+        // dailyfuels.com has today's OGRA prices in a simple HTML table
+        const fResp = await fetch('https://www.dailyfuels.com/pakistan/', {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)' }
+        });
+        const html = await fResp.text();
+
+        // Extract prices — format: PKR\n326 or ₨326 in table cells
+        // Look for pattern: fuel name + PKR value pairs
+        function extractPrice(text, pattern) {
+          const m = text.match(pattern);
+          return m ? parseFloat(m[1].replace(/,/g,'')) : null;
+        }
+
+        // Page has rows like: Gasoline (Petrol) | USD | PKR
+        // We grab numbers after the currency columns using regex
+        const petrolMatch  = html.match(/[Gg]asoline[^<]*<\/[^>]+>[\s\S]{0,300}?₨\s*([\d,]+)/);
+        const dieselMatch  = html.match(/[Dd]iesel[^<]*<\/[^>]+>[\s\S]{0,300}?₨\s*([\d,]+)/);
+        const keroMatch    = html.match(/[Kk]erosene[^<]*<\/[^>]+>[\s\S]{0,300}?₨\s*([\d,]+)/);
+
+        // Fallback: grab all ₨ numbers in order (petrol first, diesel second)
+        const allPkr = [...html.matchAll(/₨\s*([\d,]+(?:\.\d+)?)/g)].map(m => parseFloat(m[1].replace(/,/g,'')));
+
+        const petrol   = petrolMatch  ? parseFloat(petrolMatch[1].replace(/,/g,''))  : (allPkr[0] || null);
+        const diesel   = dieselMatch  ? parseFloat(dieselMatch[1].replace(/,/g,''))  : (allPkr[1] || null);
+        const kerosene = keroMatch    ? parseFloat(keroMatch[1].replace(/,/g,''))    : (allPkr[2] || null);
+
+        // Extract date — look for "Updated" or date pattern
+        const dateMatch = html.match(/(\d{4}-\d{2}-\d{2})/);
+        const effective = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0,10);
+
+        const result = { petrol, diesel, kerosene, effective, source:'dailyfuels.com' };
+        return new Response(JSON.stringify(result), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=3600', // 1-hour cache
             'Access-Control-Allow-Origin': '*',
           }
         });

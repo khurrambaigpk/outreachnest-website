@@ -463,15 +463,17 @@ function renderFuel(d) {
   if (d.ts) document.getElementById('fuel-updated').textContent = 'OGRA price effective: ' + (d.effective || 'Unknown') + ' — Saved: ' + new Date(d.ts).toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
 }
 
+// Last known OGRA prices (Nov 2026) — used as defaults if nothing saved yet
+var FUEL_DEFAULTS = { petrol:'390.79', diesel:'383.47', kerosene:'176.50', effective:'Nov 2026', ts:0 };
+
 function loadFuel() {
-  var d = load('fuel', null);
-  if (d) {
-    renderFuel(d);
-    document.getElementById('fp-petrol').value   = d.petrol   || '';
-    document.getElementById('fp-diesel').value   = d.diesel   || '';
-    document.getElementById('fp-kerosene').value = d.kerosene || '';
-  } else {
-    document.getElementById('fuel-body').innerHTML = '<div class="error-msg">No fuel data yet. Enter current OGRA prices below.</div>';
+  var d = load('fuel', null) || FUEL_DEFAULTS;
+  renderFuel(d);
+  document.getElementById('fp-petrol').value   = d.petrol   || '';
+  document.getElementById('fp-diesel').value   = d.diesel   || '';
+  document.getElementById('fp-kerosene').value = d.kerosene || '';
+  if (!load('fuel', null)) {
+    document.getElementById('fuel-updated').textContent = '⚠️ Showing last known OGRA prices — please update with current rates.';
   }
 }
 

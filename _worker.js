@@ -1451,6 +1451,34 @@ export default {
       return env.ASSETS.fetch(request);
     }
 
+    // Badge proxy — fetches external directory badge SVGs and serves them same-origin
+    // so browsers don't hit CORS restrictions on cross-origin <img> loads.
+    // Usage: /badge-proxy?site=launchnest.io&path=/launchnest/images/badges/featured-on-light.svg
+    if (url.pathname === "/badge-proxy") {
+      const site = url.searchParams.get("site");
+      const path = url.searchParams.get("path");
+      if (!site || !path || !/^[a-z0-9.\-]+$/i.test(site) || !path.startsWith("/")) {
+        return new Response("Bad request", { status: 400 });
+      }
+      const target = "https://" + site + path;
+      try {
+        const r = await fetch(target, { headers: { "User-Agent": "Mozilla/5.0 (compatible; OutreachNest/1.0)" } });
+        if (!r.ok) return new Response("Not found", { status: 404 });
+        const body = await r.arrayBuffer();
+        const ct = r.headers.get("content-type") || "image/svg+xml";
+        return new Response(body, {
+          status: 200,
+          headers: {
+            "Content-Type": ct,
+            "Cache-Control": "public, max-age=86400",
+            "Access-Control-Allow-Origin": "*"
+          }
+        });
+      } catch(e) {
+        return new Response("Fetch error", { status: 502 });
+      }
+    }
+
     // v62: canonical redirect — www. and http:// → https://getoutreachnest.com
     if (url.hostname === "www.getoutreachnest.com" || url.protocol === "http:") {
       const canonical = "https://getoutreachnest.com" + url.pathname + url.search;

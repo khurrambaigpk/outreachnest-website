@@ -386,6 +386,69 @@
 </div>
 </section>
 
+<!-- From the Blog -->
+<section style="padding:60px 0 48px">
+<div class="wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px">
+    <div>
+      <span class="tag">From the Blog</span>
+      <h2 style="font-size:clamp(24px,3.5vw,34px);margin:10px 0 6px">Latest Insights</h2>
+      <p style="color:var(--muted);font-size:15px;margin:0">Research, guides and industry analysis for solar, electrical &amp; automation brands.</p>
+    </div>
+    <a href="/blog" style="display:inline-flex;align-items:center;gap:6px;color:var(--leaf-deep);font-weight:600;font-size:14px;border:1.5px solid var(--leaf-deep);padding:9px 20px;border-radius:30px;white-space:nowrap;text-decoration:none">View all posts →</a>
+  </div>
+  <div id="home-blog-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px"></div>
+</div>
+</section>
+<script>
+(function(){
+  function renderHomeBlog(){
+    var grid = document.getElementById('home-blog-grid');
+    if(!grid || !window.POSTS) return;
+    var posts = window.POSTS.slice().sort(function(a,b){
+      var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+      function dateVal(p){ var parts=(p.date||'').split(' '); return parseInt(parts[1]||'0')*12 + months.indexOf(parts[0]||''); }
+      return dateVal(b)-dateVal(a);
+    });
+    var featured = posts.find(function(p){ return p.featured; });
+    var others = posts.filter(function(p){ return !p.featured; }).slice(0,featured?2:3);
+    var toShow = featured ? [featured].concat(others) : others;
+    var now=new Date();
+    var curMonth=now.toLocaleString('en-US',{month:'long'});
+    var curYear=String(now.getFullYear());
+    toShow.forEach(function(p,i){
+      var isNew=(String(p.date||'').toLowerCase()===(curMonth+' '+curYear).toLowerCase());
+      var isFeatured=!!p.featured;
+      var card=document.createElement('a');
+      card.href='/blog/'+p.slug;
+      card.style.cssText='display:block;border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;background:var(--card);transition:box-shadow .18s,transform .18s;position:relative';
+      card.onmouseenter=function(){this.style.boxShadow='0 6px 24px rgba(0,0,0,.1)';this.style.transform='translateY(-2px)'};
+      card.onmouseleave=function(){this.style.boxShadow='';this.style.transform=''};
+      var badges='';
+      if(isFeatured) badges+='<span style="background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em">Featured</span>';
+      if(isNew) badges+='<span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em">New</span>';
+      card.innerHTML='<div style="height:90px;display:flex;align-items:center;justify-content:center;font-size:44px;background:var(--paper-2)">'+( p.icon||'📄')+'</div>'
+        +'<div style="padding:18px 20px 20px">'
+        +(badges?'<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">'+badges+'</div>':'')
+        +'<div style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:6px">'+(p.cat||'')+'</div>'
+        +'<div style="font-size:16px;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:8px">'+(p.title||'')+'</div>'
+        +'<div style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+(p.excerpt||'')+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);display:flex;gap:8px">'+(p.date||'')+'<span>·</span>'+(p.read||'')+'</div>'
+        +'</div>';
+      grid.appendChild(card);
+    });
+  }
+  function tryRender(){ if(window.POSTS){ renderHomeBlog(); } }
+  if(window.POSTS){ renderHomeBlog(); }
+  else{
+    var s=document.createElement('script');
+    s.src='posts.js';
+    s.onload=renderHomeBlog;
+    document.head.appendChild(s);
+  }
+})();
+</script>
+
 <!-- CTA -->
 <section style="padding-bottom:20px">
 <div class="cta-band reveal">

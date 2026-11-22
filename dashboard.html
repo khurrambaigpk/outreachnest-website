@@ -575,6 +575,7 @@ function renderFuel(d) {
         '<span class="fuel-unit">/ litre</span>' +
       '</div></div>';
   });
+  html += '<div style="font-size:10px;color:var(--muted);margin-top:10px">📡 Source: <a href="https://www.ogra.org.pk" target="_blank" rel="noopener" style="color:#4a7a6a">ogra.org.pk</a> — Manually updated</div>';
   document.getElementById('fuel-body').innerHTML = html || '<div class="error-msg">No fuel data saved yet. Enter prices below.</div>';
   if (d.ts) document.getElementById('fuel-updated').textContent = 'OGRA price effective: ' + (d.effective || 'Unknown') + ' — Saved: ' + new Date(d.ts).toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
 }
@@ -583,7 +584,7 @@ function renderFuel(d) {
 function todayPK() {
   return new Date().toLocaleDateString('en-PK', { timeZone:'Asia/Karachi', day:'numeric', month:'short', year:'numeric' });
 }
-var FUEL_DEFAULTS = { petrol:'332.00', diesel:'360.00', kerosene:'177.59', effective: todayPK(), ts:0 };
+var FUEL_DEFAULTS = { petrol:'322.00', diesel:'357.00', kerosene:'177.59', effective: todayPK(), ts:0 };
 
 function loadFuel() {
   var d = load('fuel', null) || FUEL_DEFAULTS;
@@ -810,9 +811,10 @@ var SOLAR_DEFAULTS = {
   batteries: [
     { id:'b1', name:'AGS 200Ah Tubular',            price:'72,000',  unit:'per battery' },
     { id:'b2', name:'Phoenix 150Ah Tubular',        price:'58,000',  unit:'per battery' },
-    { id:'b3', name:'BYD LiFePO4 5kWh',             price:'380,000', unit:'per unit' },
-    { id:'b4', name:'Pylon US3000C 3.5kWh LiFePO4', price:'275,000', unit:'per unit' },
-    { id:'b5', name:'Local Lithium 100Ah 48V',      price:'120,000', unit:'per unit' },
+    { id:'b3', name:'BYD LiFePO4 5kWh',              price:'380,000', unit:'per unit' },
+    { id:'b4', name:'Pylontech US3000C 3.5kWh',      price:'275,000', unit:'per unit' },
+    { id:'b5', name:'Pylontech US5000 4.8kWh',       price:'340,000', unit:'per unit' },
+    { id:'b6', name:'Local Lithium 100Ah 48V',      price:'120,000', unit:'per unit' },
   ],
   ts: 0
 };
@@ -1006,6 +1008,10 @@ function renderMktFuel() {
       '<div><span class="fuel-price">₨' + Number(price).toFixed(2) + '</span><span class="fuel-unit">' + item.unit + '</span></div></div>';
   });
   if (d.effective) html += '<div style="font-size:11px;color:var(--muted);padding-top:8px">OGRA effective: ' + d.effective + '</div>';
+  html += '<div style="font-size:10px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">' +
+    '📡 Source: <a href="https://www.ogra.org.pk" target="_blank" rel="noopener" style="color:#4a7a6a">ogra.org.pk</a>' +
+    ' — Prices manually updated. <span style="color:#fbbf24">Update via Overview tab.</span>' +
+  '</div>';
   document.getElementById('mkt-fuel-body').innerHTML = html;
 }
 

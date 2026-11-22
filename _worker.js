@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v76"; // v76: Market nav link on all pages + /market route // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v77"; // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2058,6 +2058,14 @@ export default {
           const normPath = url.pathname === "/index.html" ? "/" : url.pathname;
           const schema = PAGE_SCHEMAS[normPath];
           let bodyText = await resp.text();
+          // v77: inject Market nav link on ALL pages — runs after fetch so works
+          // regardless of which cached HTML version Cloudflare edge is serving
+          const MARKET_LINK = `<a href="/market" style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;border:1.5px solid #4ade80;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">📈 Market</a>`;
+          // Insert before the solar-calculator Free Tools link (desktop + mobile nav)
+          bodyText = bodyText.replace(
+            /(<a href="\/solar-calculator"[^>]*>☀️ Free Tools<\/a>)/g,
+            MARKET_LINK + '$1'
+          );
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
             // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours

@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v60"; // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v62"; // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1428,7 +1428,6 @@ export default {
     // under Settings → Environment variables → Secrets.
     // Load password: KV override (set via recovery flow) takes priority over env secret
     ADMIN_PASS              = env.ADMIN_PASS              ?? "";
-    try{const _kv_pass=await env.LICENSE_KV.get('admin_pass_override');if(_kv_pass)ADMIN_PASS=_kv_pass;}catch(e){}
     RECOVERY_CODE           = env.RECOVERY_CODE          ?? "";
     RESEND_API_KEY          = env.RESEND_API_KEY          ?? "";
     RECOVERY_EMAIL          = env.RECOVERY_EMAIL          ?? "";
@@ -1450,6 +1449,16 @@ export default {
     const _isAdmin = _p === "/admin" || _p === "/admin.html";
     if (!_isAdmin && /\.(?:css|js|mjs|map|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|otf|eot|pdf|zip|exe|txt|xml|json|webmanifest)$/i.test(_p)) {
       return env.ASSETS.fetch(request);
+    }
+
+    // v62: canonical redirect — www. and http:// → https://getoutreachnest.com
+    if (url.hostname === "www.getoutreachnest.com" || url.protocol === "http:") {
+      const canonical = "https://getoutreachnest.com" + url.pathname + url.search;
+      return Response.redirect(canonical, 301);
+    }
+    // v62: /index.html → /
+    if (url.pathname === "/index.html") {
+      return Response.redirect("https://getoutreachnest.com/", 301);
     }
 
     // v53: redirect orphan page (in sitemap but no content) to canonical equivalent

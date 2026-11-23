@@ -170,10 +170,13 @@ footer a{color:#4a7a6a;text-decoration:none}
 @media(max-width:600px){
   .col-num{display:none}
   .stocks-table{font-size:12px;table-layout:auto}
-  .stocks-table td{padding:5px 3px}
-  .stocks-table thead th{padding:5px 3px}
-  .col-prev{display:none}
-  .col-turnover{display:none}
+  .stocks-table td{padding:5px 2px}
+  .stocks-table thead th{padding:5px 2px}
+  .stocks-table{font-size:10px}
+  .st-price{font-size:11px}
+  .st-chg{font-size:9px;padding:2px 3px}
+  .col-prev{font-size:10px}
+  .col-turnover{font-size:10px}
   .st-sym{font-size:12px;display:block}
   .st-name{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px;margin-top:1px}
   .st-price{font-size:12px;white-space:nowrap}
@@ -1030,7 +1033,7 @@ function renderStocksCard(stocks, isFallback){
   if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
 
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col class="col-num" style="width:24px"><col style="width:24px"><col><col style="width:56px"><col style="width:52px"><col style="width:66px"><col style="width:44px"><col style="width:52px"></colgroup>'
+    + '<colgroup><col class="col-num" style="width:20px"><col style="width:20px"><col style="width:70px"><col style="width:46px"><col style="width:44px"><col style="width:60px"><col style="width:36px"><col style="width:44px"></colgroup>'
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
     + '<th style="text-align:center">☆</th>'

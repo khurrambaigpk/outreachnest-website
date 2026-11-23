@@ -1951,10 +1951,12 @@ export default {
         }
 
         // Fallback: last known OGRA rates — update when new OGRA announcement
-        // Current as of: 20 Nov 2026 — Petrol Rs323, Diesel Rs355
+        // Current as of: 21 Nov 2026 — Petrol Rs322, Diesel Rs357 (PSO verified)
+        // NOTE: Both ogra.org.pk and psopk.com block server-side requests (bot detection)
+        //       Update this fallback manually after each OGRA announcement
         if (!fuelResult) {
-          fuelResult = { petrol: 323, diesel: 355, kerosene: 177.59,
-                         effective: '2026-11-20', source: 'ogra-cached' };
+          fuelResult = { petrol: 322, diesel: 357, kerosene: 177.59,
+                         effective: '2026-11-21', source: 'ogra-cached' };
         };
 
         return new Response(JSON.stringify(fuelResult), {

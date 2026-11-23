@@ -1690,34 +1690,89 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // PSX KSE-100 via investing.com widget API (Yahoo Finance API blocked)
-        // Using stooq.com — free, no auth, returns CSV
-        const stooqResp = await fetch(
-          'https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn',
-          { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' } }
-        );
-        const csv = await stooqResp.text();
-        // CSV: Symbol,Date,Time,Open,High,Low,Close,Volume,Name
-        const rows = csv.trim().split('\n');
-        const vals = rows[1] ? rows[1].split(',') : [];
-        // cols: 0=Symbol,1=Date,2=Time,3=Open,4=High,5=Low,6=Close,7=Volume,8=Name
-        const closePrice = parseFloat(vals[6]);
-        const openPrice  = parseFloat(vals[3]);
-        const highPrice  = parseFloat(vals[4]);
-        const lowPrice   = parseFloat(vals[5]);
-        const meta = {
-          symbol: vals[0] || 'KSE100',
-          regularMarketPrice: isNaN(closePrice) ? null : closePrice,
-          chartPreviousClose: isNaN(openPrice) ? null : openPrice,
-          regularMarketDayHigh: isNaN(highPrice) ? null : highPrice,
-          regularMarketDayLow: isNaN(lowPrice) ? null : lowPrice,
-          fiftyTwoWeekHigh: null,
-          fiftyTwoWeekLow: null,
-          regularMarketTime: vals[1] ? new Date(vals[1]).getTime()/1000 : null,
-          currency: 'PKR',
-          exchangeName: 'PSX',
-          _raw: rows[1] || csv.substring(0, 100),
-        };
+        // PSX KSE-100 — scrape PSX official website (dps.psx.com.pk)
+        // Fallback chain: PSX official → stooq CSV → error
+        let meta = null;
+        const errors = [];
+
+        // Try 1: PSX official market summary API
+        try {
+          const psxResp = await fetch(
+            'https://dps.psx.com.pk/indices',
+            { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/json, text/html' } }
+          );
+          const psxText = await psxResp.text();
+          // PSX returns HTML with embedded JSON or JSON directly
+          // Try JSON parse first
+          let psxData = null;
+          try { psxData = JSON.parse(psxText); } catch(je) {
+            // Extract from HTML: look for KSE-100 data in script tags
+            const m = psxText.match(/KSE-100[^}]*"current":\s*([\d.]+)[^}]*"change":\s*([-\d.]+)[^}]*"open":\s*([\d.]+)/i)
+                   || psxText.match(/"KSE100"[^}]*"close":\s*([\d.]+)[^}]*"open":\s*([\d.]+)/i);
+            if (m) {
+              psxData = { price: parseFloat(m[1]), change: parseFloat(m[2]), open: parseFloat(m[3]) };
+            }
+          }
+          if (psxData) {
+            // Handle array response from PSX indices endpoint
+            const kse = Array.isArray(psxData)
+              ? psxData.find(i => /KSE.?100/i.test(i.name || i.index || i.symbol || ''))
+              : psxData;
+            if (kse) {
+              const price = parseFloat(kse.current || kse.close || kse.price || kse.last || 0);
+              const open  = parseFloat(kse.open || kse.prev_close || kse.previous || 0);
+              const high  = parseFloat(kse.high || 0);
+              const low   = parseFloat(kse.low || 0);
+              if (price > 0) {
+                meta = {
+                  symbol: 'KSE100', regularMarketPrice: price,
+                  chartPreviousClose: open || null,
+                  regularMarketDayHigh: high || null,
+                  regularMarketDayLow: low || null,
+                  fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
+                  regularMarketTime: Math.floor(Date.now()/1000),
+                  currency: 'PKR', exchangeName: 'PSX',
+                  _raw: 'psx:' + JSON.stringify(kse).substring(0,80),
+                };
+              }
+            }
+          }
+        } catch(e1) { errors.push('psx:'+e1.message); }
+
+        // Try 2: stooq.com CSV
+        if (!meta) {
+          try {
+            const stooqResp = await fetch(
+              'https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn',
+              { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' } }
+            );
+            const csv = await stooqResp.text();
+            const rows = csv.trim().split('\n');
+            const vals = rows[1] ? rows[1].split(',') : [];
+            const closePrice = parseFloat(vals[6]);
+            const openPrice  = parseFloat(vals[3]);
+            const highPrice  = parseFloat(vals[4]);
+            const lowPrice   = parseFloat(vals[5]);
+            if (!isNaN(closePrice) && closePrice > 0) {
+              meta = {
+                symbol: vals[0] || 'KSE100',
+                regularMarketPrice: closePrice,
+                chartPreviousClose: isNaN(openPrice) ? null : openPrice,
+                regularMarketDayHigh: isNaN(highPrice) ? null : highPrice,
+                regularMarketDayLow: isNaN(lowPrice) ? null : lowPrice,
+                fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
+                regularMarketTime: vals[1] ? new Date(vals[1]).getTime()/1000 : null,
+                currency: 'PKR', exchangeName: 'PSX',
+                _raw: 'stooq:' + (rows[1] || csv.substring(0, 80)),
+              };
+            }
+          } catch(e2) { errors.push('stooq:'+e2.message); }
+        }
+
+        if (!meta) {
+          return new Response('{"error":"all_sources_failed","details":"'+errors.join('; ')+'"}',
+            { status:502, headers:{'Content-Type':'application/json'} });
+        }
         const result = {
           symbol:        meta.symbol || 'KSE100',
           price:         meta.regularMarketPrice,
@@ -1810,20 +1865,53 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        const goldResp = await fetch('https://xaus.com/api/v1/spot?compact=1', {
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest Dashboard)' }
-        });
-        const goldData = await goldResp.text();
-        return new Response(goldData, {
-          status: goldResp.status,
+        // Fallback chain: metals.live → frankfurter (XAU via ECB) → error
+        let goldResult = null;
+
+        // Try 1: metals.live — free, no auth, returns {XAU, XAG, ...} in USD
+        try {
+          const mResp = await fetch('https://api.metals.live/v1/spot', {
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)', 'Accept': 'application/json' }
+          });
+          const mData = await mResp.json();
+          // Returns array: [{metal:"gold",price:2300.5}, ...]
+          if (Array.isArray(mData)) {
+            const xau = mData.find(m => /gold/i.test(m.metal || m.name || ''));
+            const xag = mData.find(m => /silver/i.test(m.metal || m.name || ''));
+            if (xau && xau.price > 0) {
+              goldResult = { XAU: xau.price, XAG: xag ? xag.price : null, source: 'metals.live' };
+            }
+          } else if (mData && (mData.XAU || mData.gold)) {
+            goldResult = { XAU: mData.XAU || mData.gold, XAG: mData.XAG || mData.silver || null, source: 'metals.live' };
+          }
+        } catch(e1) {}
+
+        // Try 2: frankfurter.app — ECB rates, XAU available
+        if (!goldResult) {
+          try {
+            const fResp = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD,XAG', {
+              headers: { 'Accept': 'application/json' }
+            });
+            const fData = await fResp.json();
+            if (fData && fData.rates && fData.rates.USD) {
+              // fData.rates.USD = how many USD per 1 XAU
+              goldResult = { XAU: fData.rates.USD, XAG: fData.rates.XAG ? (fData.rates.USD / fData.rates.XAG) : null, source: 'frankfurter' };
+            }
+          } catch(e2) {}
+        }
+
+        if (!goldResult) throw new Error('all gold sources failed');
+
+        return new Response(JSON.stringify(goldResult), {
+          status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=900', // cache 15 min
+            'Cache-Control': 'public, max-age=900',
             'Access-Control-Allow-Origin': '*',
           }
         });
       } catch(e) {
-        return new Response('{"error":"fetch_failed"}', { status:502, headers:{'Content-Type':'application/json'} });
+        return new Response('{"error":"fetch_failed","msg":"'+e.message+'"}', { status:502, headers:{'Content-Type':'application/json'} });
       }
     }
 

@@ -2058,14 +2058,7 @@ export default {
           const normPath = url.pathname === "/index.html" ? "/" : url.pathname;
           const schema = PAGE_SCHEMAS[normPath];
           let bodyText = await resp.text();
-          // v77: inject Market nav link on ALL pages — runs after fetch so works
-          // regardless of which cached HTML version Cloudflare edge is serving
-          const MARKET_LINK = `<a href="/market" style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;border:1.5px solid #4ade80;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">📈 Market</a>`;
-          // Insert before the solar-calculator Free Tools link (desktop + mobile nav)
-          bodyText = bodyText.replace(
-            /(<a href="\/solar-calculator"[^>]*>☀️ Free Tools<\/a>)/g,
-            MARKET_LINK + '$1'
-          );
+          // v79: Market nav link now hardcoded in all HTML files — no Worker injection needed.
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
             // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours

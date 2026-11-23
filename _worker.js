@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v79"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v80"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1690,79 +1690,104 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // PSX KSE-100 — scrape PSX official website (dps.psx.com.pk)
-        // Fallback chain: PSX official → stooq CSV → error
+        // PSX KSE-100 — multi-source fallback chain
+        // Source 1: dps.psx.com.pk/indices (HTML page, parse topIndices CSS classes)
+        // Source 2: dps.psx.com.pk/indices/KSE100 (constituent page, parse current price from header)
+        // Source 3: stooq.com CSV
         let meta = null;
         const errors = [];
 
-        // Try 1a: PSX /indices as AJAX — returns tab-separated plaintext when called with
-        // XMLHttpRequest headers (same call PSX's own script.js makes in the browser).
-        // Format per line: "KSE100\t178,633.87\t177,780.49\t178,538.94\t 1156.37\t 0.65%"
-        // Cols: index_name, high, low, current, change, pct_change
+        // Helper to parse PSX /indices HTML (uses topIndices__item__* CSS classes)
+        function parsePSXHtml(html) {
+          // Pattern: class="topIndices__item__name">KSE100</div>..class="topIndices__item__val">178,644.35</div>
+          // ..class="topIndices__item__change">.. 1261.78</div>..class="topIndices__item__changep">(0.71%)</div>
+          const nameRx = /topIndices__item__name">([^<]+)<\/div>/g;
+          const valRx  = /topIndices__item__val">([^<]+)<\/div>/g;
+          const chgRx  = /topIndices__item__change[^"]*">(?:<[^>]+>)?\s*([^<]+)<\/div>/g;
+          const names=[], vals=[], changes=[];
+          let m;
+          while ((m=nameRx.exec(html)) !== null) names.push(m[1].trim());
+          while ((m=valRx.exec(html))  !== null) vals.push(m[1].trim());
+          while ((m=chgRx.exec(html))  !== null) changes.push(m[1].trim());
+          const idx = names.indexOf('KSE100');
+          if (idx < 0 || !vals[idx]) return null;
+          const current = parseFloat(vals[idx].replace(/,/g,''));
+          if (!current || current < 50000 || current > 400000) return null;
+          const change = changes[idx] ? parseFloat(changes[idx].replace(/,/g,'')) || 0 : 0;
+          return {
+            symbol: 'KSE100', regularMarketPrice: current,
+            chartPreviousClose: current - change,
+            regularMarketDayHigh: null, regularMarketDayLow: null,
+            fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
+            regularMarketTime: Math.floor(Date.now()/1000),
+            currency: 'PKR', exchangeName: 'PSX',
+            _raw: 'psx-html-class:'+current+'|'+change,
+          };
+        }
+
+        // Try 1: PSX /indices (full page HTML) with browser-like headers
         try {
-          const psxResp = await fetch(
-            'https://dps.psx.com.pk/indices',
-            { headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          const psxResp = await fetch('https://dps.psx.com.pk/indices', {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+              'Accept-Language': 'en-US,en;q=0.5',
+              'Referer': 'https://dps.psx.com.pk/',
+              'Cache-Control': 'no-cache',
+            }
+          });
+          const html = await psxResp.text();
+          const parsed = parsePSXHtml(html);
+          if (parsed) { meta = parsed; }
+          else {
+            errors.push('psx-indices:parse-fail(status='+psxResp.status+',len='+html.length+')');
+          }
+        } catch(e1) { errors.push('psx-indices:'+e1.message); }
+
+        // Try 2: PSX /indices with XHR headers (may return tab-separated data)
+        if (!meta) {
+          try {
+            const psxResp2 = await fetch('https://dps.psx.com.pk/indices', {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept': 'text/html, */*; q=0.01',
                 'X-Requested-With': 'XMLHttpRequest',
                 'Referer': 'https://dps.psx.com.pk/',
-            } }
-          );
-          const psxText = await psxResp.text();
-          // Try tab-separated parse first (AJAX response format)
-          const lines = psxText.split(/\r?\n/);
-          for (const line of lines) {
-            const cols = line.split('\t').map(c => c.trim());
-            if (cols[0] === 'KSE100' && cols.length >= 4) {
-              const high    = parseFloat(cols[1].replace(/,/g,'')) || null;
-              const low     = parseFloat(cols[2].replace(/,/g,'')) || null;
-              const current = parseFloat(cols[3].replace(/,/g,'')) || null;
-              const change  = parseFloat(cols[4]  ? cols[4].replace(/,/g,'') : '0') || null;
-              if (current && current > 50000 && current < 400000) {
-                meta = {
-                  symbol: 'KSE100', regularMarketPrice: current,
-                  chartPreviousClose: change !== null ? (current - change) : null,
-                  regularMarketDayHigh: high, regularMarketDayLow: low,
-                  fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
-                  regularMarketTime: Math.floor(Date.now()/1000),
-                  currency: 'PKR', exchangeName: 'PSX',
-                  _raw: 'psx-ajax-tsv:' + cols.slice(0,6).join('|'),
-                };
-                break;
               }
-            }
-          }
-          // Try 1b: HTML table parse (fallback if AJAX returns full HTML page)
-          if (!meta) {
-            const rows = psxText.split(/<tr[\s>]/i);
-            for (const row of rows) {
-              if (/KSE100\b/i.test(row) && !row.includes('KSE100PR')) {
-                const tds = [...row.matchAll(/<td[^>]*>([^<]+)<\/td>/gi)].map(m => m[1].trim().replace(/,/g,''));
-                if (tds.length >= 4) {
-                  const high    = parseFloat(tds[1]) || null;
-                  const low     = parseFloat(tds[2]) || null;
-                  const current = parseFloat(tds[3]) || null;
-                  const change  = parseFloat(tds[4]) || null;
-                  if (current && current > 50000 && current < 400000) {
-                    meta = {
-                      symbol: 'KSE100', regularMarketPrice: current,
-                      chartPreviousClose: change !== null ? (current - change) : null,
-                      regularMarketDayHigh: high, regularMarketDayLow: low,
-                      fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
-                      regularMarketTime: Math.floor(Date.now()/1000),
-                      currency: 'PKR', exchangeName: 'PSX',
-                      _raw: 'psx-html:' + tds.slice(0,6).join('|'),
-                    };
-                    break;
-                  }
+            });
+            const psxText = await psxResp2.text();
+            // Try tab-separated first
+            const lines = psxText.split(/\r?\n/);
+            for (const line of lines) {
+              const cols = line.split('\t').map(c => c.trim());
+              if (cols[0] === 'KSE100' && cols.length >= 4) {
+                const current = parseFloat(cols[3].replace(/,/g,'')) || null;
+                const change  = parseFloat((cols[4]||'').replace(/,/g,'')) || 0;
+                if (current && current > 50000 && current < 400000) {
+                  meta = {
+                    symbol:'KSE100', regularMarketPrice:current,
+                    chartPreviousClose:current-change,
+                    regularMarketDayHigh:parseFloat(cols[1].replace(/,/g,''))||null,
+                    regularMarketDayLow:parseFloat(cols[2].replace(/,/g,''))||null,
+                    fiftyTwoWeekHigh:null, fiftyTwoWeekLow:null,
+                    regularMarketTime:Math.floor(Date.now()/1000),
+                    currency:'PKR', exchangeName:'PSX',
+                    _raw:'psx-xhr-tsv:'+cols.slice(0,5).join('|'),
+                  };
+                  break;
                 }
               }
             }
-          }
-        } catch(e1) { errors.push('psx:'+e1.message); }
+            // Try HTML parse as fallback
+            if (!meta) {
+              const parsed2 = parsePSXHtml(psxText);
+              if (parsed2) meta = parsed2;
+              else errors.push('psx-xhr:parse-fail(status='+psxResp2.status+',len='+psxText.length+',is-html='+(psxText.startsWith('<!'))+')');
+            }
+          } catch(e2) { errors.push('psx-xhr:'+e2.message); }
+        }
 
-        // Try 2: stooq.com CSV
+        // Try 3: stooq.com CSV
         if (!meta) {
           try {
             const stooqResp = await fetch(
@@ -1788,8 +1813,8 @@ export default {
                 currency: 'PKR', exchangeName: 'PSX',
                 _raw: 'stooq:' + (rows[1] || csv.substring(0, 80)),
               };
-            }
-          } catch(e2) { errors.push('stooq:'+e2.message); }
+            } else errors.push('stooq:invalid-price('+closePrice+')');
+          } catch(e3) { errors.push('stooq:'+e3.message); }
         }
 
         if (!meta) {
@@ -1919,28 +1944,46 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // Fallback chain: metals.live → frankfurter (XAU via ECB) → error
+        // Fallback chain: xaus.com → metals.live → frankfurter → error
         let goldResult = null;
 
-        // Try 1: metals.live — free, no auth, returns {XAU, XAG, ...} in USD
+        // Try 1: xaus.com — free, no auth, CORS open, returns spot_usd_oz + PKR fx_rate
         try {
-          const mResp = await fetch('https://api.metals.live/v1/spot', {
-            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)', 'Accept': 'application/json' }
+          const xResp = await fetch('https://xaus.com/api/v1/spot', {
+            headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)' }
           });
-          const mData = await mResp.json();
-          // Returns array: [{metal:"gold",price:2300.5}, ...]
-          if (Array.isArray(mData)) {
-            const xau = mData.find(m => /gold/i.test(m.metal || m.name || ''));
-            const xag = mData.find(m => /silver/i.test(m.metal || m.name || ''));
-            if (xau && xau.price > 0) {
-              goldResult = { XAU: xau.price, XAG: xag ? xag.price : null, source: 'metals.live' };
-            }
-          } else if (mData && (mData.XAU || mData.gold)) {
-            goldResult = { XAU: mData.XAU || mData.gold, XAG: mData.XAG || mData.silver || null, source: 'metals.live' };
+          const xData = await xResp.json();
+          if (xData && xData.spot_usd_oz && xData.spot_usd_oz > 100) {
+            const pkrRate = (xData.fx_rates && xData.fx_rates.PKR) ? xData.fx_rates.PKR : null;
+            goldResult = {
+              XAU: xData.spot_usd_oz,
+              XAG: xData.silver_usd_oz || null,
+              PKR: pkrRate,
+              source: 'xaus.com',
+            };
           }
         } catch(e1) {}
 
-        // Try 2: frankfurter.app — ECB rates, XAU available
+        // Try 2: metals.live — free, no auth
+        if (!goldResult) {
+          try {
+            const mResp = await fetch('https://api.metals.live/v1/spot', {
+              headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)', 'Accept': 'application/json' }
+            });
+            const mData = await mResp.json();
+            if (Array.isArray(mData)) {
+              const xau = mData.find(m => /gold/i.test(m.metal || m.name || ''));
+              const xag = mData.find(m => /silver/i.test(m.metal || m.name || ''));
+              if (xau && xau.price > 0) {
+                goldResult = { XAU: xau.price, XAG: xag ? xag.price : null, source: 'metals.live' };
+              }
+            } else if (mData && (mData.XAU || mData.gold)) {
+              goldResult = { XAU: mData.XAU || mData.gold, XAG: mData.XAG || mData.silver || null, source: 'metals.live' };
+            }
+          } catch(e2) {}
+        }
+
+        // Try 3: frankfurter.app — ECB rates, XAU available
         if (!goldResult) {
           try {
             const fResp = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD,XAG', {
@@ -1948,21 +1991,7 @@ export default {
             });
             const fData = await fResp.json();
             if (fData && fData.rates && fData.rates.USD) {
-              // fData.rates.USD = how many USD per 1 XAU
               goldResult = { XAU: fData.rates.USD, XAG: fData.rates.XAG ? (fData.rates.USD / fData.rates.XAG) : null, source: 'frankfurter' };
-            }
-          } catch(e2) {}
-        }
-
-        // Try 3: exchangerate-api.com v4 — XAU as base (USD = price per troy oz)
-        if (!goldResult) {
-          try {
-            const erResp = await fetch('https://api.exchangerate-api.com/v4/latest/XAU', {
-              headers: { 'Accept': 'application/json' }
-            });
-            const erData = await erResp.json();
-            if (erData && erData.rates && erData.rates.USD && erData.rates.USD > 100) {
-              goldResult = { XAU: erData.rates.USD, XAG: null, source: 'exchangerate-api' };
             }
           } catch(e3) {}
         }

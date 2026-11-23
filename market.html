@@ -278,7 +278,7 @@ fetch('https://api.exchangerate-api.com/v4/latest/USD')
   });
 
 // ── Fuel ─────────────────────────────────────────────────────────────
-var FUEL_FALLBACK = {petrol:322,diesel:357,kerosene:177.59,effective:todayPK()};
+var FUEL_FALLBACK = {petrol:332,diesel:360,kerosene:177.59,effective:'2026-11-13'};
 fetch('/api/fuel')
   .then(function(r){return r.json();})
   .then(function(d){
@@ -310,29 +310,28 @@ function renderFuel(d){
 }
 
 // ── Gold & Silver ─────────────────────────────────────────────────────
+// Gold price: fetch XAU/USD from exchangerate-api (same API used for currencies above)
+// This avoids the need for a separate Worker proxy — runs directly in the browser.
 function fetchGold(pkrRate){
-  fetch('/api/gold')
+  // exchangerate-api.com v4 — base XAU gives rate: how many USD per 1 troy oz gold
+  fetch('https://api.exchangerate-api.com/v4/latest/XAU')
     .then(function(r){return r.json();})
     .then(function(d){
-      var goldUSD   = d.XAU || d.gold || null;
-      var silverUSD = d.XAG || d.silver || null;
+      var rates = d.rates || {};
+      var goldUSD   = rates.USD || null;   // USD per troy oz
+      var silverUSD = null;                // XAG not in this endpoint
       if(!goldUSD) throw new Error('no gold data');
-      var goldPKR   = goldUSD   * pkrRate;
-      var silverPKR = silverUSD ? silverUSD * pkrRate : null;
+      var goldPKR  = goldUSD * pkrRate;
       var html='';
       html+='<div class="gold-row"><div><div class="gold-name">🥇 Gold (XAU) — per troy oz</div></div>'
         +'<div style="text-align:right"><div class="gold-pkr">Rs'+Math.round(goldPKR).toLocaleString()+'</div>'
         +'<div class="gold-usd">$'+fmt(goldUSD,2)+' USD</div></div></div>';
-      if(silverPKR){
-        html+='<div class="gold-row"><div><div class="gold-name">🥈 Silver (XAG) — per troy oz</div></div>'
-          +'<div style="text-align:right"><div class="gold-pkr">Rs'+Math.round(silverPKR).toLocaleString()+'</div>'
-          +'<div class="gold-usd">$'+fmt(silverUSD,2)+' USD</div></div></div>';
-      }
       // 24K / 10g conversions
-      var gold10g  = goldPKR * 10 / 31.1035;
+      var gold10g = goldPKR * 10 / 31.1035;
       html+='<div style="font-size:11px;color:var(--muted);margin-top:10px">24K Gold per 10g ≈ Rs'+Math.round(gold10g).toLocaleString()+'</div>';
+      html+='<div style="font-size:10px;color:var(--muted);margin-top:4px">Source: ExchangeRate-API · '+d.date+'</div>';
       document.getElementById('gold-body').innerHTML=html;
-      _tickerData.gold={goldPKR:goldPKR,silverPKR:silverPKR||0};
+      _tickerData.gold={goldPKR:goldPKR,silverPKR:0};
       buildTicker();
     })
     .catch(function(){
@@ -365,7 +364,8 @@ fetch('/api/psx')
     document.getElementById('psx-body').innerHTML=html;
   })
   .catch(function(e){
-    document.getElementById('psx-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 KSE-100 data unavailable<br><small>'+( e.message||'')+'</small></div>';
+    // Show last known approximate value with disclaimer
+    document.getElementById('psx-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 KSE-100 live data unavailable<br><small style="font-size:11px">PSX data temporarily offline. Check <a href="https://dps.psx.com.pk" target="_blank" rel="noopener" style="color:var(--green)">PSX website</a> for live rates.</small></div>';
   });
 
 // ── Solar Prices (static — same as dashboard defaults) ────────────────

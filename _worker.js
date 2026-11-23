@@ -1812,42 +1812,73 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // dailyfuels.com has today's OGRA prices in a simple HTML table
-        const fResp = await fetch('https://www.dailyfuels.com/pakistan/', {
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)' }
-        });
-        const html = await fResp.text();
+        // Try multiple sources for OGRA fuel prices
+        let fuelResult = null;
 
-        // Page table rows contain: fuel name | USD price | PKR price
-        // Strategy: split by <tr> tags, find the row with the fuel name,
-        // then extract the ₨ value from that row only
-        function priceFromRow(htmlText, fuelRegex) {
-          // Split on <tr (case-insensitive)
-          const rows = htmlText.split(/<tr[\s>]/i);
-          for (const row of rows) {
-            if (fuelRegex.test(row)) {
-              // Find ₨NNN in this row only
-              const m = row.match(/₨\s*([\d,]+(?:\.\d+)?)/);
-              if (m) return parseFloat(m[1].replace(/,/g,''));
+        // Try 1: pkpetrolprice.com — simple HTML with Pakistani fuel prices
+        try {
+          const fResp = await fetch('https://pkpetrolprice.com/', {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' }
+          });
+          const html = await fResp.text();
+          function priceFromRow(htmlText, fuelRegex) {
+            const rows = htmlText.split(/<tr[\s>]/i);
+            for (const row of rows) {
+              if (fuelRegex.test(row)) {
+                const m = row.match(/(?:Rs\.?|PKR|₨)\s*([\d,]+(?:\.\d+)?)/i)
+                       || row.match(/([\d]{2,3}(?:\.\d{1,2})?)\s*(?:per|\/|litre|liter)/i)
+                       || row.match(/<td[^>]*>\s*([\d,]{3,}(?:\.\d{1,2})?)\s*<\/td>/i);
+                if (m) return parseFloat(m[1].replace(/,/g,''));
+              }
             }
+            return null;
           }
-          return null;
+          const petrol   = priceFromRow(html, /petrol|ms\b|gasoline/i);
+          const diesel   = priceFromRow(html, /diesel|hsd/i);
+          const kerosene = priceFromRow(html, /kerosene|sko/i);
+          if (petrol && petrol > 100 && petrol < 1000) {
+            const dateMatch = html.match(/(\d{1,2}[- ]\w+[- ]\d{4}|\d{4}-\d{2}-\d{2})/);
+            fuelResult = { petrol, diesel, kerosene, effective: dateMatch ? dateMatch[1] : new Date().toISOString().slice(0,10), source:'pkpetrolprice.com' };
+          }
+        } catch(e1) {}
+
+        // Try 2: dailyfuels.com
+        if (!fuelResult) {
+          try {
+            const fResp2 = await fetch('https://www.dailyfuels.com/pakistan/', {
+              headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)' }
+            });
+            const html2 = await fResp2.text();
+            function priceFromRow2(htmlText, fuelRegex) {
+              const rows = htmlText.split(/<tr[\s>]/i);
+              for (const row of rows) {
+                if (fuelRegex.test(row)) {
+                  const m = row.match(/₨\s*([\d,]+(?:\.\d+)?)/);
+                  if (m) return parseFloat(m[1].replace(/,/g,''));
+                }
+              }
+              return null;
+            }
+            const petrol2   = priceFromRow2(html2, /gasoline|petrol/i);
+            const diesel2   = priceFromRow2(html2, /\bdiesel\b/i);
+            const kerosene2 = priceFromRow2(html2, /kerosene/i);
+            if (petrol2 && petrol2 > 100) {
+              const dateMatch2 = html2.match(/(\d{4}-\d{2}-\d{2})/);
+              fuelResult = { petrol:petrol2, diesel:diesel2, kerosene:kerosene2, effective: dateMatch2 ? dateMatch2[1] : new Date().toISOString().slice(0,10), source:'dailyfuels.com' };
+            }
+          } catch(e2) {}
         }
 
-        const petrol   = priceFromRow(html, /gasoline|petrol/i);
-        const diesel   = priceFromRow(html, /\bdiesel\b/i);
-        const kerosene = priceFromRow(html, /kerosene/i);
+        // Fallback: return current OGRA notified prices (updated manually here when OGRA announces)
+        if (!fuelResult) {
+          fuelResult = { petrol:332, diesel:360, kerosene:177.59, effective:'2026-11-13', source:'ogra-cached' };
+        }
 
-        // Extract date — look for "Updated" or date pattern
-        const dateMatch = html.match(/(\d{4}-\d{2}-\d{2})/);
-        const effective = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0,10);
-
-        const result = { petrol, diesel, kerosene, effective, source:'dailyfuels.com' };
-        return new Response(JSON.stringify(result), {
+        return new Response(JSON.stringify(fuelResult), {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=3600', // 1-hour cache
+            'Cache-Control': 'public, max-age=3600',
             'Access-Control-Allow-Origin': '*',
           }
         });

@@ -141,6 +141,18 @@ footer a{color:#4a7a6a;text-decoration:none}
   .psx-price{font-size:30px}
 }
 
+/* STOCKS TABLE */
+.stocks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:4px}
+.stock-cell{background:#0d1a10;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;transition:.15s}
+.stock-cell:hover{border-color:rgba(74,222,128,.35);background:#111f14}
+.stock-sym{font-size:13px;font-weight:800;color:#f0fdf4;letter-spacing:.03em}
+.stock-name{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stock-price{font-size:16px;font-weight:700;color:var(--yellow);margin-top:4px}
+.stock-chg{font-size:11px;font-weight:700}
+.stock-chg.up{color:var(--green)}
+.stock-chg.dn{color:#f87171}
+.stock-vol{font-size:10px;color:var(--muted)}
+
 /* DISCLAIMER */
 .disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
 
@@ -260,6 +272,16 @@ footer a{color:#4a7a6a;text-decoration:none}
       <div class="card-title">📊 Pakistan Stock Exchange — KSE-100 <span class="badge-src">15-min delay</span></div>
       <div id="psx-body"><div class="loading"></div></div>
       <div class="source-line">📡 Source: Pakistan Stock Exchange (PSX) — 15-minute delayed data.</div>
+    </div>
+
+    <!-- KSE Top Stocks -->
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>📈 KSE-100 Top Companies <span class="badge-src">stooq.com · 15-min delay</span></span>
+        <span id="stocks-time" style="font-size:11px;color:var(--muted)"></span>
+      </div>
+      <div id="stocks-body"><div class="loading"></div></div>
+      <div class="source-line">📡 Source: stooq.com — 15-min delayed prices. For reference only. Live during trading hours Mon–Fri 09:30–15:30 PKT.</div>
     </div>
 
 
@@ -713,14 +735,51 @@ function fetchGold(pkrRate){
 }
 
 // ── KSE Top Stocks — stooq.com CSV (CORS-open) ───────────────────────
-// Top 12 KSE-100 companies by market cap (Nov 2026)
 var KSE_STOCKS = [
-  'ENGRO.PK','OGDC.PK','PPL.PK','HUBCO.PK','LUCK.PK',
-  'MARI.PK','MPL.PK','FFC.PK','EFERT.PK','PSO.PK',
-  'TRG.PK','BAHL.PK'
+  {sym:'ENGRO',  name:'Engro Corporation'},
+  {sym:'OGDC',   name:'Oil & Gas Dev. Co.'},
+  {sym:'PPL',    name:'Pakistan Petroleum'},
+  {sym:'HUBCO',  name:'Hub Power Co.'},
+  {sym:'LUCK',   name:'Lucky Cement'},
+  {sym:'MARI',   name:'Mari Petroleum'},
+  {sym:'MPL',    name:'Maple Leaf Cement'},
+  {sym:'FFC',    name:'Fauji Fertilizer'},
+  {sym:'EFERT',  name:'Engro Fertilizers'},
+  {sym:'PSO',    name:'Pakistan State Oil'},
+  {sym:'TRG',    name:'TRG Pakistan'},
+  {sym:'BAHL',   name:'Bank Al-Habib'},
 ];
+var _stockNames = {};
+KSE_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
+
+function renderStocksCard(stocks){
+  if(!stocks||!stocks.length){
+    document.getElementById('stocks-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 Stock data temporarily unavailable<br><small>Live data appears during trading hours Mon–Fri 09:30–15:30 PKT</small></div>';
+    return;
+  }
+  var now = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
+  var el = document.getElementById('stocks-time');
+  if(el) el.textContent = 'Updated: '+now+' PKT';
+  var html = '<div class="stocks-grid">';
+  for(var i=0;i<stocks.length;i++){
+    var s = stocks[i];
+    var up = s.chg >= 0;
+    var arr = up ? '▲' : '▼';
+    var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
+    html += '<div class="stock-cell">'
+          + '<div class="stock-sym">'+s.sym+'</div>'
+          + '<div class="stock-name">'+(_stockNames[s.sym]||'')+'</div>'
+          + '<div class="stock-price">Rs '+Math.round(s.price).toLocaleString()+'</div>'
+          + '<div class="stock-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</div>'
+          + '<div class="stock-vol">Vol: '+volStr+'</div>'
+          + '</div>';
+  }
+  html += '</div>';
+  document.getElementById('stocks-body').innerHTML = html;
+}
+
 function fetchKSEStocks(){
-  var syms = KSE_STOCKS.join(',').toLowerCase();
+  var syms = KSE_STOCKS.map(function(s){return s.sym.toLowerCase()+'.pk';}).join(',');
   fetch('https://stooq.com/q/l/?s='+syms+'&f=sd2t2ohlcvn')
     .then(function(r){if(!r.ok)throw 0;return r.text();})
     .then(function(csv){
@@ -732,19 +791,23 @@ function fetchKSEStocks(){
         var sym   = (c[0]||'').replace(/\.PK$/i,'').toUpperCase();
         var close = parseFloat(c[6]);
         var open  = parseFloat(c[3]);
+        var vol   = parseFloat(c[7]) || 0;
         if(!sym||isNaN(close)||close<=0) continue;
         var chgPct = isNaN(open)||open<=0 ? 0 : ((close-open)/open*100);
-        stocks.push({sym:sym, price:close, chg:chgPct});
+        stocks.push({sym:sym, price:close, chg:chgPct, vol:vol});
       }
       if(stocks.length){
         _tickerData.stocks = stocks;
+        renderStocksCard(stocks);
         buildTicker();
+      } else {
+        renderStocksCard([]);
       }
     })
-    .catch(function(){});
+    .catch(function(){ renderStocksCard([]); });
 }
 fetchKSEStocks();
-// refresh every 5 min
+// refresh every 5 min during trading hours
 setInterval(fetchKSEStocks, 5*60*1000);
 
 // ── PSX KSE-100 ───────────────────────────────────────────────────────

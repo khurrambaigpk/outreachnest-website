@@ -779,23 +779,10 @@ function renderStocksCard(stocks){
 }
 
 function fetchKSEStocks(){
-  var syms = KSE_STOCKS.map(function(s){return s.sym.toLowerCase()+'.pk';}).join(',');
-  fetch('https://stooq.com/q/l/?s='+syms+'&f=sd2t2ohlcvn')
-    .then(function(r){if(!r.ok)throw 0;return r.text();})
-    .then(function(csv){
-      var lines = csv.trim().split('\n');
-      var stocks = [];
-      for(var i=1;i<lines.length;i++){
-        var c = lines[i].split(',');
-        // Symbol,Date,Time,Open,High,Low,Close,Volume,Name
-        var sym   = (c[0]||'').replace(/\.PK$/i,'').toUpperCase();
-        var close = parseFloat(c[6]);
-        var open  = parseFloat(c[3]);
-        var vol   = parseFloat(c[7]) || 0;
-        if(!sym||isNaN(close)||close<=0) continue;
-        var chgPct = isNaN(open)||open<=0 ? 0 : ((close-open)/open*100);
-        stocks.push({sym:sym, price:close, chg:chgPct, vol:vol});
-      }
+  fetch('/api/stocks', { headers: { 'Referer': window.location.href } })
+    .then(function(r){if(!r.ok)throw new Error('stocks-'+r.status);return r.json();})
+    .then(function(d){
+      var stocks = d.stocks || [];
       if(stocks.length){
         _tickerData.stocks = stocks;
         renderStocksCard(stocks);
@@ -804,7 +791,7 @@ function fetchKSEStocks(){
         renderStocksCard([]);
       }
     })
-    .catch(function(){ renderStocksCard([]); });
+    .catch(function(e){ console.log('STOCKS ERR:',e.message); renderStocksCard([]); });
 }
 fetchKSEStocks();
 // refresh every 5 min during trading hours
@@ -985,19 +972,7 @@ var SOLAR={
     {name:'Local Lithium 100Ah 48V',      price:'120,000',unit:'per unit'},
   ]
 };
-(function renderSolar(){
-  function section(title, items){
-    var h='<div class="solar-section-title">'+title+'</div>';
-    items.forEach(function(item){
-      h+='<div class="solar-row"><div class="solar-name">'+item.name+'</div>'
-        +'<div><span class="solar-price">Rs '+item.price+'</span><span class="solar-unit">'+item.unit+'</span></div></div>';
-    });
-    return h;
-  }
-  var html=section('🔆 Solar Panels',SOLAR.panels)+section('⚡ Inverters',SOLAR.inverters)+section('🔋 Batteries',SOLAR.batteries);
-  html+='<div style="font-size:11px;color:var(--muted);margin-top:14px">⚠️ Approximate market averages (Nov 2026). Prices vary by vendor and city.</div>';
-  document.getElementById('solar-body').innerHTML=html;
-})();
+// solar-body card removed; SOLAR data used in ticker only
 </script>
 </body>
 </html>

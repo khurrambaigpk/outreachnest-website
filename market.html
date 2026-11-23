@@ -169,13 +169,24 @@ footer a{color:#4a7a6a;text-decoration:none}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
   .col-num{display:none}
-  .stocks-table col.col-price{width:72px}
-  .stocks-table col.col-chg{width:72px}
-  .stocks-table col.col-vol{width:48px}
   .st-vol{font-size:10px}
   .st-price{font-size:12px}
   .st-chg{font-size:10px;padding:2px 4px}
+  #stocks-filters{gap:4px}
+  .sf-btn{font-size:10px;padding:3px 8px}
 }
+
+/* SECTOR FILTER BUTTONS */
+.sf-btn{background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:600;padding:4px 11px;cursor:pointer;transition:.15s;white-space:nowrap}
+.sf-btn:hover{border-color:var(--green);color:var(--green)}
+.sf-btn.active{background:rgba(74,222,128,.15);border-color:var(--green);color:var(--green)}
+.sf-btn[data-f="fav"].active{background:rgba(251,191,36,.15);border-color:var(--yellow);color:var(--yellow)}
+.sf-btn[data-f="sharia"].active{background:rgba(96,165,250,.15);border-color:#60a5fa;color:#60a5fa}
+
+/* STAR FAVOURITE */
+.st-star{background:none;border:none;cursor:pointer;font-size:14px;padding:0 2px;opacity:.35;transition:.15s;line-height:1}
+.st-star:hover{opacity:1}
+.st-star.saved{opacity:1}
 
 /* DISCLAIMER */
 .disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
@@ -300,15 +311,31 @@ footer a{color:#4a7a6a;text-decoration:none}
 
     <!-- KSE Top Stocks -->
     <div class="card" style="grid-column:1/-1">
-      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-        <span>📈 <span id="stocks-index-label">KSE-30</span> Companies <span class="badge-src">PSX · 15-min delay</span></span>
-        <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div class="card-title" style="margin-bottom:0">📈 <span id="stocks-index-label">KSE-30</span> Companies <span class="badge-src">PSX · 15-min delay</span></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden">
             <button id="btn-kse30" onclick="switchIndex('kse30')" style="background:var(--green);color:#0a1a0f;border:none;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer">KSE-30</button>
             <button id="btn-kse100" onclick="switchIndex('kse100')" style="background:transparent;color:var(--muted);border:none;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer">KSE-100</button>
           </div>
           <span id="stocks-time" style="font-size:11px;color:var(--muted)"></span>
         </div>
+      </div>
+      <!-- Sector + Sharia + Favourites filter bar -->
+      <div id="stocks-filters" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center">
+        <button class="sf-btn active" onclick="setSectorFilter('all')" data-f="all">All</button>
+        <button class="sf-btn" onclick="setSectorFilter('fav')" data-f="fav" id="btn-fav-filter">⭐ Favourites</button>
+        <button class="sf-btn" onclick="setSectorFilter('sharia')" data-f="sharia">☪️ Sharia</button>
+        <button class="sf-btn" onclick="setSectorFilter('bank')" data-f="bank">🏦 Banks</button>
+        <button class="sf-btn" onclick="setSectorFilter('cement')" data-f="cement">🏗️ Cement</button>
+        <button class="sf-btn" onclick="setSectorFilter('oil')" data-f="oil">🛢️ Oil &amp; Gas</button>
+        <button class="sf-btn" onclick="setSectorFilter('energy')" data-f="energy">⚡ Energy</button>
+        <button class="sf-btn" onclick="setSectorFilter('fert')" data-f="fert">🌾 Fertilizer</button>
+        <button class="sf-btn" onclick="setSectorFilter('tech')" data-f="tech">💻 Tech</button>
+        <button class="sf-btn" onclick="setSectorFilter('pharma')" data-f="pharma">💊 Pharma</button>
+        <button class="sf-btn" onclick="setSectorFilter('textile')" data-f="textile">🧵 Textile</button>
+        <button class="sf-btn" onclick="setSectorFilter('auto')" data-f="auto">🚗 Auto</button>
+        <button class="sf-btn" onclick="setSectorFilter('steel')" data-f="steel">⚙️ Steel</button>
       </div>
       <div id="stocks-body"><div class="loading"></div></div>
       <div class="source-line">📡 Source: Pakistan Stock Exchange (PSX) — 15-min delayed prices. For reference only. Live during trading hours Mon–Fri 09:30–15:30 PKT.</div>
@@ -553,8 +580,9 @@ function renderFuel(d){
   var html='';
   items.forEach(function(item){
     var price=d[item.key]; if(!price) return;
+    var unit = item.key==='lpg' ? '/ kg' : '/ litre';
     html+='<div class="row"><div class="row-label">'+item.icon+' '+item.name+'</div>'
-      +'<div><span class="row-val">Rs'+fmt(price,2)+'</span><span class="row-unit">/ litre</span></div></div>';
+      +'<div><span class="row-val">Rs'+fmt(price,2)+'</span><span class="row-unit">'+unit+'</span></div></div>';
   });
   // Date display — format YYYY-MM-DD to readable
   var dateStr = '—';
@@ -766,111 +794,114 @@ function fetchGold(pkrRate){
 
 // ── KSE Stocks — Fallback closing prices Nov 21, 2026 (PSX) ──────────
 // KSE-30 constituents (30 companies)
+// sector codes: oil=Oil & Gas, bank=Banks, cement=Cement, energy=Power/Energy,
+//   fert=Fertilizer, tech=Technology, pharma=Pharma, textile=Textile, fmcg=FMCG, steel=Steel/Metals
+// sharia=1 means Shariah-compliant (approx — confirm with PSX Shariah list)
 var KSE30_STOCKS = [
-  {sym:'OGDC',   name:'Oil & Gas Dev. Co.',       price:168.30, chg:-0.18, vol:3100000},
-  {sym:'PPL',    name:'Pakistan Petroleum',        price:118.75, chg: 0.65, vol:2200000},
-  {sym:'ENGRO',  name:'Engro Corporation',         price:280.50, chg: 0.42, vol:1250000},
-  {sym:'HBL',    name:'Habib Bank Ltd.',           price:171.20, chg: 0.55, vol:2800000},
-  {sym:'MCB',    name:'MCB Bank',                  price:235.00, chg: 0.30, vol:1400000},
-  {sym:'UBL',    name:'United Bank Ltd.',          price:220.50, chg:-0.22, vol:1600000},
-  {sym:'NBP',    name:'National Bank of Pak.',     price: 42.80, chg: 0.47, vol:5200000},
-  {sym:'FFC',    name:'Fauji Fertilizer',          price:116.50, chg: 0.26, vol:1680000},
-  {sym:'PSO',    name:'Pakistan State Oil',        price:296.00, chg: 0.34, vol: 760000},
-  {sym:'LUCK',   name:'Lucky Cement',              price:985.00, chg: 0.11, vol: 420000},
-  {sym:'MARI',   name:'Mari Petroleum',            price:2015.00,chg: 0.08, vol:  85000},
-  {sym:'HUBCO',  name:'Hub Power Co.',             price:142.20, chg:-0.31, vol: 980000},
-  {sym:'EFERT',  name:'Engro Fertilizers',         price: 86.20, chg:-0.12, vol:2100000},
-  {sym:'BAFL',   name:'Bank Alfalah',              price: 50.60, chg: 0.20, vol:3800000},
-  {sym:'BAHL',   name:'Bank Al-Habib',             price: 72.50, chg: 0.14, vol:1900000},
-  {sym:'KEL',    name:'K-Electric Ltd.',           price:  4.85, chg:-0.41, vol:12000000},
-  {sym:'TRG',    name:'TRG Pakistan',              price:118.80, chg: 1.20, vol: 540000},
-  {sym:'MEBL',   name:'Meezan Bank',               price:168.00, chg: 0.36, vol:2200000},
-  {sym:'DGKC',   name:'D.G. Khan Cement',          price:102.50, chg:-0.19, vol: 920000},
-  {sym:'MLCF',   name:'Maple Leaf Cement',         price: 38.40, chg:-0.52, vol:4800000},
-  {sym:'CHCC',   name:'Cherat Cement',             price:224.00, chg: 0.09, vol: 310000},
-  {sym:'FCCL',   name:'Fauji Cement',              price: 24.80, chg:-0.80, vol:7200000},
-  {sym:'MUGHAL', name:'Mughal Iron & Steel',       price: 72.30, chg: 0.42, vol:1100000},
-  {sym:'ISL',    name:'Ismail Industries',         price:304.00, chg: 0.00, vol: 185000},
-  {sym:'GATM',   name:'Gul Ahmed Textile',         price: 55.20, chg:-0.36, vol: 820000},
-  {sym:'COLG',   name:'Colgate-Palmolive Pak.',    price:3140.00,chg: 0.16, vol:  22000},
-  {sym:'NESTLE', name:'Nestle Pakistan',           price:6800.00,chg: 0.07, vol:   8000},
-  {sym:'SEARL',  name:'The Searle Company',        price:168.50, chg: 0.30, vol: 440000},
-  {sym:'ABOT',   name:'Abbott Laboratories Pak.', price:854.00, chg: 0.12, vol:  95000},
-  {sym:'GHGL',   name:'Ghani Glass',               price: 42.10, chg:-0.24, vol:1300000},
+  {sym:'OGDC',   name:'Oil & Gas Dev. Co.',       price:168.30, chg:-0.18, vol:3100000, sector:'oil',    sharia:0},
+  {sym:'PPL',    name:'Pakistan Petroleum',        price:118.75, chg: 0.65, vol:2200000, sector:'oil',    sharia:0},
+  {sym:'ENGRO',  name:'Engro Corporation',         price:280.50, chg: 0.42, vol:1250000, sector:'fert',   sharia:0},
+  {sym:'HBL',    name:'Habib Bank Ltd.',           price:171.20, chg: 0.55, vol:2800000, sector:'bank',   sharia:0},
+  {sym:'MCB',    name:'MCB Bank',                  price:235.00, chg: 0.30, vol:1400000, sector:'bank',   sharia:0},
+  {sym:'UBL',    name:'United Bank Ltd.',          price:220.50, chg:-0.22, vol:1600000, sector:'bank',   sharia:0},
+  {sym:'NBP',    name:'National Bank of Pak.',     price: 42.80, chg: 0.47, vol:5200000, sector:'bank',   sharia:0},
+  {sym:'FFC',    name:'Fauji Fertilizer',          price:116.50, chg: 0.26, vol:1680000, sector:'fert',   sharia:1},
+  {sym:'PSO',    name:'Pakistan State Oil',        price:296.00, chg: 0.34, vol: 760000, sector:'oil',    sharia:0},
+  {sym:'LUCK',   name:'Lucky Cement',              price:985.00, chg: 0.11, vol: 420000, sector:'cement', sharia:1},
+  {sym:'MARI',   name:'Mari Petroleum',            price:2015.00,chg: 0.08, vol:  85000, sector:'oil',    sharia:1},
+  {sym:'HUBCO',  name:'Hub Power Co.',             price:142.20, chg:-0.31, vol: 980000, sector:'energy', sharia:0},
+  {sym:'EFERT',  name:'Engro Fertilizers',         price: 86.20, chg:-0.12, vol:2100000, sector:'fert',   sharia:0},
+  {sym:'BAFL',   name:'Bank Alfalah',              price: 50.60, chg: 0.20, vol:3800000, sector:'bank',   sharia:0},
+  {sym:'BAHL',   name:'Bank Al-Habib',             price: 72.50, chg: 0.14, vol:1900000, sector:'bank',   sharia:0},
+  {sym:'KEL',    name:'K-Electric Ltd.',           price:  4.85, chg:-0.41, vol:12000000,sector:'energy', sharia:0},
+  {sym:'TRG',    name:'TRG Pakistan',              price:118.80, chg: 1.20, vol: 540000, sector:'tech',   sharia:1},
+  {sym:'MEBL',   name:'Meezan Bank',               price:168.00, chg: 0.36, vol:2200000, sector:'bank',   sharia:1},
+  {sym:'DGKC',   name:'D.G. Khan Cement',          price:102.50, chg:-0.19, vol: 920000, sector:'cement', sharia:1},
+  {sym:'MLCF',   name:'Maple Leaf Cement',         price: 38.40, chg:-0.52, vol:4800000, sector:'cement', sharia:1},
+  {sym:'CHCC',   name:'Cherat Cement',             price:224.00, chg: 0.09, vol: 310000, sector:'cement', sharia:1},
+  {sym:'FCCL',   name:'Fauji Cement',              price: 24.80, chg:-0.80, vol:7200000, sector:'cement', sharia:1},
+  {sym:'MUGHAL', name:'Mughal Iron & Steel',       price: 72.30, chg: 0.42, vol:1100000, sector:'steel',  sharia:1},
+  {sym:'ISL',    name:'Ismail Industries',         price:304.00, chg: 0.00, vol: 185000, sector:'fmcg',   sharia:1},
+  {sym:'GATM',   name:'Gul Ahmed Textile',         price: 55.20, chg:-0.36, vol: 820000, sector:'textile',sharia:1},
+  {sym:'COLG',   name:'Colgate-Palmolive Pak.',    price:3140.00,chg: 0.16, vol:  22000, sector:'fmcg',   sharia:0},
+  {sym:'NESTLE', name:'Nestle Pakistan',           price:6800.00,chg: 0.07, vol:   8000, sector:'fmcg',   sharia:0},
+  {sym:'SEARL',  name:'The Searle Company',        price:168.50, chg: 0.30, vol: 440000, sector:'pharma', sharia:1},
+  {sym:'ABOT',   name:'Abbott Laboratories Pak.', price:854.00, chg: 0.12, vol:  95000, sector:'pharma', sharia:0},
+  {sym:'GHGL',   name:'Ghani Glass',               price: 42.10, chg:-0.24, vol:1300000, sector:'steel',  sharia:1},
 ];
 
 // KSE-100 top 100 (additional 70 beyond KSE-30)
 var KSE100_EXTRA = [
-  {sym:'ATRL',   name:'Attock Refinery',           price:263.00, chg: 0.38, vol: 480000},
-  {sym:'NRL',    name:'National Refinery',         price:375.00, chg: 0.27, vol: 210000},
-  {sym:'PRL',    name:'Pakistan Refinery',         price: 32.50, chg:-0.61, vol:2900000},
-  {sym:'SNGP',   name:'Sui Northern Gas',          price: 61.80, chg: 0.49, vol:3400000},
-  {sym:'SSGC',   name:'Sui Southern Gas',          price: 25.60, chg:-0.39, vol:5600000},
-  {sym:'APL',    name:'Attock Petroleum',          price:645.00, chg: 0.31, vol: 125000},
-  {sym:'HCAR',   name:'Honda Atlas Cars',          price:230.00, chg:-0.43, vol: 390000},
-  {sym:'INDU',   name:'Indus Motor Co.',           price:1680.00,chg: 0.18, vol:  62000},
-  {sym:'PSMC',   name:'Pak Suzuki Motor',          price:388.00, chg: 0.52, vol: 285000},
-  {sym:'ATLH',   name:'Atlas Honda',               price:532.00, chg: 0.19, vol: 210000},
-  {sym:'PAKT',   name:'Pak Tobacco Co.',           price:862.00, chg: 0.00, vol:  44000},
-  {sym:'PTC',    name:'Pakistan Telecom. Co.',     price: 15.80, chg: 0.64, vol:9800000},
-  {sym:'TPL',    name:'TPL Insurance',             price: 18.40, chg:-0.54, vol:2100000},
-  {sym:'EFU',    name:'EFU General Insurance',    price:112.00, chg: 0.00, vol: 320000},
-  {sym:'JUBLFOOD',name:'Jubilee Foods',            price: 48.20, chg: 0.21, vol:1750000},
-  {sym:'WAVE',   name:'Wave Industries',           price: 22.60, chg:-0.44, vol:3100000},
-  {sym:'DNCC',   name:'Dandot Cement',             price: 34.50, chg: 0.29, vol:2400000},
-  {sym:'PIOC',   name:'Pioneer Cement',            price: 88.00, chg:-0.23, vol: 760000},
-  {sym:'GWLC',   name:'Gharibwal Cement',          price: 28.90, chg: 0.35, vol:3900000},
-  {sym:'THCCL',  name:'Thatta Cement',             price: 23.10, chg:-0.43, vol:2800000},
-  {sym:'ACPL',   name:'Attock Cement',             price:208.00, chg: 0.48, vol: 490000},
-  {sym:'KOHC',   name:'Kohat Cement',              price:148.00, chg: 0.00, vol: 650000},
-  {sym:'POWER',  name:'Hub Power REIT',            price: 36.80, chg: 0.27, vol:4200000},
-  {sym:'KAPCO',  name:'Kot Addu Power Co.',        price: 48.50, chg:-0.41, vol:2600000},
-  {sym:'NCPL',   name:'Nishat Chunian Power',      price: 32.00, chg: 0.00, vol:3700000},
-  {sym:'LPL',    name:'Lalpir Power',              price: 28.40, chg:-0.35, vol:2900000},
-  {sym:'NPL',    name:'Nishat Power',              price: 34.20, chg: 0.29, vol:3100000},
-  {sym:'PAKGEN', name:'PakGen Power',              price: 25.80, chg: 0.39, vol:4100000},
-  {sym:'FNEL',   name:'Foundation Energy (NEL)',   price: 11.60, chg:-0.86, vol:7800000},
-  {sym:'SEL',    name:'Saif Energy',               price: 18.90, chg: 0.53, vol:3300000},
-  {sym:'INIL',   name:'International Industries',  price:148.50, chg: 0.20, vol: 540000},
-  {sym:'ASTL',   name:'Amreli Steels',             price: 68.20, chg:-0.44, vol:1500000},
-  {sym:'AGHA',   name:'Agha Steel Industries',     price: 38.60, chg: 0.52, vol:2200000},
-  {sym:'AICL',   name:'Adamjee Insurance',         price: 54.80, chg: 0.00, vol:1100000},
-  {sym:'JUBLI',  name:'Jubilee Life Insurance',    price:528.00, chg: 0.19, vol:  88000},
-  {sym:'JSCL',   name:'Jahangir Siddiqui & Co.',  price: 24.60, chg: 0.41, vol:3400000},
-  {sym:'DFML',   name:'Dawood Hercules',           price:132.00, chg: 0.00, vol: 720000},
-  {sym:'DAWH',   name:'Dawood Hercules Corp.',     price:142.00, chg: 0.07, vol: 650000},
-  {sym:'PAEL',   name:'Pak Elektron Ltd.',         price: 42.30, chg:-0.47, vol:2800000},
-  {sym:'HGFA',   name:'Huffaz Seamless Pipe',      price: 56.40, chg: 0.36, vol: 980000},
-  {sym:'NRSL',   name:'Nimir Resins',              price: 32.80, chg:-0.61, vol:2200000},
-  {sym:'ICL',    name:'ICI Pakistan',              price:498.00, chg: 0.20, vol: 185000},
-  {sym:'LOTCHEM',name:'Lotte Chemical Pak.',       price: 24.60, chg: 0.41, vol:3600000},
-  {sym:'EPCL',   name:'Engro Polymer & Chemicals', price: 44.80, chg:-0.22, vol:2900000},
-  {sym:'NETSOL', name:'NetSol Technologies',       price:142.00, chg: 0.70, vol: 420000},
-  {sym:'SYS',    name:'Systems Limited',           price:296.00, chg: 1.03, vol: 580000},
-  {sym:'AVN',    name:'Avanceon Ltd.',             price: 68.20, chg: 0.44, vol: 850000},
-  {sym:'TPLP',   name:'TPL Properties',            price: 24.30, chg:-0.41, vol:3100000},
-  {sym:'MLPAK',  name:'Millat Tractors',           price:1250.00,chg: 0.08, vol:  52000},
-  {sym:'MTL',    name:'Millat Tractors',           price:1240.00,chg: 0.08, vol:  48000},
-  {sym:'FEROZ',  name:'Ferozsons Laboratories',    price:482.00, chg: 0.21, vol: 125000},
-  {sym:'GLPL',   name:'Glaxo Smithkline Pak.',     price:148.00, chg: 0.00, vol: 290000},
-  {sym:'HINOON', name:'Highnoon Laboratories',     price:1180.00,chg: 0.17, vol:  34000},
-  {sym:'IBLHL',  name:'Ibex Pakistan (IBLHL)',     price: 38.60, chg: 0.52, vol:1900000},
-  {sym:'ESBL',   name:'Escort Investment Bank',    price: 14.80, chg:-0.67, vol:4800000},
-  {sym:'SILK',   name:'Silk Bank',                 price:  4.20, chg: 0.00, vol:11000000},
-  {sym:'BOP',    name:'Bank of Punjab',            price:  8.40, chg: 0.00, vol:14000000},
-  {sym:'SNBL',   name:'Summit Bank',               price:  5.60, chg:-0.89, vol:9800000},
-  {sym:'JSBL',   name:'JS Bank',                   price: 10.20, chg: 0.00, vol:7200000},
-  {sym:'FAYSAL', name:'Faysal Bank',               price: 28.50, chg: 0.35, vol:5100000},
-  {sym:'AKBL',   name:'Askari Bank',               price: 24.80, chg: 0.40, vol:5800000},
-  {sym:'SCBPL',  name:'Standard Chartered Pak.',   price: 42.60, chg: 0.00, vol:2400000},
-  {sym:'KASBB',  name:'KASB Bank',                 price:  3.40, chg: 0.00, vol:16000000},
-  {sym:'ALBL',   name:'Allied Bank',               price: 92.50, chg: 0.22, vol:2200000},
-  {sym:'SMBL',   name:'SME Bank',                  price:  6.80, chg: 0.00, vol:8400000},
-  {sym:'BIPL',   name:'Burj Islamic Bank',         price: 12.40, chg: 0.81, vol:5900000},
-  {sym:'PNSC',   name:'Pakistan National Ship.',   price:168.00, chg: 0.00, vol: 285000},
-  {sym:'PIA',    name:'Pakistan Intl. Airlines',   price:  6.20, chg:-0.64, vol:12000000},
-  {sym:'PICT',   name:'Pak Intl. Container Term.', price:242.00, chg: 0.00, vol: 320000},
-  {sym:'KPUS',   name:'Karachi Port (KPT)',        price: 28.60, chg: 0.35, vol:3800000},
+  {sym:'ATRL',   name:'Attock Refinery',           price:263.00, chg: 0.38, vol: 480000, sector:'oil',    sharia:1},
+  {sym:'NRL',    name:'National Refinery',         price:375.00, chg: 0.27, vol: 210000, sector:'oil',    sharia:0},
+  {sym:'PRL',    name:'Pakistan Refinery',         price: 32.50, chg:-0.61, vol:2900000, sector:'oil',    sharia:0},
+  {sym:'SNGP',   name:'Sui Northern Gas',          price: 61.80, chg: 0.49, vol:3400000, sector:'oil',    sharia:0},
+  {sym:'SSGC',   name:'Sui Southern Gas',          price: 25.60, chg:-0.39, vol:5600000, sector:'oil',    sharia:0},
+  {sym:'APL',    name:'Attock Petroleum',          price:645.00, chg: 0.31, vol: 125000, sector:'oil',    sharia:1},
+  {sym:'HCAR',   name:'Honda Atlas Cars',          price:230.00, chg:-0.43, vol: 390000, sector:'auto',   sharia:0},
+  {sym:'INDU',   name:'Indus Motor Co.',           price:1680.00,chg: 0.18, vol:  62000, sector:'auto',   sharia:0},
+  {sym:'PSMC',   name:'Pak Suzuki Motor',          price:388.00, chg: 0.52, vol: 285000, sector:'auto',   sharia:0},
+  {sym:'ATLH',   name:'Atlas Honda',               price:532.00, chg: 0.19, vol: 210000, sector:'auto',   sharia:1},
+  {sym:'PAKT',   name:'Pak Tobacco Co.',           price:862.00, chg: 0.00, vol:  44000, sector:'fmcg',   sharia:0},
+  {sym:'PTC',    name:'Pakistan Telecom. Co.',     price: 15.80, chg: 0.64, vol:9800000, sector:'tech',   sharia:0},
+  {sym:'TPL',    name:'TPL Insurance',             price: 18.40, chg:-0.54, vol:2100000, sector:'insure', sharia:0},
+  {sym:'EFU',    name:'EFU General Insurance',    price:112.00, chg: 0.00, vol: 320000, sector:'insure', sharia:0},
+  {sym:'JUBLFOOD',name:'Jubilee Foods',            price: 48.20, chg: 0.21, vol:1750000, sector:'fmcg',   sharia:1},
+  {sym:'WAVE',   name:'Wave Industries',           price: 22.60, chg:-0.44, vol:3100000, sector:'fmcg',   sharia:1},
+  {sym:'DNCC',   name:'Dandot Cement',             price: 34.50, chg: 0.29, vol:2400000, sector:'cement', sharia:1},
+  {sym:'PIOC',   name:'Pioneer Cement',            price: 88.00, chg:-0.23, vol: 760000, sector:'cement', sharia:1},
+  {sym:'GWLC',   name:'Gharibwal Cement',          price: 28.90, chg: 0.35, vol:3900000, sector:'cement', sharia:1},
+  {sym:'THCCL',  name:'Thatta Cement',             price: 23.10, chg:-0.43, vol:2800000, sector:'cement', sharia:1},
+  {sym:'ACPL',   name:'Attock Cement',             price:208.00, chg: 0.48, vol: 490000, sector:'cement', sharia:1},
+  {sym:'KOHC',   name:'Kohat Cement',              price:148.00, chg: 0.00, vol: 650000, sector:'cement', sharia:1},
+  {sym:'POWER',  name:'Hub Power REIT',            price: 36.80, chg: 0.27, vol:4200000, sector:'energy', sharia:0},
+  {sym:'KAPCO',  name:'Kot Addu Power Co.',        price: 48.50, chg:-0.41, vol:2600000, sector:'energy', sharia:0},
+  {sym:'NCPL',   name:'Nishat Chunian Power',      price: 32.00, chg: 0.00, vol:3700000, sector:'energy', sharia:1},
+  {sym:'LPL',    name:'Lalpir Power',              price: 28.40, chg:-0.35, vol:2900000, sector:'energy', sharia:1},
+  {sym:'NPL',    name:'Nishat Power',              price: 34.20, chg: 0.29, vol:3100000, sector:'energy', sharia:1},
+  {sym:'PAKGEN', name:'PakGen Power',              price: 25.80, chg: 0.39, vol:4100000, sector:'energy', sharia:1},
+  {sym:'FNEL',   name:'Foundation Energy (NEL)',   price: 11.60, chg:-0.86, vol:7800000, sector:'energy', sharia:1},
+  {sym:'SEL',    name:'Saif Energy',               price: 18.90, chg: 0.53, vol:3300000, sector:'energy', sharia:1},
+  {sym:'INIL',   name:'International Industries',  price:148.50, chg: 0.20, vol: 540000, sector:'steel',  sharia:1},
+  {sym:'ASTL',   name:'Amreli Steels',             price: 68.20, chg:-0.44, vol:1500000, sector:'steel',  sharia:1},
+  {sym:'AGHA',   name:'Agha Steel Industries',     price: 38.60, chg: 0.52, vol:2200000, sector:'steel',  sharia:1},
+  {sym:'AICL',   name:'Adamjee Insurance',         price: 54.80, chg: 0.00, vol:1100000, sector:'insure', sharia:0},
+  {sym:'JUBLI',  name:'Jubilee Life Insurance',    price:528.00, chg: 0.19, vol:  88000, sector:'insure', sharia:0},
+  {sym:'JSCL',   name:'Jahangir Siddiqui & Co.',  price: 24.60, chg: 0.41, vol:3400000, sector:'bank',   sharia:0},
+  {sym:'DFML',   name:'Dawood Hercules',           price:132.00, chg: 0.00, vol: 720000, sector:'fert',   sharia:1},
+  {sym:'DAWH',   name:'Dawood Hercules Corp.',     price:142.00, chg: 0.07, vol: 650000, sector:'fert',   sharia:1},
+  {sym:'PAEL',   name:'Pak Elektron Ltd.',         price: 42.30, chg:-0.47, vol:2800000, sector:'tech',   sharia:1},
+  {sym:'HGFA',   name:'Huffaz Seamless Pipe',      price: 56.40, chg: 0.36, vol: 980000, sector:'steel',  sharia:1},
+  {sym:'NRSL',   name:'Nimir Resins',              price: 32.80, chg:-0.61, vol:2200000, sector:'chem',   sharia:0},
+  {sym:'ICL',    name:'ICI Pakistan',              price:498.00, chg: 0.20, vol: 185000, sector:'chem',   sharia:0},
+  {sym:'LOTCHEM',name:'Lotte Chemical Pak.',       price: 24.60, chg: 0.41, vol:3600000, sector:'chem',   sharia:0},
+  {sym:'EPCL',   name:'Engro Polymer & Chemicals', price: 44.80, chg:-0.22, vol:2900000, sector:'chem',   sharia:0},
+  {sym:'NETSOL', name:'NetSol Technologies',       price:142.00, chg: 0.70, vol: 420000, sector:'tech',   sharia:1},
+  {sym:'SYS',    name:'Systems Limited',           price:296.00, chg: 1.03, vol: 580000, sector:'tech',   sharia:1},
+  {sym:'AVN',    name:'Avanceon Ltd.',             price: 68.20, chg: 0.44, vol: 850000, sector:'tech',   sharia:1},
+  {sym:'TPLP',   name:'TPL Properties',            price: 24.30, chg:-0.41, vol:3100000, sector:'reit',   sharia:1},
+  {sym:'MLPAK',  name:'Millat Tractors',           price:1250.00,chg: 0.08, vol:  52000, sector:'auto',   sharia:1},
+  {sym:'MTL',    name:'Millat Tractors',           price:1240.00,chg: 0.08, vol:  48000, sector:'auto',   sharia:1},
+  {sym:'FEROZ',  name:'Ferozsons Laboratories',    price:482.00, chg: 0.21, vol: 125000, sector:'pharma', sharia:1},
+  {sym:'GLPL',   name:'Glaxo Smithkline Pak.',     price:148.00, chg: 0.00, vol: 290000, sector:'pharma', sharia:0},
+  {sym:'HINOON', name:'Highnoon Laboratories',     price:1180.00,chg: 0.17, vol:  34000, sector:'pharma', sharia:1},
+  {sym:'IBLHL',  name:'Ibex Pakistan (IBLHL)',     price: 38.60, chg: 0.52, vol:1900000, sector:'tech',   sharia:1},
+  {sym:'ESBL',   name:'Escort Investment Bank',    price: 14.80, chg:-0.67, vol:4800000, sector:'bank',   sharia:0},
+  {sym:'SILK',   name:'Silk Bank',                 price:  4.20, chg: 0.00, vol:11000000,sector:'bank',   sharia:0},
+  {sym:'BOP',    name:'Bank of Punjab',            price:  8.40, chg: 0.00, vol:14000000,sector:'bank',   sharia:0},
+  {sym:'SNBL',   name:'Summit Bank',               price:  5.60, chg:-0.89, vol:9800000, sector:'bank',   sharia:0},
+  {sym:'JSBL',   name:'JS Bank',                   price: 10.20, chg: 0.00, vol:7200000, sector:'bank',   sharia:0},
+  {sym:'FAYSAL', name:'Faysal Bank',               price: 28.50, chg: 0.35, vol:5100000, sector:'bank',   sharia:0},
+  {sym:'AKBL',   name:'Askari Bank',               price: 24.80, chg: 0.40, vol:5800000, sector:'bank',   sharia:0},
+  {sym:'SCBPL',  name:'Standard Chartered Pak.',   price: 42.60, chg: 0.00, vol:2400000, sector:'bank',   sharia:0},
+  {sym:'KASBB',  name:'KASB Bank',                 price:  3.40, chg: 0.00, vol:16000000,sector:'bank',   sharia:0},
+  {sym:'ALBL',   name:'Allied Bank',               price: 92.50, chg: 0.22, vol:2200000, sector:'bank',   sharia:0},
+  {sym:'SMBL',   name:'SME Bank',                  price:  6.80, chg: 0.00, vol:8400000, sector:'bank',   sharia:0},
+  {sym:'BIPL',   name:'Burj Islamic Bank',         price: 12.40, chg: 0.81, vol:5900000, sector:'bank',   sharia:1},
+  {sym:'PNSC',   name:'Pakistan National Ship.',   price:168.00, chg: 0.00, vol: 285000, sector:'transport',sharia:0},
+  {sym:'PIA',    name:'Pakistan Intl. Airlines',   price:  6.20, chg:-0.64, vol:12000000,sector:'transport',sharia:0},
+  {sym:'PICT',   name:'Pak Intl. Container Term.', price:242.00, chg: 0.00, vol: 320000, sector:'transport',sharia:1},
+  {sym:'KPUS',   name:'Karachi Port (KPT)',        price: 28.60, chg: 0.35, vol:3800000, sector:'transport',sharia:1},
 ];
 
 var KSE100_STOCKS = KSE30_STOCKS.concat(KSE100_EXTRA);
@@ -880,6 +911,26 @@ KSE100_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
 
 var _currentIndex = 'kse30'; // default view
 var _liveStocks = {}; // sym -> live data when available
+var _currentFilter = 'all'; // sector filter
+
+// ── Favourites (localStorage) ─────────────────────────────────────────
+var _favs = {};
+try{ _favs = JSON.parse(localStorage.getItem('kse_favs')||'{}'); }catch(e){}
+function saveFavs(){ try{ localStorage.setItem('kse_favs', JSON.stringify(_favs)); }catch(e){} }
+function toggleFav(sym){
+  if(_favs[sym]) delete _favs[sym]; else _favs[sym]=1;
+  saveFavs();
+  renderStocksCard(null, true);
+}
+
+// ── Sector filter ─────────────────────────────────────────────────────
+function setSectorFilter(f){
+  _currentFilter = f;
+  document.querySelectorAll('.sf-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-f')===f);
+  });
+  renderStocksCard(null, true);
+}
 
 function switchIndex(idx){
   _currentIndex = idx;
@@ -903,10 +954,14 @@ function switchIndex(idx){
 
 function getActiveStocks(){
   var base = _currentIndex === 'kse30' ? KSE30_STOCKS : KSE100_STOCKS;
-  // merge live prices where available
-  return base.map(function(s){
-    return _liveStocks[s.sym] ? _liveStocks[s.sym] : s;
+  var merged = base.map(function(s){
+    return _liveStocks[s.sym] ? Object.assign({}, s, _liveStocks[s.sym]) : s;
   });
+  // apply filter
+  if(_currentFilter === 'fav')    return merged.filter(function(s){ return _favs[s.sym]; });
+  if(_currentFilter === 'sharia') return merged.filter(function(s){ return s.sharia === 1; });
+  if(_currentFilter !== 'all')    return merged.filter(function(s){ return s.sector === _currentFilter; });
+  return merged;
 }
 
 // Show fallback immediately
@@ -923,10 +978,17 @@ function renderStocksCard(stocks, isFallback){
   var now = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
   var el = document.getElementById('stocks-time');
   if(el) el.textContent = 'Updated: '+now+' PKT';
+  var noResult = active.length === 0
+    ? '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">'
+      + (_currentFilter==='fav' ? '⭐ No favourites yet — click ☆ next to any stock to save it' : 'No stocks found for this filter')
+      + '</div>' : '';
+  if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
+
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col class="col-num"><col class="col-stock"><col class="col-price"><col class="col-chg"><col class="col-vol"></colgroup>'
+    + '<colgroup><col style="width:28px"><col style="width:28px"><col><col style="width:84px"><col style="width:84px"><col style="width:56px"></colgroup>'
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
+    + '<th style="text-align:center">☆</th>'
     + '<th>Stock</th>'
     + '<th class="r">Price (Rs)</th>'
     + '<th class="r">Change</th>'
@@ -937,13 +999,16 @@ function renderStocksCard(stocks, isFallback){
     var up = s.chg >= 0;
     var arr = up ? '▲' : '▼';
     var name = _stockNames[s.sym]||s.name||'';
+    var isFav = _favs[s.sym] ? 1 : 0;
     var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
+    var shariaBadge = s.sharia ? '<span style="font-size:9px;color:#60a5fa;margin-left:3px">☪</span>' : '';
     html += '<tr>'
-          + '<td class="col-num" style="color:var(--muted);font-size:11px;width:24px">'+(i+1)+'</td>'
-          + '<td><span class="st-sym">'+s.sym+'</span><span class="st-name">'+name+'</span></td>'
-          + '<td class="r" style="width:80px"><span class="st-price">'+Math.round(s.price).toLocaleString()+'</span></td>'
-          + '<td class="r" style="width:85px"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
-          + '<td class="r st-vol" style="width:55px">'+volStr+'</td>'
+          + '<td class="col-num" style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
+          + '<td style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" onclick="toggleFav(\''+s.sym+'\')" title="'+(isFav?'Remove from':'Add to')+' favourites">'+(isFav?'⭐':'☆')+'</button></td>'
+          + '<td><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'</span></td>'
+          + '<td class="r"><span class="st-price">'+Math.round(s.price).toLocaleString()+'</span></td>'
+          + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
+          + '<td class="r st-vol">'+volStr+'</td>'
           + '</tr>';
   }
   html += '</tbody></table></div>';

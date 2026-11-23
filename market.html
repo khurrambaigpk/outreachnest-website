@@ -142,16 +142,23 @@ footer a{color:#4a7a6a;text-decoration:none}
 }
 
 /* STOCKS TABLE */
-.stocks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:4px}
-.stock-cell{background:#0d1a10;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;transition:.15s}
-.stock-cell:hover{border-color:rgba(74,222,128,.35);background:#111f14}
-.stock-sym{font-size:13px;font-weight:800;color:#f0fdf4;letter-spacing:.03em}
-.stock-name{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stock-price{font-size:16px;font-weight:700;color:var(--yellow);margin-top:4px}
-.stock-chg{font-size:11px;font-weight:700}
-.stock-chg.up{color:var(--green)}
-.stock-chg.dn{color:#f87171}
-.stock-vol{font-size:10px;color:var(--muted)}
+/* KSE stocks table */
+.stocks-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:13px}
+.stocks-table thead tr{border-bottom:2px solid var(--border)}
+.stocks-table thead th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.stocks-table thead th.r{text-align:right}
+.stocks-table tbody tr{border-bottom:1px solid rgba(30,53,35,.5);transition:.12s}
+.stocks-table tbody tr:last-child{border-bottom:none}
+.stocks-table tbody tr:hover{background:rgba(74,222,128,.04)}
+.stocks-table td{padding:8px 10px;vertical-align:middle;white-space:nowrap}
+.stocks-table td.r{text-align:right}
+.st-sym{font-weight:800;color:#f0fdf4;letter-spacing:.03em;font-size:13px}
+.st-name{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.st-price{font-weight:700;color:var(--yellow);font-size:14px}
+.st-chg{font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px}
+.st-chg.up{color:#0a1a0f;background:var(--green)}
+.st-chg.dn{color:#fff;background:#ef4444}
+.st-vol{font-size:11px;color:var(--muted)}
 
 /* DISCLAIMER */
 .disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
@@ -899,21 +906,30 @@ function renderStocksCard(stocks, isFallback){
   var now = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
   var el = document.getElementById('stocks-time');
   if(el) el.textContent = 'Updated: '+now+' PKT';
-  var html = '<div class="stocks-grid">';
+  var html = '<table class="stocks-table">'
+    + '<thead><tr>'
+    + '<th>#</th>'
+    + '<th>Symbol</th>'
+    + '<th>Company</th>'
+    + '<th class="r">Price (Rs)</th>'
+    + '<th class="r">Change</th>'
+    + '<th class="r">Volume</th>'
+    + '</tr></thead><tbody>';
   for(var i=0;i<active.length;i++){
     var s = active[i];
     var up = s.chg >= 0;
     var arr = up ? '▲' : '▼';
     var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
-    html += '<div class="stock-cell">'
-          + '<div class="stock-sym">'+s.sym+'</div>'
-          + '<div class="stock-name">'+(_stockNames[s.sym]||s.name||'')+'</div>'
-          + '<div class="stock-price">Rs '+Math.round(s.price).toLocaleString()+'</div>'
-          + '<div class="stock-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</div>'
-          + '<div class="stock-vol">Vol: '+volStr+'</div>'
-          + '</div>';
+    html += '<tr>'
+          + '<td style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
+          + '<td><span class="st-sym">'+s.sym+'</span></td>'
+          + '<td><span class="st-name">'+(_stockNames[s.sym]||s.name||'')+'</span></td>'
+          + '<td class="r"><span class="st-price">'+Math.round(s.price).toLocaleString()+'</span></td>'
+          + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
+          + '<td class="r st-vol">'+volStr+'</td>'
+          + '</tr>';
   }
-  html += '</div>';
+  html += '</tbody></table>';
   document.getElementById('stocks-body').innerHTML = fallbackNote + html;
 }
 

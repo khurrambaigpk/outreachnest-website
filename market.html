@@ -1037,9 +1037,9 @@ function renderStocksCard(stocks, isFallback){
     + '<th class="col-num">#</th>'
     + '<th class="col-star" style="text-align:center">☆</th>'
     + '<th class="st-sticky">Stock</th>'
+    + '<th class="r col-prev">Prev<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r">Price<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r">Change<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">%</span></th>'
-    + '<th class="r col-prev">Prev<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r">Vol<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">shares</span></th>'
     + '<th class="r col-turnover">Turnover<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.M/B</span></th>'
     + '</tr></thead><tbody>';
@@ -1059,9 +1059,9 @@ function renderStocksCard(stocks, isFallback){
           + '<td class="col-num" style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
           + '<td class="col-star" style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" data-sym="'+s.sym+'" title="'+(isFav?'Remove from favourites':'Add to favourites')+'"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button></td>'
           + '<td class="st-sticky"><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'<span class="st-vol-inline">· '+volStr+'</span></span></td>'
+          + '<td class="r col-prev" style="color:var(--muted);font-size:12px">'+Number(prevPrice).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:1})+'</td>'
           + '<td class="r"><span class="st-price">'+Number(s.price).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})+'</span></td>'
           + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
-          + '<td class="r col-prev" style="color:var(--muted);font-size:12px">'+Number(prevPrice).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:1})+'</td>'
           + '<td class="r st-vol">'+volStr+'</td>'
           + '<td class="r col-turnover" style="font-size:11px;color:var(--muted)">'+turnoverStr+'</td>'
           + '</tr>';

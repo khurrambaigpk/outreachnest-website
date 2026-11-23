@@ -173,6 +173,7 @@ footer a{color:#4a7a6a;text-decoration:none}
   .stocks-table td{padding:5px 3px}
   .stocks-table thead th{padding:5px 3px}
   .col-prev{display:none}
+  .col-turnover{display:none}
   .st-sym{font-size:12px;display:block}
   .st-name{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px;margin-top:1px}
   .st-price{font-size:12px;white-space:nowrap}
@@ -1029,7 +1030,7 @@ function renderStocksCard(stocks, isFallback){
   if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
 
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col class="col-num" style="width:24px"><col style="width:24px"><col><col style="width:58px"><col style="width:52px"><col style="width:68px"><col style="width:44px"></colgroup>'
+    + '<colgroup><col class="col-num" style="width:24px"><col style="width:24px"><col><col style="width:56px"><col style="width:52px"><col style="width:66px"><col style="width:44px"><col style="width:52px"></colgroup>'
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
     + '<th style="text-align:center">☆</th>'
@@ -1037,7 +1038,8 @@ function renderStocksCard(stocks, isFallback){
     + '<th class="r">Price<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r col-prev">Prev<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r">Change<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">%</span></th>'
-    + '<th class="r">Vol<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">M/K</span></th>'
+    + '<th class="r">Vol<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">shares</span></th>'
+    + '<th class="r col-turnover">Turnover<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.M/B</span></th>'
     + '</tr></thead><tbody>';
   for(var i=0;i<active.length;i++){
     var s = active[i];
@@ -1046,6 +1048,8 @@ function renderStocksCard(stocks, isFallback){
     var name = _stockNames[s.sym]||s.name||'';
     var isFav = _favs[s.sym] ? 1 : 0;
     var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
+    var turnover = s.vol>0 ? s.vol * s.price : 0;
+    var turnoverStr = turnover>0 ? (turnover>=1e9?(turnover/1e9).toFixed(2)+'B':(turnover/1e6).toFixed(1)+'M') : '—';
     var prevRaw = s.chg !== 0 ? (s.price / (1 + s.chg/100)) : s.price;
     var prevPrice = prevRaw % 1 >= 0.05 ? prevRaw.toFixed(1) : Math.round(prevRaw);
     var shariaBadge = s.sharia ? '<span style="font-size:9px;color:#60a5fa;margin-left:3px">☪</span>' : '';
@@ -1057,6 +1061,7 @@ function renderStocksCard(stocks, isFallback){
           + '<td class="r col-prev" style="color:var(--muted);font-size:12px">'+Number(prevPrice).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:1})+'</td>'
           + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
           + '<td class="r st-vol">'+volStr+'</td>'
+          + '<td class="r col-turnover" style="font-size:11px;color:var(--muted)">'+turnoverStr+'</td>'
           + '</tr>';
   }
   html += '</tbody></table></div>';

@@ -407,13 +407,17 @@ function renderPSX(d){
   var clr    = up?'var(--green)':'var(--red)';
   var arrow  = up?'▲':'▼';
   var now    = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
+  var prevClose = d.prev ? Math.round(d.prev).toLocaleString() : Math.round((d.price||0)-(chg||0)).toLocaleString();
+  var volStr    = d.volume ? (d.volume >= 1e6 ? (d.volume/1e6).toFixed(2)+'M' : Math.round(d.volume).toLocaleString()) : '—';
   var html   =
     '<div class="psx-price">'+Math.round(d.price).toLocaleString()+'</div>'
     +'<div class="psx-change" style="color:'+clr+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</div>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px">Prev Close: '+Math.round((d.price||0)-(chg||0)).toLocaleString()+' PKR</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px">Prev Close: '+prevClose+' PKR</div>'
     +'<div class="psx-grid">'
     +'<div><div class="psx-stat-label">Day High</div><div class="psx-stat-val">'+(d.dayHigh?Math.round(d.dayHigh).toLocaleString():'—')+'</div></div>'
     +'<div><div class="psx-stat-label">Day Low</div><div class="psx-stat-val">'+(d.dayLow?Math.round(d.dayLow).toLocaleString():'—')+'</div></div>'
+    +'<div><div class="psx-stat-label">Volume</div><div class="psx-stat-val">'+volStr+'</div></div>'
+    +'<div><div class="psx-stat-label">Exchange</div><div class="psx-stat-val">PSX</div></div>'
     +'</div>'
     +'<div style="font-size:10px;color:var(--muted);margin-top:12px">As of '+now+'</div>';
   document.getElementById('psx-body').innerHTML=html;

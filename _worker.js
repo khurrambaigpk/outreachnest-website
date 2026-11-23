@@ -1690,26 +1690,33 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // Yahoo Finance v7 quote endpoint (v8/chart stopped returning price)
-        const yResp = await fetch(
-          'https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EKSE100&fields=regularMarketPrice,regularMarketPreviousClose,regularMarketDayHigh,regularMarketDayLow,fiftyTwoWeekHigh,fiftyTwoWeekLow,regularMarketTime,currency,fullExchangeName',
-          { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/json' } }
+        // PSX KSE-100 via investing.com widget API (Yahoo Finance API blocked)
+        // Using stooq.com — free, no auth, returns CSV
+        const stooqResp = await fetch(
+          'https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn',
+          { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' } }
         );
-        const yData = await yResp.json();
-        const q = yData?.quoteResponse?.result?.[0] || {};
-        // Map v7 quote fields to our meta shape
+        const csv = await stooqResp.text();
+        // CSV: Symbol,Date,Time,Open,High,Low,Close,Volume,Name
+        const rows = csv.trim().split('\n');
+        const vals = rows[1] ? rows[1].split(',') : [];
+        // cols: 0=Symbol,1=Date,2=Time,3=Open,4=High,5=Low,6=Close,7=Volume,8=Name
+        const closePrice = parseFloat(vals[6]);
+        const openPrice  = parseFloat(vals[3]);
+        const highPrice  = parseFloat(vals[4]);
+        const lowPrice   = parseFloat(vals[5]);
         const meta = {
-          symbol: q.symbol,
-          regularMarketPrice: q.regularMarketPrice,
-          chartPreviousClose: q.regularMarketPreviousClose,
-          regularMarketDayHigh: q.regularMarketDayHigh,
-          regularMarketDayLow: q.regularMarketDayLow,
-          fiftyTwoWeekHigh: q.fiftyTwoWeekHigh,
-          fiftyTwoWeekLow: q.fiftyTwoWeekLow,
-          regularMarketTime: q.regularMarketTime,
-          currency: q.currency,
-          exchangeName: q.fullExchangeName,
-          _raw: JSON.stringify(yData).substring(0, 200),
+          symbol: vals[0] || 'KSE100',
+          regularMarketPrice: isNaN(closePrice) ? null : closePrice,
+          chartPreviousClose: isNaN(openPrice) ? null : openPrice,
+          regularMarketDayHigh: isNaN(highPrice) ? null : highPrice,
+          regularMarketDayLow: isNaN(lowPrice) ? null : lowPrice,
+          fiftyTwoWeekHigh: null,
+          fiftyTwoWeekLow: null,
+          regularMarketTime: vals[1] ? new Date(vals[1]).getTime()/1000 : null,
+          currency: 'PKR',
+          exchangeName: 'PSX',
+          _raw: rows[1] || csv.substring(0, 100),
         };
         const result = {
           symbol:        meta.symbol || 'KSE100',

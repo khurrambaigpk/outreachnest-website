@@ -37,24 +37,24 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .nav-cta{background:var(--green)!important;color:#0a1a0f!important;font-weight:700!important;padding:6px 14px!important;border-radius:20px!important}
 .nav-cta:hover{opacity:.88!important}
 
-/* TICKER */
-.ticker-bar{background:#0d1a10;border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;display:flex;align-items:stretch}
-.ticker-label{flex-shrink:0;display:flex;align-items:center;padding:0 12px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-right:1px solid var(--border);min-width:80px;justify-content:center}
-.ticker-label.lbl-solar{color:#f59e0b;background:rgba(245,158,11,.08)}
-.ticker-label.lbl-fuel{color:#f87171;background:rgba(248,113,113,.07)}
-.ticker-label.lbl-market{color:#4ade80;background:rgba(74,222,128,.07)}
-.ticker-scroll{flex:1;overflow:hidden;padding:7px 0;position:relative}
+/* TICKER — 3 stacked rows */
+.ticker-wrap{border-bottom:2px solid var(--border)}
+.ticker-bar{background:#0d1a10;border-bottom:1px solid rgba(30,53,35,.6);overflow:hidden;white-space:nowrap;display:flex;align-items:stretch;height:28px}
+.ticker-bar:last-child{border-bottom:none}
+.ticker-label{flex-shrink:0;display:flex;align-items:center;padding:0 10px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-right:1px solid var(--border);min-width:72px;justify-content:center}
+.ticker-label.lbl-solar{color:#f59e0b;background:rgba(245,158,11,.1)}
+.ticker-label.lbl-fuel{color:#f87171;background:rgba(248,113,113,.09)}
+.ticker-label.lbl-market{color:#4ade80;background:rgba(74,222,128,.08)}
+.ticker-scroll{flex:1;overflow:hidden;padding:0;display:flex;align-items:center}
 .ticker-track{display:inline-flex;gap:0;animation:scroll-left 36s linear infinite;will-change:transform}
 .ticker-track:hover{animation-play-state:paused}
-.ticker-item{padding:0 20px;font-size:12px;font-weight:600;color:var(--dim);border-right:1px solid var(--border)}
-.tval{margin-left:5px;font-weight:700}
+.ticker-track.speed-fast{animation-duration:28s}
+.ticker-track.speed-slow{animation-duration:44s}
+.ticker-item{padding:0 18px;font-size:11.5px;font-weight:600;color:var(--dim);border-right:1px solid rgba(30,53,35,.5)}
+.tval{margin-left:4px;font-weight:700}
 .tval.up{color:var(--green)}
 .tval.dn{color:var(--red)}
 .tval.neu{color:var(--yellow)}
-/* dot indicators */
-.ticker-dots{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:0 10px;border-left:1px solid var(--border)}
-.ticker-dot{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:.2s}
-.ticker-dot.active{background:var(--green)}
 @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* HERO */
@@ -175,18 +175,25 @@ footer a{color:#4a7a6a;text-decoration:none}
   </div>
 </nav>
 
-<!-- TICKER -->
-<div class="ticker-bar" id="ticker-bar">
-  <div class="ticker-label lbl-market" id="ticker-label">📈 Market</div>
-  <div class="ticker-scroll">
-    <div class="ticker-track" id="ticker-track">
-      <span class="ticker-item">⏳ Loading live rates…</span>
+<!-- TICKER — 3 stacked rows -->
+<div class="ticker-wrap">
+  <div class="ticker-bar">
+    <div class="ticker-label lbl-market">📈 Market</div>
+    <div class="ticker-scroll">
+      <div class="ticker-track" id="ticker-market"><span class="ticker-item">⏳ Loading…</span></div>
     </div>
   </div>
-  <div class="ticker-dots">
-    <div class="ticker-dot active" data-g="0" title="Market"></div>
-    <div class="ticker-dot" data-g="1" title="Fuel"></div>
-    <div class="ticker-dot" data-g="2" title="Solar"></div>
+  <div class="ticker-bar">
+    <div class="ticker-label lbl-fuel">⛽ Fuel</div>
+    <div class="ticker-scroll">
+      <div class="ticker-track speed-fast" id="ticker-fuel"><span class="ticker-item">⏳ Loading…</span></div>
+    </div>
+  </div>
+  <div class="ticker-bar">
+    <div class="ticker-label lbl-solar">☀️ Solar</div>
+    <div class="ticker-scroll">
+      <div class="ticker-track speed-slow" id="ticker-solar"><span class="ticker-item">⏳ Loading…</span></div>
+    </div>
   </div>
 </div>
 
@@ -291,101 +298,62 @@ document.getElementById('page-time').textContent = 'As of ' + new Date().toLocal
   setInterval(tick, 1000);
 })();
 
-// ── Ticker — 3 rotating groups ────────────────────────────────────────
+// ── Ticker — 3 simultaneous stacked rows ─────────────────────────────
 var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{} };
-var _tickerGroup = 0;
-var _tickerGroups = [
-  { key:'market', label:'📈 Market',  cls:'lbl-market', speed:38 },
-  { key:'fuel',   label:'⛽ Fuel',    cls:'lbl-fuel',   speed:28 },
-  { key:'solar',  label:'☀️ Solar',   cls:'lbl-solar',  speed:32 },
-];
 
-function getGroupItems(key){
-  var items = [];
+function fillTrack(id, items){
+  if(!items.length) return;
+  var html = items.map(function(i){ return '<span class="ticker-item">'+i+'</span>'; }).join('');
+  document.getElementById(id).innerHTML = html + html;
+}
+
+function buildTicker(){
   var r = _tickerData.rates;
   var f = _tickerData.fuel;
   var g = _tickerData.gold;
   var p = _tickerData.psx;
 
-  if(key === 'market'){
-    if(r.USD_PKR) items.push('🇺🇸 USD/PKR <span class="tval up">Rs'+fmt(r.USD_PKR,2)+'</span>');
-    if(r.EUR_PKR) items.push('🇪🇺 EUR/PKR <span class="tval up">Rs'+fmt(r.EUR_PKR,2)+'</span>');
-    if(r.GBP_PKR) items.push('🇬🇧 GBP/PKR <span class="tval up">Rs'+fmt(r.GBP_PKR,2)+'</span>');
-    if(r.SAR_PKR) items.push('🇸🇦 SAR/PKR <span class="tval up">Rs'+fmt(r.SAR_PKR,2)+'</span>');
-    if(r.AED_PKR) items.push('🇦🇪 AED/PKR <span class="tval up">Rs'+fmt(r.AED_PKR,2)+'</span>');
-    if(g.goldPKR)  items.push('🥇 Gold <span class="tval up">Rs'+Math.round(g.goldPKR).toLocaleString()+'/toz</span>');
-    if(g.silverPKR)items.push('🥈 Silver <span class="tval up">Rs'+Math.round(g.silverPKR).toLocaleString()+'/toz</span>');
-    if(p.price)    items.push('📊 KSE-100 <span class="tval '+(p.chg>=0?'up':'dn')+'">'+Math.round(p.price).toLocaleString()+' '+(p.chg>=0?'▲':'▼')+Math.abs(p.chg).toFixed(0)+'</span>');
+  // ── Row 1: Market ──
+  var market = [];
+  if(r.USD_PKR) market.push('🇺🇸 USD/PKR <span class="tval up">Rs'+fmt(r.USD_PKR,2)+'</span>');
+  if(r.EUR_PKR) market.push('🇪🇺 EUR/PKR <span class="tval up">Rs'+fmt(r.EUR_PKR,2)+'</span>');
+  if(r.GBP_PKR) market.push('🇬🇧 GBP/PKR <span class="tval up">Rs'+fmt(r.GBP_PKR,2)+'</span>');
+  if(r.SAR_PKR) market.push('🇸🇦 SAR/PKR <span class="tval up">Rs'+fmt(r.SAR_PKR,2)+'</span>');
+  if(r.AED_PKR) market.push('🇦🇪 AED/PKR <span class="tval up">Rs'+fmt(r.AED_PKR,2)+'</span>');
+  if(g.goldPKR)  market.push('🥇 Gold <span class="tval up">Rs'+Math.round(g.goldPKR).toLocaleString()+'/toz</span>');
+  if(g.silverPKR)market.push('🥈 Silver <span class="tval up">Rs'+Math.round(g.silverPKR).toLocaleString()+'/toz</span>');
+  if(p.price)    market.push('📊 KSE-100 <span class="tval '+(p.chg>=0?'up':'dn')+'">'+Math.round(p.price).toLocaleString()+' '+(p.chg>=0?'▲':'▼')+Math.abs(p.chg).toFixed(0)+'</span>');
+  fillTrack('ticker-market', market);
+
+  // ── Row 2: Fuel ──
+  var fuel = [];
+  if(f.petrol)   fuel.push('🟡 Petrol <span class="tval neu">Rs'+fmt(f.petrol,0)+'/L</span>');
+  if(f.diesel)   fuel.push('🔴 Diesel <span class="tval neu">Rs'+fmt(f.diesel,0)+'/L</span>');
+  if(f.kerosene) fuel.push('🔵 Kerosene <span class="tval neu">Rs'+fmt(f.kerosene,2)+'/L</span>');
+  if(f.lpg)      fuel.push('🟠 LPG <span class="tval neu">Rs'+fmt(f.lpg,0)+'/kg</span>');
+  var h0=FUEL_HISTORY[0], h1=FUEL_HISTORY[1];
+  if(h0&&h1){
+    var pd=h0.petrol-h1.petrol, dd=h0.diesel-h1.diesel;
+    fuel.push('📅 '+h0.date
+      +' — Petrol <span class="tval '+(pd<=0?'up':'dn')+'">'+(pd<=0?'▼':'▲')+Math.abs(pd).toFixed(0)+'</span>'
+      +' · Diesel <span class="tval '+(dd<=0?'up':'dn')+'">'+(dd<=0?'▼':'▲')+Math.abs(dd).toFixed(0)+'</span>');
   }
-  else if(key === 'fuel'){
-    if(f.petrol)   items.push('🟡 Petrol <span class="tval neu">Rs'+fmt(f.petrol,0)+'/L</span>');
-    if(f.diesel)   items.push('🔴 Diesel <span class="tval neu">Rs'+fmt(f.diesel,0)+'/L</span>');
-    if(f.kerosene) items.push('🔵 Kerosene <span class="tval neu">Rs'+fmt(f.kerosene,0)+'/L</span>');
-    if(f.lpg)      items.push('🟠 LPG <span class="tval neu">Rs'+fmt(f.lpg,0)+'/kg</span>');
-    // Last change info
-    var h0 = FUEL_HISTORY[0], h1 = FUEL_HISTORY[1];
-    if(h0&&h1){
-      var pd = (h0.petrol-h1.petrol), dd = (h0.diesel-h1.diesel);
-      items.push('📅 Last change: '+h0.date
-        +' &nbsp;Petrol <span class="tval '+(pd<=0?'up':'dn')+'">'+(pd<=0?'▼':'▲')+Math.abs(pd).toFixed(0)+'</span>'
-        +' &nbsp;Diesel <span class="tval '+(dd<=0?'up':'dn')+'">'+(dd<=0?'▼':'▲')+Math.abs(dd).toFixed(0)+'</span>');
-    }
-  }
-  else if(key === 'solar'){
-    items.push('☀️ Longi 550W <span class="tval neu">Rs 38,500</span>');
-    items.push('☀️ Jinko 540W Bifacial <span class="tval neu">Rs 41,000</span>');
-    items.push('☀️ Canadian Solar 580W <span class="tval neu">Rs 44,500</span>');
-    items.push('⚡ Growatt 5kW Hybrid <span class="tval neu">Rs 1,45,000</span>');
-    items.push('⚡ Solis 8kW Hybrid <span class="tval neu">Rs 1,85,000</span>');
-    items.push('🔋 BYD LiFePO4 5kWh <span class="tval neu">Rs 3,80,000</span>');
-    items.push('🔋 Pylontech 3.5kWh <span class="tval neu">Rs 2,75,000</span>');
-    items.push('🔋 AGS 200Ah Tubular <span class="tval neu">Rs 72,000</span>');
-  }
-  return items;
+  fillTrack('ticker-fuel', fuel);
+
+  // ── Row 3: Solar ──
+  var solar = [
+    '🔆 Longi 550W <span class="tval neu">Rs 38,500</span>',
+    '🔆 Jinko 540W Bifacial <span class="tval neu">Rs 41,000</span>',
+    '🔆 Canadian Solar 580W <span class="tval neu">Rs 44,500</span>',
+    '⚡ Growatt 5kW Hybrid <span class="tval neu">Rs 1,45,000</span>',
+    '⚡ Solis 8kW Hybrid <span class="tval neu">Rs 1,85,000</span>',
+    '⚡ Voltronic 10kW <span class="tval neu">Rs 2,20,000</span>',
+    '🔋 BYD LiFePO4 5kWh <span class="tval neu">Rs 3,80,000</span>',
+    '🔋 Pylontech 3.5kWh <span class="tval neu">Rs 2,75,000</span>',
+    '🔋 AGS 200Ah Tubular <span class="tval neu">Rs 72,000</span>',
+  ];
+  fillTrack('ticker-solar', solar);
 }
-
-function renderTickerGroup(idx){
-  var grp = _tickerGroups[idx];
-  var items = getGroupItems(grp.key);
-  if(!items.length) return;
-  var html = items.map(function(i){ return '<span class="ticker-item">'+i+'</span>'; }).join('');
-  html = html + html;
-  var track = document.getElementById('ticker-track');
-  var label = document.getElementById('ticker-label');
-  // fade out → swap → fade in
-  track.style.opacity = '0';
-  setTimeout(function(){
-    track.innerHTML = html;
-    track.style.animation = 'none';
-    track.offsetHeight; // reflow
-    track.style.animation = 'scroll-left '+grp.speed+'s linear infinite';
-    track.style.opacity = '1';
-    label.textContent = grp.label;
-    label.className = 'ticker-label ' + grp.cls;
-  }, 300);
-  // update dots
-  document.querySelectorAll('.ticker-dot').forEach(function(d){
-    d.classList.toggle('active', parseInt(d.dataset.g) === idx);
-  });
-}
-
-function buildTicker(){
-  renderTickerGroup(_tickerGroup);
-}
-
-// Auto-rotate every 10 seconds
-setInterval(function(){
-  _tickerGroup = (_tickerGroup + 1) % _tickerGroups.length;
-  renderTickerGroup(_tickerGroup);
-}, 10000);
-
-// Dot click
-document.querySelectorAll('.ticker-dot').forEach(function(d){
-  d.addEventListener('click', function(){
-    _tickerGroup = parseInt(d.dataset.g);
-    renderTickerGroup(_tickerGroup);
-  });
-});
 
 // ── Currency ─────────────────────────────────────────────────────────
 var PAIRS = [

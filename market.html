@@ -83,15 +83,14 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .row-change.up{color:var(--green)}
 .row-change.dn{color:var(--red)}
 
-/* PSX CARD — 2-column grid */
-.psx-grid2{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:4px}
-.psx-cell{padding:10px 12px;border-bottom:1px solid rgba(30,53,35,.5);border-right:1px solid rgba(30,53,35,.5)}
-.psx-cell:nth-child(even){border-right:none}
-.psx-cell:nth-last-child(1),.psx-cell:nth-last-child(2){border-bottom:none}
-.psx-cell-lbl{font-size:10px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
-.psx-cell-val{font-size:16px;font-weight:800;color:#f0fdf4}
-.psx-cell-sub{font-size:11px;color:var(--muted);margin-left:3px;font-weight:400}
-.psx-chg-pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:10px;font-size:13px;font-weight:700}
+/* PSX CARD — inline rows: label … value side by side */
+.psx-rows{margin-top:4px}
+.psx-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(30,53,35,.5)}
+.psx-row:last-child{border-bottom:none}
+.psx-row-lbl{font-size:12px;color:var(--muted)}
+.psx-row-val{font-size:14px;font-weight:700;color:#f0fdf4;text-align:right}
+.psx-row-sub{font-size:11px;color:var(--muted);margin-left:3px;font-weight:400}
+.psx-chg-pill{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:10px;font-size:13px;font-weight:700}
 .psx-chg-pill.up{background:var(--green);color:#0a1a0f}
 .psx-chg-pill.dn{background:#ef4444;color:#fff}
 .psx-range-bar{padding:10px 0 2px}
@@ -139,7 +138,8 @@ footer a{color:#4a7a6a;text-decoration:none}
 
 /* STOCKS TABLE */
 /* KSE stocks table */
-.stocks-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:13px}
+.stocks-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:4px}
+.stocks-table{width:100%;border-collapse:collapse;font-size:13px;min-width:400px}
 .stocks-table thead tr{border-bottom:2px solid var(--border)}
 .stocks-table thead th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .stocks-table thead th.r{text-align:right}
@@ -149,12 +149,13 @@ footer a{color:#4a7a6a;text-decoration:none}
 .stocks-table td{padding:8px 10px;vertical-align:middle;white-space:nowrap}
 .stocks-table td.r{text-align:right}
 .st-sym{font-weight:800;color:#f0fdf4;letter-spacing:.03em;font-size:13px}
-.st-name{font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.st-name{font-size:11px;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis}
 .st-price{font-weight:700;color:var(--yellow);font-size:14px}
 .st-chg{font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px}
 .st-chg.up{color:#0a1a0f;background:var(--green)}
 .st-chg.dn{color:#fff;background:#ef4444}
 .st-vol{font-size:11px;color:var(--muted)}
+@media(max-width:500px){.stocks-table{min-width:320px}.st-name{max-width:90px}.col-vol{display:none}}
 
 /* DISCLAIMER */
 .disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
@@ -902,14 +903,14 @@ function renderStocksCard(stocks, isFallback){
   var now = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
   var el = document.getElementById('stocks-time');
   if(el) el.textContent = 'Updated: '+now+' PKT';
-  var html = '<table class="stocks-table">'
+  var html = '<div class="stocks-wrap"><table class="stocks-table">'
     + '<thead><tr>'
     + '<th>#</th>'
     + '<th>Symbol</th>'
     + '<th>Company</th>'
     + '<th class="r">Price (Rs)</th>'
     + '<th class="r">Change</th>'
-    + '<th class="r">Volume</th>'
+    + '<th class="r col-vol">Volume</th>'
     + '</tr></thead><tbody>';
   for(var i=0;i<active.length;i++){
     var s = active[i];
@@ -922,10 +923,10 @@ function renderStocksCard(stocks, isFallback){
           + '<td><span class="st-name">'+(_stockNames[s.sym]||s.name||'')+'</span></td>'
           + '<td class="r"><span class="st-price">'+Math.round(s.price).toLocaleString()+'</span></td>'
           + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
-          + '<td class="r st-vol">'+volStr+'</td>'
+          + '<td class="r st-vol col-vol">'+volStr+'</td>'
           + '</tr>';
   }
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   document.getElementById('stocks-body').innerHTML = fallbackNote + html;
 }
 
@@ -967,13 +968,14 @@ function renderPSX(d){
   barPct = Math.max(0, Math.min(100, barPct));
 
   var html =
-    '<div class="psx-grid2">'
-      +'<div class="psx-cell"><div class="psx-cell-lbl">KSE-100 Index</div><div class="psx-cell-val" style="font-size:22px">'+price.toLocaleString()+'<span class="psx-cell-sub">PKR</span></div></div>'
-      +'<div class="psx-cell"><div class="psx-cell-lbl">Change</div><div class="psx-cell-val"><span class="psx-chg-pill '+(up?'up':'dn')+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</span></div></div>'
-      +'<div class="psx-cell"><div class="psx-cell-lbl">Day High</div><div class="psx-cell-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</div></div>'
-      +'<div class="psx-cell"><div class="psx-cell-lbl">Day Low</div><div class="psx-cell-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</div></div>'
-      +'<div class="psx-cell"><div class="psx-cell-lbl">Prev Close</div><div class="psx-cell-val">'+prev.toLocaleString()+'</div></div>'
-      +'<div class="psx-cell"><div class="psx-cell-lbl">Volume</div><div class="psx-cell-val">'+volStr+'<span class="psx-cell-sub">shares</span></div></div>'
+    '<div class="psx-rows">'
+      +'<div class="psx-row"><span class="psx-row-lbl">KSE-100 Index</span><span class="psx-row-val" style="font-size:20px">'+price.toLocaleString()+'<span class="psx-row-sub">PKR</span></span></div>'
+      +'<div class="psx-row"><span class="psx-row-lbl">Change</span><span class="psx-row-val"><span class="psx-chg-pill '+(up?'up':'dn')+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</span></span></div>'
+      +'<div class="psx-row"><span class="psx-row-lbl">Day High</span><span class="psx-row-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</span></div>'
+      +'<div class="psx-row"><span class="psx-row-lbl">Day Low</span><span class="psx-row-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</span></div>'
+      +'<div class="psx-row"><span class="psx-row-lbl">Prev Close</span><span class="psx-row-val">'+prev.toLocaleString()+'<span class="psx-row-sub">PKR</span></span></div>'
+      +'<div class="psx-row"><span class="psx-row-lbl">Volume</span><span class="psx-row-val">'+volStr+'<span class="psx-row-sub">shares</span></span></div>'
+      +'<div class="psx-row"><span class="psx-row-lbl">As of</span><span class="psx-row-val" style="font-size:12px;font-weight:500;color:var(--muted)">'+now+' PKT</span></div>'
     +'</div>'
 
     +(high && low ?

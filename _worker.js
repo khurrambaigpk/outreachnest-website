@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v87"; // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v88"; // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1868,23 +1868,66 @@ export default {
       }
     }
 
-    // ── OGRA Fuel Prices (official notified rates — updated each OGRA announcement) ───
-    // OGRA announces prices twice/month. Scraping third-party sites returns stale/wrong rates.
-    // These are the OFFICIAL OGRA notified prices — update manually after each OGRA announcement.
-    // Last updated: 20 Nov 2026
+    // ── OGRA Fuel Prices — Live from geo.tv (OGRA now announces daily) ──────────────
     if (url.pathname === "/api/fuel" && request.method === "GET") {
       const fuelRef = request.headers.get('Referer') || '';
       if (!fuelRef.startsWith(url.origin)) {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // ── OGRA official rates — update these values after each OGRA announcement ──
-        const fuelResult = {
-          petrol:   323,
-          diesel:   355,
-          kerosene: 177.59,
-          effective: '2026-11-20',   // YYYY-MM-DD — date of OGRA notification
-          source:   'ogra-official', // shown in footer
+        let fuelResult = null;
+
+        // Try 1: geo.tv — updated daily with OGRA announcement
+        try {
+          const gResp = await fetch('https://www.geo.tv/latest/673967-petroleum-rates-in-pakistan-today', {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+              'Referer': 'https://www.google.com/',
+            },
+            signal: AbortSignal.timeout(10000)
+          });
+          const gHtml = await gResp.text();
+
+          // geo.tv table pattern: "Petrol ... 322" or "Rs322" or "Rs.322"
+          // Also matches prose: "petrol price...Rs 322 per litre"
+          const petrolM  = gHtml.match(/[Pp]etrol[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d+)?)/i)
+                        || gHtml.match(/Rs\.?\s*(\d{3}(?:\.\d+)?)[^<]{0,60}[Pp]etrol/i);
+          const dieselM  = gHtml.match(/[Hh]igh.{0,10}[Ss]peed[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d+)?)/i)
+                        || gHtml.match(/[Dd]iesel[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d+)?)/i)
+                        || gHtml.match(/Rs\.?\s*(\d{3}(?:\.\d+)?)[^<]{0,60}[Dd]iesel/i);
+          const keroM    = gHtml.match(/[Kk]erosene[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d+)?)/i);
+
+          // Extract effective date — look for "effective from November 20" or "Nov 20" or YYYY-MM-DD
+          const dateM = gHtml.match(/effective[^<]{0,40}(\d{1,2}\s+\w+\s+\d{4})/i)
+                     || gHtml.match(/from\s+(\w+\s+\d{1,2},?\s+\d{4})/i)
+                     || gHtml.match(/(\d{4}-\d{2}-\d{2})/);
+
+          // Normalize date to YYYY-MM-DD
+          let effectiveDate = new Date().toISOString().slice(0,10);
+          if (dateM) {
+            const raw = dateM[1].trim();
+            const parsed = new Date(raw);
+            if (!isNaN(parsed.getTime())) {
+              effectiveDate = parsed.toISOString().slice(0,10);
+            }
+          }
+
+          const petrol   = petrolM  ? parseFloat(petrolM[1])  : null;
+          const diesel   = dieselM  ? parseFloat(dieselM[1])  : null;
+          const kerosene = keroM    ? parseFloat(keroM[1])    : null;
+
+          if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
+            fuelResult = { petrol, diesel, kerosene: kerosene || 177.59,
+                           effective: effectiveDate, source: 'geo.tv/ogra' };
+          }
+        } catch(eg) {}
+
+        // Fallback: last known OGRA rates (update manually when scrape fails)
+        // Current as of: 20 Nov 2026 — Petrol Rs322, Diesel Rs357, Kerosene Rs177.59
+        if (!fuelResult) {
+          fuelResult = { petrol: 322, diesel: 357, kerosene: 177.59,
+                         effective: '2026-11-20', source: 'ogra-cached' };
         };
 
         return new Response(JSON.stringify(fuelResult), {

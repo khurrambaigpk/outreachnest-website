@@ -310,39 +310,88 @@ function renderFuel(d){
 }
 
 // ── Gold & Silver ─────────────────────────────────────────────────────
-function renderGold(goldUSD, pkrRate, source){
-  var goldPKR = goldUSD * pkrRate;
-  var gold10g = goldPKR * 10 / 31.1035;
+// 1 troy oz = 31.1035g | 1 tola = 11.6638g
+var TROY_OZ_PER_TOLA = 11.6638 / 31.1035; // 0.37499
+function renderGold(goldUSD, pkrRate, source, silverUSD){
+  var goldPKR    = goldUSD * pkrRate;
+  // Per tola calculations
+  var gold24kTola = goldPKR * TROY_OZ_PER_TOLA;           // 24K pure
+  var gold22kTola = gold24kTola * (22/24);                 // 22K
+  var gold21kTola = gold24kTola * (21/24);                 // 21K
+  // Per 10g calculations
+  var gold24k10g  = goldPKR * 10 / 31.1035;
+  var gold22k10g  = gold24k10g * (22/24);
   var html='';
-  html+='<div class="gold-row"><div><div class="gold-name">🥇 Gold (XAU) — per troy oz</div></div>'
-    +'<div style="text-align:right"><div class="gold-pkr">Rs'+Math.round(goldPKR).toLocaleString()+'</div>'
-    +'<div class="gold-usd">$'+fmt(goldUSD,2)+' USD</div></div></div>';
-  html+='<div style="font-size:11px;color:var(--muted);margin-top:10px">24K Gold per 10g ≈ Rs'+Math.round(gold10g).toLocaleString()+'</div>';
-  html+='<div style="font-size:10px;color:var(--muted);margin-top:4px">Source: '+source+'</div>';
+  // ── Gold header row ──
+  html+='<div class="gold-row">'
+      +'<div><div class="gold-name">🥇 Gold</div></div>'
+      +'<div style="text-align:right">'
+      +'<div class="gold-usd" style="font-size:12px;color:var(--muted)">Spot: $'+fmt(goldUSD,2)+'/troy oz</div>'
+      +'</div></div>';
+  // ── Per Tola table ──
+  html+='<div style="margin-top:10px">'
+      +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Per Tola (11.66g)</div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)">'
+      +'<span style="font-size:13px;color:var(--dim)">24 Karat</span>'
+      +'<span style="font-size:16px;font-weight:700;color:var(--yellow)">Rs'+Math.round(gold24kTola).toLocaleString()+'</span>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)">'
+      +'<span style="font-size:13px;color:var(--dim)">22 Karat</span>'
+      +'<span style="font-size:16px;font-weight:700;color:var(--yellow)">Rs'+Math.round(gold22kTola).toLocaleString()+'</span>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0">'
+      +'<span style="font-size:13px;color:var(--dim)">21 Karat</span>'
+      +'<span style="font-size:15px;font-weight:600;color:var(--dim)">Rs'+Math.round(gold21kTola).toLocaleString()+'</span>'
+      +'</div>'
+      +'</div>';
+  // ── Per 10g row ──
+  html+='<div style="margin-top:8px;display:flex;gap:12px;font-size:11px;color:var(--muted)">'
+      +'<span>Per 10g — 24K: <strong style="color:var(--dim)">Rs'+Math.round(gold24k10g).toLocaleString()+'</strong></span>'
+      +'<span>22K: <strong style="color:var(--dim)">Rs'+Math.round(gold22k10g).toLocaleString()+'</strong></span>'
+      +'</div>';
+  // ── Silver row ──
+  if(silverUSD && silverUSD>0){
+    var silverPKR     = silverUSD * pkrRate;
+    var silver10g     = silverPKR * 10 / 31.1035;
+    var silverTola    = silverPKR * TROY_OZ_PER_TOLA;
+    html+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center">'
+        +'<div><div class="gold-name" style="font-size:14px">🥈 Silver</div>'
+        +'<div style="font-size:11px;color:var(--muted)">Spot: $'+fmt(silverUSD,2)+'/troy oz</div></div>'
+        +'<div style="text-align:right">'
+        +'<div style="font-size:14px;font-weight:700;color:var(--dim)">Rs'+Math.round(silverTola).toLocaleString()+'/tola</div>'
+        +'<div style="font-size:11px;color:var(--muted)">Rs'+Math.round(silver10g).toLocaleString()+'/10g</div>'
+        +'</div></div></div>';
+    _tickerData.gold={goldPKR:goldPKR,silverPKR:silverPKR};
+  } else {
+    _tickerData.gold={goldPKR:goldPKR,silverPKR:0};
+  }
+  html+='<div style="font-size:10px;color:var(--muted);margin-top:8px">Source: '+source+'</div>';
   document.getElementById('gold-body').innerHTML=html;
-  _tickerData.gold={goldPKR:goldPKR,silverPKR:0};
   buildTicker();
 }
 function fetchGold(pkrRate){
-  // Try 1: xaus.com — free, CORS open, no key needed. Returns spot_usd_oz + fx_rates.PKR
+  // Try 1: xaus.com — free, CORS open, no key needed. Returns spot_usd_oz + silver + fx_rates.PKR
   fetch('https://xaus.com/api/v1/spot')
     .then(function(r){if(!r.ok)throw new Error('xaus-'+r.status);return r.json();})
     .then(function(d){
-      var goldUSD = d.spot_usd_oz || null;
+      var goldUSD   = d.spot_usd_oz || null;
+      var silverUSD = d.silver_usd_oz || null;
       if(!goldUSD || goldUSD<100) throw new Error('invalid');
       // Use PKR rate from xaus if available (more accurate than our currency fetch)
       var rate = (d.fx_rates && d.fx_rates.PKR) ? d.fx_rates.PKR : pkrRate;
-      renderGold(goldUSD, rate, 'xaus.com');
+      renderGold(goldUSD, rate, 'xaus.com', silverUSD);
     })
     .catch(function(){
       // Try 2: Worker /api/gold proxy (xaus.com → metals.live → frankfurter server-side)
       fetch('/api/gold', { headers: { 'Referer': window.location.href } })
         .then(function(r){if(!r.ok)throw new Error('proxy-'+r.status);return r.json();})
         .then(function(d){
-          var goldUSD = d.XAU || null;
+          var goldUSD   = d.XAU || null;
+          var silverUSD = d.XAG || null;
           if(!goldUSD || goldUSD<100) throw new Error('invalid');
           var rate = d.PKR ? d.PKR : pkrRate;
-          renderGold(goldUSD, rate, d.source||'metals.live');
+          renderGold(goldUSD, rate, d.source||'metals.live', silverUSD);
         })
         .catch(function(){
           document.getElementById('gold-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Gold data temporarily unavailable</div>';

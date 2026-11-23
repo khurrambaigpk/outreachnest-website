@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v81"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v82"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1871,63 +1871,47 @@ export default {
         // Try multiple sources for OGRA fuel prices
         let fuelResult = null;
 
-        // Try 1: pkpetrolprice.com — simple HTML with Pakistani fuel prices
+        // Try 1: app.com.pk (Associated Press of Pakistan) — official news, reliable OGRA price announcements
         try {
-          const fResp = await fetch('https://pkpetrolprice.com/', {
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' }
+          const fResp = await fetch('https://www.app.com.pk/?s=petrol+price', {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+            signal: AbortSignal.timeout(8000)
           });
           const html = await fResp.text();
-          function priceFromRow(htmlText, fuelRegex) {
-            const rows = htmlText.split(/<tr[\s>]/i);
-            for (const row of rows) {
-              if (fuelRegex.test(row)) {
-                const m = row.match(/(?:Rs\.?|PKR|₨)\s*([\d,]+(?:\.\d+)?)/i)
-                       || row.match(/([\d]{2,3}(?:\.\d{1,2})?)\s*(?:per|\/|litre|liter)/i)
-                       || row.match(/<td[^>]*>\s*([\d,]{3,}(?:\.\d{1,2})?)\s*<\/td>/i);
-                if (m) return parseFloat(m[1].replace(/,/g,''));
-              }
-            }
-            return null;
-          }
-          const petrol   = priceFromRow(html, /petrol|ms\b|gasoline/i);
-          const diesel   = priceFromRow(html, /diesel|hsd/i);
-          const kerosene = priceFromRow(html, /kerosene|sko/i);
-          if (petrol && petrol > 100 && petrol < 1000) {
-            const dateMatch = html.match(/(\d{1,2}[- ]\w+[- ]\d{4}|\d{4}-\d{2}-\d{2})/);
-            fuelResult = { petrol, diesel, kerosene, effective: dateMatch ? dateMatch[1] : new Date().toISOString().slice(0,10), source:'pkpetrolprice.com' };
+          // Look for Rs NNN per litre pattern in article excerpts
+          const petrolM = html.match(/[Pp]etrol[^<]{0,80}Rs\s*([\d,]+(?:\.\d+)?)\s*(?:per litre|\/litre)/i)
+                       || html.match(/Rs\s*([\d,]+(?:\.\d+)?)[^<]{0,30}petrol/i);
+          const dieselM = html.match(/[Dd]iesel[^<]{0,80}Rs\s*([\d,]+(?:\.\d+)?)\s*(?:per litre|\/litre)/i)
+                       || html.match(/Rs\s*([\d,]+(?:\.\d+)?)[^<]{0,30}diesel/i);
+          const petrol   = petrolM ? parseFloat(petrolM[1].replace(/,/g,'')) : null;
+          const diesel   = dieselM ? parseFloat(dieselM[1].replace(/,/g,'')) : null;
+          if (petrol && petrol > 200 && petrol < 600) {
+            fuelResult = { petrol, diesel: diesel||null, kerosene: null, effective: new Date().toISOString().slice(0,10), source:'app.com.pk' };
           }
         } catch(e1) {}
 
-        // Try 2: dailyfuels.com
+        // Try 2: propakistani.pk fuel price page
         if (!fuelResult) {
           try {
-            const fResp2 = await fetch('https://www.dailyfuels.com/pakistan/', {
-              headers: { 'User-Agent': 'Mozilla/5.0 (compatible; OutreachNest/1.0)' }
+            const fResp2 = await fetch('https://propakistani.pk/tag/fuel-prices/', {
+              headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' }
             });
             const html2 = await fResp2.text();
-            function priceFromRow2(htmlText, fuelRegex) {
-              const rows = htmlText.split(/<tr[\s>]/i);
-              for (const row of rows) {
-                if (fuelRegex.test(row)) {
-                  const m = row.match(/₨\s*([\d,]+(?:\.\d+)?)/);
-                  if (m) return parseFloat(m[1].replace(/,/g,''));
-                }
-              }
-              return null;
-            }
-            const petrol2   = priceFromRow2(html2, /gasoline|petrol/i);
-            const diesel2   = priceFromRow2(html2, /\bdiesel\b/i);
-            const kerosene2 = priceFromRow2(html2, /kerosene/i);
-            if (petrol2 && petrol2 > 100) {
-              const dateMatch2 = html2.match(/(\d{4}-\d{2}-\d{2})/);
-              fuelResult = { petrol:petrol2, diesel:diesel2, kerosene:kerosene2, effective: dateMatch2 ? dateMatch2[1] : new Date().toISOString().slice(0,10), source:'dailyfuels.com' };
+            // Look for petrol/diesel prices in article text
+            const petrolM = html2.match(/[Pp]etrol[^<]*(?:Rs\.?|PKR)\s*([\d,]+(?:\.\d+)?)/);
+            const dieselM = html2.match(/[Dd]iesel[^<]*(?:Rs\.?|PKR)\s*([\d,]+(?:\.\d+)?)/);
+            const petrol2 = petrolM ? parseFloat(petrolM[1].replace(/,/g,'')) : null;
+            const diesel2 = dieselM ? parseFloat(dieselM[1].replace(/,/g,'')) : null;
+            if (petrol2 && petrol2 > 200 && petrol2 < 600) {
+              fuelResult = { petrol:petrol2, diesel:diesel2||petrol2, kerosene:null, effective: new Date().toISOString().slice(0,10), source:'propakistani.pk' };
             }
           } catch(e2) {}
         }
 
-        // Fallback: return current OGRA notified prices (updated manually here when OGRA announces)
+        // Fallback: return current OGRA notified prices (updated manually when OGRA announces new rates)
+        // Last updated: 20 Nov 2026 — Petrol Rs323, Diesel Rs355, Kerosene Rs177.59
         if (!fuelResult) {
-          fuelResult = { petrol:332, diesel:360, kerosene:177.59, effective:'2026-11-13', source:'ogra-cached' };
+          fuelResult = { petrol:323, diesel:355, kerosene:177.59, effective:'2026-11-20', source:'ogra-cached' };
         }
 
         return new Response(JSON.stringify(fuelResult), {

@@ -171,10 +171,12 @@ footer a{color:#4a7a6a;text-decoration:none}
   .col-num{display:none}
   .stocks-table{font-size:12px}
   .st-sym{font-size:12px}
-  .st-name{font-size:10px;max-width:none;white-space:normal;word-break:break-word}
+  .st-name{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
   .st-price{font-size:12px}
   .st-chg{font-size:10px;padding:2px 4px}
   .st-vol{font-size:10px}
+  .stocks-table td{padding:6px 4px}
+  .stocks-table thead th{padding:6px 4px}
   #stocks-filters{gap:4px}
   .sf-btn{font-size:10px;padding:3px 8px}
 }
@@ -1025,7 +1027,7 @@ function renderStocksCard(stocks, isFallback){
   if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
 
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col style="width:28px"><col style="width:28px"><col><col style="width:72px"><col style="width:80px"><col style="width:52px"></colgroup>'
+    + '<colgroup><col style="width:24px"><col style="width:24px"><col style="width:90px"><col style="width:60px"><col style="width:72px"><col style="width:48px"></colgroup>'
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
     + '<th style="text-align:center">☆</th>'

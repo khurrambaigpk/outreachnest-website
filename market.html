@@ -299,7 +299,7 @@ document.getElementById('page-time').textContent = 'As of ' + new Date().toLocal
 })();
 
 // ── Ticker — 3 simultaneous stacked rows ─────────────────────────────
-var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{} };
+var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{}, stocks:[] };
 
 function fillTrack(id, items){
   if(!items.length) return;
@@ -313,16 +313,27 @@ function buildTicker(){
   var g = _tickerData.gold;
   var p = _tickerData.psx;
 
-  // ── Row 1: Market ──
+  // ── Row 1: Market — Gold 22K/24K/Silver per tola + KSE-100 index + top stocks ──
   var market = [];
-  if(r.USD_PKR) market.push('🇺🇸 USD/PKR <span class="tval up">Rs'+fmt(r.USD_PKR,2)+'</span>');
-  if(r.EUR_PKR) market.push('🇪🇺 EUR/PKR <span class="tval up">Rs'+fmt(r.EUR_PKR,2)+'</span>');
-  if(r.GBP_PKR) market.push('🇬🇧 GBP/PKR <span class="tval up">Rs'+fmt(r.GBP_PKR,2)+'</span>');
-  if(r.SAR_PKR) market.push('🇸🇦 SAR/PKR <span class="tval up">Rs'+fmt(r.SAR_PKR,2)+'</span>');
-  if(r.AED_PKR) market.push('🇦🇪 AED/PKR <span class="tval up">Rs'+fmt(r.AED_PKR,2)+'</span>');
-  if(g.goldPKR)  market.push('🥇 Gold <span class="tval up">Rs'+Math.round(g.goldPKR).toLocaleString()+'/toz</span>');
-  if(g.silverPKR)market.push('🥈 Silver <span class="tval up">Rs'+Math.round(g.silverPKR).toLocaleString()+'/toz</span>');
-  if(p.price)    market.push('📊 KSE-100 <span class="tval '+(p.chg>=0?'up':'dn')+'">'+Math.round(p.price).toLocaleString()+' '+(p.chg>=0?'▲':'▼')+Math.abs(p.chg).toFixed(0)+'</span>');
+  var TOZ_PER_TOLA = 11.6638 / 31.1035;
+  if(g.goldPKR){
+    var g24t = Math.round(g.goldPKR * TOZ_PER_TOLA);
+    var g22t = Math.round(g24t * 22/24);
+    market.push('🥇 Gold 24K <span class="tval up">Rs '+g24t.toLocaleString()+'/tola</span>');
+    market.push('🥇 Gold 22K <span class="tval up">Rs '+g22t.toLocaleString()+'/tola</span>');
+  }
+  if(g.silverPKR){
+    var sT = Math.round(g.silverPKR * TOZ_PER_TOLA);
+    market.push('🥈 Silver <span class="tval up">Rs '+sT.toLocaleString()+'/tola</span>');
+  }
+  if(p.price) market.push('📊 KSE-100 <span class="tval '+(p.chg>=0?'up':'dn')+'">'+Math.round(p.price).toLocaleString()+' '+(p.chg>=0?'▲':'▼')+Math.abs(p.chg).toFixed(0)+'</span>');
+  // KSE top stocks (from stooq fetch)
+  var st = _tickerData.stocks;
+  for(var i=0;i<st.length;i++){
+    var s=st[i];
+    var clr=s.chg>=0?'up':'dn', arr=s.chg>=0?'▲':'▼';
+    market.push('📈 '+s.sym+' <span class="tval '+clr+'">'+Math.round(s.price).toLocaleString()+' '+arr+Math.abs(s.chg).toFixed(1)+'%</span>');
+  }
   fillTrack('ticker-market', market);
 
   // ── Row 2: Fuel ──
@@ -700,6 +711,41 @@ function fetchGold(pkrRate){
         });
     });
 }
+
+// ── KSE Top Stocks — stooq.com CSV (CORS-open) ───────────────────────
+// Top 12 KSE-100 companies by market cap (Nov 2026)
+var KSE_STOCKS = [
+  'ENGRO.PK','OGDC.PK','PPL.PK','HUBCO.PK','LUCK.PK',
+  'MARI.PK','MPL.PK','FFC.PK','EFERT.PK','PSO.PK',
+  'TRG.PK','BAHL.PK'
+];
+function fetchKSEStocks(){
+  var syms = KSE_STOCKS.join(',').toLowerCase();
+  fetch('https://stooq.com/q/l/?s='+syms+'&f=sd2t2ohlcvn')
+    .then(function(r){if(!r.ok)throw 0;return r.text();})
+    .then(function(csv){
+      var lines = csv.trim().split('\n');
+      var stocks = [];
+      for(var i=1;i<lines.length;i++){
+        var c = lines[i].split(',');
+        // Symbol,Date,Time,Open,High,Low,Close,Volume,Name
+        var sym   = (c[0]||'').replace(/\.PK$/i,'').toUpperCase();
+        var close = parseFloat(c[6]);
+        var open  = parseFloat(c[3]);
+        if(!sym||isNaN(close)||close<=0) continue;
+        var chgPct = isNaN(open)||open<=0 ? 0 : ((close-open)/open*100);
+        stocks.push({sym:sym, price:close, chg:chgPct});
+      }
+      if(stocks.length){
+        _tickerData.stocks = stocks;
+        buildTicker();
+      }
+    })
+    .catch(function(){});
+}
+fetchKSEStocks();
+// refresh every 5 min
+setInterval(fetchKSEStocks, 5*60*1000);
 
 // ── PSX KSE-100 ───────────────────────────────────────────────────────
 function renderPSX(d){

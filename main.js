@@ -30,15 +30,16 @@ function buildNav(active){
     {href:"/download", label:"Download", key:"download"},
     {href:"/blog", label:"Blog", key:"blog"},
   ];
+  const marketLink = `<a href="/market" class="${active==='market'?'active':''}" style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;border:1.5px solid #4ade80;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">📈 Market</a>`;
   const freeToolsLink = `<a href="/solar-calculator" class="${active==='solar-calculator'?'active':''}" style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">☀️ Free Tools</a>`;
   const items = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   return `<nav><div class="wrap nav-inner">
   <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>
-  <div class="nav-links">${items}${freeToolsLink}<a href="/contact" class="nav-cta">Get in touch</a></div>
+  <div class="nav-links">${items}${marketLink}${freeToolsLink}<a href="/contact" class="nav-cta">Get in touch</a></div>
   <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
-  <div class="mobile-menu" id="mobile-menu">${mItems}${freeToolsLink}<a href="/contact" class="m-cta">Get in touch</a></div></nav>`;
+  <div class="mobile-menu" id="mobile-menu">${mItems}${marketLink}${freeToolsLink}<a href="/contact" class="m-cta">Get in touch</a></div></nav>`;
 }
 
 function buildFooter(){

@@ -84,21 +84,22 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .row-change.dn{color:var(--red)}
 
 /* PSX CARD — 5-column stat strip */
-.psx-cols{display:flex;gap:0;margin-top:8px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.psx-col{flex:1;padding:10px 12px;border-right:1px solid var(--border);min-width:0}
+.psx-cols{display:flex;gap:0;margin-top:8px;border:1px solid var(--border);border-radius:10px;overflow:hidden;width:100%}
+.psx-col{flex:1 1 0;padding:14px 16px;border-right:1px solid var(--border);min-width:0;overflow:hidden}
 .psx-col:last-child{border-right:none}
-.psx-col-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.psx-col-val{font-size:15px;font-weight:800;color:#f0fdf4;white-space:nowrap}
-.psx-col-sub{font-size:11px;font-weight:400;color:var(--muted);margin-top:3px}
+.psx-col-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap}
+.psx-col-val{font-size:16px;font-weight:800;color:#f0fdf4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psx-col-sub{font-size:11px;font-weight:400;color:var(--muted);margin-top:4px;white-space:nowrap}
 .psx-chg-pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:10px;font-size:12px;font-weight:700;margin-top:4px}
 .psx-chg-pill.up{background:var(--green);color:#0a1a0f}
 .psx-chg-pill.dn{background:#ef4444;color:#fff}
-/* mobile: 2 columns wrap */
-@media(max-width:600px){
+/* mobile: 2×2+1 wrap */
+@media(max-width:700px){
   .psx-cols{flex-wrap:wrap}
-  .psx-col{flex:0 0 50%;border-bottom:1px solid var(--border)}
+  .psx-col{flex:0 0 50%;border-bottom:1px solid var(--border);padding:12px 14px}
   .psx-col:nth-child(even){border-right:none}
-  .psx-col:nth-last-child(1),.psx-col:nth-last-child(2){border-bottom:none}
+  .psx-col:nth-last-child(1){flex:0 0 100%;border-bottom:none;border-right:none}
+  .psx-col:nth-last-child(2){border-bottom:none}
 }
 .psx-range-bar{padding:10px 0 2px}
 .psx-range-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
@@ -144,25 +145,37 @@ footer a{color:#4a7a6a;text-decoration:none}
 }
 
 /* STOCKS TABLE */
-/* KSE stocks table */
-.stocks-wrap{margin-top:4px}
-.stocks-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto}
+.stocks-wrap{margin-top:4px;overflow-x:hidden}
+.stocks-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
 .stocks-table thead tr{border-bottom:2px solid var(--border)}
-.stocks-table thead th{padding:7px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.stocks-table thead th{padding:7px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden}
 .stocks-table thead th.r{text-align:right}
+.stocks-table col.col-stock{width:auto}
+.stocks-table col.col-price{width:88px}
+.stocks-table col.col-chg{width:88px}
+.stocks-table col.col-vol{width:60px}
+.stocks-table col.col-num{width:28px}
 .stocks-table tbody tr{border-bottom:1px solid rgba(30,53,35,.5);transition:.12s}
 .stocks-table tbody tr:last-child{border-bottom:none}
 .stocks-table tbody tr:hover{background:rgba(74,222,128,.04)}
-.stocks-table td{padding:7px 8px;vertical-align:middle}
+.stocks-table td{padding:7px 8px;vertical-align:middle;overflow:hidden}
 .stocks-table td.r{text-align:right}
-.st-sym{font-weight:800;color:#f0fdf4;letter-spacing:.03em;font-size:13px;white-space:nowrap}
-.st-name{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:28vw}
+.st-sym{font-weight:800;color:#f0fdf4;letter-spacing:.03em;font-size:13px;white-space:nowrap;display:block}
+.st-name{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%}
 .st-price{font-weight:700;color:var(--yellow);font-size:13px;white-space:nowrap}
 .st-chg{font-weight:700;font-size:11px;display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:10px;white-space:nowrap}
 .st-chg.up{color:#0a1a0f;background:var(--green)}
 .st-chg.dn{color:#fff;background:#ef4444}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
-@media(max-width:600px){.col-num{display:none}.st-name{max-width:28vw}.st-vol{font-size:10px}}
+@media(max-width:600px){
+  .col-num{display:none}
+  .stocks-table col.col-price{width:72px}
+  .stocks-table col.col-chg{width:72px}
+  .stocks-table col.col-vol{width:48px}
+  .st-vol{font-size:10px}
+  .st-price{font-size:12px}
+  .st-chg{font-size:10px;padding:2px 4px}
+}
 
 /* DISCLAIMER */
 .disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
@@ -279,7 +292,7 @@ footer a{color:#4a7a6a;text-decoration:none}
     </div>
 
     <!-- PSX -->
-    <div class="card">
+    <div class="card" style="grid-column:1/-1">
       <div class="card-title">📊 Pakistan Stock Exchange — KSE-100 <span class="badge-src">15-min delay</span></div>
       <div id="psx-body"><div class="loading"></div></div>
       <div class="source-line">📡 Source: Pakistan Stock Exchange (PSX) — 15-minute delayed data.</div>
@@ -911,26 +924,26 @@ function renderStocksCard(stocks, isFallback){
   var el = document.getElementById('stocks-time');
   if(el) el.textContent = 'Updated: '+now+' PKT';
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
+    + '<colgroup><col class="col-num"><col class="col-stock"><col class="col-price"><col class="col-chg"><col class="col-vol"></colgroup>'
     + '<thead><tr>'
-    + '<th>#</th>'
-    + '<th>Symbol</th>'
-    + '<th>Company</th>'
+    + '<th class="col-num">#</th>'
+    + '<th>Stock</th>'
     + '<th class="r">Price (Rs)</th>'
     + '<th class="r">Change</th>'
-    + '<th class="r col-vol">Volume</th>'
+    + '<th class="r">Volume</th>'
     + '</tr></thead><tbody>';
   for(var i=0;i<active.length;i++){
     var s = active[i];
     var up = s.chg >= 0;
     var arr = up ? '▲' : '▼';
+    var name = _stockNames[s.sym]||s.name||'';
     var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
     html += '<tr>'
-          + '<td class="col-num" style="color:var(--muted);font-size:11px;width:28px">'+(i+1)+'</td>'
-          + '<td style="width:70px"><span class="st-sym">'+s.sym+'</span></td>'
-          + '<td><span class="st-name">'+(_stockNames[s.sym]||s.name||'')+'</span></td>'
+          + '<td class="col-num" style="color:var(--muted);font-size:11px;width:24px">'+(i+1)+'</td>'
+          + '<td><span class="st-sym">'+s.sym+'</span><span class="st-name">'+name+'</span></td>'
           + '<td class="r" style="width:80px"><span class="st-price">'+Math.round(s.price).toLocaleString()+'</span></td>'
-          + '<td class="r" style="width:90px"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
-          + '<td class="r st-vol col-vol" style="width:60px">'+volStr+'</td>'
+          + '<td class="r" style="width:85px"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'
+          + '<td class="r st-vol" style="width:55px">'+volStr+'</td>'
           + '</tr>';
   }
   html += '</tbody></table></div>';

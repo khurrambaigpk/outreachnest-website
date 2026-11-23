@@ -410,7 +410,7 @@ function calcConv(){
 
 // ── Fuel ─────────────────────────────────────────────────────────────
 // OGRA announces prices twice/month — update fallback manually each announcement
-var FUEL_FALLBACK = {petrol:323,diesel:355,kerosene:177.59,effective:'2026-11-20'};
+var FUEL_FALLBACK = {petrol:322,diesel:357,kerosene:177.59,lpg:294,effective:'2026-11-21'};
 fetch('/api/fuel', {headers:{'Referer':window.location.href}})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -432,6 +432,7 @@ function renderFuel(d){
     {key:'petrol',  icon:'🟡',name:'Petrol (MS)'},
     {key:'diesel',  icon:'🔴',name:'Hi-Speed Diesel'},
     {key:'kerosene',icon:'🔵',name:'Kerosene (SKO)'},
+    {key:'lpg',     icon:'🟠',name:'LPG (per kg)'},
   ];
   var html='';
   items.forEach(function(item){
@@ -461,15 +462,25 @@ function renderFuel(d){
 // ── Fuel Price History ────────────────────────────────────────────────
 // OGRA announces prices on 1st and 16th of each month
 // Update this list whenever OGRA makes a new announcement
-// OGRA history — newest first. Arrow on each row = change vs previous row (i+1).
-// e.g. 21 Nov (322) vs 01 Nov (323) → ▼1.00 green (price went down)
+// Pakistan fuel price history — only dates when price actually CHANGED (skip unchanged days)
+// Newest first. Sources: autoones.com, OGRA notifications
+// LPG: OGRA notifies monthly (1st of month). Per kg rate.
 var FUEL_HISTORY = [
-  { date:'21 Nov 2026', petrol:322.00, diesel:357.00, kerosene:177.59 },
-  { date:'01 Nov 2026', petrol:323.00, diesel:355.00, kerosene:177.59 },
-  { date:'16 Oct 2026', petrol:323.00, diesel:355.00, kerosene:177.59 },
-  { date:'01 Oct 2026', petrol:319.08, diesel:343.42, kerosene:174.44 },
-  { date:'16 Sep 2026', petrol:316.75, diesel:340.88, kerosene:172.60 },
-  { date:'01 Sep 2026', petrol:313.50, diesel:338.20, kerosene:170.85 },
+  { date:'21 Nov 2026', petrol:322.00, diesel:357.00, kerosene:177.59, lpg:294.00 },
+  { date:'20 Nov 2026', petrol:323.00, diesel:355.00, kerosene:177.59, lpg:294.00 },
+  { date:'19 Nov 2026', petrol:322.00, diesel:355.00, kerosene:177.59, lpg:294.00 },
+  { date:'18 Nov 2026', petrol:325.00, diesel:358.00, kerosene:177.59, lpg:294.00 },
+  { date:'17 Nov 2026', petrol:328.00, diesel:358.00, kerosene:177.59, lpg:294.00 },
+  { date:'14 Nov 2026', petrol:330.00, diesel:360.00, kerosene:177.59, lpg:294.00 },
+  { date:'13 Nov 2026', petrol:332.00, diesel:360.00, kerosene:177.59, lpg:294.00 },
+  { date:'12 Nov 2026', petrol:335.00, diesel:364.00, kerosene:177.59, lpg:294.00 },
+  { date:'11 Nov 2026', petrol:338.00, diesel:371.00, kerosene:177.59, lpg:294.00 },
+  { date:'07 Nov 2026', petrol:346.00, diesel:378.00, kerosene:177.59, lpg:294.00 },
+  { date:'06 Nov 2026', petrol:352.59, diesel:382.25, kerosene:177.59, lpg:294.00 },
+  { date:'05 Nov 2026', petrol:362.00, diesel:387.81, kerosene:177.59, lpg:294.00 },
+  { date:'04 Nov 2026', petrol:369.06, diesel:391.52, kerosene:177.59, lpg:294.00 },
+  { date:'03 Nov 2026', petrol:374.51, diesel:395.20, kerosene:177.59, lpg:294.00 },
+  { date:'31 Oct 2026', petrol:377.91, diesel:402.96, kerosene:177.59, lpg:296.00 },
 ];
 function chgBadge(cur, prv){
   if(prv == null) return '';
@@ -481,29 +492,50 @@ function chgBadge(cur, prv){
 }
 function renderFuelHistory(){
   if(!FUEL_HISTORY.length) return;
-  var html = '<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">'
-           + '<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">📋 Price History — Last 6 Announcements</div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 76px 76px 76px;gap:0;font-size:10px;color:var(--muted);font-weight:600;padding:4px 0;border-bottom:1px solid var(--border);letter-spacing:.03em">'
-        + '<span>Date</span><span style="text-align:right">Petrol</span><span style="text-align:right">Diesel</span><span style="text-align:right">Kerosene</span></div>';
+  var COLS = '90px 1fr 68px 68px 60px 60px';
+  // Show/hide toggle — default show only last 7 entries
+  var SHOW_INIT = 7;
+  var showAll = false;
 
-  for(var i=0;i<FUEL_HISTORY.length;i++){
-    var row  = FUEL_HISTORY[i];
-    var older = FUEL_HISTORY[i+1] || null; // row just before this one (older date)
-    var isCurrent = (i===0);
-    // arrow = this row vs the row before it (older), shows how much it changed when announced
-    html += '<div style="display:grid;grid-template-columns:1fr 76px 76px 76px;gap:0;padding:6px 0;border-bottom:1px solid rgba(30,53,35,.5);align-items:center'+(isCurrent?';background:rgba(74,222,128,.05);margin:0 -4px;padding-left:4px;padding-right:4px;border-radius:4px':'')+'">'
-          + '<span style="font-size:12px;color:'+(isCurrent?'var(--green)':'var(--dim)')+'">'+row.date
-          + (isCurrent?' <span style="font-size:9px;background:rgba(74,222,128,.18);color:var(--green);padding:1px 5px;border-radius:4px;font-weight:700">current</span>':'')+'</span>'
-          + '<span style="font-size:13px;font-weight:700;color:var(--yellow);text-align:right">'+row.petrol.toFixed(2)
-          + chgBadge(row.petrol, older ? older.petrol : null)+'</span>'
-          + '<span style="font-size:13px;font-weight:700;color:var(--yellow);text-align:right">'+row.diesel.toFixed(2)
-          + chgBadge(row.diesel, older ? older.diesel : null)+'</span>'
-          + '<span style="font-size:12px;color:var(--dim);text-align:right">'+row.kerosene.toFixed(2)
-          + chgBadge(row.kerosene, older ? older.kerosene : null)+'</span>'
-          + '</div>';
+  function buildTable(limit){
+    var rows = limit ? FUEL_HISTORY.slice(0,limit) : FUEL_HISTORY;
+    var html = '<div style="display:grid;grid-template-columns:'+COLS+';gap:0;font-size:10px;color:var(--muted);font-weight:600;padding:4px 0 4px;border-bottom:1px solid var(--border);letter-spacing:.03em">'
+             + '<span>Date</span><span></span>'
+             + '<span style="text-align:right">Petrol</span>'
+             + '<span style="text-align:right">Diesel</span>'
+             + '<span style="text-align:right">Kero</span>'
+             + '<span style="text-align:right">LPG/kg</span></div>';
+    for(var i=0;i<rows.length;i++){
+      var row   = rows[i];
+      var older = FUEL_HISTORY[i+1] || null;
+      var isCurrent = (i===0);
+      html += '<div style="display:grid;grid-template-columns:'+COLS+';gap:0;padding:5px 0;border-bottom:1px solid rgba(30,53,35,.4);align-items:center'+(isCurrent?';background:rgba(74,222,128,.05);border-radius:4px':'')+'\">'
+            + '<span style="font-size:11px;color:'+(isCurrent?'var(--green)':'var(--dim)')+'">'+row.date+'</span>'
+            + '<span>'+(isCurrent?'<span style="font-size:9px;background:rgba(74,222,128,.18);color:var(--green);padding:1px 6px;border-radius:4px;font-weight:700">current</span>':'')+'</span>'
+            + '<span style="font-size:12px;font-weight:700;color:var(--yellow);text-align:right">'+row.petrol.toFixed(0)+chgBadge(row.petrol, older?older.petrol:null)+'</span>'
+            + '<span style="font-size:12px;font-weight:700;color:var(--yellow);text-align:right">'+row.diesel.toFixed(0)+chgBadge(row.diesel, older?older.diesel:null)+'</span>'
+            + '<span style="font-size:11px;color:var(--dim);text-align:right">'+row.kerosene.toFixed(0)+chgBadge(row.kerosene, older?older.kerosene:null)+'</span>'
+            + '<span style="font-size:11px;color:var(--dim);text-align:right">'+(row.lpg?row.lpg.toFixed(0)+chgBadge(row.lpg, older&&older.lpg?older.lpg:null):'—')+'</span>'
+            + '</div>';
+    }
+    return html;
   }
-  html += '</div>';
-  document.getElementById('fuel-history-box').innerHTML = html;
+
+  function render(){
+    var limit = showAll ? 0 : SHOW_INIT;
+    var total = FUEL_HISTORY.length;
+    var html = '<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">'
+             + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+             + '<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase">📋 Price History (Rs/Litre) — changes only</div>'
+             + (total>SHOW_INIT ? '<button id="fh-toggle" style="font-size:10px;color:var(--green);background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);border-radius:6px;padding:2px 8px;cursor:pointer">'+(showAll?'Show less ▲':'Show all '+total+' ▼')+'</button>' : '')
+             + '</div>'
+             + buildTable(limit)
+             + '</div>';
+    document.getElementById('fuel-history-box').innerHTML = html;
+    var btn = document.getElementById('fh-toggle');
+    if(btn) btn.addEventListener('click', function(){ showAll=!showAll; render(); });
+  }
+  render();
 }
 
 // ── Gold & Silver ─────────────────────────────────────────────────────

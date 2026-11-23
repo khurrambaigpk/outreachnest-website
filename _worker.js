@@ -1728,6 +1728,7 @@ export default {
           currency:      meta.currency,
           exchangeName:  meta.exchangeName,
           ts:            meta.regularMarketTime,
+          _debug:        meta._raw,
         };
         return new Response(JSON.stringify(result), {
           status: 200,

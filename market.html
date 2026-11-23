@@ -170,19 +170,17 @@ footer a{color:#4a7a6a;text-decoration:none}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
   .col-num{display:none}
-  .stocks-table{font-size:12px;table-layout:auto}
-  .stocks-table td{padding:5px 2px}
-  .stocks-table thead th{padding:5px 2px}
-  .stocks-table{font-size:10px}
-  .st-price{font-size:11px}
-  .st-chg{font-size:9px;padding:2px 3px}
-  .col-prev{font-size:10px}
-  .col-turnover{font-size:10px}
+  .col-star{display:none}
+  .stocks-table{font-size:11px;table-layout:fixed;min-width:360px}
+  .stocks-table td{padding:6px 3px}
+  .stocks-table thead th{padding:6px 3px}
   .st-sym{font-size:12px;display:block}
   .st-name{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px;margin-top:1px}
   .st-price{font-size:12px;white-space:nowrap}
   .st-chg{font-size:10px;padding:2px 5px;white-space:nowrap}
   .st-vol{font-size:10px;white-space:nowrap}
+  .col-prev{font-size:10px}
+  .col-turnover{font-size:10px}
   #stocks-filters{gap:4px}
   .sf-btn{font-size:10px;padding:3px 8px}
 }
@@ -1034,10 +1032,10 @@ function renderStocksCard(stocks, isFallback){
   if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
 
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col class="col-num" style="width:20px"><col style="width:24px"><col style="width:110px"><col style="width:60px"><col style="width:52px"><col style="width:70px"><col style="width:52px"><col style="width:60px"></colgroup>'
+    + '<colgroup><col class="col-num" style="width:20px"><col class="col-star" style="width:24px"><col style="width:110px"><col style="width:60px"><col style="width:52px"><col style="width:70px"><col style="width:52px"><col style="width:60px"></colgroup>'
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
-    + '<th style="text-align:center">☆</th>'
+    + '<th class="col-star" style="text-align:center">☆</th>'
     + '<th class="st-sticky">Stock</th>'
     + '<th class="r">Price<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r col-prev">Prev<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
@@ -1059,7 +1057,7 @@ function renderStocksCard(stocks, isFallback){
     var shariaBadge = s.sharia ? '<span style="font-size:9px;color:#60a5fa;margin-left:3px">☪</span>' : '';
     html += '<tr>'
           + '<td class="col-num" style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
-          + '<td style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" data-sym="'+s.sym+'" title="'+(isFav?'Remove from favourites':'Add to favourites')+'"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button></td>'
+          + '<td class="col-star" style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" data-sym="'+s.sym+'" title="'+(isFav?'Remove from favourites':'Add to favourites')+'"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button></td>'
           + '<td class="st-sticky"><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'<span class="st-vol-inline">· '+volStr+'</span></span></td>'
           + '<td class="r"><span class="st-price">'+Number(s.price).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})+'</span></td>'
           + '<td class="r col-prev" style="color:var(--muted);font-size:12px">'+Number(prevPrice).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:1})+'</td>'

@@ -276,12 +276,18 @@ footer a{color:#4a7a6a;text-decoration:none}
 
     <!-- KSE Top Stocks -->
     <div class="card" style="grid-column:1/-1">
-      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
-        <span>📈 KSE-100 Top Companies <span class="badge-src">stooq.com · 15-min delay</span></span>
-        <span id="stocks-time" style="font-size:11px;color:var(--muted)"></span>
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <span>📈 <span id="stocks-index-label">KSE-30</span> Companies <span class="badge-src">PSX · 15-min delay</span></span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+            <button id="btn-kse30" onclick="switchIndex('kse30')" style="background:var(--green);color:#0a1a0f;border:none;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer">KSE-30</button>
+            <button id="btn-kse100" onclick="switchIndex('kse100')" style="background:transparent;color:var(--muted);border:none;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer">KSE-100</button>
+          </div>
+          <span id="stocks-time" style="font-size:11px;color:var(--muted)"></span>
+        </div>
       </div>
       <div id="stocks-body"><div class="loading"></div></div>
-      <div class="source-line">📡 Source: stooq.com — 15-min delayed prices. For reference only. Live during trading hours Mon–Fri 09:30–15:30 PKT.</div>
+      <div class="source-line">📡 Source: Pakistan Stock Exchange (PSX) — 15-min delayed prices. For reference only. Live during trading hours Mon–Fri 09:30–15:30 PKT.</div>
     </div>
 
 
@@ -321,7 +327,7 @@ document.getElementById('page-time').textContent = 'As of ' + new Date().toLocal
 })();
 
 // ── Ticker — 3 simultaneous stacked rows ─────────────────────────────
-var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{}, stocks:[] };
+var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{}, stocks:[], stockGroup:'kse30' };
 
 function fillTrack(id, items){
   if(!items.length) return;
@@ -349,8 +355,8 @@ function buildTicker(){
     market.push('🥈 Silver <span class="tval up">Rs '+sT.toLocaleString()+'/tola</span>');
   }
   if(p.price) market.push('📊 KSE-100 <span class="tval '+(p.chg>=0?'up':'dn')+'">'+Math.round(p.price).toLocaleString()+' '+(p.chg>=0?'▲':'▼')+Math.abs(p.chg).toFixed(0)+'</span>');
-  // KSE top stocks (from stooq fetch)
-  var st = _tickerData.stocks;
+  // KSE stocks — use active group (kse30 or kse100)
+  var st = (typeof getActiveStocks === 'function') ? getActiveStocks() : (_tickerData.stocks||[]);
   for(var i=0;i<st.length;i++){
     var s=st[i];
     var clr=s.chg>=0?'up':'dn', arr=s.chg>=0?'▲':'▼';
@@ -734,30 +740,158 @@ function fetchGold(pkrRate){
     });
 }
 
-// ── KSE Top Stocks ────────────────────────────────────────────────────
-// Closing prices Nov 21, 2026 (PSX) — updated by cron
-var KSE_STOCKS = [
-  {sym:'ENGRO',  name:'Engro Corporation',      price:280.50, chg: 0.42, vol:1250000},
-  {sym:'OGDC',   name:'Oil & Gas Dev. Co.',      price:168.30, chg:-0.18, vol:3100000},
-  {sym:'PPL',    name:'Pakistan Petroleum',      price:118.75, chg: 0.65, vol:2200000},
-  {sym:'HUBCO',  name:'Hub Power Co.',           price:142.20, chg:-0.31, vol: 980000},
-  {sym:'LUCK',   name:'Lucky Cement',            price:985.00, chg: 0.11, vol: 420000},
-  {sym:'MARI',   name:'Mari Petroleum',          price:2015.00,chg: 0.08, vol:  85000},
-  {sym:'MPL',    name:'Maple Leaf Cement',       price: 38.40, chg:-0.52, vol:4800000},
-  {sym:'FFC',    name:'Fauji Fertilizer',        price:116.50, chg: 0.26, vol:1680000},
-  {sym:'EFERT',  name:'Engro Fertilizers',       price: 86.20, chg:-0.12, vol:2100000},
-  {sym:'PSO',    name:'Pakistan State Oil',      price:296.00, chg: 0.34, vol: 760000},
-  {sym:'TRG',    name:'TRG Pakistan',            price:118.80, chg: 1.20, vol: 540000},
-  {sym:'BAHL',   name:'Bank Al-Habib',           price: 72.50, chg: 0.14, vol:1900000},
+// ── KSE Stocks — Fallback closing prices Nov 21, 2026 (PSX) ──────────
+// KSE-30 constituents (30 companies)
+var KSE30_STOCKS = [
+  {sym:'OGDC',   name:'Oil & Gas Dev. Co.',       price:168.30, chg:-0.18, vol:3100000},
+  {sym:'PPL',    name:'Pakistan Petroleum',        price:118.75, chg: 0.65, vol:2200000},
+  {sym:'ENGRO',  name:'Engro Corporation',         price:280.50, chg: 0.42, vol:1250000},
+  {sym:'HBL',    name:'Habib Bank Ltd.',           price:171.20, chg: 0.55, vol:2800000},
+  {sym:'MCB',    name:'MCB Bank',                  price:235.00, chg: 0.30, vol:1400000},
+  {sym:'UBL',    name:'United Bank Ltd.',          price:220.50, chg:-0.22, vol:1600000},
+  {sym:'NBP',    name:'National Bank of Pak.',     price: 42.80, chg: 0.47, vol:5200000},
+  {sym:'FFC',    name:'Fauji Fertilizer',          price:116.50, chg: 0.26, vol:1680000},
+  {sym:'PSO',    name:'Pakistan State Oil',        price:296.00, chg: 0.34, vol: 760000},
+  {sym:'LUCK',   name:'Lucky Cement',              price:985.00, chg: 0.11, vol: 420000},
+  {sym:'MARI',   name:'Mari Petroleum',            price:2015.00,chg: 0.08, vol:  85000},
+  {sym:'HUBCO',  name:'Hub Power Co.',             price:142.20, chg:-0.31, vol: 980000},
+  {sym:'EFERT',  name:'Engro Fertilizers',         price: 86.20, chg:-0.12, vol:2100000},
+  {sym:'BAFL',   name:'Bank Alfalah',              price: 50.60, chg: 0.20, vol:3800000},
+  {sym:'BAHL',   name:'Bank Al-Habib',             price: 72.50, chg: 0.14, vol:1900000},
+  {sym:'KEL',    name:'K-Electric Ltd.',           price:  4.85, chg:-0.41, vol:12000000},
+  {sym:'TRG',    name:'TRG Pakistan',              price:118.80, chg: 1.20, vol: 540000},
+  {sym:'MEBL',   name:'Meezan Bank',               price:168.00, chg: 0.36, vol:2200000},
+  {sym:'DGKC',   name:'D.G. Khan Cement',          price:102.50, chg:-0.19, vol: 920000},
+  {sym:'MLCF',   name:'Maple Leaf Cement',         price: 38.40, chg:-0.52, vol:4800000},
+  {sym:'CHCC',   name:'Cherat Cement',             price:224.00, chg: 0.09, vol: 310000},
+  {sym:'FCCL',   name:'Fauji Cement',              price: 24.80, chg:-0.80, vol:7200000},
+  {sym:'MUGHAL', name:'Mughal Iron & Steel',       price: 72.30, chg: 0.42, vol:1100000},
+  {sym:'ISL',    name:'Ismail Industries',         price:304.00, chg: 0.00, vol: 185000},
+  {sym:'GATM',   name:'Gul Ahmed Textile',         price: 55.20, chg:-0.36, vol: 820000},
+  {sym:'COLG',   name:'Colgate-Palmolive Pak.',    price:3140.00,chg: 0.16, vol:  22000},
+  {sym:'NESTLE', name:'Nestle Pakistan',           price:6800.00,chg: 0.07, vol:   8000},
+  {sym:'SEARL',  name:'The Searle Company',        price:168.50, chg: 0.30, vol: 440000},
+  {sym:'ABOT',   name:'Abbott Laboratories Pak.', price:854.00, chg: 0.12, vol:  95000},
+  {sym:'GHGL',   name:'Ghani Glass',               price: 42.10, chg:-0.24, vol:1300000},
 ];
-var _stockNames = {};
-KSE_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
 
-// Try live data from Worker; show fallback immediately
-renderStocksCard(KSE_STOCKS, true);
+// KSE-100 top 100 (additional 70 beyond KSE-30)
+var KSE100_EXTRA = [
+  {sym:'ATRL',   name:'Attock Refinery',           price:263.00, chg: 0.38, vol: 480000},
+  {sym:'NRL',    name:'National Refinery',         price:375.00, chg: 0.27, vol: 210000},
+  {sym:'PRL',    name:'Pakistan Refinery',         price: 32.50, chg:-0.61, vol:2900000},
+  {sym:'SNGP',   name:'Sui Northern Gas',          price: 61.80, chg: 0.49, vol:3400000},
+  {sym:'SSGC',   name:'Sui Southern Gas',          price: 25.60, chg:-0.39, vol:5600000},
+  {sym:'APL',    name:'Attock Petroleum',          price:645.00, chg: 0.31, vol: 125000},
+  {sym:'HCAR',   name:'Honda Atlas Cars',          price:230.00, chg:-0.43, vol: 390000},
+  {sym:'INDU',   name:'Indus Motor Co.',           price:1680.00,chg: 0.18, vol:  62000},
+  {sym:'PSMC',   name:'Pak Suzuki Motor',          price:388.00, chg: 0.52, vol: 285000},
+  {sym:'ATLH',   name:'Atlas Honda',               price:532.00, chg: 0.19, vol: 210000},
+  {sym:'PAKT',   name:'Pak Tobacco Co.',           price:862.00, chg: 0.00, vol:  44000},
+  {sym:'PTC',    name:'Pakistan Telecom. Co.',     price: 15.80, chg: 0.64, vol:9800000},
+  {sym:'TPL',    name:'TPL Insurance',             price: 18.40, chg:-0.54, vol:2100000},
+  {sym:'EFU',    name:'EFU General Insurance',    price:112.00, chg: 0.00, vol: 320000},
+  {sym:'JUBLFOOD',name:'Jubilee Foods',            price: 48.20, chg: 0.21, vol:1750000},
+  {sym:'WAVE',   name:'Wave Industries',           price: 22.60, chg:-0.44, vol:3100000},
+  {sym:'DNCC',   name:'Dandot Cement',             price: 34.50, chg: 0.29, vol:2400000},
+  {sym:'PIOC',   name:'Pioneer Cement',            price: 88.00, chg:-0.23, vol: 760000},
+  {sym:'GWLC',   name:'Gharibwal Cement',          price: 28.90, chg: 0.35, vol:3900000},
+  {sym:'THCCL',  name:'Thatta Cement',             price: 23.10, chg:-0.43, vol:2800000},
+  {sym:'ACPL',   name:'Attock Cement',             price:208.00, chg: 0.48, vol: 490000},
+  {sym:'KOHC',   name:'Kohat Cement',              price:148.00, chg: 0.00, vol: 650000},
+  {sym:'POWER',  name:'Hub Power REIT',            price: 36.80, chg: 0.27, vol:4200000},
+  {sym:'KAPCO',  name:'Kot Addu Power Co.',        price: 48.50, chg:-0.41, vol:2600000},
+  {sym:'NCPL',   name:'Nishat Chunian Power',      price: 32.00, chg: 0.00, vol:3700000},
+  {sym:'LPL',    name:'Lalpir Power',              price: 28.40, chg:-0.35, vol:2900000},
+  {sym:'NPL',    name:'Nishat Power',              price: 34.20, chg: 0.29, vol:3100000},
+  {sym:'PAKGEN', name:'PakGen Power',              price: 25.80, chg: 0.39, vol:4100000},
+  {sym:'FNEL',   name:'Foundation Energy (NEL)',   price: 11.60, chg:-0.86, vol:7800000},
+  {sym:'SEL',    name:'Saif Energy',               price: 18.90, chg: 0.53, vol:3300000},
+  {sym:'INIL',   name:'International Industries',  price:148.50, chg: 0.20, vol: 540000},
+  {sym:'ASTL',   name:'Amreli Steels',             price: 68.20, chg:-0.44, vol:1500000},
+  {sym:'AGHA',   name:'Agha Steel Industries',     price: 38.60, chg: 0.52, vol:2200000},
+  {sym:'AICL',   name:'Adamjee Insurance',         price: 54.80, chg: 0.00, vol:1100000},
+  {sym:'JUBLI',  name:'Jubilee Life Insurance',    price:528.00, chg: 0.19, vol:  88000},
+  {sym:'JSCL',   name:'Jahangir Siddiqui & Co.',  price: 24.60, chg: 0.41, vol:3400000},
+  {sym:'DFML',   name:'Dawood Hercules',           price:132.00, chg: 0.00, vol: 720000},
+  {sym:'DAWH',   name:'Dawood Hercules Corp.',     price:142.00, chg: 0.07, vol: 650000},
+  {sym:'PAEL',   name:'Pak Elektron Ltd.',         price: 42.30, chg:-0.47, vol:2800000},
+  {sym:'HGFA',   name:'Huffaz Seamless Pipe',      price: 56.40, chg: 0.36, vol: 980000},
+  {sym:'NRSL',   name:'Nimir Resins',              price: 32.80, chg:-0.61, vol:2200000},
+  {sym:'ICL',    name:'ICI Pakistan',              price:498.00, chg: 0.20, vol: 185000},
+  {sym:'LOTCHEM',name:'Lotte Chemical Pak.',       price: 24.60, chg: 0.41, vol:3600000},
+  {sym:'EPCL',   name:'Engro Polymer & Chemicals', price: 44.80, chg:-0.22, vol:2900000},
+  {sym:'NETSOL', name:'NetSol Technologies',       price:142.00, chg: 0.70, vol: 420000},
+  {sym:'SYS',    name:'Systems Limited',           price:296.00, chg: 1.03, vol: 580000},
+  {sym:'AVN',    name:'Avanceon Ltd.',             price: 68.20, chg: 0.44, vol: 850000},
+  {sym:'TPLP',   name:'TPL Properties',            price: 24.30, chg:-0.41, vol:3100000},
+  {sym:'MLPAK',  name:'Millat Tractors',           price:1250.00,chg: 0.08, vol:  52000},
+  {sym:'MTL',    name:'Millat Tractors',           price:1240.00,chg: 0.08, vol:  48000},
+  {sym:'FEROZ',  name:'Ferozsons Laboratories',    price:482.00, chg: 0.21, vol: 125000},
+  {sym:'GLPL',   name:'Glaxo Smithkline Pak.',     price:148.00, chg: 0.00, vol: 290000},
+  {sym:'HINOON', name:'Highnoon Laboratories',     price:1180.00,chg: 0.17, vol:  34000},
+  {sym:'IBLHL',  name:'Ibex Pakistan (IBLHL)',     price: 38.60, chg: 0.52, vol:1900000},
+  {sym:'ESBL',   name:'Escort Investment Bank',    price: 14.80, chg:-0.67, vol:4800000},
+  {sym:'SILK',   name:'Silk Bank',                 price:  4.20, chg: 0.00, vol:11000000},
+  {sym:'BOP',    name:'Bank of Punjab',            price:  8.40, chg: 0.00, vol:14000000},
+  {sym:'SNBL',   name:'Summit Bank',               price:  5.60, chg:-0.89, vol:9800000},
+  {sym:'JSBL',   name:'JS Bank',                   price: 10.20, chg: 0.00, vol:7200000},
+  {sym:'FAYSAL', name:'Faysal Bank',               price: 28.50, chg: 0.35, vol:5100000},
+  {sym:'AKBL',   name:'Askari Bank',               price: 24.80, chg: 0.40, vol:5800000},
+  {sym:'SCBPL',  name:'Standard Chartered Pak.',   price: 42.60, chg: 0.00, vol:2400000},
+  {sym:'KASBB',  name:'KASB Bank',                 price:  3.40, chg: 0.00, vol:16000000},
+  {sym:'ALBL',   name:'Allied Bank',               price: 92.50, chg: 0.22, vol:2200000},
+  {sym:'SMBL',   name:'SME Bank',                  price:  6.80, chg: 0.00, vol:8400000},
+  {sym:'BIPL',   name:'Burj Islamic Bank',         price: 12.40, chg: 0.81, vol:5900000},
+  {sym:'PNSC',   name:'Pakistan National Ship.',   price:168.00, chg: 0.00, vol: 285000},
+  {sym:'PIA',    name:'Pakistan Intl. Airlines',   price:  6.20, chg:-0.64, vol:12000000},
+  {sym:'PICT',   name:'Pak Intl. Container Term.', price:242.00, chg: 0.00, vol: 320000},
+  {sym:'KPUS',   name:'Karachi Port (KPT)',        price: 28.60, chg: 0.35, vol:3800000},
+];
+
+var KSE100_STOCKS = KSE30_STOCKS.concat(KSE100_EXTRA);
+
+var _stockNames = {};
+KSE100_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
+
+var _currentIndex = 'kse30'; // default view
+var _liveStocks = {}; // sym -> live data when available
+
+function switchIndex(idx){
+  _currentIndex = idx;
+  var btn30  = document.getElementById('btn-kse30');
+  var btn100 = document.getElementById('btn-kse100');
+  var lbl    = document.getElementById('stocks-index-label');
+  if(idx === 'kse30'){
+    btn30.style.background  = 'var(--green)'; btn30.style.color  = '#0a1a0f';
+    btn100.style.background = 'transparent';  btn100.style.color = 'var(--muted)';
+    if(lbl) lbl.textContent = 'KSE-30';
+    _tickerData.stockGroup = 'kse30';
+  } else {
+    btn100.style.background = 'var(--green)'; btn100.style.color = '#0a1a0f';
+    btn30.style.background  = 'transparent';  btn30.style.color  = 'var(--muted)';
+    if(lbl) lbl.textContent = 'KSE-100';
+    _tickerData.stockGroup = 'kse100';
+  }
+  renderStocksCard(null, true);
+  buildTicker();
+}
+
+function getActiveStocks(){
+  var base = _currentIndex === 'kse30' ? KSE30_STOCKS : KSE100_STOCKS;
+  // merge live prices where available
+  return base.map(function(s){
+    return _liveStocks[s.sym] ? _liveStocks[s.sym] : s;
+  });
+}
+
+// Show fallback immediately
+_tickerData.stockGroup = 'kse30';
+renderStocksCard(null, true);
 
 function renderStocksCard(stocks, isFallback){
-  if(!stocks||!stocks.length){
+  var active = stocks || getActiveStocks();
+  if(!active||!active.length){
     document.getElementById('stocks-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 Stock data temporarily unavailable</div>';
     return;
   }
@@ -766,14 +900,14 @@ function renderStocksCard(stocks, isFallback){
   var el = document.getElementById('stocks-time');
   if(el) el.textContent = 'Updated: '+now+' PKT';
   var html = '<div class="stocks-grid">';
-  for(var i=0;i<stocks.length;i++){
-    var s = stocks[i];
+  for(var i=0;i<active.length;i++){
+    var s = active[i];
     var up = s.chg >= 0;
     var arr = up ? '▲' : '▼';
     var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
     html += '<div class="stock-cell">'
           + '<div class="stock-sym">'+s.sym+'</div>'
-          + '<div class="stock-name">'+(_stockNames[s.sym]||'')+'</div>'
+          + '<div class="stock-name">'+(_stockNames[s.sym]||s.name||'')+'</div>'
           + '<div class="stock-price">Rs '+Math.round(s.price).toLocaleString()+'</div>'
           + '<div class="stock-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</div>'
           + '<div class="stock-vol">Vol: '+volStr+'</div>'
@@ -789,11 +923,12 @@ function fetchKSEStocks(){
     .then(function(d){
       var stocks = d.stocks || [];
       if(stocks.length){
-        _tickerData.stocks = stocks;
-        renderStocksCard(stocks, false);
+        // merge into live cache
+        stocks.forEach(function(s){ _liveStocks[s.sym] = s; });
+        _tickerData.stocks = getActiveStocks();
+        renderStocksCard(null, false);
         buildTicker();
       }
-      // on failure keep showing fallback — no empty state
     })
     .catch(function(){});
 }

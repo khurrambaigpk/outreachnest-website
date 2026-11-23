@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v86"; // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v87"; // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1868,89 +1868,24 @@ export default {
       }
     }
 
-    // ── Live Fuel Prices proxy (scrapes dailyfuels.com) ──────────────────
+    // ── OGRA Fuel Prices (official notified rates — updated each OGRA announcement) ───
+    // OGRA announces prices twice/month. Scraping third-party sites returns stale/wrong rates.
+    // These are the OFFICIAL OGRA notified prices — update manually after each OGRA announcement.
+    // Last updated: 20 Nov 2026
     if (url.pathname === "/api/fuel" && request.method === "GET") {
       const fuelRef = request.headers.get('Referer') || '';
       if (!fuelRef.startsWith(url.origin)) {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // Try multiple sources for OGRA fuel prices
-        let fuelResult = null;
-
-        // Try 1: ARY News — live petrol price page, updated each OGRA announcement
-        try {
-          const fResp = await fetch('https://arynews.tv/petrol-price-in-pakistan-today', {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-              'Accept-Language': 'en-US,en;q=0.5',
-            },
-            signal: AbortSignal.timeout(10000)
-          });
-          const html = await fResp.text();
-          // ARY uses patterns like: Petrol Rs332 per litre  OR  Rs 332/litre
-          // Target 3-digit prices only (200-599 range for Pakistan fuel)
-          const petrolM = html.match(/[Pp]etrol[^<]{0,120}Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)/i)
-                       || html.match(/Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)[^<]{0,60}[Pp]etrol/i);
-          const dieselM = html.match(/[Dd]iesel[^<]{0,120}Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)/i)
-                       || html.match(/Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)[^<]{0,60}[Dd]iesel/i);
-          const keroM   = html.match(/[Kk]erosene[^<]{0,120}Rs\.?\s*((?:[1-3]\d{2})(?:\.\d+)?)/i);
-          const petrol   = petrolM ? parseFloat(petrolM[1]) : null;
-          const diesel   = dieselM ? parseFloat(dieselM[1]) : null;
-          const kerosene = keroM   ? parseFloat(keroM[1])   : null;
-          if (petrol && petrol > 200 && petrol < 600) {
-            // Extract effective date if present
-            const dateM = html.match(/(?:effective|from|w\.?e\.?f\.?)[^<]{0,30}(\d{1,2}\s+\w+\s+\d{4}|\d{4}-\d{2}-\d{2})/i)
-                       || html.match(/(\d{1,2}\s+\w+\s+\d{4})/i);
-            fuelResult = { petrol, diesel: diesel||null, kerosene: kerosene||null,
-                           effective: dateM ? dateM[1] : new Date().toISOString().slice(0,10),
-                           source: 'arynews.tv' };
-          }
-        } catch(e1) { }
-
-        // Try 2: propakistani.pk
-        if (!fuelResult) {
-          try {
-            const fResp1b = await fetch('https://propakistani.pk/tag/fuel-prices/', {
-              headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
-              signal: AbortSignal.timeout(8000)
-            });
-            const html1b = await fResp1b.text();
-            const pm = html1b.match(/[Pp]etrol[^<]{0,120}Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)/i)
-                    || html1b.match(/Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)[^<]{0,60}[Pp]etrol/i);
-            const dm = html1b.match(/[Dd]iesel[^<]{0,120}Rs\.?\s*((?:[2-5]\d{2})(?:\.\d+)?)/i);
-            const p = pm ? parseFloat(pm[1]) : null;
-            const d2 = dm ? parseFloat(dm[1]) : null;
-            if (p && p > 200 && p < 600) {
-              fuelResult = { petrol:p, diesel:d2||null, kerosene:null, effective:new Date().toISOString().slice(0,10), source:'propakistani.pk' };
-            }
-          } catch(e1b) {}
-        }
-
-        // Try 2: propakistani.pk fuel price page
-        if (!fuelResult) {
-          try {
-            const fResp2 = await fetch('https://propakistani.pk/tag/fuel-prices/', {
-              headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' }
-            });
-            const html2 = await fResp2.text();
-            // Look for petrol/diesel prices in article text
-            const petrolM = html2.match(/[Pp]etrol[^<]*(?:Rs\.?|PKR)\s*([\d,]+(?:\.\d+)?)/);
-            const dieselM = html2.match(/[Dd]iesel[^<]*(?:Rs\.?|PKR)\s*([\d,]+(?:\.\d+)?)/);
-            const petrol2 = petrolM ? parseFloat(petrolM[1].replace(/,/g,'')) : null;
-            const diesel2 = dieselM ? parseFloat(dieselM[1].replace(/,/g,'')) : null;
-            if (petrol2 && petrol2 > 200 && petrol2 < 600) {
-              fuelResult = { petrol:petrol2, diesel:diesel2||petrol2, kerosene:null, effective: new Date().toISOString().slice(0,10), source:'propakistani.pk' };
-            }
-          } catch(e2) {}
-        }
-
-        // Fallback: return current OGRA notified prices (updated manually when OGRA announces new rates)
-        // Last updated: 20 Nov 2026 — Petrol Rs323, Diesel Rs355, Kerosene Rs177.59
-        if (!fuelResult) {
-          fuelResult = { petrol:323, diesel:355, kerosene:177.59, effective:'2026-11-20', source:'ogra-cached' };
-        }
+        // ── OGRA official rates — update these values after each OGRA announcement ──
+        const fuelResult = {
+          petrol:   323,
+          diesel:   355,
+          kerosene: 177.59,
+          effective: '2026-11-20',   // YYYY-MM-DD — date of OGRA notification
+          source:   'ogra-official', // shown in footer
+        };
 
         return new Response(JSON.stringify(fuelResult), {
           status: 200,

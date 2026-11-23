@@ -134,6 +134,18 @@ footer a{color:#4a7a6a;text-decoration:none}
 
 /* DISCLAIMER */
 .disclaimer{background:rgba(30,53,35,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);margin-bottom:28px;text-align:center}
+
+/* CONVERTER */
+.converter-box{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+.converter-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.converter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.conv-input{background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;font-weight:600;padding:8px 11px;width:110px;outline:none;transition:.15s}
+.conv-input:focus{border-color:var(--green)}
+.conv-select{background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--dim);font-size:13px;font-weight:600;padding:8px 10px;outline:none;cursor:pointer}
+.conv-select:focus{border-color:var(--green)}
+.conv-arrow{font-size:18px;color:var(--muted)}
+.conv-result{font-size:18px;font-weight:800;color:var(--green);min-width:80px}
+.conv-result-label{font-size:11px;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -181,7 +193,21 @@ footer a{color:#4a7a6a;text-decoration:none}
     <div class="card">
       <div class="card-title">💱 Live Exchange Rates (PKR) <span class="badge-src" id="cur-updated">—</span></div>
       <div id="currency-body"><div class="loading"></div></div>
-      <div class="source-line">📡 Source: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a> — indicative mid-market rates. Updated daily.</div>
+      <!-- Currency Converter -->
+      <div class="converter-box">
+        <div class="converter-title">🔁 Quick Currency Converter</div>
+        <div class="converter-row">
+          <input type="number" id="conv-amount" class="conv-input" value="100" min="0" step="any">
+          <select id="conv-from" class="conv-select"></select>
+          <span class="conv-arrow">→</span>
+          <select id="conv-to" class="conv-select"></select>
+        </div>
+        <div style="margin-top:10px">
+          <div class="conv-result" id="conv-result">—</div>
+          <div class="conv-result-label" id="conv-result-label">&nbsp;</div>
+        </div>
+      </div>
+      <div class="source-line" style="margin-top:14px">📡 Source: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a> — indicative mid-market rates. Updated daily.</div>
     </div>
 
     <!-- Fuel -->
@@ -299,12 +325,66 @@ fetch('https://api.exchangerate-api.com/v4/latest/USD')
     document.getElementById('currency-body').innerHTML=html;
     document.getElementById('cur-updated').textContent='Updated: '+data.date;
     buildTicker();
+    // Setup converter with all rates (base USD)
+    var allRates = rates;
+    allRates.PKR = pkr;
+    setupConverter(allRates, pkr);
     // Now fetch gold with PKR rate
     fetchGold(pkr);
   })
   .catch(function(){
     document.getElementById('currency-body').innerHTML='<div class="loading" style="color:var(--red)">Could not load rates</div>';
   });
+
+// ── Currency Converter ────────────────────────────────────────────────
+var _convRates = {}; // base USD rates
+function setupConverter(rates, pkrRate) {
+  _convRates = rates;
+  var CONV_PAIRS = [
+    {code:'PKR',flag:'🇵🇰',name:'PKR — Pakistani Rupee'},
+    {code:'USD',flag:'🇺🇸',name:'USD — US Dollar'},
+    {code:'EUR',flag:'🇪🇺',name:'EUR — Euro'},
+    {code:'GBP',flag:'🇬🇧',name:'GBP — British Pound'},
+    {code:'SAR',flag:'🇸🇦',name:'SAR — Saudi Riyal'},
+    {code:'AED',flag:'🇦🇪',name:'AED — UAE Dirham'},
+    {code:'CNY',flag:'🇨🇳',name:'CNY — Chinese Yuan'},
+    {code:'JPY',flag:'🇯🇵',name:'JPY — Japanese Yen'},
+    {code:'INR',flag:'🇮🇳',name:'INR — Indian Rupee'},
+    {code:'CAD',flag:'🇨🇦',name:'CAD — Canadian Dollar'},
+    {code:'AUD',flag:'🇦🇺',name:'AUD — Australian Dollar'},
+    {code:'CHF',flag:'🇨🇭',name:'CHF — Swiss Franc'},
+  ];
+  var fromSel = document.getElementById('conv-from');
+  var toSel   = document.getElementById('conv-to');
+  CONV_PAIRS.forEach(function(p){
+    var o1 = document.createElement('option'); o1.value=p.code; o1.textContent=p.flag+' '+p.code; fromSel.appendChild(o1);
+    var o2 = document.createElement('option'); o2.value=p.code; o2.textContent=p.flag+' '+p.code; toSel.appendChild(o2);
+  });
+  // Default: USD → PKR
+  fromSel.value = 'USD';
+  toSel.value   = 'PKR';
+  calcConv();
+  document.getElementById('conv-amount').addEventListener('input', calcConv);
+  fromSel.addEventListener('change', calcConv);
+  toSel.addEventListener('change', calcConv);
+}
+function calcConv(){
+  var amount = parseFloat(document.getElementById('conv-amount').value);
+  var from   = document.getElementById('conv-from').value;
+  var to     = document.getElementById('conv-to').value;
+  if(isNaN(amount)||!_convRates[from]||!_convRates[to]){
+    document.getElementById('conv-result').textContent='—';
+    document.getElementById('conv-result-label').textContent='';
+    return;
+  }
+  // Convert via USD base: amount / fromRate * toRate
+  var inUSD   = amount / _convRates[from];
+  var result  = inUSD * _convRates[to];
+  var dec     = (to==='JPY'||to==='PKR'||to==='INR') ? 0 : 2;
+  document.getElementById('conv-result').textContent = result.toLocaleString('en',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' '+to;
+  document.getElementById('conv-result-label').textContent =
+    '1 '+from+' = '+(_convRates[to]/_convRates[from]).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:4})+' '+to;
+}
 
 // ── Fuel ─────────────────────────────────────────────────────────────
 // OGRA announces prices twice/month — update fallback manually each announcement
@@ -561,38 +641,35 @@ function parsePSXHtml(html){
   var change=changes[idx]?parseFloat(changes[idx].replace(/,/g,''))||0:0;
   return {price:current,change:change,changePct:(current?(change/((current-change)||1)*100):0).toFixed(2),dayHigh:null,dayLow:null};
 }
-// PSX blocks cross-origin fetches. Strategy:
-// 1) Worker /api/psx (tries PSX HTML parse + stooq CSV)
-// 2) allorigins.win CORS proxy
-// 3) Show unavailable message
+// PSX KSE-100 data strategy:
+// 1) Worker /api/psx (server-side: PSX HTML + stooq CSV merged)
+// 2) stooq.com CSV direct (CORS open) — reliable fallback
+// 3) Show unavailable
 (function fetchPSX(){
-  // Try 1: our Worker (server-side fetch avoids browser CORS)
+  // Try 1: our Worker (server-side fetch merges PSX + stooq)
   fetch('/api/psx', { headers: { 'Referer': window.location.href } })
     .then(function(r){ return r.json(); })
     .then(function(d){
-      if(d.error||!d.price) throw new Error(d.error||'no data');
+      if(d.error||!d.price||d.price<50000) throw new Error(d.error||'no data');
       renderPSX(d);
     })
     .catch(function(){
-      // Try 2: allorigins.win with longer timeout via AbortController
-      var ctrl=new AbortController();
-      var t=setTimeout(function(){ctrl.abort();},8000);
-      return fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://dps.psx.com.pk/indices'),{signal:ctrl.signal})
-        .then(function(r){clearTimeout(t);if(!r.ok)throw new Error('ao-'+r.status);return r.text();})
-        .then(function(html){
-          var d=parsePSXHtml(html);
-          if(!d)throw new Error('parse fail');
-          renderPSX(d);
-        });
-    })
-    .catch(function(){
-      // Try 3: corsproxy.io
-      return fetch('https://corsproxy.io/?'+encodeURIComponent('https://dps.psx.com.pk/indices'))
-        .then(function(r){if(!r.ok)throw new Error('cp-'+r.status);return r.text();})
-        .then(function(html){
-          var d=parsePSXHtml(html);
-          if(!d)throw new Error('parse fail');
-          renderPSX(d);
+      // Try 2: stooq.com CSV (CORS-open, free, reliable)
+      // Format: Symbol,Date,Time,Open,High,Low,Close,Volume,Name
+      return fetch('https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn')
+        .then(function(r){if(!r.ok)throw new Error('stooq-'+r.status);return r.text();})
+        .then(function(csv){
+          var rows=csv.trim().split('\n');
+          var v=rows[1]?rows[1].split(','):[];
+          var close=parseFloat(v[6]), open=parseFloat(v[3]), high=parseFloat(v[4]), low=parseFloat(v[5]), vol=parseFloat(v[7]);
+          if(isNaN(close)||close<50000) throw new Error('stooq-invalid:'+close);
+          renderPSX({
+            price:close, prev:open, open:open,
+            change:(close-open).toFixed(2),
+            changePct:(((close-open)/open)*100).toFixed(2),
+            dayHigh:high, dayLow:low, volume:vol,
+            dataDate:v[1]||null
+          });
         });
     })
     .catch(function(){

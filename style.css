@@ -34,7 +34,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.92);backdrop-
 .nav-links a:hover,.nav-links a.active{color:var(--leaf-deep)}
 .nav-cta{background:var(--ink);color:#fff!important;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .18s,box-shadow .18s}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(15,30,24,.5)}
-@media(max-width:760px){.nav-links a:not(.nav-cta){display:none}.nav-links a[href="/market"],.nav-links a[href="/solar-calculator"]{display:inline-flex!important}.nav-cta{display:none!important}}
+@media(max-width:760px){
+  .nav-links{gap:6px}
+  .nav-links a:not(.nav-cta){display:none}
+  .nav-links a[href="/market"],.nav-links a[href="/solar-calculator"]{display:inline-flex!important;font-size:11px!important;padding:4px 8px!important}
+  .nav-cta{display:none!important}
+}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:9px;padding:15px 28px;border-radius:12px;font-weight:600;font-size:15px;transition:transform .16s,box-shadow .16s;cursor:pointer;border:none;font-family:inherit}

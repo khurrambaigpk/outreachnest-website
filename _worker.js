@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v83"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v84"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1733,103 +1733,80 @@ export default {
           };
         }
 
-        // Try 1: PSX /indices (full page HTML) with browser-like headers
-        try {
-          const psxResp = await fetch('https://dps.psx.com.pk/indices', {
+        // Fetch PSX HTML and stooq CSV in PARALLEL — merge results
+        // PSX HTML = accurate live price + change (but no high/low/volume)
+        // stooq CSV = high/low/volume (but price may lag 15 min)
+        const [psxHtmlResult, stooqResult] = await Promise.allSettled([
+          // PSX /indices HTML
+          fetch('https://dps.psx.com.pk/indices', {
             headers: {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
               'Accept-Language': 'en-US,en;q=0.5',
               'Referer': 'https://dps.psx.com.pk/',
               'Cache-Control': 'no-cache',
             }
-          });
-          const html = await psxResp.text();
-          const parsed = parsePSXHtml(html);
-          if (parsed) { meta = parsed; }
-          else {
-            errors.push('psx-indices:parse-fail(status='+psxResp.status+',len='+html.length+')');
-          }
-        } catch(e1) { errors.push('psx-indices:'+e1.message); }
+          }).then(r => r.text()),
+          // stooq CSV — Symbol,Date,Time,Open,High,Low,Close,Volume,Name
+          fetch('https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn', {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+          }).then(r => r.text()),
+        ]);
 
-        // Try 2: PSX /indices with XHR headers (may return tab-separated data)
-        if (!meta) {
-          try {
-            const psxResp2 = await fetch('https://dps.psx.com.pk/indices', {
-              headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-                'Accept': 'text/html, */*; q=0.01',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Referer': 'https://dps.psx.com.pk/',
-              }
-            });
-            const psxText = await psxResp2.text();
-            // Try tab-separated first
-            const lines = psxText.split(/\r?\n/);
-            for (const line of lines) {
-              const cols = line.split('\t').map(c => c.trim());
-              if (cols[0] === 'KSE100' && cols.length >= 4) {
-                const current = parseFloat(cols[3].replace(/,/g,'')) || null;
-                const change  = parseFloat((cols[4]||'').replace(/,/g,'')) || 0;
-                if (current && current > 50000 && current < 400000) {
-                  meta = {
-                    symbol:'KSE100', regularMarketPrice:current,
-                    chartPreviousClose:current-change,
-                    regularMarketDayHigh:parseFloat(cols[1].replace(/,/g,''))||null,
-                    regularMarketDayLow:parseFloat(cols[2].replace(/,/g,''))||null,
-                    fiftyTwoWeekHigh:null, fiftyTwoWeekLow:null,
-                    regularMarketTime:Math.floor(Date.now()/1000),
-                    currency:'PKR', exchangeName:'PSX',
-                    _raw:'psx-xhr-tsv:'+cols.slice(0,5).join('|'),
-                  };
-                  break;
-                }
-              }
-            }
-            // Try HTML parse as fallback
-            if (!meta) {
-              const parsed2 = parsePSXHtml(psxText);
-              if (parsed2) meta = parsed2;
-              else errors.push('psx-xhr:parse-fail(status='+psxResp2.status+',len='+psxText.length+',is-html='+(psxText.startsWith('<!'))+')');
-            }
-          } catch(e2) { errors.push('psx-xhr:'+e2.message); }
-        }
+        // Parse PSX HTML for live price + change
+        let psxMeta = null;
+        if (psxHtmlResult.status === 'fulfilled') {
+          psxMeta = parsePSXHtml(psxHtmlResult.value);
+          if (!psxMeta) errors.push('psx-html:parse-fail(len='+psxHtmlResult.value.length+')');
+        } else { errors.push('psx-html:'+psxHtmlResult.reason); }
 
-        // Try 3: stooq.com CSV — format: Symbol,Date,Time,Open,High,Low,Close,Volume,Name
-        // Field indices: 0=sym,1=date,2=time,3=open,4=high,5=low,6=close,7=vol,8=name
-        if (!meta) {
+        // Parse stooq CSV for OHLCV
+        let stooqMeta = null;
+        if (stooqResult.status === 'fulfilled') {
           try {
-            const stooqResp = await fetch(
-              'https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn',
-              { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' } }
-            );
-            const csv = await stooqResp.text();
-            const rows = csv.trim().split('\n');
+            const rows = stooqResult.value.trim().split('\n');
             const vals = rows[1] ? rows[1].split(',') : [];
-            // stooq CSV columns (with f=sd2t2ohlcvn): Symbol,Date,Time,Open,High,Low,Close,Volume,Name
-            const closePrice  = parseFloat(vals[6]);
-            const openPrice   = parseFloat(vals[3]);
-            const highPrice   = parseFloat(vals[4]);
-            const lowPrice    = parseFloat(vals[5]);
-            const volumeVal   = parseFloat(vals[7]) || null;
-            if (!isNaN(closePrice) && closePrice > 50000) {
-              // For PSX stooq gives today's OHLC. Open = previous close approx.
-              // Use PSX HTML change if available from earlier tries, else derive from open
-              const prevClose = !isNaN(openPrice) ? openPrice : null;
-              meta = {
-                symbol: 'KSE100',
-                regularMarketPrice:   closePrice,
-                chartPreviousClose:   prevClose,
-                regularMarketDayHigh: !isNaN(highPrice) ? highPrice : null,
-                regularMarketDayLow:  !isNaN(lowPrice)  ? lowPrice  : null,
-                regularMarketVolume:  volumeVal,
-                fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
-                regularMarketTime: vals[1] ? new Date(vals[1]+'T'+( vals[2]||'12:00:00')).getTime()/1000 : Math.floor(Date.now()/1000),
-                currency: 'PKR', exchangeName: 'PSX',
-                _raw: 'stooq:' + (rows[1] || csv.substring(0, 80)),
+            // Columns: Symbol,Date,Time,Open,High,Low,Close,Volume,Name
+            const closeP = parseFloat(vals[6]);
+            const openP  = parseFloat(vals[3]);
+            const highP  = parseFloat(vals[4]);
+            const lowP   = parseFloat(vals[5]);
+            const vol    = parseFloat(vals[7]) || null;
+            if (!isNaN(closeP) && closeP > 50000) {
+              stooqMeta = {
+                price: closeP, open: openP, high: highP, low: lowP, volume: vol,
+                _raw: 'stooq:'+rows[1],
               };
-            } else errors.push('stooq:invalid-price('+closePrice+')');
-          } catch(e3) { errors.push('stooq:'+e3.message); }
+            } else errors.push('stooq:invalid('+closeP+')');
+          } catch(es) { errors.push('stooq:parse-err'); }
+        } else { errors.push('stooq:'+stooqResult.reason); }
+
+        // MERGE: prefer PSX HTML for price/change, stooq for high/low/volume
+        if (psxMeta) {
+          meta = {
+            symbol: 'KSE100',
+            regularMarketPrice:   psxMeta.regularMarketPrice,
+            chartPreviousClose:   psxMeta.chartPreviousClose,
+            regularMarketDayHigh: stooqMeta ? stooqMeta.high  : null,
+            regularMarketDayLow:  stooqMeta ? stooqMeta.low   : null,
+            regularMarketVolume:  stooqMeta ? stooqMeta.volume : null,
+            regularMarketTime:    Math.floor(Date.now()/1000),
+            currency: 'PKR', exchangeName: 'PSX',
+            _raw: 'psx-html+stooq:price='+psxMeta.regularMarketPrice+'|high='+(stooqMeta?stooqMeta.high:null)+'|low='+(stooqMeta?stooqMeta.low:null)+'|vol='+(stooqMeta?stooqMeta.volume:null),
+          };
+        } else if (stooqMeta) {
+          // PSX HTML failed — use stooq alone
+          meta = {
+            symbol: 'KSE100',
+            regularMarketPrice:   stooqMeta.price,
+            chartPreviousClose:   stooqMeta.open,
+            regularMarketDayHigh: stooqMeta.high,
+            regularMarketDayLow:  stooqMeta.low,
+            regularMarketVolume:  stooqMeta.volume,
+            regularMarketTime:    Math.floor(Date.now()/1000),
+            currency: 'PKR', exchangeName: 'PSX',
+            _raw: stooqMeta._raw,
+          };
         }
 
         if (!meta) {
@@ -1957,7 +1934,7 @@ export default {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=3600',
+            'Cache-Control': 'public, max-age=43200',  // 12-hour cache — OGRA announces twice/month
             'Access-Control-Allow-Origin': '*',
           }
         });

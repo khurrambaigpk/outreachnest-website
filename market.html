@@ -278,8 +278,9 @@ fetch('https://api.exchangerate-api.com/v4/latest/USD')
   });
 
 // ── Fuel ─────────────────────────────────────────────────────────────
-var FUEL_FALLBACK = {petrol:332,diesel:360,kerosene:177.59,effective:'2026-11-13'};
-fetch('/api/fuel')
+// OGRA announces prices twice/month — update fallback manually each announcement
+var FUEL_FALLBACK = {petrol:323,diesel:355,kerosene:177.59,effective:'2026-11-20'};
+fetch('/api/fuel', {headers:{'Referer':window.location.href}})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.error||!d.petrol) throw new Error('no data');

@@ -239,7 +239,7 @@ footer a{color:#4a7a6a;text-decoration:none}
     <div class="hero-badge">🇵🇰 Pakistan Live Rates</div>
     <h1>Market Rates — <span style="color:var(--green)">Updated Daily</span></h1>
     <p>Currency exchange rates, OGRA fuel prices, gold & silver spot prices, PSX KSE-100 index, and solar market prices — all in one place.</p>
-    <div class="hero-meta"><span class="live-dot"></span> Auto-refreshed · <span id="page-time">—</span> · <span id="refresh-countdown" style="color:var(--muted)">Next refresh in 15:00</span></div>
+    <div class="hero-meta"><span class="live-dot"></span> Auto-refreshed · <span id="page-time">—</span> · <span id="refresh-countdown" style="color:var(--muted)">Next refresh in 5:00</span></div>
   </div>
 </div>
 
@@ -335,9 +335,9 @@ function fmt(n,dec){ return n!=null ? Number(n).toLocaleString('en-PK',{minimumF
 // Page time
 document.getElementById('page-time').textContent = 'As of ' + new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
 
-// ── Auto-refresh every 15 minutes ────────────────────────────────────
+// ── Auto-refresh every 5 minutes ─────────────────────────────────────
 (function(){
-  var REFRESH_SECS = 15 * 60; // 15 minutes
+  var REFRESH_SECS = 5 * 60; // 5 minutes
   var remaining = REFRESH_SECS;
   var el = document.getElementById('refresh-countdown');
   function tick(){

@@ -416,13 +416,13 @@ fetch('/api/fuel', {headers:{'Referer':window.location.href}})
   .then(function(d){
     if(d.error||!d.petrol) throw new Error('no data');
     renderFuel(d);
-    renderFuelHistory(d.petrol);
+    renderFuelHistory();
     _tickerData.fuel={petrol:d.petrol,diesel:d.diesel};
     buildTicker();
   })
   .catch(function(){
     renderFuel(FUEL_FALLBACK);
-    renderFuelHistory(FUEL_FALLBACK.petrol);
+    renderFuelHistory();
     _tickerData.fuel={petrol:FUEL_FALLBACK.petrol,diesel:FUEL_FALLBACK.diesel};
     buildTicker();
   });
@@ -461,6 +461,8 @@ function renderFuel(d){
 // ── Fuel Price History ────────────────────────────────────────────────
 // OGRA announces prices on 1st and 16th of each month
 // Update this list whenever OGRA makes a new announcement
+// OGRA history — newest first. Arrow on each row = change vs previous row (i+1).
+// e.g. 21 Nov (322) vs 01 Nov (323) → ▼1.00 green (price went down)
 var FUEL_HISTORY = [
   { date:'21 Nov 2026', petrol:322.00, diesel:357.00, kerosene:177.59 },
   { date:'01 Nov 2026', petrol:323.00, diesel:355.00, kerosene:177.59 },
@@ -469,33 +471,35 @@ var FUEL_HISTORY = [
   { date:'16 Sep 2026', petrol:316.75, diesel:340.88, kerosene:172.60 },
   { date:'01 Sep 2026', petrol:313.50, diesel:338.20, kerosene:170.85 },
 ];
-function renderFuelHistory(currentPetrol){
+function chgBadge(cur, prv){
+  if(prv == null) return '';
+  var diff = cur - prv; // positive = barha, negative = gira
+  if(Math.abs(diff) < 0.005) return ' <span style="font-size:9px;color:var(--muted)">—</span>';
+  var clr = diff > 0 ? '#f87171' : '#4ade80'; // red = increase (bad), green = decrease (good)
+  var arr = diff > 0 ? '▲' : '▼';
+  return ' <span style="font-size:9px;color:'+clr+'">'+arr+Math.abs(diff).toFixed(2)+'</span>';
+}
+function renderFuelHistory(){
   if(!FUEL_HISTORY.length) return;
   var html = '<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">'
            + '<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">📋 Price History — Last 6 Announcements</div>';
-  // Table header
-  html += '<div style="display:grid;grid-template-columns:1fr 72px 72px 72px;gap:0;font-size:10px;color:var(--muted);font-weight:600;padding:4px 0;border-bottom:1px solid var(--border);letter-spacing:.03em">'
+  html += '<div style="display:grid;grid-template-columns:1fr 76px 76px 76px;gap:0;font-size:10px;color:var(--muted);font-weight:600;padding:4px 0;border-bottom:1px solid var(--border);letter-spacing:.03em">'
         + '<span>Date</span><span style="text-align:right">Petrol</span><span style="text-align:right">Diesel</span><span style="text-align:right">Kerosene</span></div>';
 
   for(var i=0;i<FUEL_HISTORY.length;i++){
-    var row = FUEL_HISTORY[i];
-    var prev = FUEL_HISTORY[i+1];
+    var row  = FUEL_HISTORY[i];
+    var older = FUEL_HISTORY[i+1] || null; // row just before this one (older date)
     var isCurrent = (i===0);
-
-    function chgBadge(cur, prv){
-      if(!prv) return '';
-      var diff = cur - prv;
-      if(Math.abs(diff) < 0.005) return ' <span style="font-size:9px;color:var(--muted)">—</span>';
-      var clr = diff > 0 ? '#f87171' : '#4ade80';
-      var arr = diff > 0 ? '▲' : '▼';
-      return ' <span style="font-size:9px;color:'+clr+'">'+arr+Math.abs(diff).toFixed(2)+'</span>';
-    }
-
-    html += '<div style="display:grid;grid-template-columns:1fr 72px 72px 72px;gap:0;padding:6px 0;border-bottom:1px solid rgba(30,53,35,.5);align-items:center'+(isCurrent?';background:rgba(74,222,128,.04);border-radius:4px':'')+'">'
-          + '<span style="font-size:12px;color:'+(isCurrent?'var(--green)':'var(--dim)')+'">'+row.date+(isCurrent?' <span style="font-size:9px;background:rgba(74,222,128,.15);color:var(--green);padding:1px 5px;border-radius:4px;font-weight:700">current</span>':'')+'</span>'
-          + '<span style="font-size:12px;font-weight:700;color:var(--yellow);text-align:right">'+row.petrol.toFixed(2)+chgBadge(row.petrol, prev&&prev.petrol)+'</span>'
-          + '<span style="font-size:12px;font-weight:700;color:var(--yellow);text-align:right">'+row.diesel.toFixed(2)+chgBadge(row.diesel, prev&&prev.diesel)+'</span>'
-          + '<span style="font-size:12px;color:var(--dim);text-align:right">'+row.kerosene.toFixed(2)+chgBadge(row.kerosene, prev&&prev.kerosene)+'</span>'
+    // arrow = this row vs the row before it (older), shows how much it changed when announced
+    html += '<div style="display:grid;grid-template-columns:1fr 76px 76px 76px;gap:0;padding:6px 0;border-bottom:1px solid rgba(30,53,35,.5);align-items:center'+(isCurrent?';background:rgba(74,222,128,.05);margin:0 -4px;padding-left:4px;padding-right:4px;border-radius:4px':'')+'">'
+          + '<span style="font-size:12px;color:'+(isCurrent?'var(--green)':'var(--dim)')+'">'+row.date
+          + (isCurrent?' <span style="font-size:9px;background:rgba(74,222,128,.18);color:var(--green);padding:1px 5px;border-radius:4px;font-weight:700">current</span>':'')+'</span>'
+          + '<span style="font-size:13px;font-weight:700;color:var(--yellow);text-align:right">'+row.petrol.toFixed(2)
+          + chgBadge(row.petrol, older ? older.petrol : null)+'</span>'
+          + '<span style="font-size:13px;font-weight:700;color:var(--yellow);text-align:right">'+row.diesel.toFixed(2)
+          + chgBadge(row.diesel, older ? older.diesel : null)+'</span>'
+          + '<span style="font-size:12px;color:var(--dim);text-align:right">'+row.kerosene.toFixed(2)
+          + chgBadge(row.kerosene, older ? older.kerosene : null)+'</span>'
           + '</div>';
   }
   html += '</div>';

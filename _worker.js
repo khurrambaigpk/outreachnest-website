@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v91"; // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v92"; // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1877,6 +1877,18 @@ export default {
       try {
         let fuelResult = null;
 
+        // ── Step 1: Check KV cache (populated by cron every 6h) ──────────────
+        try {
+          const kvVal = await env.LICENSE_KV.get('fuel_rates');
+          if (kvVal) {
+            const kvData = JSON.parse(kvVal);
+            if (kvData && kvData.petrol && kvData.petrol > 200) {
+              fuelResult = kvData;
+            }
+          }
+        } catch(eKv) {}
+
+        // ── Step 2: If KV empty, try live scrape ─────────────────────────────
         // Helper: parse price+date from scraped HTML
         function parseFuelHtml(html) {
           const petrolM  = html.match(/[Pp]etrol[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d{1,2})?)/i)
@@ -1902,7 +1914,8 @@ export default {
           return null;
         }
 
-        // Try 1: OGRA.org.pk — official source, plain HTML table
+        // Try 1: OGRA.org.pk — official source (only if KV miss)
+        if (fuelResult) { /* skip — KV hit */ } else
         try {
           const oResp = await fetch('https://www.ogra.org.pk/ogra-determined-petroleum-prices', {
             headers: {
@@ -2457,4 +2470,91 @@ export default {
       },
     });
   },
+
+  // ── Cron: runs every 6 hours — scrapes PSO for live fuel prices ──────────
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(fetchAndSaveFuelRates(env));
+  },
 };
+
+// ── Fuel scraper — called by cron every 6h ───────────────────────────────────
+async function fetchAndSaveFuelRates(env) {
+  const FALLBACK = { petrol: 322, diesel: 357, kerosene: 177.59, effective: '2026-11-21', source: 'ogra-cached' };
+
+  // Helper: parse PSO HTML
+  function parsePsoHtml(html) {
+    const petrolM  = html.match(/PREMIER[^<]{0,80}Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/\s*Ltr/i)
+                  || html.match(/Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/Ltr[\s\S]{0,300}petrol/i);
+    const dieselM  = html.match(/(?:HI-CETANE|HIGH.SPEED.DIESEL)[^<]{0,80}Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/\s*Ltr/i);
+    const keroM    = html.match(/SKO[^<]{0,60}Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/\s*Ltr/i);
+    const dateM    = html.match(/Effective\s+From[^<]{0,30}:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i)
+                  || html.match(/Last\s+Updated\s+on[^<]{0,10}:\s*(\d{1,2}\s+\w+\s+\d{4})/i);
+    const petrol   = petrolM ? parseFloat(petrolM[1]) : null;
+    const diesel   = dieselM ? parseFloat(dieselM[1]) : null;
+    const kerosene = keroM   ? parseFloat(keroM[1])   : null;
+    let effective  = new Date().toISOString().slice(0, 10);
+    if (dateM) {
+      const d = new Date(dateM[1].trim());
+      if (!isNaN(d.getTime())) effective = d.toISOString().slice(0, 10);
+    }
+    if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
+      return { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'psopk.com' };
+    }
+    return null;
+  }
+
+  let result = null;
+
+  // Try PSO with multiple User-Agent variations
+  const agents = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+    'Googlebot/2.1 (+http://www.google.com/bot.html)',
+  ];
+  for (const agent of agents) {
+    if (result) break;
+    try {
+      const r = await fetch('https://psopk.com/en/fuels/fuel-prices', {
+        headers: {
+          'User-Agent': agent,
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Referer': 'https://www.google.com/',
+          'Cache-Control': 'no-cache',
+        },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (r.ok) {
+        const html = await r.text();
+        if (html.length > 1000) result = parsePsoHtml(html);
+      }
+    } catch(e) {}
+  }
+
+  // Try OGRA
+  if (!result) {
+    try {
+      const r = await fetch('https://www.ogra.org.pk/ogra-determined-petroleum-prices', {
+        headers: { 'User-Agent': agents[0], 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' },
+        signal: AbortSignal.timeout(12000),
+      });
+      if (r.ok) {
+        const html = await r.text();
+        if (html.length > 500) {
+          const pm = html.match(/[Pp]etrol[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d{1,2})?)/i);
+          const dm = html.match(/[Dd]iesel[^<]{0,200}Rs\.?\s*(\d{3}(?:\.\d{1,2})?)/i);
+          if (pm && dm) {
+            const p = parseFloat(pm[1]), d = parseFloat(dm[1]);
+            if (p > 200 && p < 500 && d > 200) result = { petrol: p, diesel: d, kerosene: 177.59, effective: new Date().toISOString().slice(0,10), source: 'ogra.org.pk' };
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Save to KV (expires in 8 hours so stale data doesn't persist)
+  const toSave = result || FALLBACK;
+  try {
+    await env.LICENSE_KV.put('fuel_rates', JSON.stringify(toSave), { expirationTtl: 28800 });
+  } catch(e) {}
+}

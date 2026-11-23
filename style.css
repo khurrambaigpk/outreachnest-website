@@ -35,10 +35,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(246,244,236,.92);backdrop-
 .nav-cta{background:var(--ink);color:#fff!important;padding:10px 20px;border-radius:10px;font-size:14px;transition:transform .18s,box-shadow .18s}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(15,30,24,.5)}
 @media(max-width:760px){
-  .nav-links{gap:6px}
+  .nav-inner{height:56px}
+  .logo{font-size:16px}
+  .logo-mark{width:26px;height:26px}
+  .nav-links{gap:4px;flex-shrink:0}
   .nav-links a:not(.nav-cta){display:none}
-  .nav-links a[href="/market"],.nav-links a[href="/solar-calculator"]{display:inline-flex!important;font-size:11px!important;padding:4px 8px!important}
+  .nav-links a[href="/market"],.nav-links a[href="/solar-calculator"]{display:inline-flex!important;font-size:10px!important;padding:3px 7px!important;border-radius:14px!important;white-space:nowrap}
   .nav-cta{display:none!important}
+  .menu-btn{padding:4px}
 }
 
 /* BUTTONS */
@@ -196,7 +200,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 32px;margin-top:48px}
 .menu-btn.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
 .menu-btn.open span:nth-child(2){opacity:0}
 .menu-btn.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
-.mobile-menu{display:none;position:absolute;top:72px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 20px 40px -20px rgba(15,30,24,.25);padding:10px 24px 20px;z-index:99}
+.mobile-menu{display:none;position:absolute;top:56px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 20px 40px -20px rgba(15,30,24,.25);padding:10px 24px 20px;z-index:99}
 .mobile-menu.open{display:block}
 .mobile-menu a{display:block;padding:14px 4px;font-size:16px;font-weight:500;color:var(--ink);border-bottom:1px dashed var(--line)}
 .mobile-menu a.active{color:var(--leaf-deep);font-weight:600}

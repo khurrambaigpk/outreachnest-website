@@ -377,12 +377,12 @@ function parsePSXHtml(html){
   //            <div class="topIndices__item__changep">(0.71%)</div>
   var nameRx = /topIndices__item__name">([^<]+)<\/div>/g;
   var valRx  = /topIndices__item__val">([^<]+)<\/div>/g;
-  var chgRx  = /topIndices__item__change[^"]*">[^<]*(?:<[^>]+>)?\s*([0-9,.\- ]+)<\/div>/g;
+  var chgRx  = /topIndices__item__change">([^<]*(?:<[^>]+>[^<]*)*)<\/div>/g;
   var names=[],vals=[],changes=[];
   var m;
   while((m=nameRx.exec(html))!==null) names.push(m[1].trim());
   while((m=valRx.exec(html))!==null)  vals.push(m[1].trim());
-  while((m=chgRx.exec(html))!==null)  changes.push(m[1].trim());
+  while((m=chgRx.exec(html))!==null)  changes.push(m[1].replace(/<[^>]+>/g,'').trim());
   var idx=names.indexOf('KSE100');
   if(idx<0||!vals[idx]) return null;
   var current=parseFloat(vals[idx].replace(/,/g,''));

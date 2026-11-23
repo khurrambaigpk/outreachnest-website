@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v80"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v81"; // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1699,16 +1699,24 @@ export default {
 
         // Helper to parse PSX /indices HTML (uses topIndices__item__* CSS classes)
         function parsePSXHtml(html) {
-          // Pattern: class="topIndices__item__name">KSE100</div>..class="topIndices__item__val">178,644.35</div>
-          // ..class="topIndices__item__change">.. 1261.78</div>..class="topIndices__item__changep">(0.71%)</div>
+          // HTML structure per index:
+          // <div class="topIndices__item__name">KSE100</div>
+          // <div class="topIndices__item__val">178,644.35</div>
+          // <div class="topIndices__item__change"><i class="icon-up-dir"></i> 1261.78</div>
+          // <div class="topIndices__item__changep">(0.71%)</div>
           const nameRx = /topIndices__item__name">([^<]+)<\/div>/g;
           const valRx  = /topIndices__item__val">([^<]+)<\/div>/g;
-          const chgRx  = /topIndices__item__change[^"]*">(?:<[^>]+>)?\s*([^<]+)<\/div>/g;
+          // Change div contains an <i> tag then the number — strip all tags
+          const chgRx  = /topIndices__item__change">([^<]*(?:<[^>]+>[^<]*)*)<\/div>/g;
           const names=[], vals=[], changes=[];
           let m;
           while ((m=nameRx.exec(html)) !== null) names.push(m[1].trim());
           while ((m=valRx.exec(html))  !== null) vals.push(m[1].trim());
-          while ((m=chgRx.exec(html))  !== null) changes.push(m[1].trim());
+          while ((m=chgRx.exec(html))  !== null) {
+            // Strip any HTML tags from change text, keep only numbers/punctuation
+            const stripped = m[1].replace(/<[^>]+>/g,'').trim();
+            changes.push(stripped);
+          }
           const idx = names.indexOf('KSE100');
           if (idx < 0 || !vals[idx]) return null;
           const current = parseFloat(vals[idx].replace(/,/g,''));

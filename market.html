@@ -324,7 +324,7 @@ footer a{color:#4a7a6a;text-decoration:none}
     <!-- KSE Top Stocks -->
     <div class="card" style="grid-column:1/-1">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
-        <div class="card-title" style="margin-bottom:0">📈 <span id="stocks-index-label">KSE-30</span> Companies <span class="badge-src">PSX · 15-min delay</span></div>
+        <div class="card-title" style="margin-bottom:0">📈 <span id="stocks-index-label">KSE-30</span> Companies <span class="badge-src" id="stocks-src-badge">PSX · 15-min delay</span></div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden">
             <button id="btn-kse30" onclick="switchIndex('kse30')" style="background:var(--green);color:#0a1a0f;border:none;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer">KSE-30</button>
@@ -1082,6 +1082,12 @@ function fetchKSEStocks(){
         _tickerData.stocks = getActiveStocks();
         renderStocksCard(null, false);
         buildTicker();
+        // update source badge
+        var srcEl = document.getElementById('stocks-src-badge');
+        if(srcEl){
+          var src = d.source === 'yahoo' ? 'Yahoo Finance · 15-min delay' : d.source === 'stooq' ? 'stooq.com · 15-min delay' : '15-min delay';
+          srcEl.textContent = '📡 ' + src;
+        }
       }
     })
     .catch(function(){});

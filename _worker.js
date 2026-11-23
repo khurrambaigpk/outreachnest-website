@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v85"; // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v86"; // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1736,7 +1736,7 @@ export default {
         // Fetch PSX HTML and stooq CSV in PARALLEL — merge results
         // PSX HTML = accurate live price + change (but no high/low/volume)
         // stooq CSV = high/low/volume (but price may lag 15 min)
-        const [psxHtmlResult, stooqResult] = await Promise.allSettled([
+        const [psxHtmlResult, stooqResult, stooq52Result] = await Promise.allSettled([
           // PSX /indices HTML
           fetch('https://dps.psx.com.pk/indices', {
             headers: {
@@ -1749,6 +1749,10 @@ export default {
           }).then(r => r.text()),
           // stooq CSV — Symbol,Date,Time,Open,High,Low,Close,Volume,Name
           fetch('https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn', {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+          }).then(r => r.text()),
+          // stooq 52-week range — separate param set
+          fetch('https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcv52lh', {
             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
           }).then(r => r.text()),
         ]);
@@ -1775,11 +1779,27 @@ export default {
             if (!isNaN(closeP) && closeP > 50000) {
               stooqMeta = {
                 price: closeP, open: openP, high: highP, low: lowP, volume: vol,
+                date: vals[1] || null,
                 _raw: 'stooq:'+rows[1],
               };
             } else errors.push('stooq:invalid('+closeP+')');
           } catch(es) { errors.push('stooq:parse-err'); }
         } else { errors.push('stooq:'+stooqResult.reason); }
+
+        // Parse stooq 52-week CSV
+        let fiftyTwoHigh = null, fiftyTwoLow = null;
+        if (stooq52Result && stooq52Result.status === 'fulfilled') {
+          try {
+            const rows52 = stooq52Result.value.trim().split('\n');
+            const header = rows52[0] ? rows52[0].split(',') : [];
+            const vals52 = rows52[1] ? rows52[1].split(',') : [];
+            // Find 52L and 52H column indices dynamically
+            const idx52H = header.indexOf('52H');
+            const idx52L = header.indexOf('52L');
+            if (idx52H >= 0) fiftyTwoHigh = parseFloat(vals52[idx52H]) || null;
+            if (idx52L >= 0) fiftyTwoLow  = parseFloat(vals52[idx52L]) || null;
+          } catch(e52) { /* 52-week optional, ignore */ }
+        }
 
         // MERGE: prefer PSX HTML for price/change, stooq for high/low/volume
         if (psxMeta) {
@@ -1817,6 +1837,7 @@ export default {
           symbol:        meta.symbol || 'KSE100',
           price:         meta.regularMarketPrice,
           prev:          meta.chartPreviousClose,
+          open:          stooqMeta ? stooqMeta.open : null,
           change:        meta.regularMarketPrice && meta.chartPreviousClose
                            ? (meta.regularMarketPrice - meta.chartPreviousClose).toFixed(2)
                            : null,
@@ -1826,8 +1847,9 @@ export default {
           dayHigh:       meta.regularMarketDayHigh,
           dayLow:        meta.regularMarketDayLow,
           volume:        meta.regularMarketVolume || null,
-          fiftyTwoHigh:  meta.fiftyTwoWeekHigh,
-          fiftyTwoLow:   meta.fiftyTwoWeekLow,
+          fiftyTwoHigh:  fiftyTwoHigh,
+          fiftyTwoLow:   fiftyTwoLow,
+          dataDate:      stooqMeta ? stooqMeta.date : null,
           currency:      meta.currency,
           exchangeName:  meta.exchangeName,
           ts:            meta.regularMarketTime,

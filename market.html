@@ -320,7 +320,19 @@ function renderFuel(d){
     html+='<div class="row"><div class="row-label">'+item.icon+' '+item.name+'</div>'
       +'<div><span class="row-val">Rs'+fmt(price,2)+'</span><span class="row-unit">/ litre</span></div></div>';
   });
-  if(d.effective) html+='<div style="font-size:11px;color:var(--muted);margin-top:10px">OGRA effective: '+d.effective+'</div>';
+  // Date display — format YYYY-MM-DD to readable
+  var dateStr = '—';
+  if(d.effective){
+    try{
+      var parts = d.effective.split('-');
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      dateStr = parts[2]+' '+months[parseInt(parts[1],10)-1]+' '+parts[0];
+    }catch(e){ dateStr = d.effective; }
+  }
+  html+='<div style="font-size:11px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">'
+      +'📅 OGRA effective: <strong style="color:var(--dim)">'+dateStr+'</strong>'
+      +(d.source && d.source!=='ogra-cached' ? ' &nbsp;·&nbsp; Source: '+d.source : ' &nbsp;·&nbsp; Verified OGRA rates')
+      +'</div>';
   document.getElementById('fuel-body').innerHTML=html;
 }
 
@@ -381,7 +393,9 @@ function renderGold(goldUSD, pkrRate, source, silverUSD){
   } else {
     _tickerData.gold={goldPKR:goldPKR,silverPKR:0};
   }
-  html+='<div style="font-size:10px;color:var(--muted);margin-top:8px">Source: '+source+'</div>';
+  var goldNow = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  html+='<div style="font-size:10px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
+      +'📅 Live spot price · Updated: <strong style="color:var(--dim)">'+goldNow+' PKT</strong> · Source: '+source+'</div>';
   document.getElementById('gold-body').innerHTML=html;
   buildTicker();
 }
@@ -477,7 +491,34 @@ function renderPSX(d){
           +'<div class="psx-bar-dot" style="left:'+barPct+'%"></div>'
         +'</div>'
       +'</div>'
-    : '');
+    : '')
+
+    // Extra stats row: Open + 52-week range
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">'
+      +'<div>'
+        +'<div style="font-size:10px;color:var(--muted);letter-spacing:.04em">OPEN</div>'
+        +'<div style="font-size:14px;font-weight:600;color:#f0fdf4;margin-top:3px">'+(d.open ? Math.round(d.open).toLocaleString() : '—')+'</div>'
+      +'</div>'
+      +(d.fiftyTwoHigh && d.fiftyTwoLow ?
+        '<div>'
+          +'<div style="font-size:10px;color:var(--muted);letter-spacing:.04em">52-WEEK RANGE</div>'
+          +'<div style="font-size:12px;font-weight:600;margin-top:3px">'
+            +'<span style="color:#f87171">'+Math.round(d.fiftyTwoLow).toLocaleString()+'</span>'
+            +' <span style="color:var(--muted)">–</span> '
+            +'<span style="color:#4ade80">'+Math.round(d.fiftyTwoHigh).toLocaleString()+'</span>'
+          +'</div>'
+        +'</div>'
+      : '<div>'
+          +'<div style="font-size:10px;color:var(--muted);letter-spacing:.04em">EXCHANGE</div>'
+          +'<div style="font-size:14px;font-weight:600;color:#f0fdf4;margin-top:3px">PSX / KSE</div>'
+        +'</div>')
+    +'</div>'
+
+    // Date footer
+    +'<div style="font-size:10px;color:var(--muted);margin-top:12px">'
+      +(d.dataDate ? '📅 Data date: <strong style="color:var(--dim)">'+d.dataDate+'</strong> &nbsp;·&nbsp; ' : '')
+      +'Source: stooq.com + PSX &nbsp;·&nbsp; 15-min delay'
+    +'</div>';
 
   document.getElementById('psx-body').innerHTML = html;
 }

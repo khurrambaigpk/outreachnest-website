@@ -321,6 +321,10 @@ footer a{color:#4a7a6a;text-decoration:none}
           <span id="stocks-time" style="font-size:11px;color:var(--muted)"></span>
         </div>
       </div>
+      <!-- Search box -->
+      <div style="margin-bottom:8px">
+        <input id="stocks-search" type="text" placeholder="🔍  Search symbol or company…" oninput="stocksSearch(this.value)" autocomplete="off" style="width:100%;background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:8px 12px;outline:none;transition:.15s" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
       <!-- Sector + Sharia + Favourites filter bar -->
       <div id="stocks-filters" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center">
         <button class="sf-btn active" onclick="setSectorFilter('all')" data-f="all">All</button>
@@ -912,6 +916,7 @@ KSE100_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
 var _currentIndex = 'kse30'; // default view
 var _liveStocks = {}; // sym -> live data when available
 var _currentFilter = 'all'; // sector filter
+var _searchQuery = ''; // search text
 
 // ── Favourites (localStorage) ─────────────────────────────────────────
 var _favs = {};
@@ -920,6 +925,12 @@ function saveFavs(){ try{ localStorage.setItem('kse_favs', JSON.stringify(_favs)
 function toggleFav(sym){
   if(_favs[sym]) delete _favs[sym]; else _favs[sym]=1;
   saveFavs();
+  renderStocksCard(null, true);
+}
+
+// ── Search ────────────────────────────────────────────────────────────
+function stocksSearch(val){
+  _searchQuery = val.trim();
   renderStocksCard(null, true);
 }
 
@@ -948,6 +959,9 @@ function switchIndex(idx){
     if(lbl) lbl.textContent = 'KSE-100';
     _tickerData.stockGroup = 'kse100';
   }
+  _searchQuery = '';
+  var sb = document.getElementById('stocks-search');
+  if(sb) sb.value = '';
   renderStocksCard(null, true);
   buildTicker();
 }
@@ -957,12 +971,30 @@ function getActiveStocks(){
   var merged = base.map(function(s){
     return _liveStocks[s.sym] ? Object.assign({}, s, _liveStocks[s.sym]) : s;
   });
-  // apply filter
-  if(_currentFilter === 'fav')    return merged.filter(function(s){ return _favs[s.sym]; });
-  if(_currentFilter === 'sharia') return merged.filter(function(s){ return s.sharia === 1; });
-  if(_currentFilter !== 'all')    return merged.filter(function(s){ return s.sector === _currentFilter; });
+  // apply sector/sharia/fav filter
+  if(_currentFilter === 'fav')    merged = merged.filter(function(s){ return _favs[s.sym]; });
+  else if(_currentFilter === 'sharia') merged = merged.filter(function(s){ return s.sharia === 1; });
+  else if(_currentFilter !== 'all')    merged = merged.filter(function(s){ return s.sector === _currentFilter; });
+  // apply search
+  if(_searchQuery){
+    var q = _searchQuery.toLowerCase();
+    merged = merged.filter(function(s){
+      return s.sym.toLowerCase().indexOf(q)>=0 || (s.name||'').toLowerCase().indexOf(q)>=0;
+    });
+  }
   return merged;
 }
+
+// Star click via event delegation (safe for dynamically rendered rows)
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.st-star');
+  if(!btn) return;
+  var sym = btn.getAttribute('data-sym');
+  if(!sym) return;
+  if(_favs[sym]) delete _favs[sym]; else _favs[sym]=1;
+  saveFavs();
+  renderStocksCard(null, true);
+});
 
 // Show fallback immediately
 _tickerData.stockGroup = 'kse30';
@@ -1004,7 +1036,7 @@ function renderStocksCard(stocks, isFallback){
     var shariaBadge = s.sharia ? '<span style="font-size:9px;color:#60a5fa;margin-left:3px">☪</span>' : '';
     html += '<tr>'
           + '<td class="col-num" style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
-          + '<td style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" onclick="toggleFav(\''+s.sym+'\')" title="'+(isFav?'Remove from':'Add to')+' favourites">'+(isFav?'⭐':'☆')+'</button></td>'
+          + '<td style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" data-sym="'+s.sym+'" title="'+(isFav?'Remove from favourites':'Add to favourites')+'">'+(isFav?'⭐':'☆')+'</button></td>'
           + '<td><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'</span></td>'
           + '<td class="r"><span class="st-price">'+Math.round(s.price).toLocaleString()+'</span></td>'
           + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'

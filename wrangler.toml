@@ -13,4 +13,4 @@ binding = "LICENSE_KV"
 id = "9153ee5559d44c4ea0226699ee4f671f"
 
 [triggers]
-crons = ["0 */6 * * *"]
+crons = ["0 * * * *"]

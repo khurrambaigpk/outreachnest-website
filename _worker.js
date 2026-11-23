@@ -2044,8 +2044,8 @@ export default {
         const versionedUrl = new URL(request.url);
         versionedUrl.searchParams.set("_cv", CACHE_VERSION);
         const cacheKey = new Request(versionedUrl.href, { method: "GET" });
-        const cached = await cache.match(cacheKey);
-        if (cached) return cached;
+        // v79: Don't return cached directly — always run injection so nav links stay current.
+        // Previously `if (cached) return cached` bypassed injection on cache hits.
         // V13.1: fetch .html file directly — avoids redirect loop
         // (/download.html → /download → /download.html → 404)
         const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html","/solar-calculator":"/solar-calculator.html","/market":"/market.html","/activate":"/activate.html"};
@@ -2112,8 +2112,8 @@ export default {
               "Cache-Control": "no-store",
             },
           });
-          // v23: non-blocking cache write — return immediately, write in background
-          ctx.waitUntil(cache.put(cacheKey, toCache.clone()));
+          // v79: removed Workers cache write — CF edge is no-store, Worker runs every
+          // request so injection always fires. No Workers cache needed.
           return toCache;
         }
         return resp;

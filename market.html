@@ -75,11 +75,25 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .row-change.dn{color:var(--red)}
 
 /* PSX CARD */
-.psx-price{font-size:38px;font-weight:800;color:#f0fdf4;line-height:1}
+.psx-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.psx-price{font-size:42px;font-weight:800;color:#f0fdf4;line-height:1;letter-spacing:-1px}
 .psx-change{font-size:15px;font-weight:700;margin-top:6px}
-.psx-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
-.psx-stat-label{font-size:10px;color:var(--muted)}
-.psx-stat-val{font-size:14px;font-weight:600;color:#f0fdf4;margin-top:2px}
+.psx-prev{font-size:11px;color:var(--muted);margin-top:3px}
+.psx-badge{background:rgba(74,122,106,.18);border:1px solid rgba(74,122,106,.35);border-radius:6px;padding:6px 10px;text-align:center;min-width:80px;flex-shrink:0}
+.psx-badge-label{font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.psx-badge-val{font-size:13px;font-weight:700;color:var(--green);margin-top:2px}
+.psx-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.psx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 0;margin-top:0}
+.psx-stat{padding:10px 0;border-right:1px solid var(--border)}
+.psx-stat:last-child{border-right:none}
+.psx-stat-label{font-size:10px;color:var(--muted);letter-spacing:.04em;text-align:center}
+.psx-stat-val{font-size:16px;font-weight:700;color:#f0fdf4;margin-top:4px;text-align:center}
+.psx-stat-sub{font-size:10px;color:var(--muted);margin-top:2px;text-align:center}
+.psx-range-bar{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--border)}
+.psx-range-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+.psx-bar-track{height:5px;background:var(--border);border-radius:3px;position:relative}
+.psx-bar-fill{height:100%;background:linear-gradient(90deg,#ef4444,#22c55e);border-radius:3px}
+.psx-bar-dot{width:10px;height:10px;background:#f0fdf4;border:2px solid var(--green);border-radius:50%;position:absolute;top:50%;transform:translateY(-50%);margin-left:-5px}
 
 /* GOLD */
 .gold-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
@@ -402,26 +416,70 @@ function fetchGold(pkrRate){
 
 // ── PSX KSE-100 ───────────────────────────────────────────────────────
 function renderPSX(d){
-  var chg    = d.change ? parseFloat(d.change) : 0;
-  var chgPct = d.changePct ? parseFloat(d.changePct) : 0;
-  var up     = chg>=0;
-  var clr    = up?'var(--green)':'var(--red)';
-  var arrow  = up?'▲':'▼';
-  var now    = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi'});
-  var prevClose = d.prev ? Math.round(d.prev).toLocaleString() : Math.round((d.price||0)-(chg||0)).toLocaleString();
-  var volStr    = d.volume ? (d.volume >= 1e6 ? (d.volume/1e6).toFixed(2)+'M' : Math.round(d.volume).toLocaleString()) : '—';
-  var html   =
-    '<div class="psx-price">'+Math.round(d.price).toLocaleString()+'</div>'
-    +'<div class="psx-change" style="color:'+clr+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</div>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px">Prev Close: '+prevClose+' PKR</div>'
-    +'<div class="psx-grid">'
-    +'<div><div class="psx-stat-label">Day High</div><div class="psx-stat-val">'+(d.dayHigh?Math.round(d.dayHigh).toLocaleString():'—')+'</div></div>'
-    +'<div><div class="psx-stat-label">Day Low</div><div class="psx-stat-val">'+(d.dayLow?Math.round(d.dayLow).toLocaleString():'—')+'</div></div>'
-    +'<div><div class="psx-stat-label">Volume</div><div class="psx-stat-val">'+volStr+'</div></div>'
-    +'<div><div class="psx-stat-label">Exchange</div><div class="psx-stat-val">PSX</div></div>'
+  var chg     = d.change    ? parseFloat(d.change)    : 0;
+  var chgPct  = d.changePct ? parseFloat(d.changePct) : 0;
+  var up      = chg >= 0;
+  var clr     = up ? 'var(--green)' : '#ef4444';
+  var arrow   = up ? '▲' : '▼';
+  var price   = Math.round(d.price || 0);
+  var high    = d.dayHigh ? Math.round(d.dayHigh) : null;
+  var low     = d.dayLow  ? Math.round(d.dayLow)  : null;
+  var prev    = d.prev    ? Math.round(d.prev)    : Math.round(price - chg);
+  var volStr  = d.volume  ? (d.volume >= 1e6 ? (d.volume/1e6).toFixed(2)+' M' : Math.round(d.volume).toLocaleString()) : '—';
+  var now     = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
+
+  // Day range progress bar — where is current price between low and high
+  var barPct  = (high && low && high !== low) ? Math.round(((price-low)/(high-low))*100) : 50;
+  barPct = Math.max(0, Math.min(100, barPct));
+
+  var html =
+    '<div class="psx-header">'
+      +'<div>'
+        +'<div class="psx-price">'+price.toLocaleString()+'</div>'
+        +'<div class="psx-change" style="color:'+clr+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' &nbsp;('+Math.abs(chgPct).toFixed(2)+'%)</div>'
+        +'<div class="psx-prev">Prev Close: '+prev.toLocaleString()+' &nbsp;·&nbsp; As of '+now+' PKT</div>'
+      +'</div>'
+      +'<div class="psx-badge">'
+        +'<div class="psx-badge-label">KSE-100</div>'
+        +'<div class="psx-badge-val" style="color:'+clr+'">'+arrow+' '+Math.abs(chgPct).toFixed(2)+'%</div>'
+      +'</div>'
     +'</div>'
-    +'<div style="font-size:10px;color:var(--muted);margin-top:12px">As of '+now+'</div>';
-  document.getElementById('psx-body').innerHTML=html;
+
+    +'<hr class="psx-divider">'
+
+    +'<div class="psx-grid">'
+      +'<div class="psx-stat">'
+        +'<div class="psx-stat-label">DAY HIGH</div>'
+        +'<div class="psx-stat-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</div>'
+        +'<div class="psx-stat-sub">PKR</div>'
+      +'</div>'
+      +'<div class="psx-stat">'
+        +'<div class="psx-stat-label">DAY LOW</div>'
+        +'<div class="psx-stat-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</div>'
+        +'<div class="psx-stat-sub">PKR</div>'
+      +'</div>'
+      +'<div class="psx-stat">'
+        +'<div class="psx-stat-label">VOLUME</div>'
+        +'<div class="psx-stat-val">'+volStr+'</div>'
+        +'<div class="psx-stat-sub">shares</div>'
+      +'</div>'
+    +'</div>'
+
+    +(high && low ?
+      '<div class="psx-range-bar">'
+        +'<div class="psx-range-label">'
+          +'<span style="color:#f87171">▼ Low '+low.toLocaleString()+'</span>'
+          +'<span style="font-size:11px;color:var(--muted)">Day Range</span>'
+          +'<span style="color:#4ade80">High '+high.toLocaleString()+' ▲</span>'
+        +'</div>'
+        +'<div class="psx-bar-track">'
+          +'<div class="psx-bar-fill" style="width:'+barPct+'%"></div>'
+          +'<div class="psx-bar-dot" style="left:'+barPct+'%"></div>'
+        +'</div>'
+      +'</div>'
+    : '');
+
+  document.getElementById('psx-body').innerHTML = html;
 }
 // Parse PSX /indices HTML — looks for topIndices CSS class divs
 function parsePSXHtml(html){

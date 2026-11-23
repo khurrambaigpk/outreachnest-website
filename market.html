@@ -146,7 +146,8 @@ footer a{color:#4a7a6a;text-decoration:none}
 
 /* STOCKS TABLE */
 .stocks-wrap{margin-top:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.stocks-table{width:100%;min-width:600px;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.stocks-table{width:100%;min-width:560px;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.st-sticky{position:sticky;left:0;background:var(--card);z-index:1}
 .stocks-table thead tr{border-bottom:2px solid var(--border)}
 .stocks-table thead th{padding:7px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden}
 .stocks-table thead th.r{text-align:right}
@@ -1033,11 +1034,11 @@ function renderStocksCard(stocks, isFallback){
   if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
 
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col class="col-num" style="width:20px"><col style="width:20px"><col style="width:70px"><col style="width:46px"><col style="width:44px"><col style="width:60px"><col style="width:36px"><col style="width:44px"></colgroup>'
+    + '<colgroup><col class="col-num" style="width:20px"><col style="width:24px"><col style="width:110px"><col style="width:60px"><col style="width:52px"><col style="width:70px"><col style="width:52px"><col style="width:60px"></colgroup>'
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
     + '<th style="text-align:center">☆</th>'
-    + '<th>Stock</th>'
+    + '<th class="st-sticky">Stock</th>'
     + '<th class="r">Price<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r col-prev">Prev<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">Rs.</span></th>'
     + '<th class="r">Change<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">%</span></th>'
@@ -1059,7 +1060,7 @@ function renderStocksCard(stocks, isFallback){
     html += '<tr>'
           + '<td class="col-num" style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
           + '<td style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" data-sym="'+s.sym+'" title="'+(isFav?'Remove from favourites':'Add to favourites')+'"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button></td>'
-          + '<td><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'<span class="st-vol-inline">· '+volStr+'</span></span></td>'
+          + '<td class="st-sticky"><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'<span class="st-vol-inline">· '+volStr+'</span></span></td>'
           + '<td class="r"><span class="st-price">'+Number(s.price).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})+'</span></td>'
           + '<td class="r col-prev" style="color:var(--muted);font-size:12px">'+Number(prevPrice).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:1})+'</td>'
           + '<td class="r"><span class="st-chg '+(up?'up':'dn')+'">'+arr+' '+Math.abs(s.chg).toFixed(2)+'%</span></td>'

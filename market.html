@@ -83,14 +83,15 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .row-change.up{color:var(--green)}
 .row-change.dn{color:var(--red)}
 
-/* PSX CARD — full row table */
-.psx-table{width:100%;border-collapse:collapse;margin-top:4px}
-.psx-table tr{border-bottom:1px solid rgba(30,53,35,.5)}
-.psx-table tr:last-child{border-bottom:none}
-.psx-table td{padding:9px 10px;vertical-align:middle}
-.psx-table td.psx-lbl{font-size:12px;color:var(--muted);width:40%}
-.psx-table td.psx-val{font-size:14px;font-weight:700;color:#f0fdf4;text-align:right}
-.psx-chg-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:13px;font-weight:700}
+/* PSX CARD — 2-column grid */
+.psx-grid2{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:4px}
+.psx-cell{padding:10px 12px;border-bottom:1px solid rgba(30,53,35,.5);border-right:1px solid rgba(30,53,35,.5)}
+.psx-cell:nth-child(even){border-right:none}
+.psx-cell:nth-last-child(1),.psx-cell:nth-last-child(2){border-bottom:none}
+.psx-cell-lbl{font-size:10px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.psx-cell-val{font-size:16px;font-weight:800;color:#f0fdf4}
+.psx-cell-sub{font-size:11px;color:var(--muted);margin-left:3px;font-weight:400}
+.psx-chg-pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:10px;font-size:13px;font-weight:700}
 .psx-chg-pill.up{background:var(--green);color:#0a1a0f}
 .psx-chg-pill.dn{background:#ef4444;color:#fff}
 .psx-range-bar{padding:10px 0 2px}
@@ -966,15 +967,14 @@ function renderPSX(d){
   barPct = Math.max(0, Math.min(100, barPct));
 
   var html =
-    '<table class="psx-table">'
-      +'<tr><td class="psx-lbl">KSE-100 Index</td><td class="psx-val" style="font-size:22px;font-weight:800;color:#f0fdf4">'+price.toLocaleString()+'</td></tr>'
-      +'<tr><td class="psx-lbl">Change</td><td class="psx-val"><span class="psx-chg-pill '+(up?'up':'dn')+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</span></td></tr>'
-      +'<tr><td class="psx-lbl">Prev Close</td><td class="psx-val">'+prev.toLocaleString()+' <span style="font-size:11px;color:var(--muted)">PKR</span></td></tr>'
-      +'<tr><td class="psx-lbl">Day High</td><td class="psx-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</td></tr>'
-      +'<tr><td class="psx-lbl">Day Low</td><td class="psx-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</td></tr>'
-      +'<tr><td class="psx-lbl">Volume</td><td class="psx-val">'+volStr+' <span style="font-size:11px;color:var(--muted)">shares</span></td></tr>'
-      +'<tr><td class="psx-lbl">As of</td><td class="psx-val" style="font-size:12px;font-weight:500;color:var(--muted)">'+now+' PKT</td></tr>'
-    +'</table>'
+    '<div class="psx-grid2">'
+      +'<div class="psx-cell"><div class="psx-cell-lbl">KSE-100 Index</div><div class="psx-cell-val" style="font-size:22px">'+price.toLocaleString()+'<span class="psx-cell-sub">PKR</span></div></div>'
+      +'<div class="psx-cell"><div class="psx-cell-lbl">Change</div><div class="psx-cell-val"><span class="psx-chg-pill '+(up?'up':'dn')+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</span></div></div>'
+      +'<div class="psx-cell"><div class="psx-cell-lbl">Day High</div><div class="psx-cell-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</div></div>'
+      +'<div class="psx-cell"><div class="psx-cell-lbl">Day Low</div><div class="psx-cell-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</div></div>'
+      +'<div class="psx-cell"><div class="psx-cell-lbl">Prev Close</div><div class="psx-cell-val">'+prev.toLocaleString()+'</div></div>'
+      +'<div class="psx-cell"><div class="psx-cell-lbl">Volume</div><div class="psx-cell-val">'+volStr+'<span class="psx-cell-sub">shares</span></div></div>'
+    +'</div>'
 
     +(high && low ?
       '<div class="psx-range-bar">'

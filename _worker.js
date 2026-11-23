@@ -1954,6 +1954,19 @@ export default {
           } catch(e2) {}
         }
 
+        // Try 3: exchangerate-api.com v4 — XAU as base (USD = price per troy oz)
+        if (!goldResult) {
+          try {
+            const erResp = await fetch('https://api.exchangerate-api.com/v4/latest/XAU', {
+              headers: { 'Accept': 'application/json' }
+            });
+            const erData = await erResp.json();
+            if (erData && erData.rates && erData.rates.USD && erData.rates.USD > 100) {
+              goldResult = { XAU: erData.rates.USD, XAG: null, source: 'exchangerate-api' };
+            }
+          } catch(e3) {}
+        }
+
         if (!goldResult) throw new Error('all gold sources failed');
 
         return new Response(JSON.stringify(goldResult), {

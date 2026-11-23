@@ -132,6 +132,7 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .loading{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
 .loading::after{content:'';display:block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;margin:12px auto 0;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 4px #4ade80}50%{opacity:.3;box-shadow:none}}
 
 /* FOOTER */
 footer{border-top:1px solid var(--border);padding:28px 0;text-align:center;font-size:12px;color:var(--muted)}
@@ -1090,6 +1091,15 @@ fetchKSEStocks();
 setInterval(fetchKSEStocks, 2*60*1000);
 
 // ── PSX KSE-100 ───────────────────────────────────────────────────────
+function isPSXOpen(){
+  var now = new Date();
+  var pkt = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Karachi'}));
+  var day = pkt.getDay(); // 0=Sun, 6=Sat
+  if(day === 0 || day === 6) return false;
+  var h = pkt.getHours(), m = pkt.getMinutes();
+  var mins = h*60+m;
+  return mins >= 9*60+30 && mins < 15*60+30;
+}
 function renderPSX(d){
   var chg     = d.change    ? parseFloat(d.change)    : 0;
   var chgPct  = d.changePct ? parseFloat(d.changePct) : 0;
@@ -1102,6 +1112,12 @@ function renderPSX(d){
   var prev    = d.prev    ? Math.round(d.prev)    : Math.round(price - chg);
   var volStr  = d.volume  ? (d.volume >= 1e6 ? (d.volume/1e6).toFixed(2)+' M' : Math.round(d.volume).toLocaleString()) : '—';
   var now     = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
+  var open    = isPSXOpen();
+  var statusHtml = open
+    ? '<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#4ade80">'
+        +'<span style="width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block;animation:blink 1s ease-in-out infinite"></span>OPEN</span>'
+    : '<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#ef4444">'
+        +'<span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span>CLOSED</span>';
 
   // Day range progress bar — where is current price between low and high
   var barPct  = (high && low && high !== low) ? Math.round(((price-low)/(high-low))*100) : 50;
@@ -1133,11 +1149,11 @@ function renderPSX(d){
         +'<div class="psx-col-val">'+volStr+'</div>'
         +'<div class="psx-col-sub">shares</div>'
       +'</div>'
-      // col 5: As of
+      // col 5: Status + time
       +'<div class="psx-col">'
-        +'<div class="psx-col-lbl">As of</div>'
-        +'<div class="psx-col-val" style="font-size:13px">'+now+'</div>'
-        +'<div class="psx-col-sub">PKT</div>'
+        +'<div class="psx-col-lbl">Market</div>'
+        +'<div class="psx-col-val" style="font-size:13px">'+statusHtml+'</div>'
+        +'<div class="psx-col-sub">'+now+' PKT</div>'
       +'</div>'
     +'</div>'
 

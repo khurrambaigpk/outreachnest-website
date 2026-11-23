@@ -912,6 +912,7 @@ var KSE100_STOCKS = KSE30_STOCKS.concat(KSE100_EXTRA);
 
 var _stockNames = {};
 KSE100_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
+KSE30_STOCKS.forEach(function(s){ if(!_stockNames[s.sym]) _stockNames[s.sym] = s.name; });
 
 var _currentIndex = 'kse30'; // default view
 var _liveStocks = {}; // sym -> live data when available
@@ -979,7 +980,8 @@ function getActiveStocks(){
   if(_searchQuery){
     var q = _searchQuery.toLowerCase();
     merged = merged.filter(function(s){
-      return s.sym.toLowerCase().indexOf(q)>=0 || (s.name||'').toLowerCase().indexOf(q)>=0;
+      var nm = (_stockNames&&_stockNames[s.sym]) || s.name || '';
+      return s.sym.toLowerCase().indexOf(q)>=0 || nm.toLowerCase().indexOf(q)>=0;
     });
   }
   return merged;
@@ -1002,10 +1004,12 @@ renderStocksCard(null, true);
 
 function renderStocksCard(stocks, isFallback){
   var active = stocks || getActiveStocks();
-  if(!active||!active.length){
+  // No stocks at all (data issue)
+  if(!active && !_searchQuery && _currentFilter==='all'){
     document.getElementById('stocks-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 Stock data temporarily unavailable</div>';
     return;
   }
+  if(!active) active = [];
   var fallbackNote = isFallback ? '<div style="font-size:10px;color:var(--muted);margin-bottom:8px;text-align:right">⚠️ Showing last closing prices · Live updates during trading hours Mon–Fri 09:30–15:30 PKT</div>' : '';
   var now = new Date().toLocaleString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit'});
   var el = document.getElementById('stocks-time');

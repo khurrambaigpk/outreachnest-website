@@ -83,22 +83,17 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .row-change.up{color:var(--green)}
 .row-change.dn{color:var(--red)}
 
-/* PSX CARD */
-.psx-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.psx-price{font-size:42px;font-weight:800;color:#f0fdf4;line-height:1;letter-spacing:-1px}
-.psx-change{font-size:15px;font-weight:700;margin-top:6px}
-.psx-prev{font-size:11px;color:var(--muted);margin-top:3px}
-.psx-badge{background:rgba(74,122,106,.18);border:1px solid rgba(74,122,106,.35);border-radius:6px;padding:6px 10px;text-align:center;min-width:80px;flex-shrink:0}
-.psx-badge-label{font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.psx-badge-val{font-size:13px;font-weight:700;color:var(--green);margin-top:2px}
-.psx-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
-.psx-stats{display:flex;flex-direction:column;gap:0;margin-top:0}
-.psx-stat{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(30,53,35,.5)}
-.psx-stat:last-child{border-bottom:none}
-.psx-stat-label{font-size:12px;color:var(--muted);letter-spacing:.03em}
-.psx-stat-val{font-size:14px;font-weight:700;color:#f0fdf4}
-.psx-stat-sub{font-size:11px;color:var(--muted);margin-left:4px}
-.psx-range-bar{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--border)}
+/* PSX CARD — full row table */
+.psx-table{width:100%;border-collapse:collapse;margin-top:4px}
+.psx-table tr{border-bottom:1px solid rgba(30,53,35,.5)}
+.psx-table tr:last-child{border-bottom:none}
+.psx-table td{padding:9px 10px;vertical-align:middle}
+.psx-table td.psx-lbl{font-size:12px;color:var(--muted);width:40%}
+.psx-table td.psx-val{font-size:14px;font-weight:700;color:#f0fdf4;text-align:right}
+.psx-chg-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:13px;font-weight:700}
+.psx-chg-pill.up{background:var(--green);color:#0a1a0f}
+.psx-chg-pill.dn{background:#ef4444;color:#fff}
+.psx-range-bar{padding:10px 0 2px}
 .psx-range-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
 .psx-bar-track{height:5px;background:var(--border);border-radius:3px;position:relative}
 .psx-bar-fill{height:100%;background:linear-gradient(90deg,#ef4444,#22c55e);border-radius:3px}
@@ -971,49 +966,22 @@ function renderPSX(d){
   barPct = Math.max(0, Math.min(100, barPct));
 
   var html =
-    '<div class="psx-header">'
-      +'<div>'
-        +'<div class="psx-price">'+price.toLocaleString()+'</div>'
-        +'<div class="psx-change" style="color:'+clr+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' &nbsp;('+Math.abs(chgPct).toFixed(2)+'%)</div>'
-        +'<div class="psx-prev">As of '+now+' PKT</div>'
-      +'</div>'
-      +'<div class="psx-badge">'
-        +'<div class="psx-badge-label">KSE-100</div>'
-        +'<div class="psx-badge-val" style="color:'+clr+'">'+arrow+' '+Math.abs(chgPct).toFixed(2)+'%</div>'
-      +'</div>'
-    +'</div>'
-
-    +'<hr class="psx-divider">'
-
-    +'<div class="psx-stats">'
-      +'<div class="psx-stat">'
-        +'<span class="psx-stat-label">Day High</span>'
-        +'<span><span class="psx-stat-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</span><span class="psx-stat-sub">PKR</span></span>'
-      +'</div>'
-      +'<div class="psx-stat">'
-        +'<span class="psx-stat-label">Day Low</span>'
-        +'<span><span class="psx-stat-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</span><span class="psx-stat-sub">PKR</span></span>'
-      +'</div>'
-      +'<div class="psx-stat">'
-        +'<span class="psx-stat-label">Prev Close</span>'
-        +'<span><span class="psx-stat-val">'+prev.toLocaleString()+'</span><span class="psx-stat-sub">PKR</span></span>'
-      +'</div>'
-      +'<div class="psx-stat">'
-        +'<span class="psx-stat-label">Volume</span>'
-        +'<span><span class="psx-stat-val">'+volStr+'</span><span class="psx-stat-sub">shares</span></span>'
-      +'</div>'
-      +'<div class="psx-stat">'
-        +'<span class="psx-stat-label">Exchange</span>'
-        +'<span class="psx-stat-val" style="font-size:13px">PSX / KSE</span>'
-      +'</div>'
-    +'</div>'
+    '<table class="psx-table">'
+      +'<tr><td class="psx-lbl">KSE-100 Index</td><td class="psx-val" style="font-size:22px;font-weight:800;color:#f0fdf4">'+price.toLocaleString()+'</td></tr>'
+      +'<tr><td class="psx-lbl">Change</td><td class="psx-val"><span class="psx-chg-pill '+(up?'up':'dn')+'">'+arrow+' '+Math.abs(chg).toLocaleString(undefined,{maximumFractionDigits:2})+' ('+Math.abs(chgPct).toFixed(2)+'%)</span></td></tr>'
+      +'<tr><td class="psx-lbl">Prev Close</td><td class="psx-val">'+prev.toLocaleString()+' <span style="font-size:11px;color:var(--muted)">PKR</span></td></tr>'
+      +'<tr><td class="psx-lbl">Day High</td><td class="psx-val" style="color:#4ade80">'+(high?high.toLocaleString():'—')+'</td></tr>'
+      +'<tr><td class="psx-lbl">Day Low</td><td class="psx-val" style="color:#f87171">'+(low?low.toLocaleString():'—')+'</td></tr>'
+      +'<tr><td class="psx-lbl">Volume</td><td class="psx-val">'+volStr+' <span style="font-size:11px;color:var(--muted)">shares</span></td></tr>'
+      +'<tr><td class="psx-lbl">As of</td><td class="psx-val" style="font-size:12px;font-weight:500;color:var(--muted)">'+now+' PKT</td></tr>'
+    +'</table>'
 
     +(high && low ?
       '<div class="psx-range-bar">'
         +'<div class="psx-range-label">'
-          +'<span style="color:#f87171">▼ Low '+low.toLocaleString()+'</span>'
-          +'<span style="font-size:11px;color:var(--muted)">Day Range</span>'
-          +'<span style="color:#4ade80">High '+high.toLocaleString()+' ▲</span>'
+          +'<span style="color:#f87171">▼ '+low.toLocaleString()+'</span>'
+          +'<span>Day Range</span>'
+          +'<span style="color:#4ade80">'+high.toLocaleString()+' ▲</span>'
         +'</div>'
         +'<div class="psx-bar-track">'
           +'<div class="psx-bar-fill" style="width:'+barPct+'%"></div>'

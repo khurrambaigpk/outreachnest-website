@@ -138,14 +138,16 @@ footer a{color:#4a7a6a;text-decoration:none}
 /* CONVERTER */
 .converter-box{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
 .converter-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
-.converter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.conv-input{background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;font-weight:600;padding:8px 11px;width:110px;outline:none;transition:.15s}
+.converter-row{display:flex;align-items:center;gap:6px}
+.conv-input{background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;font-weight:600;padding:8px 10px;width:100px;outline:none;transition:.15s;min-width:0}
 .conv-input:focus{border-color:var(--green)}
-.conv-select{background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--dim);font-size:13px;font-weight:600;padding:8px 10px;outline:none;cursor:pointer}
+.conv-select{background:#0d1a10;border:1px solid var(--border);border-radius:8px;color:var(--dim);font-size:13px;font-weight:600;padding:8px 8px;outline:none;cursor:pointer;flex:1;min-width:0}
 .conv-select:focus{border-color:var(--green)}
-.conv-arrow{font-size:18px;color:var(--muted)}
-.conv-result{font-size:18px;font-weight:800;color:var(--green);min-width:80px}
-.conv-result-label{font-size:11px;color:var(--muted);margin-top:2px}
+.conv-swap{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:8px;color:var(--green);font-size:16px;font-weight:700;padding:7px 10px;cursor:pointer;transition:.15s;line-height:1;flex-shrink:0}
+.conv-swap:hover{background:rgba(74,222,128,.22);border-color:var(--green)}
+.conv-result-box{margin-top:10px;background:#0d1a10;border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.conv-result{font-size:20px;font-weight:800;color:var(--green)}
+.conv-result-label{font-size:11px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -199,12 +201,15 @@ footer a{color:#4a7a6a;text-decoration:none}
         <div class="converter-row">
           <input type="number" id="conv-amount" class="conv-input" value="100" min="0" step="any">
           <select id="conv-from" class="conv-select"></select>
-          <span class="conv-arrow">→</span>
+          <button class="conv-swap" id="conv-swap-btn" title="Swap currencies">⇄</button>
           <select id="conv-to" class="conv-select"></select>
         </div>
-        <div style="margin-top:10px">
-          <div class="conv-result" id="conv-result">—</div>
-          <div class="conv-result-label" id="conv-result-label">&nbsp;</div>
+        <div class="conv-result-box">
+          <div>
+            <div class="conv-result" id="conv-result">—</div>
+            <div class="conv-result-label" id="conv-result-label">&nbsp;</div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);text-align:right;line-height:1.5" id="conv-rate-box"></div>
         </div>
       </div>
       <div class="source-line" style="margin-top:14px">📡 Source: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a> — indicative mid-market rates. Updated daily.</div>
@@ -367,6 +372,13 @@ function setupConverter(rates, pkrRate) {
   document.getElementById('conv-amount').addEventListener('input', calcConv);
   fromSel.addEventListener('change', calcConv);
   toSel.addEventListener('change', calcConv);
+  // Swap button
+  document.getElementById('conv-swap-btn').addEventListener('click', function(){
+    var tmp = fromSel.value;
+    fromSel.value = toSel.value;
+    toSel.value = tmp;
+    calcConv();
+  });
 }
 function calcConv(){
   var amount = parseFloat(document.getElementById('conv-amount').value);
@@ -380,10 +392,18 @@ function calcConv(){
   // Convert via USD base: amount / fromRate * toRate
   var inUSD   = amount / _convRates[from];
   var result  = inUSD * _convRates[to];
-  var dec     = (to==='JPY'||to==='PKR'||to==='INR') ? 0 : 2;
-  document.getElementById('conv-result').textContent = result.toLocaleString('en',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' '+to;
+  var decTo   = (to==='JPY'||to==='PKR'||to==='INR') ? 0 : 2;
+  var decFrom = (from==='JPY'||from==='PKR'||from==='INR') ? 0 : 4;
+  var rate1   = _convRates[to]/_convRates[from];   // 1 from → to
+  var rate2   = _convRates[from]/_convRates[to];   // 1 to → from
+  document.getElementById('conv-result').textContent =
+    result.toLocaleString('en',{minimumFractionDigits:decTo,maximumFractionDigits:decTo})+' '+to;
   document.getElementById('conv-result-label').textContent =
-    '1 '+from+' = '+(_convRates[to]/_convRates[from]).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:4})+' '+to;
+    amount.toLocaleString('en',{maximumFractionDigits:2})+' '+from+' → '+to;
+  var rateBox = document.getElementById('conv-rate-box');
+  if(rateBox) rateBox.innerHTML =
+    '1 '+from+' = '+rate1.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:4})+' '+to+'<br>'
+   +'1 '+to+' = '+rate2.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:4})+' '+from;
 }
 
 // ── Fuel ─────────────────────────────────────────────────────────────

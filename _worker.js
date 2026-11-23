@@ -1690,13 +1690,27 @@ export default {
         return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
       }
       try {
-        // Yahoo Finance — free, no key, 15-min delay
+        // Yahoo Finance v7 quote endpoint (v8/chart stopped returning price)
         const yResp = await fetch(
-          'https://query1.finance.yahoo.com/v8/finance/chart/%5EKSE100?interval=1d&range=30d',
-          { headers: { 'User-Agent': 'Mozilla/5.0' } }
+          'https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EKSE100&fields=regularMarketPrice,regularMarketPreviousClose,regularMarketDayHigh,regularMarketDayLow,fiftyTwoWeekHigh,fiftyTwoWeekLow,regularMarketTime,currency,fullExchangeName',
+          { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'application/json' } }
         );
         const yData = await yResp.json();
-        const meta  = yData?.chart?.result?.[0]?.meta || {};
+        const q = yData?.quoteResponse?.result?.[0] || {};
+        // Map v7 quote fields to our meta shape
+        const meta = {
+          symbol: q.symbol,
+          regularMarketPrice: q.regularMarketPrice,
+          chartPreviousClose: q.regularMarketPreviousClose,
+          regularMarketDayHigh: q.regularMarketDayHigh,
+          regularMarketDayLow: q.regularMarketDayLow,
+          fiftyTwoWeekHigh: q.fiftyTwoWeekHigh,
+          fiftyTwoWeekLow: q.fiftyTwoWeekLow,
+          regularMarketTime: q.regularMarketTime,
+          currency: q.currency,
+          exchangeName: q.fullExchangeName,
+          _raw: JSON.stringify(yData).substring(0, 200),
+        };
         const result = {
           symbol:        meta.symbol || 'KSE100',
           price:         meta.regularMarketPrice,

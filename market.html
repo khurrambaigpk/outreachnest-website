@@ -188,7 +188,7 @@ footer a{color:#4a7a6a;text-decoration:none}
     <div class="card">
       <div class="card-title">📊 Pakistan Stock Exchange — KSE-100 <span class="badge-src">15-min delay</span></div>
       <div id="psx-body"><div class="loading"></div></div>
-      <div class="source-line">📡 Source: <a href="https://finance.yahoo.com/quote/%5EKSE100" target="_blank" rel="noopener">Yahoo Finance</a> — 15-minute delayed data.</div>
+      <div class="source-line">📡 Source: Pakistan Stock Exchange (PSX) — 15-minute delayed data.</div>
     </div>
 
     <!-- Solar -->
@@ -365,7 +365,7 @@ fetch('/api/psx')
   })
   .catch(function(e){
     // Show last known approximate value with disclaimer
-    document.getElementById('psx-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 KSE-100 live data unavailable<br><small style="font-size:11px">PSX data temporarily offline. Check <a href="https://dps.psx.com.pk" target="_blank" rel="noopener" style="color:var(--green)">PSX website</a> for live rates.</small></div>';
+    document.getElementById('psx-body').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">📉 KSE-100 data temporarily unavailable<br><small style="font-size:11px">Live market data will appear here during trading hours (Mon–Fri 09:30–15:30 PKT)</small></div>';
   });
 
 // ── Solar Prices (static — same as dashboard defaults) ────────────────

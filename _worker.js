@@ -1695,49 +1695,68 @@ export default {
         let meta = null;
         const errors = [];
 
-        // Try 1: Scrape PSX official /indices page (server-side rendered HTML table)
-        // Table format: Index | High | Low | Current | Change | %Change | ...
+        // Try 1a: PSX /indices as AJAX — returns tab-separated plaintext when called with
+        // XMLHttpRequest headers (same call PSX's own script.js makes in the browser).
+        // Format per line: "KSE100\t178,633.87\t177,780.49\t178,538.94\t 1156.37\t 0.65%"
+        // Cols: index_name, high, low, current, change, pct_change
         try {
           const psxResp = await fetch(
             'https://dps.psx.com.pk/indices',
-            { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' } }
+            { headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html, */*; q=0.01',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Referer': 'https://dps.psx.com.pk/',
+            } }
           );
-          const psxHtml = await psxResp.text();
-
-          // Find the KSE100 table row — PSX renders a <tr> per index
-          // Pattern: find row containing KSE100, then extract 6 <td> values
-          // Table cols: Index | High | Low | Current | Change | %Change
-          const rows = psxHtml.split(/<tr[\s>]/i);
-          for (const row of rows) {
-            if (/KSE100\b/i.test(row) && !row.includes('KSE100PR')) {
-              // Extract all numbers from <td> cells
-              const tds = [...row.matchAll(/<td[^>]*>([^<]+)<\/td>/gi)].map(m => m[1].trim().replace(/,/g,''));
-              // tds: [index_name, high, low, current, change, pct_change, ...]
-              // Find numeric values — current price should be ~100000-200000 for KSE100
-              const nums = tds.map(v => parseFloat(v)).filter(n => !isNaN(n) && n > 0);
-              // Largest value = current price (KSE100 ~ 170000-200000)
-              // Find by position: after name cell
-              let current = null, high = null, low = null, change = null;
-              // Try positional: tds[0]=name, tds[1]=high, tds[2]=low, tds[3]=current, tds[4]=change
-              if (tds.length >= 4) {
-                high    = parseFloat(tds[1]) || null;
-                low     = parseFloat(tds[2]) || null;
-                current = parseFloat(tds[3]) || null;
-                change  = parseFloat(tds[4]) || null;
-              }
-              // Sanity check: KSE100 should be between 50,000 and 400,000
+          const psxText = await psxResp.text();
+          // Try tab-separated parse first (AJAX response format)
+          const lines = psxText.split(/\r?\n/);
+          for (const line of lines) {
+            const cols = line.split('\t').map(c => c.trim());
+            if (cols[0] === 'KSE100' && cols.length >= 4) {
+              const high    = parseFloat(cols[1].replace(/,/g,'')) || null;
+              const low     = parseFloat(cols[2].replace(/,/g,'')) || null;
+              const current = parseFloat(cols[3].replace(/,/g,'')) || null;
+              const change  = parseFloat(cols[4]  ? cols[4].replace(/,/g,'') : '0') || null;
               if (current && current > 50000 && current < 400000) {
                 meta = {
                   symbol: 'KSE100', regularMarketPrice: current,
                   chartPreviousClose: change !== null ? (current - change) : null,
-                  regularMarketDayHigh: high || null,
-                  regularMarketDayLow: low || null,
+                  regularMarketDayHigh: high, regularMarketDayLow: low,
                   fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
                   regularMarketTime: Math.floor(Date.now()/1000),
                   currency: 'PKR', exchangeName: 'PSX',
-                  _raw: 'psx-html:' + tds.slice(0,6).join('|'),
+                  _raw: 'psx-ajax-tsv:' + cols.slice(0,6).join('|'),
                 };
                 break;
+              }
+            }
+          }
+          // Try 1b: HTML table parse (fallback if AJAX returns full HTML page)
+          if (!meta) {
+            const rows = psxText.split(/<tr[\s>]/i);
+            for (const row of rows) {
+              if (/KSE100\b/i.test(row) && !row.includes('KSE100PR')) {
+                const tds = [...row.matchAll(/<td[^>]*>([^<]+)<\/td>/gi)].map(m => m[1].trim().replace(/,/g,''));
+                if (tds.length >= 4) {
+                  const high    = parseFloat(tds[1]) || null;
+                  const low     = parseFloat(tds[2]) || null;
+                  const current = parseFloat(tds[3]) || null;
+                  const change  = parseFloat(tds[4]) || null;
+                  if (current && current > 50000 && current < 400000) {
+                    meta = {
+                      symbol: 'KSE100', regularMarketPrice: current,
+                      chartPreviousClose: change !== null ? (current - change) : null,
+                      regularMarketDayHigh: high, regularMarketDayLow: low,
+                      fiftyTwoWeekHigh: null, fiftyTwoWeekLow: null,
+                      regularMarketTime: Math.floor(Date.now()/1000),
+                      currency: 'PKR', exchangeName: 'PSX',
+                      _raw: 'psx-html:' + tds.slice(0,6).join('|'),
+                    };
+                    break;
+                  }
+                }
               }
             }
           }

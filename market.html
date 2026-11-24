@@ -1129,8 +1129,6 @@ function fetchKSEStocks(){
             var dot = document.createElement('span');
             dot.className = 'live-dot ' + dir;
             symEl.appendChild(dot);
-            // remove dot after 30s
-            setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 30000);
           });
         });
         // update source badge

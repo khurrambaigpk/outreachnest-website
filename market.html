@@ -45,17 +45,13 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .ticker-label.lbl-solar{color:#f59e0b;background:rgba(245,158,11,.1)}
 .ticker-label.lbl-fuel{color:#f87171;background:rgba(248,113,113,.09)}
 .ticker-label.lbl-market{color:#4ade80;background:rgba(74,222,128,.08)}
-.ticker-scroll{flex:1;overflow:hidden;padding:0;display:flex;align-items:center}
-.ticker-track{display:inline-flex;gap:0;animation:scroll-left 220s linear infinite;will-change:transform}
-.ticker-track:hover{animation-play-state:paused}
-.ticker-track.speed-fast{animation-duration:60s}
-.ticker-track.speed-slow{animation-duration:80s}
-.ticker-item{padding:0 18px;font-size:11.5px;font-weight:600;color:var(--dim);border-right:1px solid rgba(30,53,35,.5)}
+.ticker-scroll{flex:1;overflow:hidden;padding:0;display:flex;align-items:center;cursor:default}
+.ticker-track{display:inline-flex;gap:0;transform:translateX(0)}
+.ticker-item{padding:0 18px;font-size:11.5px;font-weight:600;color:var(--dim);border-right:1px solid rgba(30,53,35,.5);flex-shrink:0}
 .tval{margin-left:4px;font-weight:700}
 .tval.up{color:var(--green)}
 .tval.dn{color:var(--red)}
 .tval.neu{color:var(--yellow)}
-@keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* HERO */
 .hero{padding:48px 0 32px;text-align:center}
@@ -263,13 +259,13 @@ footer a{color:#4a7a6a;text-decoration:none}
   <div class="ticker-bar">
     <div class="ticker-label lbl-fuel">⛽ Fuel</div>
     <div class="ticker-scroll">
-      <div class="ticker-track speed-fast" id="ticker-fuel"><span class="ticker-item">⏳ Loading…</span></div>
+      <div class="ticker-track" id="ticker-fuel"><span class="ticker-item">⏳ Loading…</span></div>
     </div>
   </div>
   <div class="ticker-bar">
     <div class="ticker-label lbl-solar">☀️ Solar</div>
     <div class="ticker-scroll">
-      <div class="ticker-track speed-slow" id="ticker-solar"><span class="ticker-item">⏳ Loading…</span></div>
+      <div class="ticker-track" id="ticker-solar"><span class="ticker-item">⏳ Loading…</span></div>
     </div>
   </div>
 </div>
@@ -414,10 +410,54 @@ document.getElementById('page-time').textContent = 'As of ' + new Date().toLocal
 // ── Ticker — 3 simultaneous stacked rows ─────────────────────────────
 var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{}, stocks:[], stockGroup:'kse100' };
 
+// ── Ticker scroll engine — RAF based, never stalls ─────────────────────
+var _tickerScrollers = {}; // id → {pos, speed, halfW, paused, rafId}
+
 function fillTrack(id, items){
   if(!items.length) return;
   var html = items.map(function(i){ return '<span class="ticker-item">'+i+'</span>'; }).join('');
-  document.getElementById(id).innerHTML = html + html;
+  var el = document.getElementById(id);
+  el.innerHTML = html + html; // duplicate for seamless loop
+  el.style.transform = 'translateX(0)';
+  // stop old RAF if running
+  var old = _tickerScrollers[id];
+  if(old && old.rafId) cancelAnimationFrame(old.rafId);
+  startTickerScroll(id);
+}
+
+function startTickerScroll(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  // measure half-width (= one copy of items)
+  var halfW = el.scrollWidth / 2;
+  if(halfW < 1){ setTimeout(function(){ startTickerScroll(id); }, 200); return; }
+  // px per second: fuel row fastest (90px/s), solar slowest (55px/s), market medium (70px/s)
+  var speedMap = { 'ticker-fuel': 90, 'ticker-solar': 55, 'ticker-market': 70 };
+  var speed = speedMap[id] || 70;
+  var state = { pos: 0, speed: speed, halfW: halfW, paused: false, rafId: null, lastT: null };
+  _tickerScrollers[id] = state;
+
+  // pause on hover/touch
+  var wrap = el.closest('.ticker-scroll');
+  if(wrap){
+    wrap.addEventListener('mouseenter', function(){ state.paused = true; });
+    wrap.addEventListener('mouseleave', function(){ state.paused = false; });
+    wrap.addEventListener('touchstart', function(){ state.paused = true; }, {passive:true});
+    wrap.addEventListener('touchend',   function(){ state.paused = false; });
+  }
+
+  function tick(ts){
+    if(state.lastT === null) state.lastT = ts;
+    var dt = Math.min((ts - state.lastT) / 1000, 0.1); // cap at 100ms (tab switch protection)
+    state.lastT = ts;
+    if(!state.paused){
+      state.pos += state.speed * dt;
+      if(state.pos >= state.halfW) state.pos -= state.halfW; // seamless reset
+      el.style.transform = 'translateX(-' + state.pos.toFixed(2) + 'px)';
+    }
+    state.rafId = requestAnimationFrame(tick);
+  }
+  state.rafId = requestAnimationFrame(tick);
 }
 
 function buildTicker(){

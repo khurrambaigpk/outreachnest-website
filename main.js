@@ -40,7 +40,7 @@ function buildNav(active){
   <a href="/contact" class="nav-cta">Get in touch</a>
   <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
-  <div class="mobile-menu" id="mobile-menu">${mItems}<a href="/market" class="${active==='market'?'active':''}">📈 Market Rates</a><a href="/solar-calculator" class="${active==='solar-calculator'?'active':''}">☀️ Free Tools</a><a href="/contact" class="m-cta">Get in touch</a></div>
+  <div class="mobile-menu" id="mobile-menu">${mItems}<a href="/contact" class="m-cta">Get in touch</a></div>
   <div class="nav-badges-row">${marketBadge}${freeToolsBadge}</div></nav>`;
 }
 
@@ -127,9 +127,11 @@ window.addEventListener('DOMContentLoaded', ()=>{
   const btn = document.getElementById('menu-btn');
   const menu = document.getElementById('mobile-menu');
   if(btn && menu){
+    const badges = document.querySelector('.nav-badges-row');
     btn.addEventListener('click', ()=>{
-      btn.classList.toggle('open');
+      const isOpen = btn.classList.toggle('open');
       menu.classList.toggle('open');
+      if(badges){ badges.style.display = isOpen ? 'none' : ''; }
     });
   }
 });

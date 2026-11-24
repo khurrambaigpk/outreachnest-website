@@ -208,31 +208,32 @@ footer a{color:#4a7a6a;text-decoration:none}
 .sharia-badge{font-size:9px;color:#60a5fa;margin-right:4px}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
-  .col-prev{display:none}
-  .col-chgabs{display:none}
-  .col-turnover{display:none}
   .stocks-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .stocks-table{font-size:11px;table-layout:fixed;border-collapse:collapse}
-  /* fixed widths for all visible cols */
-  .stocks-table col.col-num  {width:24px}
-  .stocks-table col.col-star {width:28px}
-  .stocks-table col.col-stock{width:130px}
-  .stocks-table col.col-price{width:68px}
-  .stocks-table col.col-chg  {width:66px}
-  .stocks-table col.col-vol  {width:60px}
-  /* sticky: Sr#, star, stock name stay while scrolling */
+  /* all columns visible, tight widths */
+  .stocks-table col.col-num  {width:22px}
+  .stocks-table col.col-star {width:26px}
+  .stocks-table col.col-stock{width:100px}
+  .stocks-table col.col-price{width:58px}
+  .stocks-table col.col-prev {width:58px}
+  .stocks-table col.col-chg  {width:58px}
+  .stocks-table col.col-chgabs{width:58px}
+  .stocks-table col.col-vol  {width:52px}
+  .stocks-table col.col-turnover{width:58px}
+  /* sticky: Sr#, star, stock name fixed on left */
   .stocks-table td.col-num,
   .stocks-table th.col-num  {position:sticky;left:0;z-index:2;background:#0d1a10}
   .stocks-table td.col-star,
-  .stocks-table th.col-star {position:sticky;left:24px;z-index:2;background:#0d1a10}
+  .stocks-table th.col-star {position:sticky;left:22px;z-index:2;background:#0d1a10}
   .stocks-table td.col-stock,
-  .stocks-table th.col-stock{position:sticky;left:52px;z-index:2;background:#0d1a10;box-shadow:2px 0 6px rgba(0,0,0,.4)}
-  .stocks-table td{padding:6px 4px}
-  .stocks-table thead th{padding:6px 4px}
-  .st-sym{font-size:12px;display:block;font-weight:700}
-  .st-name{font-size:9px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;margin-top:1px}
+  .stocks-table th.col-stock{position:sticky;left:48px;z-index:2;background:#0d1a10;box-shadow:3px 0 8px rgba(0,0,0,.5)}
+  .stocks-table td{padding:5px 3px}
+  .stocks-table thead th{padding:5px 3px}
+  .st-sym{font-size:11px;display:block;font-weight:700}
+  .st-name{font-size:9px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:94px;margin-top:1px}
   .st-price{font-size:11px;white-space:nowrap}
-  .st-chg{font-size:10px;padding:2px 4px;white-space:nowrap}
+  .st-chg{font-size:10px;padding:2px 3px;white-space:nowrap}
+  .st-vol{font-size:10px;white-space:nowrap}
   .st-star svg{width:14px;height:14px}
   #stocks-filters{gap:4px}
   .sf-btn{font-size:10px;padding:3px 8px}
@@ -1129,7 +1130,7 @@ function renderStocksCard(stocks, isFallback){
 
   var isMob = window.innerWidth <= 600;
   var cg = isMob
-    ? '<colgroup><col class="col-num"><col class="col-star"><col class="col-stock"><col class="col-price"><col class="col-chg"><col class="col-vol"></colgroup>'
+    ? '<colgroup><col class="col-num"><col class="col-star"><col class="col-stock"><col class="col-price"><col class="col-prev"><col class="col-chg"><col class="col-chgabs"><col class="col-vol"><col class="col-turnover"></colgroup>'
     : '<colgroup><col class="col-num" style="width:20px"><col class="col-star" style="width:28px"><col style="width:120px"><col style="width:64px"><col style="width:76px"><col style="width:60px"><col style="width:56px"><col style="width:56px"><col style="width:64px"></colgroup>';
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
     + cg

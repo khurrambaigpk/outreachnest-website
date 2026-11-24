@@ -329,11 +329,11 @@ footer a{color:#4a7a6a;text-decoration:none}
     <!-- KSE Top Stocks -->
     <div class="card" style="grid-column:1/-1">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
-        <div class="card-title" style="margin-bottom:0">📈 <span id="stocks-index-label">KSE-30</span> Companies <span class="badge-src" id="stocks-src-badge">PSX · 15-min delay</span></div>
+        <div class="card-title" style="margin-bottom:0">📈 <span id="stocks-index-label">KSE-100</span> Companies <span class="badge-src" id="stocks-src-badge">PSX · 15-min delay</span></div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden">
-            <button id="btn-kse30" onclick="switchIndex('kse30')" style="background:var(--green);color:#0a1a0f;border:none;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer">KSE-30</button>
-            <button id="btn-kse100" onclick="switchIndex('kse100')" style="background:transparent;color:var(--muted);border:none;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer">KSE-100</button>
+            <button id="btn-kse30" onclick="switchIndex('kse30')" style="background:transparent;color:var(--muted);border:none;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer">KSE-30</button>
+            <button id="btn-kse100" onclick="switchIndex('kse100')" style="background:var(--green);color:#0a1a0f;border:none;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer">KSE-100</button>
           </div>
           <span id="stocks-time" style="font-size:11px;color:var(--muted)"></span>
         </div>
@@ -399,7 +399,7 @@ document.getElementById('page-time').textContent = 'As of ' + new Date().toLocal
 })();
 
 // ── Ticker — 3 simultaneous stacked rows ─────────────────────────────
-var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{}, stocks:[], stockGroup:'kse30' };
+var _tickerData = { rates:{}, fuel:{}, gold:{}, psx:{}, stocks:[], stockGroup:'kse100' };
 
 function fillTrack(id, items){
   if(!items.length) return;
@@ -932,7 +932,7 @@ var _stockNames = {};
 KSE100_STOCKS.forEach(function(s){ _stockNames[s.sym] = s.name; });
 KSE30_STOCKS.forEach(function(s){ if(!_stockNames[s.sym]) _stockNames[s.sym] = s.name; });
 
-var _currentIndex = 'kse30'; // default view
+var _currentIndex = 'kse100'; // default view
 var _liveStocks = {}; // sym -> live data when available
 var _currentFilter = 'all'; // sector filter
 var _searchQuery = ''; // search text
@@ -1016,8 +1016,8 @@ document.addEventListener('click', function(e){
   renderStocksCard(null, true);
 });
 
-// Show fallback immediately
-_tickerData.stockGroup = 'kse30';
+// Show fallback immediately — KSE-100 is the default
+_tickerData.stockGroup = 'kse100';
 renderStocksCard(null, true);
 
 function renderStocksCard(stocks, isFallback){

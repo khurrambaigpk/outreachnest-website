@@ -1091,8 +1091,8 @@ function renderStocksCard(stocks, isFallback){
   }
   html += '</tbody></table></div>';
   document.getElementById('stocks-body').innerHTML = fallbackNote + html;
-  // re-apply live dots after every render
-  applyLiveDots();
+  // re-apply live dots after DOM paint (innerHTML update is sync but layout needs a frame)
+  requestAnimationFrame(applyLiveDots);
 }
 
 function applyLiveDots(){
@@ -1129,20 +1129,22 @@ function fetchKSEStocks(){
         _tickerData.stocks = getActiveStocks();
         renderStocksCard(null, false);
         buildTicker();
-        // flash updated rows immediately after paint
+        // flash updated rows — double rAF: first frame renders DOM, second applies flash
         requestAnimationFrame(function(){
-          document.querySelectorAll('.stocks-table tbody tr').forEach(function(row){
-            var symEl = row.querySelector('.st-sym');
-            if(!symEl) return;
-            var sym = symEl.getAttribute('data-sym') || symEl.textContent.trim();
-            var dir = changed[sym];
-            if(!dir) return;
-            var priceEl = row.querySelector('.st-price');
-            if(priceEl){
-              priceEl.classList.remove('price-flash-up','price-flash-dn');
-              void priceEl.offsetWidth;
-              priceEl.classList.add(dir==='up'?'price-flash-up':'price-flash-dn');
-            }
+          requestAnimationFrame(function(){
+            document.querySelectorAll('.stocks-table tbody tr').forEach(function(row){
+              var symEl = row.querySelector('.st-sym');
+              if(!symEl) return;
+              var sym = symEl.getAttribute('data-sym') || symEl.textContent.trim();
+              var dir = changed[sym];
+              if(!dir) return;
+              var priceEl = row.querySelector('.st-price');
+              if(priceEl){
+                priceEl.classList.remove('price-flash-up','price-flash-dn');
+                void priceEl.offsetWidth;
+                priceEl.classList.add(dir==='up'?'price-flash-up':'price-flash-dn');
+              }
+            });
           });
         });
         // update source badge

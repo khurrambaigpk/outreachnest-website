@@ -208,21 +208,25 @@ footer a{color:#4a7a6a;text-decoration:none}
 .sharia-badge{font-size:9px;color:#60a5fa;margin-right:4px}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
-  .col-num{display:table-cell;width:22px}
-  .col-star{display:table-cell;width:30px}
+  .col-num{display:table-cell;width:20px}
+  .col-star{display:table-cell;width:26px}
   .col-prev{display:none}
   .col-chgabs{display:none}
   .col-turnover{display:none}
+  .stocks-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .stocks-table{font-size:11px;table-layout:fixed;min-width:0;width:100%}
-  .stocks-table col.col-price{width:72px}
-  .stocks-table col.col-chg{width:72px}
-  .stocks-table td{padding:6px 4px}
-  .stocks-table thead th{padding:6px 4px}
-  .st-sym{font-size:12px;display:block}
-  .st-name{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;margin-top:1px}
-  .st-price{font-size:12px;white-space:nowrap}
-  .st-chg{font-size:10px;padding:2px 5px;white-space:nowrap}
-  .st-vol{font-size:10px;white-space:nowrap}
+  .stocks-table col.col-num{width:20px}
+  .stocks-table col.col-star{width:26px}
+  .stocks-table col.col-stock{width:auto}
+  .stocks-table col.col-price{width:64px}
+  .stocks-table col.col-chg{width:62px}
+  .stocks-table td{padding:5px 3px}
+  .stocks-table thead th{padding:5px 3px}
+  .st-sym{font-size:12px;display:block;font-weight:700}
+  .st-name{font-size:9px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;margin-top:1px}
+  .st-price{font-size:11px;white-space:nowrap}
+  .st-chg{font-size:10px;padding:2px 4px;white-space:nowrap}
+  .st-star svg{width:14px;height:14px}
   #stocks-filters{gap:4px}
   .sf-btn{font-size:10px;padding:3px 8px}
 }

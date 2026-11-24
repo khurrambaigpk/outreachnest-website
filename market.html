@@ -185,6 +185,16 @@ footer a{color:#4a7a6a;text-decoration:none}
 .st-chg{font-weight:700;font-size:11px;display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:10px;white-space:nowrap}
 .st-chg.up{color:#0a1a0f;background:var(--green)}
 .st-chg.dn{color:#fff;background:#ef4444}
+/* Flash on price update */
+@keyframes flash-up{0%{background:#16a34a;color:#fff}100%{background:transparent;color:inherit}}
+@keyframes flash-dn{0%{background:#ef4444;color:#fff}100%{background:transparent;color:inherit}}
+.price-flash-up{animation:flash-up 5s ease-out forwards}
+.price-flash-dn{animation:flash-dn 5s ease-out forwards}
+/* Live blink dot */
+@keyframes blink-dot{0%,100%{opacity:1}50%{opacity:0}}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:middle;animation:blink-dot .8s step-start infinite}
+.live-dot.up{background:#16a34a}
+.live-dot.dn{background:#ef4444}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
   .col-num{display:none}
@@ -198,8 +208,7 @@ footer a{color:#4a7a6a;text-decoration:none}
   .st-chg{font-size:10px;padding:2px 5px;white-space:nowrap}
   .st-vol{font-size:10px;white-space:nowrap}
   .col-prev{font-size:10px}
-  .col-turnover{font-size:10px}
-  .col-chgabs{display:none}
+  .col-turnover{display:none}
   #stocks-filters{gap:4px}
   .sf-btn{font-size:10px;padding:3px 8px}
 }
@@ -1088,11 +1097,42 @@ function fetchKSEStocks(){
     .then(function(d){
       var stocks = d.stocks || [];
       if(stocks.length){
-        // merge into live cache
-        stocks.forEach(function(s){ _liveStocks[s.sym] = s; });
+        // track which syms had price change for flash
+        var changed = {};
+        stocks.forEach(function(s){
+          var prev = _liveStocks[s.sym];
+          if(!prev || prev.price !== s.price) changed[s.sym] = s.chg >= 0 ? 'up' : 'dn';
+          _liveStocks[s.sym] = s;
+        });
         _tickerData.stocks = getActiveStocks();
         renderStocksCard(null, false);
         buildTicker();
+        // flash updated rows + add blink dot
+        Object.keys(changed).forEach(function(sym){
+          var dir = changed[sym];
+          var rows = document.querySelectorAll('.stocks-table tbody tr');
+          rows.forEach(function(row){
+            var symEl = row.querySelector('.st-sym');
+            if(!symEl) return;
+            var rowSym = symEl.textContent.replace(/[^A-Z]/g,'');
+            if(rowSym !== sym) return;
+            // flash entire row price cell
+            var priceEl = row.querySelector('.st-price');
+            if(priceEl){
+              priceEl.classList.remove('price-flash-up','price-flash-dn');
+              void priceEl.offsetWidth; // reflow
+              priceEl.classList.add(dir==='up'?'price-flash-up':'price-flash-dn');
+            }
+            // add/update blink dot next to sym
+            var existDot = symEl.querySelector('.live-dot');
+            if(existDot) existDot.remove();
+            var dot = document.createElement('span');
+            dot.className = 'live-dot ' + dir;
+            symEl.appendChild(dot);
+            // remove dot after 30s
+            setTimeout(function(){ if(dot.parentNode) dot.remove(); }, 30000);
+          });
+        });
         // update source badge
         var srcEl = document.getElementById('stocks-src-badge');
         if(srcEl){

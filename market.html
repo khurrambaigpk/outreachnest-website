@@ -1113,49 +1113,48 @@ function applyLiveDots(){
   });
 }
 
-function fetchKSEStocks(){
-  fetch('/api/stocks', { headers: { 'Referer': window.location.href } })
-    .then(function(r){if(!r.ok)throw new Error('stocks-'+r.status);return r.json();})
-    .then(function(d){
-      var stocks = d.stocks || [];
-      if(stocks.length){
-        // track which syms had price change for flash
-        var changed = {};
-        stocks.forEach(function(s){
-          var prev = _liveStocks[s.sym];
-          if(!prev || prev.price !== s.price) changed[s.sym] = s.chg >= 0 ? 'up' : 'dn';
-          _liveStocks[s.sym] = s;
-        });
-        _tickerData.stocks = getActiveStocks();
-        renderStocksCard(null, false);
-        buildTicker();
-        // flash updated rows — double rAF: first frame renders DOM, second applies flash
-        requestAnimationFrame(function(){
-          requestAnimationFrame(function(){
-            document.querySelectorAll('.stocks-table tbody tr').forEach(function(row){
-              var symEl = row.querySelector('.st-sym');
-              if(!symEl) return;
-              var sym = symEl.getAttribute('data-sym') || symEl.textContent.trim();
-              var dir = changed[sym];
-              if(!dir) return;
-              var priceEl = row.querySelector('.st-price');
-              if(priceEl){
-                priceEl.classList.remove('price-flash-up','price-flash-dn');
-                void priceEl.offsetWidth;
-                priceEl.classList.add(dir==='up'?'price-flash-up':'price-flash-dn');
-              }
-            });
-          });
-        });
-        // update source badge
-        var srcEl = document.getElementById('stocks-src-badge');
-        if(srcEl){
-          var src = d.source === 'yahoo' ? 'Yahoo Finance · 15-min delay' : d.source === 'stooq' ? 'stooq.com · 15-min delay' : '15-min delay';
-          srcEl.textContent = '📡 ' + src;
+function applyStocksData(stocks, source){
+  if(!stocks || !stocks.length) return;
+  var changed = {};
+  stocks.forEach(function(s){
+    var prev = _liveStocks[s.sym];
+    if(!prev || prev.price !== s.price) changed[s.sym] = s.chg >= 0 ? 'up' : 'dn';
+    _liveStocks[s.sym] = s;
+  });
+  _tickerData.stocks = getActiveStocks();
+  renderStocksCard(null, false);
+  buildTicker();
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      document.querySelectorAll('.stocks-table tbody tr').forEach(function(row){
+        var symEl = row.querySelector('.st-sym');
+        if(!symEl) return;
+        var sym = symEl.getAttribute('data-sym') || symEl.textContent.trim();
+        var dir = changed[sym];
+        if(!dir) return;
+        var priceEl = row.querySelector('.st-price');
+        if(priceEl){
+          priceEl.classList.remove('price-flash-up','price-flash-dn');
+          void priceEl.offsetWidth;
+          priceEl.classList.add(dir==='up'?'price-flash-up':'price-flash-dn');
         }
-      }
-    })
-    .catch(function(){});
+      });
+    });
+  });
+  var srcEl = document.getElementById('stocks-src-badge');
+  if(srcEl) srcEl.textContent = '📡 PSX Live';
+}
+
+function fetchKSEStocks(){
+  // Fetch both halves in parallel — each is 50 symbols, stays under CF Workers CPU limit
+  var hdrs = { 'Referer': window.location.href };
+  var p1 = fetch('/api/stocks?page=1', {headers:hdrs}).then(function(r){return r.ok?r.json():{stocks:[]};}).catch(function(){return {stocks:[]};});
+  var p2 = fetch('/api/stocks?page=2', {headers:hdrs}).then(function(r){return r.ok?r.json():{stocks:[]};}).catch(function(){return {stocks:[]};});
+  Promise.all([p1, p2]).then(function(results){
+    var merged = (results[0].stocks||[]).concat(results[1].stocks||[]);
+    var source = results[0].source || results[1].source || 'psx';
+    applyStocksData(merged, source);
+  });
 }
 fetchKSEStocks();
 // refresh every 2 min during trading hours

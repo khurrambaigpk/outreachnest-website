@@ -431,8 +431,8 @@ function startTickerScroll(id){
   // measure half-width (= one copy of items)
   var halfW = el.scrollWidth / 2;
   if(halfW < 1){ setTimeout(function(){ startTickerScroll(id); }, 200); return; }
-  // px per second: fuel row fastest (90px/s), solar slowest (55px/s), market medium (70px/s)
-  var speedMap = { 'ticker-fuel': 90, 'ticker-solar': 55, 'ticker-market': 70 };
+  // px per second — same speed on mobile and desktop
+  var speedMap = { 'ticker-fuel': 75, 'ticker-solar': 45, 'ticker-market': 60 };
   var speed = speedMap[id] || 70;
   var state = { pos: 0, speed: speed, halfW: halfW, paused: false, rafId: null, lastT: null };
   _tickerScrollers[id] = state;

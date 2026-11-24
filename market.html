@@ -195,6 +195,7 @@ footer a{color:#4a7a6a;text-decoration:none}
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:middle;animation:blink-dot .8s step-start infinite}
 .live-dot.up{background:#16a34a}
 .live-dot.dn{background:#ef4444}
+.sharia-badge{font-size:9px;color:#60a5fa;margin-right:4px}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
   .col-num{display:none}
@@ -1074,11 +1075,11 @@ function renderStocksCard(stocks, isFallback){
     var prevPrice = prevRaw % 1 >= 0.05 ? prevRaw.toFixed(1) : Math.round(prevRaw);
     var chgAbs = s.price - prevRaw;
     var chgAbsStr = (chgAbs >= 0 ? '+' : '') + chgAbs.toFixed(2);
-    var shariaBadge = s.sharia ? '<span style="font-size:9px;color:#60a5fa;margin-left:3px">☪</span>' : '';
+    var shariaBadge = s.sharia ? '<span class="sharia-badge">☪</span>' : '';
     html += '<tr>'
           + '<td class="col-num" style="color:var(--muted);font-size:11px">'+(i+1)+'</td>'
           + '<td class="col-star" style="text-align:center"><button class="st-star'+(isFav?' saved':'')+'" data-sym="'+s.sym+'" title="'+(isFav?'Remove from favourites':'Add to favourites')+'"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button></td>'
-          + '<td class="st-sticky"><span class="st-sym">'+s.sym+shariaBadge+'</span><span class="st-name">'+name+'<span class="st-vol-inline">· '+volStr+'</span></span></td>'
+          + '<td class="st-sticky"><span class="st-sym" data-sym="'+s.sym+'">'+s.sym+'</span><span class="st-name">'+shariaBadge+name+'<span class="st-vol-inline">· '+volStr+'</span></span></td>'
           + '<td class="r col-prev" style="color:var(--muted);font-size:12px">'+Number(prevPrice).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:1})+'</td>'
           + '<td class="r"><span class="st-price">'+Number(s.price).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})+'</span></td>'
           + '<td class="r col-chgabs"><span class="st-chg '+(up?'up':'dn')+'" style="font-size:12px">'+chgAbsStr+'</span></td>'
@@ -1098,7 +1099,7 @@ function applyLiveDots(){
   rows.forEach(function(row){
     var symEl = row.querySelector('.st-sym');
     if(!symEl) return;
-    var sym = symEl.textContent.replace(/[^A-Z0-9]/g,'');
+    var sym = symEl.getAttribute('data-sym') || symEl.textContent.trim();
     var live = _liveStocks[sym];
     // remove any existing dot first
     var old = symEl.querySelector('.live-dot');
@@ -1127,28 +1128,20 @@ function fetchKSEStocks(){
         _tickerData.stocks = getActiveStocks();
         renderStocksCard(null, false);
         buildTicker();
-        // flash updated rows + add blink dot
-        Object.keys(changed).forEach(function(sym){
-          var dir = changed[sym];
-          var rows = document.querySelectorAll('.stocks-table tbody tr');
-          rows.forEach(function(row){
+        // flash updated rows immediately after paint
+        requestAnimationFrame(function(){
+          document.querySelectorAll('.stocks-table tbody tr').forEach(function(row){
             var symEl = row.querySelector('.st-sym');
             if(!symEl) return;
-            var rowSym = symEl.textContent.replace(/[^A-Z]/g,'');
-            if(rowSym !== sym) return;
-            // flash entire row price cell
+            var sym = symEl.getAttribute('data-sym') || symEl.textContent.trim();
+            var dir = changed[sym];
+            if(!dir) return;
             var priceEl = row.querySelector('.st-price');
             if(priceEl){
               priceEl.classList.remove('price-flash-up','price-flash-dn');
-              void priceEl.offsetWidth; // reflow
+              void priceEl.offsetWidth;
               priceEl.classList.add(dir==='up'?'price-flash-up':'price-flash-dn');
             }
-            // add/update blink dot next to sym
-            var existDot = symEl.querySelector('.live-dot');
-            if(existDot) existDot.remove();
-            var dot = document.createElement('span');
-            dot.className = 'live-dot ' + dir;
-            symEl.appendChild(dot);
           });
         });
         // update source badge

@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v103"; // v103: batch PSX fetches in 3×34 sequential chunks to fix CF Workers concurrent fetch limit (was returning only 45/100 stocks) // v102: fetch ALL KSE-100 symbols (was slice 0-50) — full 100 companies live // v101: move DFML/DAWH to pos 31-32 (were at 71-72, outside slice(0,50)) // v100: update KSE100_EXTRA hardcoded fallback prices (BOP 8.40→31.46, banks/transport updated); increase fetch to top 50 symbols; reorder KSE100_SYMS with BOP at pos 31 // v99: fix stats regex — exact HTML match data-name="REG"><div class="stats for OHLCV parsing; KSE-100 default tab // v98: /api/psx+stocks — PSX company HTML scraping (dps.psx.com.pk/company/SYM) replaces Yahoo Finance+stooq (both 401/522 from CF Workers) // v97: /api/psx+stocks — add Yahoo Finance v8 chart as OHLCV source (stooq 522 fix); cookie auth header on YF requests // v96: cache bust for mobile nav fix; fuel KV TTL 2h; fallback rates updated Nov 24 // v95: fuel cron every 1h (was 6h) for more accurate OGRA rate updates // v94: /api/stocks upgraded to Yahoo Finance (all KSE100 symbols, 15-min delay); stooq fallback for top-30 // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v104"; // v104: hybrid fetch — PSX for first 50 + Stooq CSV for remaining 50 in parallel (fix CF Workers CPU time limit causing only 45/100 stocks) // v103: batch PSX fetches in 3×34 sequential chunks to fix CF Workers concurrent fetch limit (was returning only 45/100 stocks) // v102: fetch ALL KSE-100 symbols (was slice 0-50) — full 100 companies live // v101: move DFML/DAWH to pos 31-32 (were at 71-72, outside slice(0,50)) // v100: update KSE100_EXTRA hardcoded fallback prices (BOP 8.40→31.46, banks/transport updated); increase fetch to top 50 symbols; reorder KSE100_SYMS with BOP at pos 31 // v99: fix stats regex — exact HTML match data-name="REG"><div class="stats for OHLCV parsing; KSE-100 default tab // v98: /api/psx+stocks — PSX company HTML scraping (dps.psx.com.pk/company/SYM) replaces Yahoo Finance+stooq (both 401/522 from CF Workers) // v97: /api/psx+stocks — add Yahoo Finance v8 chart as OHLCV source (stooq 522 fix); cookie auth header on YF requests // v96: cache bust for mobile nav fix; fuel KV TTL 2h; fallback rates updated Nov 24 // v95: fuel cron every 1h (was 6h) for more accurate OGRA rate updates // v94: /api/stocks upgraded to Yahoo Finance (all KSE100 symbols, 15-min delay); stooq fallback for top-30 // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1949,29 +1949,62 @@ export default {
         };
       }
 
-      // Fetch ALL KSE-100 symbols in 3 sequential batches to avoid CF Workers concurrent fetch limit
-      try {
-        const BATCH_SIZE = 34;
-        const allResults = [];
-        for (let i = 0; i < KSE100_SYMS.length; i += BATCH_SIZE) {
-          const batch = KSE100_SYMS.slice(i, i + BATCH_SIZE);
-          const batchFetches = batch.map(sym =>
-            fetch('https://dps.psx.com.pk/company/' + sym, { headers: PSX_HDRS })
-              .then(r => r.ok ? r.text().then(html => parsePSXCompanyHtml(sym, html)) : null)
-              .catch(() => null)
-          );
-          const batchResults = await Promise.all(batchFetches);
-          allResults.push(...batchResults);
+      // Hybrid: PSX for first 50 symbols + Stooq CSV for remaining 50 — both in parallel
+      // PSX HTML parse is CPU-heavy; >50 parallel hits CF Workers CPU time limit
+      const PSX_SYMS  = KSE100_SYMS.slice(0, 50);
+      const STOOQ_SYMS = KSE100_SYMS.slice(50);
+
+      // Launch PSX batch (50) and Stooq batch (50) simultaneously
+      const psxPromise = Promise.all(
+        PSX_SYMS.map(sym =>
+          fetch('https://dps.psx.com.pk/company/' + sym, { headers: PSX_HDRS })
+            .then(r => r.ok ? r.text().then(html => parsePSXCompanyHtml(sym, html)) : null)
+            .catch(() => null)
+        )
+      );
+
+      const stooqSymStr = STOOQ_SYMS.map(s => s.toLowerCase() + '.pk').join(',');
+      const stooqPromise = fetch(
+        'https://stooq.com/q/l/?s=' + stooqSymStr + '&f=sd2t2ohlcvn',
+        { headers: { 'User-Agent': 'Mozilla/5.0' } }
+      ).then(async sr => {
+        if (!sr.ok) return [];
+        const csv = await sr.text();
+        const lines = csv.trim().split('\n');
+        const out = [];
+        for (let i = 1; i < lines.length; i++) {
+          const c = lines[i].split(',');
+          const sym   = (c[0]||'').replace(/\.PK$/i,'').toUpperCase();
+          const close = parseFloat(c[6]);
+          const open  = parseFloat(c[3]);
+          const high  = parseFloat(c[4]);
+          const low   = parseFloat(c[5]);
+          const vol   = parseFloat(c[7]) || 0;
+          if (!sym || isNaN(close) || close <= 0) continue;
+          const chgPct = (!isNaN(open) && open > 0) ? ((close - open) / open * 100) : 0;
+          out.push({ sym, price: close, chg: parseFloat(chgPct.toFixed(2)), open, high, low, vol });
         }
-        const stocks = allResults.filter(Boolean);
-        if (stocks.length >= 5) {
-          return new Response(JSON.stringify({ stocks, source:'psx', ts: Date.now() }), {
+        return out;
+      }).catch(() => []);
+
+      try {
+        const [psxResults, stooqResults] = await Promise.all([psxPromise, stooqPromise]);
+        const psxStocks = psxResults.filter(Boolean);
+
+        // Merge: PSX takes priority; fill missing from stooq
+        const psxMap = {};
+        psxStocks.forEach(s => { psxMap[s.sym] = s; });
+        const merged = [...psxStocks];
+        stooqResults.forEach(s => { if (!psxMap[s.sym]) merged.push(s); });
+
+        if (merged.length >= 5) {
+          return new Response(JSON.stringify({ stocks: merged, source: 'hybrid', ts: Date.now() }), {
             headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }
           });
         }
-        throw new Error('psx-only-'+stocks.length);
+        throw new Error('hybrid-only-'+merged.length);
       } catch(e1) {
-        // Fallback: stooq.com CSV for top 30
+        // Last-resort fallback: stooq for all 100
         try {
           const stooqSyms = KSE100_SYMS.map(s=>s.toLowerCase()+'.pk').join(',');
           const sr = await fetch('https://stooq.com/q/l/?s='+stooqSyms+'&f=sd2t2ohlcvn', { headers:{'User-Agent':'Mozilla/5.0'} });

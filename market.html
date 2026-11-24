@@ -38,6 +38,11 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 .nav-cta:hover{opacity:.88!important}
 
 /* TICKER — 3 stacked rows */
+/* Clock bar */
+.clock-bar{background:#0a1208;border-bottom:1px solid rgba(30,53,35,.7);display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:26px;font-size:11.5px;font-family:'Courier New',monospace}
+.clock-time{color:#4ade80;font-weight:700;letter-spacing:.08em}
+.clock-date{color:#86efac;font-weight:500;letter-spacing:.04em}
+.clock-tz{color:#4b7a52;font-size:10px;margin-left:5px}
 .ticker-wrap{border-bottom:2px solid var(--border)}
 .ticker-bar{background:#0d1a10;border-bottom:1px solid rgba(30,53,35,.6);overflow:hidden;white-space:nowrap;display:flex;align-items:stretch;height:28px}
 .ticker-bar:last-child{border-bottom:none}
@@ -249,6 +254,10 @@ footer a{color:#4a7a6a;text-decoration:none}
 <div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links"><a href="/">Home</a><a href="/services">Services</a><a href="/niches">Niches</a><a href="/download">Download</a><a href="/blog">Blog</a><a href="/market" class="active">📈 Market</a><a href="/solar-calculator" style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">☀️ Free Tools</a></div><a href="/contact" class="nav-cta">Get in touch</a><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu"><a href="/">Home</a><a href="/services">Services</a><a href="/niches">Niches</a><a href="/download">Download</a><a href="/blog">Blog</a><a href="/contact" class="m-cta">Get in touch</a></div><div class="nav-badges-row"><a href="/market" style="display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#065f46;border:1.5px solid #10b981;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">📈 Market</a><a href="/solar-calculator" style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px">☀️ Free Tools</a></div></nav></div>
 
 <!-- TICKER — 3 stacked rows -->
+<div class="clock-bar">
+  <span class="clock-time" id="clock-time">--:--:--</span>
+  <span class="clock-date" id="clock-date"><span id="clock-day"></span>, <span id="clock-dmy"></span><span class="clock-tz">PKT</span></span>
+</div>
 <div class="ticker-wrap">
   <div class="ticker-bar">
     <div class="ticker-label lbl-market">📈 Market</div>
@@ -1216,6 +1225,24 @@ function isPSXOpen(){
 // Run immediately + every minute
 updateMarketOpenClass();
 setInterval(updateMarketOpenClass, 60000);
+
+// ── Digital clock (PKT) ───────────────────────────────────────────────
+var _DAYS  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var _MONTHS= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function updateClock(){
+  var now = new Date();
+  var pkt = new Date(now.toLocaleString('en-US',{timeZone:'Asia/Karachi'}));
+  var h=pkt.getHours(), m=pkt.getMinutes(), s=pkt.getSeconds();
+  var hh=('0'+h).slice(-2), mm=('0'+m).slice(-2), ss=('0'+s).slice(-2);
+  var tEl=document.getElementById('clock-time');
+  var dEl=document.getElementById('clock-day');
+  var dmyEl=document.getElementById('clock-dmy');
+  if(tEl) tEl.textContent = hh+':'+mm+':'+ss;
+  if(dEl) dEl.textContent = _DAYS[pkt.getDay()];
+  if(dmyEl) dmyEl.textContent = pkt.getDate()+' '+_MONTHS[pkt.getMonth()]+' '+pkt.getFullYear()+' ';
+}
+updateClock();
+setInterval(updateClock, 1000);
 
 function renderPSX(d){
   var chg     = d.change    ? parseFloat(d.change)    : 0;

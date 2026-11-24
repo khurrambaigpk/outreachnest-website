@@ -1072,9 +1072,9 @@ function renderStocksCard(stocks, isFallback){
     var volStr = s.vol>0 ? (s.vol>=1e6?(s.vol/1e6).toFixed(2)+'M':(s.vol/1e3).toFixed(0)+'K') : '—';
     var turnover = s.vol>0 ? s.vol * s.price : 0;
     var turnoverStr = turnover>0 ? (turnover>=1e9?(turnover/1e9).toFixed(2)+'B':(turnover/1e6).toFixed(1)+'M') : '—';
-    var prevRaw = s.chg !== 0 ? (s.price / (1 + s.chg/100)) : s.price;
+    var prevRaw = s.ldcp || (s.chg !== 0 ? (s.price / (1 + s.chg/100)) : s.price);
     var prevPrice = prevRaw % 1 >= 0.05 ? prevRaw.toFixed(1) : Math.round(prevRaw);
-    var chgAbs = s.price - prevRaw;
+    var chgAbs = s.chgAbs != null ? s.chgAbs : (s.price - prevRaw);
     var chgAbsStr = (chgAbs >= 0 ? '+' : '') + chgAbs.toFixed(2);
     var shariaBadge = s.sharia ? '<span class="sharia-badge">☪</span>' : '';
     html += '<tr>'

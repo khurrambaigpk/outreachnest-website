@@ -39,10 +39,17 @@ nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;posi
 
 /* TICKER — 3 stacked rows */
 /* Clock bar */
-.clock-bar{background:#0a1208;border-bottom:1px solid rgba(30,53,35,.7);display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:26px;font-size:11.5px;font-family:'Courier New',monospace}
-.clock-time{color:#4ade80;font-weight:700;letter-spacing:.08em}
-.clock-date{color:#86efac;font-weight:500;letter-spacing:.04em}
-.clock-tz{color:#4b7a52;font-size:10px;margin-left:5px}
+.clock-bar{background:linear-gradient(135deg,#0d1f2d 0%,#0a1a0f 50%,#1a0d2e 100%);border-bottom:1px solid rgba(99,102,241,.25);display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px;flex-wrap:wrap}
+.clock-box{display:inline-flex;align-items:center;gap:10px;background:rgba(0,0,0,.35);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:5px 14px;box-shadow:0 0 12px rgba(99,102,241,.15),inset 0 1px 0 rgba(255,255,255,.05)}
+.clock-digits{font-family:'Courier New',monospace;font-size:20px;font-weight:700;letter-spacing:.12em;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.clock-ampm{font-size:11px;font-weight:800;letter-spacing:.1em;padding:2px 6px;border-radius:5px;line-height:1.2;margin-left:2px}
+.clock-ampm.am{background:rgba(96,165,250,.2);color:#93c5fd;border:1px solid rgba(96,165,250,.4)}
+.clock-ampm.pm{background:rgba(251,146,60,.2);color:#fdba74;border:1px solid rgba(251,146,60,.4)}
+.clock-sep{width:1px;height:28px;background:linear-gradient(to bottom,transparent,rgba(99,102,241,.4),transparent)}
+.clock-datebox{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px}
+.clock-dayname{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a78bfa}
+.clock-dmy{font-size:12px;font-weight:600;color:#e2e8f0;letter-spacing:.04em}
+.clock-pkttag{font-size:9px;font-weight:700;letter-spacing:.12em;background:linear-gradient(135deg,#4ade80,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase}
 .ticker-wrap{border-bottom:2px solid var(--border)}
 .ticker-bar{background:#0d1a10;border-bottom:1px solid rgba(30,53,35,.6);overflow:hidden;white-space:nowrap;display:flex;align-items:stretch;height:28px}
 .ticker-bar:last-child{border-bottom:none}
@@ -255,8 +262,17 @@ footer a{color:#4a7a6a;text-decoration:none}
 
 <!-- TICKER — 3 stacked rows -->
 <div class="clock-bar">
-  <span class="clock-time" id="clock-time">--:--:--</span>
-  <span class="clock-date" id="clock-date"><span id="clock-day"></span>, <span id="clock-dmy"></span><span class="clock-tz">PKT</span></span>
+  <div class="clock-box">
+    <span class="clock-digits" id="clock-time">--:--:--</span>
+    <span class="clock-ampm" id="clock-ampm">AM</span>
+  </div>
+  <div class="clock-sep"></div>
+  <div class="clock-datebox">
+    <span class="clock-dayname" id="clock-day">---</span>
+    <span class="clock-dmy" id="clock-dmy">-- --- ----</span>
+  </div>
+  <div class="clock-sep"></div>
+  <span class="clock-pkttag">PKT</span>
 </div>
 <div class="ticker-wrap">
   <div class="ticker-bar">
@@ -1233,13 +1249,17 @@ function updateClock(){
   var now = new Date();
   var pkt = new Date(now.toLocaleString('en-US',{timeZone:'Asia/Karachi'}));
   var h=pkt.getHours(), m=pkt.getMinutes(), s=pkt.getSeconds();
-  var hh=('0'+h).slice(-2), mm=('0'+m).slice(-2), ss=('0'+s).slice(-2);
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  var h12 = h % 12 || 12;
+  var hh=('0'+h12).slice(-2), mm=('0'+m).slice(-2), ss=('0'+s).slice(-2);
   var tEl=document.getElementById('clock-time');
+  var apEl=document.getElementById('clock-ampm');
   var dEl=document.getElementById('clock-day');
   var dmyEl=document.getElementById('clock-dmy');
   if(tEl) tEl.textContent = hh+':'+mm+':'+ss;
+  if(apEl){ apEl.textContent = ampm; apEl.className = 'clock-ampm '+(ampm==='AM'?'am':'pm'); }
   if(dEl) dEl.textContent = _DAYS[pkt.getDay()];
-  if(dmyEl) dmyEl.textContent = pkt.getDate()+' '+_MONTHS[pkt.getMonth()]+' '+pkt.getFullYear()+' ';
+  if(dmyEl) dmyEl.textContent = pkt.getDate()+' '+_MONTHS[pkt.getMonth()]+' '+pkt.getFullYear();
 }
 updateClock();
 setInterval(updateClock, 1000);

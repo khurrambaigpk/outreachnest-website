@@ -36,7 +36,7 @@ function buildNav(active){
   const mItems = links.map(l=>`<a href="${l.href}" class="${active===l.key?'active':''}">${l.label}</a>`).join("");
   return `<nav><div class="wrap nav-inner">
   <a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>
-  <div class="nav-links">${items}</div>
+  <div class="nav-links">${items}${marketBadge}${freeToolsBadge}</div>
   <a href="/contact" class="nav-cta">Get in touch</a>
   <button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>

@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v96"; // v96: cache bust for mobile nav fix; fuel KV TTL 2h; fallback rates updated Nov 24 // v95: fuel cron every 1h (was 6h) for more accurate OGRA rate updates // v94: /api/stocks upgraded to Yahoo Finance (all KSE100 symbols, 15-min delay); stooq fallback for top-30 // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v97"; // v97: /api/psx+stocks — add Yahoo Finance v8 chart as OHLCV source (stooq 522 fix); cookie auth header on YF requests // v96: cache bust for mobile nav fix; fuel KV TTL 2h; fallback rates updated Nov 24 // v95: fuel cron every 1h (was 6h) for more accurate OGRA rate updates // v94: /api/stocks upgraded to Yahoo Finance (all KSE100 symbols, 15-min delay); stooq fallback for top-30 // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1733,10 +1733,18 @@ export default {
           };
         }
 
-        // Fetch PSX HTML and stooq CSV in PARALLEL — merge results
-        // PSX HTML = accurate live price + change (but no high/low/volume)
-        // stooq CSV = high/low/volume (but price may lag 15 min)
-        const [psxHtmlResult, stooqResult, stooq52Result] = await Promise.allSettled([
+        // Fetch PSX HTML + Yahoo Finance v8 chart + stooq CSV in PARALLEL
+        // PSX HTML = accurate live price + change (no high/low/volume)
+        // Yahoo Finance v8 chart = OHLCV for ^KSE100 (primary OHLCV source)
+        // stooq CSV = OHLCV fallback if Yahoo v8 also fails
+        const YF_CHART_HEADERS = {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+          'Accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Origin': 'https://finance.yahoo.com',
+          'Referer': 'https://finance.yahoo.com/',
+        };
+        const [psxHtmlResult, yfChartResult, stooqResult, stooq52Result] = await Promise.allSettled([
           // PSX /indices HTML
           fetch('https://dps.psx.com.pk/indices', {
             headers: {
@@ -1747,11 +1755,14 @@ export default {
               'Cache-Control': 'no-cache',
             }
           }).then(r => r.text()),
-          // stooq CSV — Symbol,Date,Time,Open,High,Low,Close,Volume,Name
+          // Yahoo Finance v8 chart — returns OHLCV for ^KSE100 (1-day range, 5-min interval)
+          fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EKSE100?interval=5m&range=1d&includePrePost=false', { headers: YF_CHART_HEADERS })
+            .then(r => r.ok ? r.json() : Promise.reject('yfc-'+r.status)),
+          // stooq CSV — Symbol,Date,Time,Open,High,Low,Close,Volume,Name (fallback)
           fetch('https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcvn', {
             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
           }).then(r => r.text()),
-          // stooq 52-week range — separate param set
+          // stooq 52-week range — separate param set (fallback)
           fetch('https://stooq.com/q/l/?s=%5Ekse100&f=sd2t2ohlcv52lh', {
             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
           }).then(r => r.text()),
@@ -1764,9 +1775,31 @@ export default {
           if (!psxMeta) errors.push('psx-html:parse-fail(len='+psxHtmlResult.value.length+')');
         } else { errors.push('psx-html:'+psxHtmlResult.reason); }
 
-        // Parse stooq CSV for OHLCV
+        // Parse Yahoo Finance v8 chart for OHLCV (primary OHLCV source)
+        let yfChartMeta = null;
+        if (yfChartResult.status === 'fulfilled') {
+          try {
+            const yfc = yfChartResult.value;
+            const result0 = yfc?.chart?.result?.[0];
+            const meta0 = result0?.meta;
+            if (meta0 && meta0.regularMarketPrice && meta0.regularMarketPrice > 50000) {
+              yfChartMeta = {
+                price:  meta0.regularMarketPrice,
+                open:   meta0.regularMarketDayOpen   || meta0.regularMarketPreviousClose || null,
+                high:   meta0.regularMarketDayHigh   || null,
+                low:    meta0.regularMarketDayLow    || null,
+                volume: meta0.regularMarketVolume    || null,
+                prev:   meta0.chartPreviousClose     || meta0.regularMarketPreviousClose || null,
+                date:   new Date(meta0.regularMarketTime*1000).toISOString().slice(0,10),
+                _raw:   'yfc:'+meta0.regularMarketPrice+'|h='+meta0.regularMarketDayHigh+'|l='+meta0.regularMarketDayLow+'|v='+meta0.regularMarketVolume,
+              };
+            } else errors.push('yfc:invalid(price='+(meta0?.regularMarketPrice)+')');
+          } catch(eyfc) { errors.push('yfc:parse-err:'+eyfc.message); }
+        } else { errors.push('yfc:'+yfChartResult.reason); }
+
+        // Parse stooq CSV for OHLCV (secondary fallback)
         let stooqMeta = null;
-        if (stooqResult.status === 'fulfilled') {
+        if (!yfChartMeta && stooqResult.status === 'fulfilled') {
           try {
             const rows = stooqResult.value.trim().split('\n');
             const vals = rows[1] ? rows[1].split(',') : [];
@@ -1784,11 +1817,24 @@ export default {
               };
             } else errors.push('stooq:invalid('+closeP+')');
           } catch(es) { errors.push('stooq:parse-err'); }
-        } else { errors.push('stooq:'+stooqResult.reason); }
+        } else if (!yfChartMeta) { errors.push('stooq:'+stooqResult.reason); }
 
-        // Parse stooq 52-week CSV
+        // Use best available OHLCV source
+        const ohlcvMeta = yfChartMeta || stooqMeta;
+
+        // Parse stooq 52-week CSV (try regardless of which OHLCV source succeeded)
         let fiftyTwoHigh = null, fiftyTwoLow = null;
-        if (stooq52Result && stooq52Result.status === 'fulfilled') {
+        // Also try to get 52wk from YF chart if available
+        if (yfChartResult && yfChartResult.status === 'fulfilled') {
+          try {
+            const meta0 = yfChartResult.value?.chart?.result?.[0]?.meta;
+            if (meta0) {
+              fiftyTwoHigh = meta0.fiftyTwoWeekHigh || null;
+              fiftyTwoLow  = meta0.fiftyTwoWeekLow  || null;
+            }
+          } catch(e52yf) {}
+        }
+        if ((!fiftyTwoHigh || !fiftyTwoLow) && stooq52Result && stooq52Result.status === 'fulfilled') {
           try {
             const rows52 = stooq52Result.value.trim().split('\n');
             const header = rows52[0] ? rows52[0].split(',') : [];
@@ -1801,31 +1847,31 @@ export default {
           } catch(e52) { /* 52-week optional, ignore */ }
         }
 
-        // MERGE: prefer PSX HTML for price/change, stooq for high/low/volume
+        // MERGE: prefer PSX HTML for price/change, YF chart (or stooq fallback) for OHLCV
         if (psxMeta) {
           meta = {
             symbol: 'KSE100',
             regularMarketPrice:   psxMeta.regularMarketPrice,
             chartPreviousClose:   psxMeta.chartPreviousClose,
-            regularMarketDayHigh: stooqMeta ? stooqMeta.high  : null,
-            regularMarketDayLow:  stooqMeta ? stooqMeta.low   : null,
-            regularMarketVolume:  stooqMeta ? stooqMeta.volume : null,
+            regularMarketDayHigh: ohlcvMeta ? ohlcvMeta.high   : null,
+            regularMarketDayLow:  ohlcvMeta ? ohlcvMeta.low    : null,
+            regularMarketVolume:  ohlcvMeta ? ohlcvMeta.volume  : null,
             regularMarketTime:    Math.floor(Date.now()/1000),
             currency: 'PKR', exchangeName: 'PSX',
-            _raw: 'psx-html+stooq:price='+psxMeta.regularMarketPrice+'|high='+(stooqMeta?stooqMeta.high:null)+'|low='+(stooqMeta?stooqMeta.low:null)+'|vol='+(stooqMeta?stooqMeta.volume:null),
+            _raw: 'psx-html+'+(yfChartMeta?'yfc':'stooq')+':price='+psxMeta.regularMarketPrice+'|high='+(ohlcvMeta?ohlcvMeta.high:null)+'|low='+(ohlcvMeta?ohlcvMeta.low:null)+'|vol='+(ohlcvMeta?ohlcvMeta.volume:null),
           };
-        } else if (stooqMeta) {
-          // PSX HTML failed — use stooq alone
+        } else if (ohlcvMeta) {
+          // PSX HTML failed — use YF chart or stooq alone
           meta = {
             symbol: 'KSE100',
-            regularMarketPrice:   stooqMeta.price,
-            chartPreviousClose:   stooqMeta.open,
-            regularMarketDayHigh: stooqMeta.high,
-            regularMarketDayLow:  stooqMeta.low,
-            regularMarketVolume:  stooqMeta.volume,
+            regularMarketPrice:   ohlcvMeta.price,
+            chartPreviousClose:   ohlcvMeta.prev || ohlcvMeta.open,
+            regularMarketDayHigh: ohlcvMeta.high,
+            regularMarketDayLow:  ohlcvMeta.low,
+            regularMarketVolume:  ohlcvMeta.volume,
             regularMarketTime:    Math.floor(Date.now()/1000),
             currency: 'PKR', exchangeName: 'PSX',
-            _raw: stooqMeta._raw,
+            _raw: ohlcvMeta._raw,
           };
         }
 
@@ -1837,7 +1883,7 @@ export default {
           symbol:        meta.symbol || 'KSE100',
           price:         meta.regularMarketPrice,
           prev:          meta.chartPreviousClose,
-          open:          stooqMeta ? stooqMeta.open : null,
+          open:          ohlcvMeta ? ohlcvMeta.open : null,
           change:        meta.regularMarketPrice && meta.chartPreviousClose
                            ? (meta.regularMarketPrice - meta.chartPreviousClose).toFixed(2)
                            : null,
@@ -1849,7 +1895,7 @@ export default {
           volume:        meta.regularMarketVolume || null,
           fiftyTwoHigh:  fiftyTwoHigh,
           fiftyTwoLow:   fiftyTwoLow,
-          dataDate:      stooqMeta ? stooqMeta.date : null,
+          dataDate:      ohlcvMeta ? ohlcvMeta.date : null,
           currency:      meta.currency,
           exchangeName:  meta.exchangeName,
           ts:            meta.regularMarketTime,
@@ -1887,14 +1933,35 @@ export default {
         'SILK','BOP','SNBL','JSBL','FAYSAL','AKBL','SCBPL','KASBB','ALBL','SMBL','BIPL',
         'PNSC','PIA','PICT','KPUS','MPL'
       ];
-      // Yahoo Finance batch: up to ~50 at a time — split into 2 batches
-      const batch1 = KSE100_SYMS.slice(0, 50).map(s => s+'.KA').join(',');
-      const batch2 = KSE100_SYMS.slice(50).map(s => s+'.KA').join(',');
-      const YF_HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/json'
+      // Yahoo Finance v8 spark (quote) endpoint — works as of 2026, includes price+chg
+      // Split into batches of 20 (v8 spark handles smaller batches better)
+      const YF_HDRS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Origin': 'https://finance.yahoo.com',
+        'Referer': 'https://finance.yahoo.com/',
       };
-      function parseYFQuotes(data) {
+
+      function parseYFSpark(data) {
+        // v8 spark response: { spark: { result: [ { symbol, response: [ { meta } ] } ] } }
+        const result = [];
+        const items = data?.spark?.result || [];
+        for (const item of items) {
+          const sym = (item.symbol||'').replace(/\.KA$/i,'').toUpperCase();
+          const meta = item?.response?.[0]?.meta;
+          if (!sym || !meta) continue;
+          const price = meta.regularMarketPrice || meta.previousClose;
+          const prev  = meta.chartPreviousClose || meta.previousClose;
+          if (!price || price <= 0) continue;
+          const chg = prev ? ((price - prev) / prev * 100) : 0;
+          result.push({ sym, price: parseFloat(price.toFixed(2)), chg: parseFloat(chg.toFixed(2)), vol: meta.regularMarketVolume || 0 });
+        }
+        return result;
+      }
+
+      function parseYFQuoteSummary(data) {
+        // v8 quoteSummary: { quoteResponse: { result: [ {...} ] } }
         const result = [];
         const quotes = data?.quoteResponse?.result || [];
         for (const q of quotes) {
@@ -1907,46 +1974,74 @@ export default {
         }
         return result;
       }
+
+      // Try YF v8 spark first (3 parallel batches of ~33 symbols)
+      const batchSize = 33;
+      const batches = [];
+      for (let i = 0; i < KSE100_SYMS.length; i += batchSize) {
+        batches.push(KSE100_SYMS.slice(i, i + batchSize).map(s => s+'.KA').join(','));
+      }
+
       try {
-        const [r1, r2] = await Promise.all([
-          fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${batch1}&fields=regularMarketPrice,regularMarketChangePercent,regularMarketVolume`, { headers: YF_HEADERS }),
-          fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${batch2}&fields=regularMarketPrice,regularMarketChangePercent,regularMarketVolume`, { headers: YF_HEADERS })
-        ]);
-        if (!r1.ok && !r2.ok) throw new Error('yf-'+r1.status);
+        // Try Yahoo Finance v8 spark endpoint
+        const sparkResults = await Promise.all(
+          batches.map(syms =>
+            fetch(`https://query1.finance.yahoo.com/v8/finance/spark?symbols=${syms}&range=1d&interval=1d`, { headers: YF_HDRS })
+              .then(r => r.ok ? r.json() : Promise.reject('spark-'+r.status))
+          )
+        );
         const stocks = [];
-        if (r1.ok) { const d = await r1.json(); stocks.push(...parseYFQuotes(d)); }
-        if (r2.ok) { const d = await r2.json(); stocks.push(...parseYFQuotes(d)); }
-        if (stocks.length === 0) throw new Error('yf-empty');
-        return new Response(JSON.stringify({ stocks, source:'yahoo', ts: Date.now() }), {
+        for (const d of sparkResults) stocks.push(...parseYFSpark(d));
+        if (stocks.length === 0) throw new Error('spark-empty');
+        return new Response(JSON.stringify({ stocks, source:'yahoo-spark', ts: Date.now() }), {
           headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }
         });
-      } catch(e) {
-        // Fallback: stooq.com for top 30
+      } catch(e1) {
+        // Fallback: YF v7 quote (may 401 but try)
         try {
-          const stooqSyms = KSE100_SYMS.slice(0,30).map(s=>s.toLowerCase()+'.pk').join(',');
-          const sr = await fetch('https://stooq.com/q/l/?s='+stooqSyms+'&f=sd2t2ohlcvn', { headers:{'User-Agent':'Mozilla/5.0'} });
-          if (!sr.ok) throw new Error('stooq-'+sr.status);
-          const csv = await sr.text();
-          const lines = csv.trim().split('\n');
+          const batch1 = KSE100_SYMS.slice(0, 50).map(s => s+'.KA').join(',');
+          const batch2 = KSE100_SYMS.slice(50).map(s => s+'.KA').join(',');
+          const [r1, r2] = await Promise.all([
+            fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${batch1}&fields=regularMarketPrice,regularMarketChangePercent,regularMarketVolume`, { headers: YF_HDRS }),
+            fetch(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${batch2}&fields=regularMarketPrice,regularMarketChangePercent,regularMarketVolume`, { headers: YF_HDRS })
+          ]);
+          if (!r1.ok && !r2.ok) throw new Error('yf7-'+r1.status);
           const stocks = [];
-          for (let i = 1; i < lines.length; i++) {
-            const c = lines[i].split(',');
-            const sym   = (c[0]||'').replace(/\.PK$/i,'').toUpperCase();
-            const close = parseFloat(c[6]);
-            const open  = parseFloat(c[3]);
-            const vol   = parseFloat(c[7]) || 0;
-            if (!sym || isNaN(close) || close <= 0) continue;
-            const chgPct = (!isNaN(open) && open > 0) ? ((close-open)/open*100) : 0;
-            stocks.push({ sym, price: close, chg: parseFloat(chgPct.toFixed(2)), vol });
-          }
-          return new Response(JSON.stringify({ stocks, source:'stooq', ts: Date.now() }), {
+          if (r1.ok) { const d = await r1.json(); stocks.push(...parseYFQuoteSummary(d)); }
+          if (r2.ok) { const d = await r2.json(); stocks.push(...parseYFQuoteSummary(d)); }
+          if (stocks.length === 0) throw new Error('yf7-empty');
+          return new Response(JSON.stringify({ stocks, source:'yahoo-v7', ts: Date.now() }), {
             headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }
           });
         } catch(e2) {
-          return new Response(JSON.stringify({ stocks:[], error: e.message+' / '+e2.message }), {
-            status: 502,
-            headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }
-          });
+          // Final fallback: stooq.com for top 30
+          try {
+            const stooqSyms = KSE100_SYMS.slice(0,30).map(s=>s.toLowerCase()+'.pk').join(',');
+            const sr = await fetch('https://stooq.com/q/l/?s='+stooqSyms+'&f=sd2t2ohlcvn', { headers:{'User-Agent':'Mozilla/5.0'} });
+            if (!sr.ok) throw new Error('stooq-'+sr.status);
+            const csv = await sr.text();
+            const lines = csv.trim().split('\n');
+            const stocks = [];
+            for (let i = 1; i < lines.length; i++) {
+              const c = lines[i].split(',');
+              const sym   = (c[0]||'').replace(/\.PK$/i,'').toUpperCase();
+              const close = parseFloat(c[6]);
+              const open  = parseFloat(c[3]);
+              const vol   = parseFloat(c[7]) || 0;
+              if (!sym || isNaN(close) || close <= 0) continue;
+              const chgPct = (!isNaN(open) && open > 0) ? ((close-open)/open*100) : 0;
+              stocks.push({ sym, price: close, chg: parseFloat(chgPct.toFixed(2)), vol });
+            }
+            if (stocks.length === 0) throw new Error('stooq-empty');
+            return new Response(JSON.stringify({ stocks, source:'stooq', ts: Date.now() }), {
+              headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }
+            });
+          } catch(e3) {
+            return new Response(JSON.stringify({ stocks:[], error: e1.message+' / '+e2.message+' / '+e3.message }), {
+              status: 502,
+              headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }
+            });
+          }
         }
       }
     }

@@ -222,11 +222,15 @@ footer a{color:#4a7a6a;text-decoration:none}
   .stocks-table col.col-turnover{width:58px}
   /* sticky: Sr#, star, stock name fixed on left */
   .stocks-table td.col-num,
-  .stocks-table th.col-num  {position:sticky;left:0;z-index:2;background:#0d1a10}
+  .stocks-table th.col-num  {position:sticky;left:0;z-index:2;background:var(--bg)}
   .stocks-table td.col-star,
-  .stocks-table th.col-star {position:sticky;left:22px;z-index:2;background:#0d1a10}
+  .stocks-table th.col-star {position:sticky;left:22px;z-index:2;background:var(--bg)}
   .stocks-table td.col-stock,
-  .stocks-table th.col-stock{position:sticky;left:48px;z-index:2;background:#0d1a10;box-shadow:3px 0 8px rgba(0,0,0,.5)}
+  .stocks-table th.col-stock{position:sticky;left:48px;z-index:2;background:var(--bg);box-shadow:4px 0 10px rgba(0,0,0,.7)}
+  /* make sure hover row also has correct sticky bg */
+  .stocks-table tbody tr:hover td.col-num,
+  .stocks-table tbody tr:hover td.col-star,
+  .stocks-table tbody tr:hover td.col-stock{background:#0f2114}
   .stocks-table td{padding:5px 3px}
   .stocks-table thead th{padding:5px 3px}
   .st-sym{font-size:11px;display:block;font-weight:700}

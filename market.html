@@ -208,22 +208,29 @@ footer a{color:#4a7a6a;text-decoration:none}
 .sharia-badge{font-size:9px;color:#60a5fa;margin-right:4px}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
-  .col-num{display:table-cell;width:20px}
-  .col-star{display:table-cell;width:26px}
   .col-prev{display:none}
   .col-chgabs{display:none}
   .col-turnover{display:none}
   .stocks-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .stocks-table{font-size:11px;table-layout:fixed;min-width:0;width:100%}
-  .stocks-table col.col-num{width:20px}
-  .stocks-table col.col-star{width:26px}
-  .stocks-table col.col-stock{width:auto}
-  .stocks-table col.col-price{width:64px}
-  .stocks-table col.col-chg{width:62px}
-  .stocks-table td{padding:5px 3px}
-  .stocks-table thead th{padding:5px 3px}
+  .stocks-table{font-size:11px;table-layout:fixed;border-collapse:collapse}
+  /* fixed widths for all visible cols */
+  .stocks-table col.col-num  {width:24px}
+  .stocks-table col.col-star {width:28px}
+  .stocks-table col.col-stock{width:130px}
+  .stocks-table col.col-price{width:68px}
+  .stocks-table col.col-chg  {width:66px}
+  .stocks-table col.col-vol  {width:60px}
+  /* sticky: Sr#, star, stock name stay while scrolling */
+  .stocks-table td.col-num,
+  .stocks-table th.col-num  {position:sticky;left:0;z-index:2;background:#0d1a10}
+  .stocks-table td.col-star,
+  .stocks-table th.col-star {position:sticky;left:24px;z-index:2;background:#0d1a10}
+  .stocks-table td.col-stock,
+  .stocks-table th.col-stock{position:sticky;left:52px;z-index:2;background:#0d1a10;box-shadow:2px 0 6px rgba(0,0,0,.4)}
+  .stocks-table td{padding:6px 4px}
+  .stocks-table thead th{padding:6px 4px}
   .st-sym{font-size:12px;display:block;font-weight:700}
-  .st-name{font-size:9px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;margin-top:1px}
+  .st-name{font-size:9px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;margin-top:1px}
   .st-price{font-size:11px;white-space:nowrap}
   .st-chg{font-size:10px;padding:2px 4px;white-space:nowrap}
   .st-star svg{width:14px;height:14px}
@@ -1120,8 +1127,12 @@ function renderStocksCard(stocks, isFallback){
       + '</div>' : '';
   if(noResult){ document.getElementById('stocks-body').innerHTML = fallbackNote + noResult; return; }
 
+  var isMob = window.innerWidth <= 600;
+  var cg = isMob
+    ? '<colgroup><col class="col-num"><col class="col-star"><col class="col-stock"><col class="col-price"><col class="col-chg"><col class="col-vol"></colgroup>'
+    : '<colgroup><col class="col-num" style="width:20px"><col class="col-star" style="width:28px"><col style="width:120px"><col style="width:64px"><col style="width:76px"><col style="width:60px"><col style="width:56px"><col style="width:56px"><col style="width:64px"></colgroup>';
   var html = '<div class="stocks-wrap"><table class="stocks-table">'
-    + '<colgroup><col class="col-num" style="width:20px"><col class="col-star" style="width:28px"><col style="width:120px"><col style="width:64px"><col style="width:76px"><col style="width:60px"><col style="width:56px"><col style="width:56px"><col style="width:64px"></colgroup>'
+    + cg
     + '<thead><tr>'
     + '<th class="col-num">#</th>'
     + '<th class="col-star" style="text-align:center">☆</th>'

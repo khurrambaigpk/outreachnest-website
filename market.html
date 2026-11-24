@@ -208,18 +208,21 @@ footer a{color:#4a7a6a;text-decoration:none}
 .sharia-badge{font-size:9px;color:#60a5fa;margin-right:4px}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
-  .col-num{display:table-cell}
-  .col-star{display:table-cell}
-  .stocks-table{font-size:11px;table-layout:fixed;min-width:360px}
-  .stocks-table td{padding:6px 3px}
-  .stocks-table thead th{padding:6px 3px}
+  .col-num{display:table-cell;width:22px}
+  .col-star{display:table-cell;width:30px}
+  .col-prev{display:none}
+  .col-chgabs{display:none}
+  .col-turnover{display:none}
+  .stocks-table{font-size:11px;table-layout:fixed;min-width:0;width:100%}
+  .stocks-table col.col-price{width:72px}
+  .stocks-table col.col-chg{width:72px}
+  .stocks-table td{padding:6px 4px}
+  .stocks-table thead th{padding:6px 4px}
   .st-sym{font-size:12px;display:block}
-  .st-name{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px;margin-top:1px}
+  .st-name{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;margin-top:1px}
   .st-price{font-size:12px;white-space:nowrap}
   .st-chg{font-size:10px;padding:2px 5px;white-space:nowrap}
   .st-vol{font-size:10px;white-space:nowrap}
-  .col-prev{font-size:10px}
-  .col-turnover{display:none}
   #stocks-filters{gap:4px}
   .sf-btn{font-size:10px;padding:3px 8px}
 }

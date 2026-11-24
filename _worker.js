@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v106"; // v106: split fetch — market.html calls ?page=1 + ?page=2 in parallel (50 syms each), Worker fetches each page independently under CPU limit // v105: single PSX /market-watch fetch — one request returns ALL stocks (fix 45/100 limit) // v104: hybrid fetch — PSX for first 50 + Stooq CSV for remaining 50 in parallel (fix CF Workers CPU time limit causing only 45/100 stocks) // v103: batch PSX fetches in 3×34 sequential chunks to fix CF Workers concurrent fetch limit (was returning only 45/100 stocks) // v102: fetch ALL KSE-100 symbols (was slice 0-50) — full 100 companies live // v101: move DFML/DAWH to pos 31-32 (were at 71-72, outside slice(0,50)) // v100: update KSE100_EXTRA hardcoded fallback prices (BOP 8.40→31.46, banks/transport updated); increase fetch to top 50 symbols; reorder KSE100_SYMS with BOP at pos 31 // v99: fix stats regex — exact HTML match data-name="REG"><div class="stats for OHLCV parsing; KSE-100 default tab // v98: /api/psx+stocks — PSX company HTML scraping (dps.psx.com.pk/company/SYM) replaces Yahoo Finance+stooq (both 401/522 from CF Workers) // v97: /api/psx+stocks — add Yahoo Finance v8 chart as OHLCV source (stooq 522 fix); cookie auth header on YF requests // v96: cache bust for mobile nav fix; fuel KV TTL 2h; fallback rates updated Nov 24 // v95: fuel cron every 1h (was 6h) for more accurate OGRA rate updates // v94: /api/stocks upgraded to Yahoo Finance (all KSE100 symbols, 15-min delay); stooq fallback for top-30 // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
+const CACHE_VERSION = "v107"; // v106: split fetch — market.html calls ?page=1 + ?page=2 in parallel (50 syms each), Worker fetches each page independently under CPU limit // v105: single PSX /market-watch fetch — one request returns ALL stocks (fix 45/100 limit) // v104: hybrid fetch — PSX for first 50 + Stooq CSV for remaining 50 in parallel (fix CF Workers CPU time limit causing only 45/100 stocks) // v103: batch PSX fetches in 3×34 sequential chunks to fix CF Workers concurrent fetch limit (was returning only 45/100 stocks) // v102: fetch ALL KSE-100 symbols (was slice 0-50) — full 100 companies live // v101: move DFML/DAWH to pos 31-32 (were at 71-72, outside slice(0,50)) // v100: update KSE100_EXTRA hardcoded fallback prices (BOP 8.40→31.46, banks/transport updated); increase fetch to top 50 symbols; reorder KSE100_SYMS with BOP at pos 31 // v99: fix stats regex — exact HTML match data-name="REG"><div class="stats for OHLCV parsing; KSE-100 default tab // v98: /api/psx+stocks — PSX company HTML scraping (dps.psx.com.pk/company/SYM) replaces Yahoo Finance+stooq (both 401/522 from CF Workers) // v97: /api/psx+stocks — add Yahoo Finance v8 chart as OHLCV source (stooq 522 fix); cookie auth header on YF requests // v96: cache bust for mobile nav fix; fuel KV TTL 2h; fallback rates updated Nov 24 // v95: fuel cron every 1h (was 6h) for more accurate OGRA rate updates // v94: /api/stocks upgraded to Yahoo Finance (all KSE100 symbols, 15-min delay); stooq fallback for top-30 // v92: fuel automation — Cron every 6h scrapes PSO/OGRA → saves to KV; /api/fuel reads KV first // v91: fuel Try2=psopk.com (plain HTML, official PSO rates, updates with each OGRA announcement) // v90: fuel fallback Rs323/355 (correct Nov 20), removed bad geo.tv URL (July article), ogra.org.pk as Try1 // v89: fuel Try1=ogra.org.pk (official), Try2=geo.tv, fallback hardcoded // v88: fuel scrapes geo.tv daily (OGRA now daily), fallback Rs322/357; correct Nov 20 rates // v87: fuel = hardcoded OGRA official rates (no scraping — scraping returned wrong Rs332); auto-refresh 15min countdown // v86: PSX adds open+52wk+dataDate fields; fuel date formatted; gold live timestamp // v85: API endpoints Cache-Control: no-store — Cloudflare edge never caches /api/fuel /api/psx /api/gold — fixes stale data issue // v79: Cache-Control: no-store on HTML so CF edge never caches — fixes Market nav injection // v78: bust Workers cache so Market nav link injection actually runs (v77 Workers cache was stale) // v77: inject Market nav link via Worker on every HTML page (bypasses edge cache) // v72: /api/psx + /api/gold — replace session-cookie check with same-origin Referer check (fixes Incognito) // v65: private /dashboard route — session-protected owner dashboard with live currency rates, manual GSC+fuel update // v59: parallel ASSETS fetch in handlePostPage — fix slow TTFB for AI crawlers // v58: solar-calculator schema simplified to WebPage only (fix rich results validation error) // v57: robots.txt more AI bots allowed + solar-calculator schema // v56: sanitize invalid KV niches — reset to [] if unrecognized values stored // v55: niches page Article schema + Organization schema completeness fix // v54: recovery flow shows password-reset form instead of direct login // v53: run_worker_first=true + static asset pass-through + admin logout fix
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -1965,21 +1965,58 @@ export default {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Referer': 'https://dps.psx.com.pk/indices',
           };
+          // Helper: parse a single PSX company HTML page
+          function parsePsxPage(sym, html) {
+            const priceM = html.match(/quote__close[^>]*>Rs\.([\d,]+\.?\d*)/);
+            if (!priceM) return null;
+            const price = parseFloat(priceM[1].replace(/,/g,''));
+            if (!price) return null;
+            const chgM = html.match(/change__percent[^>]*>[\s\S]{0,20}\(([\d.]+)%\)/);
+            const chgPct = chgM ? parseFloat(chgM[1]) : 0;
+            const isUp = html.indexOf('icon-up-dir') > html.indexOf('quote__close');
+            // Try to get LDCP from stats section
+            const ldcpM = html.match(/LDCP[\s\S]{0,200}Rs\.([\d,]+\.?\d*)/);
+            const ldcp = ldcpM ? parseFloat(ldcpM[1].replace(/,/g,'')) : 0;
+            const chgAbsVal = ldcp > 0 ? (price - ldcp) : 0;
+            return { sym, price, chg: parseFloat((isUp ? chgPct : -chgPct).toFixed(2)), chgAbs: parseFloat(chgAbsVal.toFixed(2)), ldcp, vol: 0 };
+          }
+
           const fetches = symsToFetch.map(sym =>
             fetch('https://dps.psx.com.pk/company/' + sym, { headers: PSX_HDRS })
-              .then(r => r.ok ? r.text().then(html => {
-                const priceM = html.match(/quote__close[^>]*>Rs\.([\d,]+\.?\d*)/);
-                if (!priceM) return null;
-                const price = parseFloat(priceM[1].replace(/,/g,''));
-                if (!price) return null;
-                const chgM = html.match(/change__percent[^>]*>[\s\S]{0,20}\(([\d.]+)%\)/);
-                const chgPct = chgM ? parseFloat(chgM[1]) : 0;
-                const isUp = html.indexOf('icon-up-dir') > html.indexOf('quote__close');
-                return { sym, price, chg: parseFloat((isUp ? chgPct : -chgPct).toFixed(2)), vol: 0 };
-              }) : null)
+              .then(r => r.ok ? r.text().then(html => parsePsxPage(sym, html)) : null)
               .catch(() => null)
           );
-          const stocks = (await Promise.all(fetches)).filter(Boolean);
+          const firstResults = await Promise.all(fetches);
+          const stocks = firstResults.filter(Boolean);
+
+          // Retry failed symbols using PSX quotes JSON API
+          const failedSyms = symsToFetch.filter((sym, i) => !firstResults[i]);
+          if (failedSyms.length > 0) {
+            // PSX quotes endpoint: GET /quotes?symbol=SYM returns JSON with current price data
+            const retryFetches = failedSyms.map(sym =>
+              fetch('https://dps.psx.com.pk/quotes?symbol=' + sym, {
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                  'Accept': 'application/json, text/plain, */*',
+                  'Referer': 'https://dps.psx.com.pk/',
+                  'X-Requested-With': 'XMLHttpRequest',
+                }
+              })
+              .then(r => r.ok ? r.json().then(data => {
+                // PSX quotes JSON: { current, change, ldcp, open, high, low, volume, ... }
+                const price = parseFloat(data.current || data.price || data.close || 0);
+                if (!price || price <= 0) return null;
+                const ldcp = parseFloat(data.ldcp || data.prev_close || 0);
+                const chgAbs = ldcp > 0 ? price - ldcp : parseFloat(data.change || 0);
+                const chgPct = ldcp > 0 ? (chgAbs / ldcp) * 100 : parseFloat(data.change_p || 0);
+                return { sym, price, chg: parseFloat(chgPct.toFixed(2)), chgAbs: parseFloat(chgAbs.toFixed(2)), ldcp, vol: parseFloat(data.volume || 0) };
+              }).catch(() => null) : null)
+              .catch(() => null)
+            );
+            const retryResults = await Promise.all(retryFetches);
+            retryResults.forEach(s => { if (s) stocks.push(s); });
+          }
+
           if (stocks.length < 3) throw new Error('fallback-only-'+stocks.length);
           return new Response(JSON.stringify({ stocks, source:'psx-co', ts: Date.now() }), {
             headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store', 'Access-Control-Allow-Origin':'*' }

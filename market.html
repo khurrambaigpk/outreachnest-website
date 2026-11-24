@@ -192,10 +192,11 @@ footer a{color:#4a7a6a;text-decoration:none}
 .price-flash-dn{animation:flash-dn 5s ease-out forwards}
 /* Live blink dot */
 @keyframes blink-dot{0%,100%{opacity:1}50%{opacity:0}}
-.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:middle;animation:blink-dot .8s step-start infinite}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:middle}
 .live-dot.up{background:#16a34a}
 .live-dot.dn{background:#ef4444}
 .live-dot.flat{background:#60a5fa}
+.market-open .live-dot{animation:blink-dot .8s step-start infinite}
 .sharia-badge{font-size:9px;color:#60a5fa;margin-right:4px}
 .st-vol{font-size:11px;color:var(--muted);white-space:nowrap}
 @media(max-width:600px){
@@ -1157,6 +1158,11 @@ fetchKSEStocks();
 // refresh every 2 min during trading hours
 setInterval(fetchKSEStocks, 2*60*1000);
 
+// ── Market-open body class (controls blink dot animation) ─────────────
+function updateMarketOpenClass(){
+  document.body.classList.toggle('market-open', isPSXOpen());
+}
+
 // ── PSX KSE-100 ───────────────────────────────────────────────────────
 function isPSXOpen(){
   var now = new Date();
@@ -1167,6 +1173,10 @@ function isPSXOpen(){
   var mins = h*60+m;
   return mins >= 9*60+30 && mins < 15*60+30;
 }
+// Run immediately + every minute
+updateMarketOpenClass();
+setInterval(updateMarketOpenClass, 60000);
+
 function renderPSX(d){
   var chg     = d.change    ? parseFloat(d.change)    : 0;
   var chgPct  = d.changePct ? parseFloat(d.changePct) : 0;

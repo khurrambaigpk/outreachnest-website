@@ -1100,8 +1100,10 @@ function applyLiveDots(){
     if(!symEl) return;
     var sym = symEl.textContent.replace(/[^A-Z0-9]/g,'');
     var live = _liveStocks[sym];
+    // remove any existing dot first
+    var old = symEl.querySelector('.live-dot');
+    if(old) old.remove();
     if(!live) return;
-    if(symEl.querySelector('.live-dot')) return; // already there
     var dir = live.chg >= 0 ? 'up' : 'dn';
     var dot = document.createElement('span');
     dot.className = 'live-dot ' + dir;

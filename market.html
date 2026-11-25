@@ -1491,47 +1491,80 @@ var SOLAR={
 </script>
 
 <!-- ══ FUEL ADMIN MODAL ══════════════════════════════════════════════ -->
-<div id="fuel-admin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center">
-  <div style="background:#162014;border:1px solid #2a3d28;border-radius:16px;padding:28px;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.6)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-      <div style="font-size:15px;font-weight:700;color:#4ade80">⛽ Update Fuel Prices</div>
-      <button onclick="closeFuelAdmin()" style="background:none;border:none;color:#6b8f72;cursor:pointer;font-size:20px;line-height:1">✕</button>
+<style>
+#fuel-admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto}
+.fadm-box{background:#162014;border:1px solid #2a3d28;border-radius:16px;padding:24px;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.7);margin-bottom:40px}
+.fadm-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px}
+.fadm-input{width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:15px;font-weight:600;outline:none}
+.fadm-input:focus{border-color:#4ade80}
+.fadm-btn{width:100%;background:#1f4d3a;color:#4ade80;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.fadm-btn:hover{background:#255c47}
+.fadm-btn-del{background:#3a1a1a;color:#f87171;border:none;padding:12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;width:100%}
+.fadm-btn-del:hover{background:#4a2020}
+.fadm-tabs{display:flex;gap:0;margin-bottom:20px;border-radius:10px;overflow:hidden;border:1px solid #2a3d28}
+.fadm-tab{flex:1;padding:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:#111f16;color:#6b8f72;transition:.15s}
+.fadm-tab.active{background:#1f4d3a;color:#4ade80}
+.fadm-history-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;margin-bottom:4px;background:#111f16;font-size:12px}
+.fadm-history-row:hover{background:#1a2a1a}
+</style>
+
+<div id="fuel-admin-overlay">
+  <div class="fadm-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div style="font-size:15px;font-weight:700;color:#4ade80">⛽ Fuel Price Manager</div>
+      <button onclick="closeFuelAdmin()" style="background:none;border:none;color:#6b8f72;cursor:pointer;font-size:22px;line-height:1">✕</button>
     </div>
+
     <!-- Password step -->
     <div id="fadm-step1">
-      <div style="font-size:12px;color:#7a9e7a;margin-bottom:8px">Enter admin password</div>
-      <input id="fadm-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')fadmVerify()"
-        style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 14px;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px">
-      <button onclick="fadmVerify()" style="width:100%;background:#1f4d3a;color:#4ade80;border:none;padding:10px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Continue →</button>
-      <div id="fadm-err" style="color:#f87171;font-size:12px;margin-top:8px;display:none">Wrong password</div>
+      <div class="fadm-label" style="margin-bottom:8px">Admin Password</div>
+      <input id="fadm-pass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')fadmVerify()" class="fadm-input" style="margin-bottom:10px">
+      <button onclick="fadmVerify()" class="fadm-btn">Continue →</button>
+      <div id="fadm-err" style="color:#f87171;font-size:12px;margin-top:8px;display:none">❌ Wrong password</div>
     </div>
-    <!-- Prices step -->
+
+    <!-- Main panel (after login) -->
     <div id="fadm-step2" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-        <div>
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">Petrol (Rs/L)</div>
-          <input id="fadm-petrol" type="number" step="0.01" placeholder="318.00"
-            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
-        </div>
-        <div>
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">Diesel (Rs/L)</div>
-          <input id="fadm-diesel" type="number" step="0.01" placeholder="353.00"
-            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
-        </div>
-        <div>
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">Kerosene (Rs/L)</div>
-          <input id="fadm-kerosene" type="number" step="0.01" placeholder="329.54"
-            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
-        </div>
-        <div>
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">LPG (Rs/kg)</div>
-          <input id="fadm-lpg" type="number" step="0.01" placeholder="279.34"
-            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
-        </div>
+      <!-- Tabs: Add / Delete -->
+      <div class="fadm-tabs">
+        <button class="fadm-tab active" id="fadm-tab-add" onclick="fadmSwitchTab('add')">➕ Add / Update Entry</button>
+        <button class="fadm-tab" id="fadm-tab-del" onclick="fadmSwitchTab('del')">🗑️ Delete Entry</button>
       </div>
-      <div style="font-size:11px;color:#6b8f72;margin-bottom:12px">Date: <strong style="color:#a3c4a8" id="fadm-date-display"></strong></div>
-      <button onclick="fadmSave()" id="fadm-save-btn" style="width:100%;background:#1f4d3a;color:#4ade80;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💾 Save & Update</button>
-      <div id="fadm-status" style="margin-top:10px;font-size:12px;text-align:center"></div>
+
+      <!-- TAB: ADD -->
+      <div id="fadm-pane-add">
+        <div style="margin-bottom:12px">
+          <div class="fadm-label">Date</div>
+          <input id="fadm-date" type="date" class="fadm-input" style="color-scheme:dark">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div>
+            <div class="fadm-label">Petrol (Rs/L) *</div>
+            <input id="fadm-petrol" type="number" step="0.01" placeholder="318.00" class="fadm-input">
+          </div>
+          <div>
+            <div class="fadm-label">Diesel (Rs/L) *</div>
+            <input id="fadm-diesel" type="number" step="0.01" placeholder="353.00" class="fadm-input">
+          </div>
+          <div>
+            <div class="fadm-label">Kerosene (Rs/L)</div>
+            <input id="fadm-kerosene" type="number" step="0.01" placeholder="329.54" class="fadm-input">
+          </div>
+          <div>
+            <div class="fadm-label">LPG (Rs/kg)</div>
+            <input id="fadm-lpg" type="number" step="0.01" placeholder="279.34" class="fadm-input">
+          </div>
+        </div>
+        <button onclick="fadmSave()" id="fadm-save-btn" class="fadm-btn">💾 Save Entry</button>
+        <div id="fadm-status" style="margin-top:10px;font-size:12px;text-align:center"></div>
+      </div>
+
+      <!-- TAB: DELETE -->
+      <div id="fadm-pane-del" style="display:none">
+        <div style="font-size:12px;color:#7a9e7a;margin-bottom:12px">Select entry to delete:</div>
+        <div id="fadm-del-list" style="max-height:320px;overflow-y:auto"></div>
+        <div id="fadm-del-status" style="margin-top:10px;font-size:12px;text-align:center"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1539,6 +1572,7 @@ var SOLAR={
 <script>
 // ── Fuel Admin Modal ────────────────────────────────────────────────
 var FADM_PASS_HASH = '48576ddb9468d9a8c1bae2ab8539859eb1a773013543240035340ef78ebedaac'; // "ogra2026"
+var fadmUnlocked = false;
 
 async function sha256(str){
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -1546,33 +1580,76 @@ async function sha256(str){
 }
 
 function openFuelAdmin(){
+  document.getElementById('fadm-step2').style.display = fadmUnlocked ? 'block' : 'none';
+  document.getElementById('fadm-step1').style.display = fadmUnlocked ? 'none' : 'block';
+  document.getElementById('fadm-err').style.display='none';
+  document.getElementById('fadm-pass').value='';
+  document.getElementById('fadm-status').textContent='';
+  // Set today's date as default
+  var now = new Date();
+  var yyyy=now.getFullYear(), mm=('0'+(now.getMonth()+1)).slice(-2), dd=('0'+now.getDate()).slice(-2);
+  document.getElementById('fadm-date').value = yyyy+'-'+mm+'-'+dd;
+  // Pre-fill with latest prices
   var h = FUEL_HISTORY[0];
   document.getElementById('fadm-petrol').value = h.petrol;
   document.getElementById('fadm-diesel').value = h.diesel;
   document.getElementById('fadm-kerosene').value = h.kerosene || '';
   document.getElementById('fadm-lpg').value = h.lpg || '';
-  var now = new Date();
-  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var dateStr = now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
-  document.getElementById('fadm-date-display').textContent = dateStr;
-  document.getElementById('fadm-step1').style.display='block';
-  document.getElementById('fadm-step2').style.display='none';
-  document.getElementById('fadm-err').style.display='none';
-  document.getElementById('fadm-pass').value='';
-  document.getElementById('fadm-status').textContent='';
+  fadmSwitchTab('add');
   var ov=document.getElementById('fuel-admin-overlay');
   ov.style.display='flex';
-  setTimeout(function(){document.getElementById('fadm-pass').focus();},100);
+  setTimeout(function(){ (fadmUnlocked ? document.getElementById('fadm-petrol') : document.getElementById('fadm-pass')).focus(); },100);
 }
 
 function closeFuelAdmin(){
   document.getElementById('fuel-admin-overlay').style.display='none';
 }
 
+function fadmSwitchTab(tab){
+  document.getElementById('fadm-tab-add').classList.toggle('active', tab==='add');
+  document.getElementById('fadm-tab-del').classList.toggle('active', tab==='del');
+  document.getElementById('fadm-pane-add').style.display = tab==='add' ? 'block' : 'none';
+  document.getElementById('fadm-pane-del').style.display = tab==='del' ? 'block' : 'none';
+  if(tab==='del') fadmBuildDelList();
+}
+
+function fadmBuildDelList(){
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var html = FUEL_HISTORY.map(function(h,i){
+    return '<div class="fadm-history-row">'
+      +'<div>'
+        +'<span style="color:#a3c4a8;font-weight:700">'+h.date+'</span>'
+        +' &nbsp; <span style="color:#fbbf24">₨'+h.petrol+'</span>'
+        +' <span style="color:#6b8f72">/ '+h.diesel+'</span>'
+      +'</div>'
+      +'<button onclick="fadmDeleteEntry('+i+')" style="background:#3a1a1a;color:#f87171;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">🗑️ Delete</button>'
+    +'</div>';
+  }).join('');
+  document.getElementById('fadm-del-list').innerHTML = html || '<div style="color:#6b8f72;font-size:12px">No entries</div>';
+}
+
+function fadmDeleteEntry(idx){
+  var entry = FUEL_HISTORY[idx];
+  if(!confirm('Delete entry for '+entry.date+'?\nPetrol: '+entry.petrol+' / Diesel: '+entry.diesel)) return;
+  FUEL_HISTORY.splice(idx, 1);
+  // Re-derive fallback from new [0]
+  if(FUEL_HISTORY.length){
+    var h=FUEL_HISTORY[0];
+    var d=new Date(h.date);
+    var yyyy=d.getFullYear(),mm=('0'+(d.getMonth()+1)).slice(-2),dd2=('0'+d.getDate()).slice(-2);
+    FUEL_FALLBACK={ petrol:h.petrol, diesel:h.diesel, kerosene:h.kerosene||177.59, lpg:h.lpg||294, effective:yyyy+'-'+mm+'-'+dd2 };
+    renderFuel(FUEL_FALLBACK);
+    renderFuelHistory();
+  }
+  fadmBuildDelList();
+  document.getElementById('fadm-del-status').innerHTML='<span style="color:#4ade80">✅ Deleted from view. Page refresh karay ga permanently hatanay ke liye.</span>';
+}
+
 async function fadmVerify(){
   var pass = document.getElementById('fadm-pass').value;
   var hash = await sha256(pass);
   if(hash === FADM_PASS_HASH){
+    fadmUnlocked = true;
     document.getElementById('fadm-step1').style.display='none';
     document.getElementById('fadm-step2').style.display='block';
     setTimeout(function(){document.getElementById('fadm-petrol').focus();},100);
@@ -1586,46 +1663,63 @@ async function fadmVerify(){
 async function fadmSave(){
   var petrol   = parseFloat(document.getElementById('fadm-petrol').value);
   var diesel   = parseFloat(document.getElementById('fadm-diesel').value);
-  var kerosene = parseFloat(document.getElementById('fadm-kerosene').value) || 0;
-  var lpg      = parseFloat(document.getElementById('fadm-lpg').value) || 0;
+  var kerosene = parseFloat(document.getElementById('fadm-kerosene').value) || null;
+  var lpg      = parseFloat(document.getElementById('fadm-lpg').value) || null;
+  var dateVal  = document.getElementById('fadm-date').value; // "2026-11-25"
   if(!petrol||!diesel||petrol<100||diesel<100){
     document.getElementById('fadm-status').innerHTML='<span style="color:#f87171">⚠️ Petrol aur Diesel zaroori hain</span>';
     return;
   }
-  var now = new Date();
+  if(!dateVal){
+    document.getElementById('fadm-status').innerHTML='<span style="color:#f87171">⚠️ Date choose karo</span>';
+    return;
+  }
+  // Format date "2026-11-25" → "25 Nov 2026"
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var dateStr = now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
-  var yyyy=now.getFullYear(), mm=('0'+(now.getMonth()+1)).slice(-2), dd=('0'+now.getDate()).slice(-2);
-  var effective = yyyy+'-'+mm+'-'+dd;
+  var parts = dateVal.split('-');
+  var dateStr = parseInt(parts[2])+' '+months[parseInt(parts[1])-1]+' '+parts[0];
 
   var btn=document.getElementById('fadm-save-btn');
   btn.textContent='Saving…'; btn.disabled=true;
   document.getElementById('fadm-status').textContent='';
 
   try {
-    // Save to KV via worker
-    var resp = await fetch('/api/fuel-update', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ petrol, diesel, kerosene: kerosene||null, lpg: lpg||null, effective, source: 'ogra.org.pk' })
-    });
-    var result = await resp.json();
-    if(!resp.ok || result.error) throw new Error(result.error || 'Server error');
+    // Save latest date entry to KV (only if it's today or newer)
+    var todayStr = (function(){ var n=new Date(); return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2)+'-'+('0'+n.getDate()).slice(-2); })();
+    if(dateVal >= todayStr){
+      var resp = await fetch('/api/fuel-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ petrol, diesel, kerosene, lpg, effective: dateVal, source: 'ogra.org.pk' })
+      });
+      var result = await resp.json();
+      if(!resp.ok || result.error) throw new Error(result.error || 'Server error');
+    }
 
-    // Update local FUEL_HISTORY (in-memory, until page refresh)
-    FUEL_HISTORY.unshift({ date: dateStr, petrol, diesel, kerosene: kerosene||null, lpg: lpg||null });
-    // Re-derive fallback
-    FUEL_FALLBACK = { petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294, effective };
-    // Re-render
+    // Insert into FUEL_HISTORY at correct sorted position (newest first)
+    var newEntry = { date: dateStr, petrol, diesel, kerosene, lpg };
+    // Remove existing entry for same date if any
+    FUEL_HISTORY = FUEL_HISTORY.filter(function(h){ return h.date !== dateStr; });
+    // Insert sorted by date descending
+    var newTime = new Date(dateVal).getTime();
+    var insertIdx = FUEL_HISTORY.findIndex(function(h){ return new Date(h.date).getTime() < newTime; });
+    if(insertIdx === -1) FUEL_HISTORY.push(newEntry);
+    else FUEL_HISTORY.splice(insertIdx, 0, newEntry);
+
+    // Re-derive fallback from [0] (latest)
+    var h0 = FUEL_HISTORY[0];
+    var d0 = new Date(h0.date);
+    var e0 = d0.getFullYear()+'-'+('0'+(d0.getMonth()+1)).slice(-2)+'-'+('0'+d0.getDate()).slice(-2);
+    FUEL_FALLBACK = { petrol:h0.petrol, diesel:h0.diesel, kerosene:h0.kerosene||177.59, lpg:h0.lpg||294, effective:e0 };
     renderFuel(FUEL_FALLBACK);
     renderFuelHistory();
 
-    document.getElementById('fadm-status').innerHTML='<span style="color:#4ade80">✅ Updated! Market page refresh karay ga ab.</span>';
+    document.getElementById('fadm-status').innerHTML='<span style="color:#4ade80">✅ '+dateStr+' ka entry save ho gaya!</span>';
     btn.textContent='✅ Saved!';
-    setTimeout(closeFuelAdmin, 2000);
+    setTimeout(function(){ btn.textContent='💾 Save Entry'; btn.disabled=false; }, 2500);
   } catch(e) {
     document.getElementById('fadm-status').innerHTML='<span style="color:#f87171">❌ Error: '+e.message+'</span>';
-    btn.textContent='💾 Save & Update'; btn.disabled=false;
+    btn.textContent='💾 Save Entry'; btn.disabled=false;
   }
 }
 

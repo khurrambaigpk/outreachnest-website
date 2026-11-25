@@ -1527,8 +1527,9 @@ var SOLAR={
     <div id="fadm-step2" style="display:none">
       <!-- Tabs: Add / Delete -->
       <div class="fadm-tabs">
-        <button class="fadm-tab active" id="fadm-tab-add" onclick="fadmSwitchTab('add')">➕ Add / Update Entry</button>
-        <button class="fadm-tab" id="fadm-tab-del" onclick="fadmSwitchTab('del')">🗑️ Delete Entry</button>
+        <button class="fadm-tab active" id="fadm-tab-add" onclick="fadmSwitchTab('add')">➕ Add</button>
+        <button class="fadm-tab" id="fadm-tab-del" onclick="fadmSwitchTab('del')">🗑️ Delete</button>
+        <button class="fadm-tab" id="fadm-tab-pwd" onclick="fadmSwitchTab('pwd')">🔑 Password</button>
       </div>
 
       <!-- TAB: ADD -->
@@ -1565,13 +1566,29 @@ var SOLAR={
         <div id="fadm-del-list" style="max-height:320px;overflow-y:auto"></div>
         <div id="fadm-del-status" style="margin-top:10px;font-size:12px;text-align:center"></div>
       </div>
+
+      <!-- TAB: PASSWORD -->
+      <div id="fadm-pane-pwd" style="display:none">
+        <div style="margin-bottom:10px">
+          <div class="fadm-label">New Password</div>
+          <input id="fadm-pwd-new" type="password" placeholder="Naya password" class="fadm-input" style="margin-bottom:10px">
+          <div class="fadm-label">Confirm Password</div>
+          <input id="fadm-pwd-confirm" type="password" placeholder="Dobara likhain" class="fadm-input" onkeydown="if(event.key==='Enter')fadmChangePass()">
+        </div>
+        <button onclick="fadmChangePass()" class="fadm-btn" style="margin-top:4px">🔑 Change Password</button>
+        <div id="fadm-pwd-status" style="margin-top:10px;font-size:12px;text-align:center"></div>
+        <div style="font-size:11px;color:#4b6b4f;margin-top:14px;padding:10px;background:#0f1a14;border-radius:8px">
+          ⚠️ Password sirf isi browser mein save hoga (localStorage). Naye browser ya device mein default <code style="color:#7a9e7a">ogra2026</code> kaam karay ga jab tak wahan bhi change na karo.
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 // ── Fuel Admin Modal ────────────────────────────────────────────────
-var FADM_PASS_HASH = '48576ddb9468d9a8c1bae2ab8539859eb1a773013543240035340ef78ebedaac'; // "ogra2026"
+var FADM_DEFAULT_HASH = '48576ddb9468d9a8c1bae2ab8539859eb1a773013543240035340ef78ebedaac'; // "ogra2026"
+var FADM_PASS_HASH = localStorage.getItem('fadm_pass_hash') || FADM_DEFAULT_HASH;
 var fadmUnlocked = false;
 
 async function sha256(str){
@@ -1606,11 +1623,26 @@ function closeFuelAdmin(){
 }
 
 function fadmSwitchTab(tab){
-  document.getElementById('fadm-tab-add').classList.toggle('active', tab==='add');
-  document.getElementById('fadm-tab-del').classList.toggle('active', tab==='del');
-  document.getElementById('fadm-pane-add').style.display = tab==='add' ? 'block' : 'none';
-  document.getElementById('fadm-pane-del').style.display = tab==='del' ? 'block' : 'none';
+  ['add','del','pwd'].forEach(function(t){
+    document.getElementById('fadm-tab-'+t).classList.toggle('active', tab===t);
+    document.getElementById('fadm-pane-'+t).style.display = tab===t ? 'block' : 'none';
+  });
   if(tab==='del') fadmBuildDelList();
+  if(tab==='pwd'){ document.getElementById('fadm-pwd-new').value=''; document.getElementById('fadm-pwd-confirm').value=''; document.getElementById('fadm-pwd-status').textContent=''; }
+}
+
+async function fadmChangePass(){
+  var np = document.getElementById('fadm-pwd-new').value;
+  var cp = document.getElementById('fadm-pwd-confirm').value;
+  var st = document.getElementById('fadm-pwd-status');
+  if(!np || np.length < 4){ st.innerHTML='<span style="color:#f87171">⚠️ Kam az kam 4 characters chahiye</span>'; return; }
+  if(np !== cp){ st.innerHTML='<span style="color:#f87171">⚠️ Dono passwords match nahi karte</span>'; return; }
+  var newHash = await sha256(np);
+  FADM_PASS_HASH = newHash;
+  try{ localStorage.setItem('fadm_pass_hash', newHash); } catch(e){}
+  st.innerHTML='<span style="color:#4ade80">✅ Password change ho gaya! Yaad rakhein: <strong>'+np+'</strong></span>';
+  document.getElementById('fadm-pwd-new').value='';
+  document.getElementById('fadm-pwd-confirm').value='';
 }
 
 function fadmBuildDelList(){

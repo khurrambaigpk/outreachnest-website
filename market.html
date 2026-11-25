@@ -671,7 +671,9 @@ function calcConv(){
 
 // ── Fuel ─────────────────────────────────────────────────────────────
 // OGRA announces prices twice/month — update fallback manually each announcement
-var FUEL_FALLBACK = {petrol:318,diesel:353,kerosene:329.54,lpg:279.34,effective:'2026-11-25'};
+// FUEL_HISTORY[0] is always the latest — FUEL_FALLBACK auto-derived from it
+// To update prices: ONLY edit FUEL_HISTORY array below, nothing else needed here
+var FUEL_FALLBACK = null; // set after FUEL_HISTORY defined
 fetch('/api/fuel', {headers:{'Referer':window.location.href}})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -747,6 +749,13 @@ var FUEL_HISTORY = [
   { date:'03 Nov 2026', petrol:374.51, diesel:395.20, kerosene:177.59, lpg:294.00 },
   { date:'31 Oct 2026', petrol:377.91, diesel:402.96, kerosene:177.59, lpg:296.00 },
 ];
+// Auto-derive FUEL_FALLBACK from latest history entry — never edit FUEL_FALLBACK manually
+(function(){
+  var h = FUEL_HISTORY[0];
+  var d = new Date(h.date); // "25 Nov 2026" → Date
+  var yyyy = d.getFullYear(), mm = ('0'+(d.getMonth()+1)).slice(-2), dd = ('0'+d.getDate()).slice(-2);
+  FUEL_FALLBACK = { petrol: h.petrol, diesel: h.diesel, kerosene: h.kerosene || 177.59, lpg: h.lpg || 294, effective: yyyy+'-'+mm+'-'+dd };
+})();
 function chgBadge(cur, prv){
   if(prv == null) return '';
   var diff = cur - prv;

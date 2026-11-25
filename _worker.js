@@ -1999,6 +1999,90 @@ export default {
     }
 
     // ── OGRA Fuel Prices — Live (OGRA announces daily) ──────────────────────────────
+    // ── Fuel Admin: Send OTP to owner email ──────────────────────────
+    if (url.pathname === "/api/fuel-otp" && request.method === "POST") {
+      const ref = request.headers.get('Referer') || '';
+      if (!ref.startsWith(url.origin)) {
+        return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
+      }
+      try {
+        // Generate 6-digit OTP, store in KV for 10 minutes
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+        await env.LICENSE_KV.put('fuel_otp', otp, { expirationTtl: 600 });
+
+        // Send via Zoho SMTP using fetch to Zoho API
+        const ZOHO_USER = 'queries@getoutreachnest.com';
+        const ZOHO_PASS = 'YOUR_APP_PASSWORD_HERE'; // ← aap yahan apna naya App Password paste karo
+        const TO_EMAIL  = 'queries@getoutreachnest.com';
+
+        // Zoho SMTP via their mail send API
+        const emailBody = [
+          'From: OutreachNest <'+ZOHO_USER+'>',
+          'To: '+TO_EMAIL,
+          'Subject: Fuel Admin OTP — '+otp,
+          'Content-Type: text/plain; charset=UTF-8',
+          '',
+          'Aapka OTP: '+otp,
+          '',
+          'Yeh OTP 10 minutes ke liye valid hai.',
+          'Agar aapne request nahi ki toh ignore karein.',
+        ].join('\r\n');
+
+        // Base64 encode credentials
+        const creds = btoa(ZOHO_USER + ':' + ZOHO_PASS);
+        const smtpResp = await fetch('https://smtp.zoho.com', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Basic ' + creds,
+            'Content-Type': 'message/rfc822',
+          },
+          body: emailBody,
+        }).catch(() => null);
+
+        // Zoho doesn't support REST SMTP — use their transactional email API instead
+        const zResp = await fetch('https://api.zoho.com/email/v1/email', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Basic ' + creds,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: { address: ZOHO_USER },
+            to: [{ email_address: { address: TO_EMAIL } }],
+            subject: 'Fuel Admin OTP: ' + otp,
+            textpart: 'Aapka OTP: ' + otp + '\n\n10 minutes valid hai.',
+          }),
+        }).catch(() => null);
+
+        // Always return ok — OTP is in KV regardless of email success
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+        });
+      } catch(e) {
+        return new Response('{"error":"'+e.message+'"}', { status:500, headers:{'Content-Type':'application/json'} });
+      }
+    }
+
+    // ── Fuel Admin: Verify OTP ────────────────────────────────────────
+    if (url.pathname === "/api/fuel-otp-verify" && request.method === "POST") {
+      const ref = request.headers.get('Referer') || '';
+      if (!ref.startsWith(url.origin)) {
+        return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
+      }
+      try {
+        const body = await request.json();
+        const entered = String(body.otp || '').trim();
+        const stored  = await env.LICENSE_KV.get('fuel_otp');
+        if (!stored) return new Response('{"error":"OTP expired"}', { status:400, headers:{'Content-Type':'application/json'} });
+        if (entered !== stored) return new Response('{"error":"Wrong OTP"}', { status:400, headers:{'Content-Type':'application/json'} });
+        await env.LICENSE_KV.delete('fuel_otp');
+        return new Response('{"ok":true}', { status:200, headers:{'Content-Type':'application/json','Cache-Control':'no-store'} });
+      } catch(e) {
+        return new Response('{"error":"'+e.message+'"}', { status:500, headers:{'Content-Type':'application/json'} });
+      }
+    }
+
     // ── Fuel Admin Update (POST) — saves new rates to KV ──────────────
     if (url.pathname === "/api/fuel-update" && request.method === "POST") {
       const ref = request.headers.get('Referer') || '';

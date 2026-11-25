@@ -2008,13 +2008,14 @@ export default {
         let fuelResult = null;
 
         // ── Step 1: Check KV cache (populated by cron every 1h) ──────────────
+        // Only use KV if it has REAL API data (not ogra-cached fallback)
         try {
           const kvVal = await env.LICENSE_KV.get('fuel_rates');
           if (kvVal) {
             const kvData = JSON.parse(kvVal);
-            // Accept KV data only if it's fresh (saved within last 2 hours)
             const kvAge = kvData && kvData.savedAt ? (Date.now() - kvData.savedAt) : Infinity;
-            if (kvData && kvData.petrol && kvData.petrol > 200 && kvAge < 7200000) {
+            const isRealData = kvData && kvData.source && kvData.source !== 'ogra-cached';
+            if (isRealData && kvData.petrol > 200 && kvAge < 7200000) {
               fuelResult = kvData;
             }
           }

@@ -2120,9 +2120,9 @@ export default {
         }
 
         // Fallback: last known OGRA rates — update manually after each announcement
-        // Current as of: 25 Nov 2026 — Petrol Rs318, Diesel Rs353
+        // Current as of: 25 Nov 2026 — Petrol Rs318, Diesel Rs353, Kerosene Rs329.54, LPG Rs279.34
         if (!fuelResult) {
-          fuelResult = { petrol: 318, diesel: 353, kerosene: 177.59,
+          fuelResult = { petrol: 318, diesel: 353, kerosene: 329.54, lpg: 279.34,
                          effective: '2026-11-25', source: 'ogra-cached' };
         };
 
@@ -2633,7 +2633,7 @@ export default {
 
 // ── Fuel scraper — called by cron every 6h ───────────────────────────────────
 async function fetchAndSaveFuelRates(env) {
-  const FALLBACK = { petrol: 318, diesel: 353, kerosene: 177.59, effective: '2026-11-25', source: 'ogra-cached' };
+  const FALLBACK = { petrol: 318, diesel: 353, kerosene: 329.54, lpg: 279.34, effective: '2026-11-25', source: 'ogra-cached' };
 
   // Helper: parse PSO HTML
   function parsePsoHtml(html) {

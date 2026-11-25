@@ -671,7 +671,7 @@ function calcConv(){
 
 // ── Fuel ─────────────────────────────────────────────────────────────
 // OGRA announces prices twice/month — update fallback manually each announcement
-var FUEL_FALLBACK = {petrol:318,diesel:353,kerosene:177.59,lpg:294,effective:'2026-11-25'};
+var FUEL_FALLBACK = {petrol:318,diesel:353,kerosene:329.54,lpg:279.34,effective:'2026-11-25'};
 fetch('/api/fuel', {headers:{'Referer':window.location.href}})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -729,7 +729,7 @@ function renderFuel(d){
 // Newest first. Sources: autoones.com, OGRA notifications
 // LPG: OGRA notifies monthly (1st of month). Per kg rate.
 var FUEL_HISTORY = [
-  { date:'25 Nov 2026', petrol:318.00, diesel:353.00, kerosene:177.59, lpg:294.00 },
+  { date:'25 Nov 2026', petrol:318.00, diesel:353.00, kerosene:329.54, lpg:279.34 },
   { date:'24 Nov 2026', petrol:319.00, diesel:357.00, kerosene:177.59, lpg:294.00 },
   { date:'21 Nov 2026', petrol:322.00, diesel:357.00, kerosene:177.59, lpg:294.00 },
   { date:'20 Nov 2026', petrol:323.00, diesel:355.00, kerosene:177.59, lpg:294.00 },

@@ -2063,11 +2063,10 @@ export default {
             const petrol  = petrolRow  ? parseFloat(petrolRow.price_pkr)  : null;
             const diesel  = dieselRow  ? parseFloat(dieselRow.price_pkr)  : null;
             const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
-            // Only trust autoones if effective_date matches today (PKT) — avoids stale data
-            const todayPKT = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Karachi'})).toISOString().slice(0,10);
-            const isToday  = effective >= todayPKT;
-            if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200 && isToday) {
-              fuelResult = { petrol, diesel, kerosene: 177.59, effective, source: 'autoones.com' };
+            // Only accept if petrol <= 318 (today's OGRA rate) — reject stale 319 data
+            const CURRENT_PETROL = 318;
+            if (petrol && petrol > 200 && petrol <= CURRENT_PETROL && diesel && diesel > 200) {
+              fuelResult = { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'autoones.com' };
             }
           }
         } catch(e0) {}
@@ -2673,9 +2672,9 @@ async function fetchAndSaveFuelRates(env) {
       const petrol  = petrolRow ? parseFloat(petrolRow.price_pkr) : null;
       const diesel  = dieselRow ? parseFloat(dieselRow.price_pkr) : null;
       const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
-      const todayPKT = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Karachi'})).toISOString().slice(0,10);
-      if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200 && effective >= todayPKT) {
-        result = { petrol, diesel, kerosene: 177.59, effective, source: 'autoones.com' };
+      const CURRENT_PETROL = 318;
+      if (petrol && petrol > 200 && petrol <= CURRENT_PETROL && diesel && diesel > 200) {
+        result = { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'autoones.com' };
       }
     }
   } catch(e) {}

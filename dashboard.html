@@ -764,22 +764,51 @@ function renderGold(d, pkrRate) {
 }
 
 function fetchGold(pkrRate) {
-  // /api/gold — Worker proxies xaus.com server-side (bypasses CORS)
-  fetch('/api/gold')
+  // Try 1: xaus.com directly (client-side, CORS open) — no Worker needed
+  fetch('https://xaus.com/api/v1/spot', { headers: { 'Accept': 'application/json' } })
     .then(function(r){ return r.json(); })
     .then(function(d) {
-      renderGold(d, pkrRate);
-      var upd = d.updated_at || '';
-      document.getElementById('gold-ts').textContent = upd ? 'Updated: ' + upd.substring(0,10) : 'Live';
+      if (!d || !d.spot_usd_oz || d.spot_usd_oz < 100) throw new Error('bad data');
+      var pkrFx = (d.fx_rates && d.fx_rates.PKR) ? d.fx_rates.PKR : (pkrRate || 278);
+      renderGold({ XAU: d.spot_usd_oz, XAG: d.silver_usd_oz || null, PKR: pkrFx, source: 'xaus.com' }, pkrFx);
+      document.getElementById('gold-ts').textContent = 'Live';
       document.getElementById('gold-source').textContent = 'Source: xaus.com — indicative mid-market spot price. © XAUS. For reference only.';
       document.getElementById('silver-ts').textContent = '';
       document.getElementById('silver-source').textContent = 'Source: xaus.com — indicative mid-market spot price. © XAUS. For reference only.';
     })
     .catch(function() {
-      var cached = load('gold_cache', null);
-      var msg = cached ? '⚠️ Cached (live fetch failed)' : 'Could not load gold price. Check internet.';
-      document.getElementById('gold-body').innerHTML = '<div class="error-msg">' + msg + '</div>';
-      document.getElementById('silver-body').innerHTML = '<div class="error-msg">' + msg + '</div>';
+      // Try 2: metals.live (client-side)
+      fetch('https://api.metals.live/v1/spot', { headers: { 'Accept': 'application/json' } })
+        .then(function(r){ return r.json(); })
+        .then(function(mData) {
+          var xau, xag;
+          if (Array.isArray(mData)) {
+            xau = mData.find(function(m){ return /gold/i.test(m.metal||m.name||''); });
+            xag = mData.find(function(m){ return /silver/i.test(m.metal||m.name||''); });
+            xau = xau ? xau.price : null;
+            xag = xag ? xag.price : null;
+          } else if (mData) {
+            xau = mData.XAU || mData.gold || null;
+            xag = mData.XAG || mData.silver || null;
+          }
+          if (!xau || xau < 100) throw new Error('bad data');
+          renderGold({ XAU: xau, XAG: xag, PKR: pkrRate || 278, source: 'metals.live' }, pkrRate || 278);
+          document.getElementById('gold-ts').textContent = 'Live';
+          document.getElementById('gold-source').textContent = 'Source: metals.live — spot price for reference only.';
+          document.getElementById('silver-source').textContent = 'Source: metals.live — spot price for reference only.';
+        })
+        .catch(function() {
+          // Fallback: cached or error
+          var cached = load('gold_cache', null);
+          if (cached && cached.usdOz && cached.usdOz > 100) {
+            renderGold({ XAU: cached.usdOz, XAG: cached.xagUsd || null, PKR: pkrRate || 278, source: 'cached' }, pkrRate || 278);
+            document.getElementById('gold-ts').textContent = '⚠️ Cached';
+            document.getElementById('gold-source').textContent = 'Using cached data — live fetch failed.';
+          } else {
+            document.getElementById('gold-body').innerHTML = '<div class="error-msg">Gold data unavailable.</div>';
+            document.getElementById('silver-body').innerHTML = '<div class="error-msg">Silver data unavailable.</div>';
+          }
+        });
     });
 }
 

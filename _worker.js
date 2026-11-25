@@ -2046,8 +2046,33 @@ export default {
           return null;
         }
 
-        // Try 1: OGRA.org.pk — official source (only if KV miss)
+        // Try 1: fuel.trackmate.page — free public API, no auth, scrapes PSO/OGRA daily
         if (fuelResult) { /* skip — KV hit */ } else
+        try {
+          const tResp = await fetch('https://fuel.trackmate.page/api/prices/pso', {
+            headers: { 'Accept': 'application/json', 'User-Agent': 'OutreachNest-Market/1.0' },
+            signal: AbortSignal.timeout(8000)
+          });
+          if (tResp.ok) {
+            const tData = await tResp.json();
+            // Response is array: [{product, price_pkr, unit, effective_date, source}, ...]
+            if (Array.isArray(tData) && tData.length) {
+              const petrolRow  = tData.find(r => /petrol|premier/i.test(r.product));
+              const dieselRow  = tData.find(r => /diesel|hi.cetane/i.test(r.product));
+              const keroRow    = tData.find(r => /kerosene|sko/i.test(r.product));
+              const petrol  = petrolRow  ? parseFloat(petrolRow.price_pkr)  : null;
+              const diesel  = dieselRow  ? parseFloat(dieselRow.price_pkr)  : null;
+              const kerosene= keroRow    ? parseFloat(keroRow.price_pkr)    : null;
+              const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
+              if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
+                fuelResult = { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'trackmate-pso' };
+              }
+            }
+          }
+        } catch(e0) {}
+
+        // Try 2: OGRA.org.pk — official source
+        if (fuelResult) { /* skip */ } else
         try {
           const oResp = await fetch('https://www.ogra.org.pk/ogra-determined-petroleum-prices', {
             headers: {
@@ -2061,8 +2086,7 @@ export default {
           if (parsed) fuelResult = { ...parsed, kerosene: parsed.kerosene || 177.59, source: 'ogra.org.pk' };
         } catch(e1) {}
 
-        // Try 2: PSO (Pakistan State Oil) — official distributor, plain HTML, updates with OGRA
-        // PSO prices may differ Re1-2 from OGRA ex-depot due to freight, but always current
+        // Try 3: PSO (Pakistan State Oil)
         if (!fuelResult) {
           try {
             const pResp = await fetch('https://psopk.com/en/fuels/fuel-prices', {
@@ -2074,7 +2098,6 @@ export default {
               signal: AbortSignal.timeout(10000)
             });
             const pHtml = await pResp.text();
-            // PSO format: "PREMIER EURO 5  Rs.322/Ltr" and "HI-CETANE DIESEL EURO 5  Rs.357/Ltr"
             const petrolM  = pHtml.match(/PREMIER[^<]{0,50}Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/\s*Ltr/i)
                           || pHtml.match(/Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/Ltr[\s\S]{0,200}petrol/i);
             const dieselM  = pHtml.match(/(?:HI-CETANE|DIESEL)[^<]{0,80}Rs\.(\d{3}(?:\.\d{1,2})?)\s*\/\s*Ltr/i);
@@ -2095,10 +2118,8 @@ export default {
           } catch(e2) {}
         }
 
-        // Fallback: last known OGRA rates — update when new OGRA announcement
-        // Current as of: 24 Nov 2026 — Petrol Rs319, Diesel Rs357 (OGRA verified)
-        // NOTE: Both ogra.org.pk and psopk.com block server-side requests (bot detection)
-        //       Update this fallback manually after each OGRA announcement
+        // Fallback: last known OGRA rates — update manually after each announcement
+        // Current as of: 24 Nov 2026 — Petrol Rs319, Diesel Rs357
         if (!fuelResult) {
           fuelResult = { petrol: 319, diesel: 357, kerosene: 177.59,
                          effective: '2026-11-24', source: 'ogra-cached' };
@@ -2636,6 +2657,29 @@ async function fetchAndSaveFuelRates(env) {
   }
 
   let result = null;
+
+  // Try 1: fuel.trackmate.page — free public API (most reliable, no bot blocking)
+  try {
+    const tResp = await fetch('https://fuel.trackmate.page/api/prices/pso', {
+      headers: { 'Accept': 'application/json', 'User-Agent': 'OutreachNest-Market/1.0' },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (tResp.ok) {
+      const tData = await tResp.json();
+      if (Array.isArray(tData) && tData.length) {
+        const petrolRow  = tData.find(r => /petrol|premier/i.test(r.product));
+        const dieselRow  = tData.find(r => /diesel|hi.cetane/i.test(r.product));
+        const keroRow    = tData.find(r => /kerosene|sko/i.test(r.product));
+        const petrol  = petrolRow  ? parseFloat(petrolRow.price_pkr)  : null;
+        const diesel  = dieselRow  ? parseFloat(dieselRow.price_pkr)  : null;
+        const kerosene= keroRow    ? parseFloat(keroRow.price_pkr)    : null;
+        const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
+        if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
+          result = { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'trackmate-pso' };
+        }
+      }
+    }
+  } catch(e) {}
 
   // Try PSO with multiple User-Agent variations
   const agents = [

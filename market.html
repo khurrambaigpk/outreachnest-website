@@ -220,24 +220,21 @@ footer a{color:#4a7a6a;text-decoration:none}
   .stocks-table col.col-chgabs {width:58px}
   .stocks-table col.col-vol    {width:52px}
   .stocks-table col.col-turnover{width:58px}
-  /* sticky freeze: #, star, stock, LDCP — all 4 fixed on left */
+  /* sticky freeze: #, star, stock name only */
   .stocks-table td.col-num,
-  .stocks-table th.col-num    {position:sticky;left:0px;z-index:3;background:#162014}
+  .stocks-table th.col-num    {position:sticky;left:0px;z-index:3;background:#162014;overflow:visible}
   .stocks-table td.col-star,
-  .stocks-table th.col-star   {position:sticky;left:22px;z-index:3;background:#162014}
-  .stocks-table td.col-stock,
-  .stocks-table th.col-stock  {position:sticky;left:48px;z-index:3;background:#162014}
-  .stocks-table td.col-prev,
-  .stocks-table th.col-prev   {position:sticky;left:138px;z-index:3;background:#162014;box-shadow:4px 0 10px #000}
-  /* hover bg for all sticky cols */
+  .stocks-table th.col-star   {position:sticky;left:22px;z-index:3;background:#162014;overflow:visible}
+  .stocks-table td.st-sticky,
+  .stocks-table th.st-sticky  {position:sticky;left:48px;z-index:3;background:#162014;overflow:visible;box-shadow:4px 0 10px #000}
+  /* hover bg for sticky cols */
   .stocks-table tbody tr:hover td.col-num,
   .stocks-table tbody tr:hover td.col-star,
-  .stocks-table tbody tr:hover td.col-stock,
-  .stocks-table tbody tr:hover td.col-prev  {background:#1c2a1c}
+  .stocks-table tbody tr:hover td.st-sticky {background:#1c2a1c}
   .stocks-table td{padding:5px 3px}
   .stocks-table thead th{padding:5px 3px}
   .st-sym{font-size:11px;display:block;font-weight:700}
-  .st-name{font-size:9px;display:block;white-space:normal;word-break:break-word;max-width:84px;margin-top:1px;line-height:1.3}
+  .st-name{font-size:9px;display:block;white-space:normal;word-break:break-word;max-width:84px;margin-top:1px;line-height:1.3;overflow:visible;text-overflow:clip}
   .st-price{font-size:11px;white-space:nowrap}
   .st-chg{font-size:10px;padding:2px 3px;white-space:nowrap}
   .st-vol{font-size:10px;white-space:nowrap}

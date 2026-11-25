@@ -2117,10 +2117,10 @@ export default {
         }
 
         // Fallback: last known OGRA rates — update manually after each announcement
-        // Current as of: 24 Nov 2026 — Petrol Rs319, Diesel Rs357
+        // Current as of: 25 Nov 2026 — Petrol Rs318, Diesel Rs353
         if (!fuelResult) {
-          fuelResult = { petrol: 319, diesel: 357, kerosene: 177.59,
-                         effective: '2026-11-24', source: 'ogra-cached' };
+          fuelResult = { petrol: 318, diesel: 353, kerosene: 177.59,
+                         effective: '2026-11-25', source: 'ogra-cached' };
         };
 
         return new Response(JSON.stringify(fuelResult), {
@@ -2630,7 +2630,7 @@ export default {
 
 // ── Fuel scraper — called by cron every 6h ───────────────────────────────────
 async function fetchAndSaveFuelRates(env) {
-  const FALLBACK = { petrol: 319, diesel: 357, kerosene: 177.59, effective: '2026-11-24', source: 'ogra-cached' };
+  const FALLBACK = { petrol: 318, diesel: 353, kerosene: 177.59, effective: '2026-11-25', source: 'ogra-cached' };
 
   // Helper: parse PSO HTML
   function parsePsoHtml(html) {

@@ -711,7 +711,8 @@ function renderFuel(d){
       dateStr = parts[2]+' '+months[parseInt(parts[1],10)-1]+' '+parts[0];
     }catch(e){ dateStr = d.effective; }
   }
-  var srcLabel = d.source === 'psopk.com'   ? '📡 Live: <a href="https://psopk.com/en/fuels/fuel-prices" target="_blank" rel="noopener" style="color:#4a7a6a">psopk.com</a>'
+  var srcLabel = d.source === 'autoones.com'  ? '📡 Live: <a href="https://autoones.com/petrol-prices-in-pakistan" target="_blank" rel="noopener" style="color:#4a7a6a">autoones.com</a>'
+               : d.source === 'psopk.com'   ? '📡 Live: <a href="https://psopk.com/en/fuels/fuel-prices" target="_blank" rel="noopener" style="color:#4a7a6a">psopk.com</a>'
                : d.source === 'ogra.org.pk' ? '📡 Live: <a href="https://www.ogra.org.pk" target="_blank" rel="noopener" style="color:#4a7a6a">ogra.org.pk</a>'
                : '📡 Source: <a href="https://www.ogra.org.pk" target="_blank" rel="noopener" style="color:#4a7a6a">OGRA official</a>';
   html+='<div style="font-size:11px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">'

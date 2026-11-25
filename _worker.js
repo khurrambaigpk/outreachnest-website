@@ -2046,27 +2046,24 @@ export default {
           return null;
         }
 
-        // Try 1: fuel.trackmate.page — free public API, no auth, scrapes PSO/OGRA daily
+        // Try 1: autoones.com — free forever API, no auth, OGRA official rates, 5-min cache
         if (fuelResult) { /* skip — KV hit */ } else
         try {
-          const tResp = await fetch('https://fuel.trackmate.page/api/prices/pso', {
+          const aResp = await fetch('https://api2.autoones.com/api/fuel-prices', {
             headers: { 'Accept': 'application/json', 'User-Agent': 'OutreachNest-Market/1.0' },
             signal: AbortSignal.timeout(8000)
           });
-          if (tResp.ok) {
-            const tData = await tResp.json();
-            // Response is array: [{product, price_pkr, unit, effective_date, source}, ...]
-            if (Array.isArray(tData) && tData.length) {
-              const petrolRow  = tData.find(r => /petrol|premier/i.test(r.product));
-              const dieselRow  = tData.find(r => /diesel|hi.cetane/i.test(r.product));
-              const keroRow    = tData.find(r => /kerosene|sko/i.test(r.product));
-              const petrol  = petrolRow  ? parseFloat(petrolRow.price_pkr)  : null;
-              const diesel  = dieselRow  ? parseFloat(dieselRow.price_pkr)  : null;
-              const kerosene= keroRow    ? parseFloat(keroRow.price_pkr)    : null;
-              const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
-              if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
-                fuelResult = { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'trackmate-pso' };
-              }
+          if (aResp.ok) {
+            const aData = await aResp.json();
+            // Response: { prices: [{fuel, price_pkr, change_pkr, effective_date}, ...] }
+            const prices = aData.prices || [];
+            const petrolRow  = prices.find(r => /petrol/i.test(r.fuel || r.slug || ''));
+            const dieselRow  = prices.find(r => /diesel/i.test(r.fuel || r.slug || ''));
+            const petrol  = petrolRow  ? parseFloat(petrolRow.price_pkr)  : null;
+            const diesel  = dieselRow  ? parseFloat(dieselRow.price_pkr)  : null;
+            const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
+            if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
+              fuelResult = { petrol, diesel, kerosene: 177.59, effective, source: 'autoones.com' };
             }
           }
         } catch(e0) {}
@@ -2658,25 +2655,22 @@ async function fetchAndSaveFuelRates(env) {
 
   let result = null;
 
-  // Try 1: fuel.trackmate.page — free public API (most reliable, no bot blocking)
+  // Try 1: autoones.com — free forever API, no auth, OGRA official rates
   try {
-    const tResp = await fetch('https://fuel.trackmate.page/api/prices/pso', {
+    const aResp = await fetch('https://api2.autoones.com/api/fuel-prices', {
       headers: { 'Accept': 'application/json', 'User-Agent': 'OutreachNest-Market/1.0' },
       signal: AbortSignal.timeout(8000)
     });
-    if (tResp.ok) {
-      const tData = await tResp.json();
-      if (Array.isArray(tData) && tData.length) {
-        const petrolRow  = tData.find(r => /petrol|premier/i.test(r.product));
-        const dieselRow  = tData.find(r => /diesel|hi.cetane/i.test(r.product));
-        const keroRow    = tData.find(r => /kerosene|sko/i.test(r.product));
-        const petrol  = petrolRow  ? parseFloat(petrolRow.price_pkr)  : null;
-        const diesel  = dieselRow  ? parseFloat(dieselRow.price_pkr)  : null;
-        const kerosene= keroRow    ? parseFloat(keroRow.price_pkr)    : null;
-        const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
-        if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
-          result = { petrol, diesel, kerosene: kerosene || 177.59, effective, source: 'trackmate-pso' };
-        }
+    if (aResp.ok) {
+      const aData = await aResp.json();
+      const prices = aData.prices || [];
+      const petrolRow = prices.find(r => /petrol/i.test(r.fuel || r.slug || ''));
+      const dieselRow = prices.find(r => /diesel/i.test(r.fuel || r.slug || ''));
+      const petrol  = petrolRow ? parseFloat(petrolRow.price_pkr) : null;
+      const diesel  = dieselRow ? parseFloat(dieselRow.price_pkr) : null;
+      const effective = (petrolRow && petrolRow.effective_date) ? petrolRow.effective_date.slice(0,10) : new Date().toISOString().slice(0,10);
+      if (petrol && petrol > 200 && petrol < 500 && diesel && diesel > 200) {
+        result = { petrol, diesel, kerosene: 177.59, effective, source: 'autoones.com' };
       }
     }
   } catch(e) {}

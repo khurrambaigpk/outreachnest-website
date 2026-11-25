@@ -671,7 +671,7 @@ function calcConv(){
 
 // ── Fuel ─────────────────────────────────────────────────────────────
 // OGRA announces prices twice/month — update fallback manually each announcement
-var FUEL_FALLBACK = {petrol:322,diesel:357,kerosene:177.59,lpg:294,effective:'2026-11-21'};
+var FUEL_FALLBACK = {petrol:319,diesel:357,kerosene:177.59,lpg:294,effective:'2026-11-24'};
 fetch('/api/fuel', {headers:{'Referer':window.location.href}})
   .then(function(r){return r.json();})
   .then(function(d){

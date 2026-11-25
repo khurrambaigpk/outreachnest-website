@@ -1999,6 +1999,34 @@ export default {
     }
 
     // ── OGRA Fuel Prices — Live (OGRA announces daily) ──────────────────────────────
+    // ── Fuel Admin Update (POST) — saves new rates to KV ──────────────
+    if (url.pathname === "/api/fuel-update" && request.method === "POST") {
+      const ref = request.headers.get('Referer') || '';
+      if (!ref.startsWith(url.origin)) {
+        return new Response('{"error":"forbidden"}', { status:403, headers:{'Content-Type':'application/json'} });
+      }
+      try {
+        const body = await request.json();
+        const petrol   = parseFloat(body.petrol);
+        const diesel   = parseFloat(body.diesel);
+        const kerosene = body.kerosene ? parseFloat(body.kerosene) : null;
+        const lpg      = body.lpg      ? parseFloat(body.lpg)      : null;
+        const effective = body.effective || new Date().toISOString().slice(0,10);
+        const source    = body.source   || 'ogra.org.pk';
+        if (!petrol || !diesel || petrol < 100 || diesel < 100) {
+          return new Response('{"error":"invalid prices"}', { status:400, headers:{'Content-Type':'application/json'} });
+        }
+        const data = { petrol, diesel, kerosene, lpg, effective, source, savedAt: Date.now(), manualUpdate: true };
+        await env.LICENSE_KV.put('fuel_rates', JSON.stringify(data), { expirationTtl: 86400 * 15 }); // 15 days
+        return new Response(JSON.stringify({ ok: true, petrol, diesel, kerosene, lpg, effective }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+        });
+      } catch(e) {
+        return new Response('{"error":"'+e.message+'"}', { status:500, headers:{'Content-Type':'application/json'} });
+      }
+    }
+
     if (url.pathname === "/api/fuel" && request.method === "GET") {
       const fuelRef = request.headers.get('Referer') || '';
       if (!fuelRef.startsWith(url.origin)) {

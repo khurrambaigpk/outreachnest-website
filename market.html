@@ -358,7 +358,9 @@ footer a{color:#4a7a6a;text-decoration:none}
 
     <!-- Fuel -->
     <div class="card">
-      <div class="card-title">⛽ Pakistan Fuel Prices (OGRA) <span class="badge-src" style="white-space:nowrap">Rs/Litre · LPG/kg</span></div>
+      <div class="card-title">⛽ Pakistan Fuel Prices (OGRA) <span class="badge-src" style="white-space:nowrap">Rs/Litre · LPG/kg</span>
+        <button onclick="openFuelAdmin()" title="Update fuel prices" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted);padding:2px 6px;border-radius:6px;opacity:0.4;transition:.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.4'">✏️</button>
+      </div>
       <div id="fuel-body"><div class="loading"></div></div>
       <!-- Fuel History -->
       <div id="fuel-history-box"></div>
@@ -1486,6 +1488,151 @@ var SOLAR={
   var btn=document.getElementById('menu-btn'),menu=document.getElementById('mobile-menu'),badges=document.querySelector('.nav-badges-row');
   if(btn&&menu){btn.addEventListener('click',function(){var isOpen=btn.classList.toggle('open');menu.classList.toggle('open');if(badges){badges.style.display=isOpen?'none':'';}});}
 })();
+</script>
+
+<!-- ══ FUEL ADMIN MODAL ══════════════════════════════════════════════ -->
+<div id="fuel-admin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#162014;border:1px solid #2a3d28;border-radius:16px;padding:28px;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.6)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;color:#4ade80">⛽ Update Fuel Prices</div>
+      <button onclick="closeFuelAdmin()" style="background:none;border:none;color:#6b8f72;cursor:pointer;font-size:20px;line-height:1">✕</button>
+    </div>
+    <!-- Password step -->
+    <div id="fadm-step1">
+      <div style="font-size:12px;color:#7a9e7a;margin-bottom:8px">Enter admin password</div>
+      <input id="fadm-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')fadmVerify()"
+        style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 14px;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px">
+      <button onclick="fadmVerify()" style="width:100%;background:#1f4d3a;color:#4ade80;border:none;padding:10px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Continue →</button>
+      <div id="fadm-err" style="color:#f87171;font-size:12px;margin-top:8px;display:none">Wrong password</div>
+    </div>
+    <!-- Prices step -->
+    <div id="fadm-step2" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">Petrol (Rs/L)</div>
+          <input id="fadm-petrol" type="number" step="0.01" placeholder="318.00"
+            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">Diesel (Rs/L)</div>
+          <input id="fadm-diesel" type="number" step="0.01" placeholder="353.00"
+            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">Kerosene (Rs/L)</div>
+          <input id="fadm-kerosene" type="number" step="0.01" placeholder="329.54"
+            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a9e7a;margin-bottom:4px">LPG (Rs/kg)</div>
+          <input id="fadm-lpg" type="number" step="0.01" placeholder="279.34"
+            style="width:100%;background:#111f16;border:1px solid #2a3d28;color:#e8f5e8;padding:10px 12px;border-radius:10px;font-size:16px;font-weight:700;outline:none">
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6b8f72;margin-bottom:12px">Date: <strong style="color:#a3c4a8" id="fadm-date-display"></strong></div>
+      <button onclick="fadmSave()" id="fadm-save-btn" style="width:100%;background:#1f4d3a;color:#4ade80;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💾 Save & Update</button>
+      <div id="fadm-status" style="margin-top:10px;font-size:12px;text-align:center"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Fuel Admin Modal ────────────────────────────────────────────────
+var FADM_PASS_HASH = '48576ddb9468d9a8c1bae2ab8539859eb1a773013543240035340ef78ebedaac'; // "ogra2026"
+
+async function sha256(str){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function openFuelAdmin(){
+  var h = FUEL_HISTORY[0];
+  document.getElementById('fadm-petrol').value = h.petrol;
+  document.getElementById('fadm-diesel').value = h.diesel;
+  document.getElementById('fadm-kerosene').value = h.kerosene || '';
+  document.getElementById('fadm-lpg').value = h.lpg || '';
+  var now = new Date();
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr = now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('fadm-date-display').textContent = dateStr;
+  document.getElementById('fadm-step1').style.display='block';
+  document.getElementById('fadm-step2').style.display='none';
+  document.getElementById('fadm-err').style.display='none';
+  document.getElementById('fadm-pass').value='';
+  document.getElementById('fadm-status').textContent='';
+  var ov=document.getElementById('fuel-admin-overlay');
+  ov.style.display='flex';
+  setTimeout(function(){document.getElementById('fadm-pass').focus();},100);
+}
+
+function closeFuelAdmin(){
+  document.getElementById('fuel-admin-overlay').style.display='none';
+}
+
+async function fadmVerify(){
+  var pass = document.getElementById('fadm-pass').value;
+  var hash = await sha256(pass);
+  if(hash === FADM_PASS_HASH){
+    document.getElementById('fadm-step1').style.display='none';
+    document.getElementById('fadm-step2').style.display='block';
+    setTimeout(function(){document.getElementById('fadm-petrol').focus();},100);
+  } else {
+    document.getElementById('fadm-err').style.display='block';
+    document.getElementById('fadm-pass').value='';
+    document.getElementById('fadm-pass').focus();
+  }
+}
+
+async function fadmSave(){
+  var petrol   = parseFloat(document.getElementById('fadm-petrol').value);
+  var diesel   = parseFloat(document.getElementById('fadm-diesel').value);
+  var kerosene = parseFloat(document.getElementById('fadm-kerosene').value) || 0;
+  var lpg      = parseFloat(document.getElementById('fadm-lpg').value) || 0;
+  if(!petrol||!diesel||petrol<100||diesel<100){
+    document.getElementById('fadm-status').innerHTML='<span style="color:#f87171">⚠️ Petrol aur Diesel zaroori hain</span>';
+    return;
+  }
+  var now = new Date();
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr = now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  var yyyy=now.getFullYear(), mm=('0'+(now.getMonth()+1)).slice(-2), dd=('0'+now.getDate()).slice(-2);
+  var effective = yyyy+'-'+mm+'-'+dd;
+
+  var btn=document.getElementById('fadm-save-btn');
+  btn.textContent='Saving…'; btn.disabled=true;
+  document.getElementById('fadm-status').textContent='';
+
+  try {
+    // Save to KV via worker
+    var resp = await fetch('/api/fuel-update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ petrol, diesel, kerosene: kerosene||null, lpg: lpg||null, effective, source: 'ogra.org.pk' })
+    });
+    var result = await resp.json();
+    if(!resp.ok || result.error) throw new Error(result.error || 'Server error');
+
+    // Update local FUEL_HISTORY (in-memory, until page refresh)
+    FUEL_HISTORY.unshift({ date: dateStr, petrol, diesel, kerosene: kerosene||null, lpg: lpg||null });
+    // Re-derive fallback
+    FUEL_FALLBACK = { petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294, effective };
+    // Re-render
+    renderFuel(FUEL_FALLBACK);
+    renderFuelHistory();
+
+    document.getElementById('fadm-status').innerHTML='<span style="color:#4ade80">✅ Updated! Market page refresh karay ga ab.</span>';
+    btn.textContent='✅ Saved!';
+    setTimeout(closeFuelAdmin, 2000);
+  } catch(e) {
+    document.getElementById('fadm-status').innerHTML='<span style="color:#f87171">❌ Error: '+e.message+'</span>';
+    btn.textContent='💾 Save & Update'; btn.disabled=false;
+  }
+}
+
+// Close on overlay click
+document.getElementById('fuel-admin-overlay').addEventListener('click', function(e){
+  if(e.target===this) closeFuelAdmin();
+});
 </script>
 </body>
 </html>

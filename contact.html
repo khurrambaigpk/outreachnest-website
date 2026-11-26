@@ -160,7 +160,7 @@ details.faq-item[open] summary::after{transform:rotate(45deg)}
 <div class="fg"><label for="fniche">Your niche / target keyword</label><input type="text" id="fniche" name="niche" placeholder="e.g. Solar panel installers UK / electrical contractor SEO"></div>
 <div class="fg"><label for="fmsg">Message</label><textarea id="fmsg" name="message" placeholder="Tell us your goal, timeline, DA preference (for guest posts), or quantity (for lead lists)..." required></textarea></div>
 <button type="submit" class="submit-btn">Send message →</button>
-<p class="form-note">This opens your email app. Didn't work? → <a href="https://wa.me/923006321406" target="_blank" rel="noopener noreferrer" style="color:var(--leaf-deep);font-weight:600">Message us on WhatsApp instead.</a></p>
+<p class="form-note">Prefer WhatsApp? <a href="https://wa.me/923006321406" target="_blank" rel="noopener noreferrer" style="color:var(--leaf-deep);font-weight:600">Message us directly →</a></p>
 </form>
 </div>
 </div>
@@ -211,14 +211,28 @@ details.faq-item[open] summary::after{transform:rotate(45deg)}
 <script>
 function sendMail(e) {
   e.preventDefault();
-  var n = document.getElementById('fname').value;
-  var em = document.getElementById('femail').value;
+  var n = document.getElementById('fname').value.trim();
+  var em = document.getElementById('femail').value.trim();
   var svc = document.querySelector('input[name="service"]:checked').value;
-  var niche = document.getElementById('fniche').value;
-  var msg = document.getElementById('fmsg').value;
+  var niche = document.getElementById('fniche').value.trim();
+  var msg = document.getElementById('fmsg').value.trim();
   var body = 'Name: ' + n + '\nEmail: ' + em + '\nService: ' + svc + '\nNiche: ' + niche + '\n\n' + msg;
-  var recipient = (document.querySelector('a[data-email]') && document.querySelector('a[data-email]').href.replace('mailto:','')) || 'queries@getoutreachnest.com';
-  window.location.href = 'mailto:' + recipient + '?subject=OutreachNest Enquiry – ' + encodeURIComponent(svc) + '&body=' + encodeURIComponent(body);
+  var subject = 'OutreachNest Enquiry – ' + svc;
+  var mailtoLink = 'mailto:queries@getoutreachnest.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+  // Try to open email app
+  window.location.href = mailtoLink;
+
+  // Show confirmation with WhatsApp fallback after short delay
+  setTimeout(function() {
+    var btn = document.querySelector('.submit-btn');
+    var note = document.querySelector('.form-note');
+    if (btn) { btn.textContent = '✅ Opening your email app…'; btn.style.background = '#1c7a4d'; btn.disabled = true; }
+    if (note) {
+      note.innerHTML = 'Your email app should open now. If it didn\'t, '
+        + '<a href="https://wa.me/923006321406?text=' + encodeURIComponent('Hi, I want to enquire about ' + svc + '. My niche: ' + niche) + '" target="_blank" style="color:var(--leaf-deep);font-weight:700">send us a WhatsApp instead →</a>';
+    }
+  }, 500);
   return false;
 }
 </script>

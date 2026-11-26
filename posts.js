@@ -708,7 +708,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 <p>Before pitching anywhere, it's worth knowing what you're looking for. A genuine editorial site in the solar space has a few consistent markers: it publishes regularly (at least once or twice a month), it has a clear editorial focus (solar installation, renewable energy policy, battery storage — not "everything green"), and the content actually makes sense together. The author bios link to real people, the comments are substantive rather than obviously spammy, and the site has real organic search traffic, not just a paid traffic spike.</p>
 <p>Contrast that with the sites you should skip: anything that lists "write for us" prominently with a price, any site that mixes solar content with gambling, loans, CBD, and weight loss, and any site where the DA is high but the traffic is near-zero. High DA with no traffic usually means the links pointing to it were bought, not earned — and that association doesn't help your site.</p>
 <h2>Search strings that surface real sites</h2>
-<p>Google's "write for us" searches find the most obvious targets, but they're also the most saturated. Better combinations for solar specifically: <br>• "solar energy" + "guest post guidelines"<br>• "renewable energy blog" + "contribute an article"<br>• site searches on Ahrefs or SEMrush for solar-niche referring domains that appear on multiple legitimate sites<br>• intitle:"write for us" solar installation</p>
+<p>Google's "write for us" searches find the most obvious targets, but they're also the most saturated. Better combinations for solar specifically: <br>• "solar energy" + "guest post guidelines"<br>• "renewable energy blog" + "contribute an article"<br>• site searches on Ahrefs or SEMrush for solar-niche referring domains that appear on multiple legitimate sites<br>• intitle:"How SEO Agencies Manage 10+ Niches Without Losing Track" solar installation</p>
 <p>Run these across Google, Bing, and DuckDuckGo. Different engines surface genuinely different results in this niche — some real solar blogs rank better on Bing than Google because they haven't invested in SEO for their own domain. Don't limit your search to one engine and assume you've seen the full landscape.</p>
 <h2>Vet before you pitch</h2>
 <p>Once you have a list of candidates, run each one through a simple filter: DA 20+, DR 15+, spam score below 10%, at least some measurable organic traffic, no obvious PBN signals (huge link spikes in Ahrefs history, identical content patterns, hosting clusters). The free MozBar extension handles DA and spam score on any site you visit — you don't need a paid subscription to do basic vetting.</p>
@@ -719,7 +719,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"how-agencies-manage-10-niches-without-losing-track",
     cat:"SEO & Tools, Agency Workflow", cover:"g5", icon:"🗂️",
-    title:"How SEO Agencies Manage 10+ Niches Without Losing Track",
+    title:"How to Export Your Lead List to Google Sheets",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"Running outreach across many industries creates chaos: mixed lists, forgotten follow-ups, duplicate contacts.",
     content:`<p>An agency running outreach for five clients across five different industries faces a problem a single-niche freelancer never sees: everything starts blending together. Solar leads end up mixed with electrical contractors, a follow-up meant for one client gets sent using another client's template, and nobody can say for certain which list is current. The fix isn't working harder — it's separating niches from the start so they never have a chance to mix.</p>
@@ -741,7 +741,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"lead-list-google-sheet",
     cat:"SEO & Tools, Google Sheets", cover:"g3", icon:"📊",
-    title:"How to Export Your Lead List to Google Sheets",
+    title:"WhatsApp Cold Outreach vs Email: Response Rates",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"Stop copying leads into spreadsheets manually. Learn how OutreachNest auto-exports your lead list to a live Google Sheet ",
     content:`<p>Most freelancers and agencies still manage leads the same way: copy a website from a search result, paste it into a spreadsheet, go back and manually check the email, DA, and traffic, then repeat a hundred times. It works, but it eats hours that could go into actual outreach. A live, automatically-updating Google Sheet removes that entire manual step.</p>
@@ -761,7 +761,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"whatsapp-outreach-response-rates",
     cat:"Outreach, WhatsApp", cover:"g2", icon:"💬",
-    title:"WhatsApp Cold Outreach vs Email: Response Rates",
+    title:"OutreachNest Finder Features: Complete Guide (2026)",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"Cold email open rates keep falling. WhatsApp messages get read in minutes. Here's why WhatsApp outreach works, when to use it",
     content:`<p>Cold email still works, but inbox fatigue is real — most prospects get dozens of pitches a day and skim past them without opening. WhatsApp is different. Message notifications get checked almost immediately, open rates run far higher than email, and a well-placed WhatsApp message often gets a reply within the hour instead of days. For outreach that depends on speed — time-sensitive offers, quick qualification, or following up on a hot lead — WhatsApp is one of the most underused channels available.</p>
@@ -781,7 +781,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"outreachnest-finder-features",
     cat:"Product, Features, SEO & Tools", cover:"g1", icon:"📘",
-    title:"OutreachNest Finder Features: Complete Guide (2026)",
+    title:"How to Find SEO Clients Fast in 2026 (Step-by-Step)",
     author:"OutreachNest", date:"August 2026", read:"6 min read",
     excerpt:"Full walkthrough of every OutreachNest Finder feature: 4-engine business search, bulk email extraction, DA/PA/DR metrics",
     content:`<p>OutreachNest Finder is a Windows desktop app built for one job: helping you find real leads — websites, emails, WhatsApp numbers, and contact details — across the web, and turning that into an organized outreach pipeline. Here's a look at every major feature.</p>
@@ -803,7 +803,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     {
     slug:"how-to-find-seo-clients-fast-in-2026",
     cat:"SEO, Freelancing", cover:"g1", icon:"💼",
-    title:"How to Find SEO Clients Fast in 2026 (Step-by-Step)",
+    title:"How to Build 1,000 Link Building Prospects in Minutes",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"A repeatable, no-ads system for landing SEO clients in 2026. Build a targeted prospect list, send focused outreach, and close your next client ",
     content:`<h2>The SEO Freelancer's Biggest Challenge</h2>
@@ -828,7 +828,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"link-building-prospects",
     cat:"Link Building, SEO Tools", cover:"g1", icon:"🚀",
-    title:"How to Build 1,000 Link Building Prospects in Minutes",
+    title:"How to Check DA, PA & DR Without Paying for Tools",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"Most SEO freelancers waste days building prospect lists by hand. Here is a faster method to find 1,000+ real link building prospects ",
     content:`<h2>Why Prospect Building Takes So Long</h2>
@@ -853,7 +853,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"how-to-check-da-pa-dr-without-paying-for-tools",
     cat:"SEO Tools, Link Building", cover:"g1", icon:"🎯",
-    title:"How to Check DA, PA & DR Without Paying for Tools",
+    title:"How to Spot a Real Guest Post Site vs a PBN",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
     excerpt:"Check Domain Authority, Page Authority, and Domain Rating for free using OutreachNest's Chrome Bridge — no Moz or Ahrefs subscription needed.",
     content:`<h2>The Problem Every SEO Freelancer Knows</h2>
@@ -876,7 +876,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"spot-real-guest-post-site",
     cat:"Guest Posting", cover:"g1", icon:"🌱",
-    title:"How to Spot a Real Guest Post Site vs a PBN",
+    title:"What Makes a B2B Lead List Worth Buying in 2026",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Not every 'write for us' site is worth your link. Here's how to tell a real guest post opportunity from a PBN or link farm — before you pitch, pay",
     content:`<div style="background:#eaf4e8;border-left:4px solid #2d5a27;border-radius:6px;padding:14px 18px;margin:22px 0;font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;"><strong style="display:block;color:#2d5a27;margin-bottom:6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">🔍 Key Insight</strong>Every site we hand over to a client has cleared four bars: real organic traffic, topically coherent outbound links, spam score below 15%, and a post history with consistent editorial voice. Miss one of these and the link is a risk, not an asset.</div><p>Guest posting still works, but only when the host site is genuine. A link from a private blog network or a low-quality spam farm can quietly drag your rankings down instead of lifting them. Over time we've built a simple checklist that filters the real sites from the noise, and we run every candidate through it before it ever reaches a client.</p>
@@ -892,7 +892,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"b2b-lead-list-worth-buying",
     cat:"SEO & Tools", cover:"g2", icon:"📇",
-    title:"What Makes a B2B Lead List Worth Buying in 2026",
+    title:"Why the Solar Niche Is a Goldmine for Link Building",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
     excerpt:"Most B2B lead lists are stale and full of bounced emails. Here's what separates a list worth buying from one that wastes your outreach budget ",
     content:`<p>Anyone with a scraper can pull a thousand email addresses in an afternoon. The value of a lead list has never been about volume. It comes down to whether those contacts are real, relevant to what you sell, and actually reachable. Here's what a genuinely useful list looks like.</p>
@@ -908,7 +908,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"solar-niche-goldmine",
     cat:"Solar Niche", cover:"g3", icon:"☀️",
-    title:"Why the Solar Niche Is a Goldmine for Link Building",
+    title:"Cold Email That Gets Replies: A Simple Framework",
     author:"OutreachNest", date:"July 2026", read:"6 min read",
     excerpt:"Solar is booming, competitive, and full of companies actively investing in SEO. Here's why it's one of the best niches for link builders and SEO agencies.",
     content:`<p>If you're deciding where to concentrate an outreach business, the solar sector is one of the most rewarding places to plant your flag right now. Here's why we've chosen to build deep coverage in this space rather than spreading thin across everything.</p>
@@ -924,7 +924,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"cold-email-that-gets-replies",
     cat:"Outreach", cover:"g4", icon:"✉️",
-    title:"Cold Email That Gets Replies: A Simple Framework",
+    title:"How to Warm Up a New Email Domain Before Cold Outreach",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Long, salesy cold emails get ignored. Short, specific, human ones get replies. Here's the cold email framework — with real examples ",
     content:`<p>Successful cold outreach has very little to do with how many emails you send and everything to do with how relevant each one feels. Ten thoughtful, personal messages will almost always beat a hundred generic blasts. The framework below is the one we keep coming back to because it works.</p>
@@ -940,7 +940,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"warm-up-new-email-domain",
     cat:"Deliverability", cover:"g5", icon:"🔥",
-    title:"How to Warm Up a New Email Domain Before Cold Outreach",
+    title:"How Homeowners Pick a Solar Installer: For Marketers",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Sending cold emails from a new domain without warming it up sends you straight to spam. Here's the step-by-step process to warm up a new email domain and.",
     content:`<p>A brand-new email domain has no reputation, and inbox providers treat unknown senders with suspicion. If you start blasting outreach on day one, a large share of it will quietly land in spam folders where nobody ever sees it. A short warm-up period fixes this and is well worth the patience.</p>
@@ -957,7 +957,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"choosing-solar-installer-guide",
     cat:"Solar", cover:"g3", icon:"☀️",
-    title:"How Homeowners Pick a Solar Installer: For Marketers",
+    title:"Why Electrical Contractors Are an Underrated Online Marketing Niche",
     author:"OutreachNest", date:"July 2026", read:"6 min read",
     excerpt:"Understanding the buyer journey for solar installations reveals exactly what content, reviews, and trust signals help marketers, installers",
     content:`<p>The solar industry is crowded, and homeowners rarely buy from the first company they find. They compare, research, and hesitate before committing to a purchase that often runs into thousands. For anyone marketing in this space, understanding that decision journey is the difference between content that converts and content that gets ignored.</p>
@@ -973,7 +973,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electrical-contractors-online-growth",
     cat:"Electrical", cover:"g4", icon:"⚡",
-    title:"Why Electrical Contractors Are an Underrated Online Marketing Niche",
+    title:"Industrial Automation: A High-Value Outreach Niche",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Electrical contractors form one of the largest, most stable B2B markets — and most of them are barely visible online. Here's the opportunity for marketers.",
     content:`<p>Electrical contracting is a huge, steady industry, yet a surprising number of these businesses have almost no online presence beyond a basic listing. That gap is both a challenge and an opportunity for anyone selling services, tools, or marketing to this market.</p>
@@ -989,7 +989,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"industrial-automation-high-value-niche",
     cat:"SEO & Tools", cover:"g5", icon:"🤖",
-    title:"Industrial Automation: A High-Value Outreach Niche",
+    title:"Consumer Electronics Repair: A Low-Competition Outreach Niche Worth Targeting",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
     excerpt:"Fewer companies, higher deal value. Here's why industrial automation is worth targeting for B2B outreach and link building — and how to find PLC, SCADA",
     content:`<p>Industrial automation is not a mass market. Compared with something like electrical contracting, the number of companies is small. What it lacks in volume, though, it more than makes up for in value, and that changes the whole strategy for anyone working in this space.</p>
@@ -1005,7 +1005,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"electronics-repair-steady-demand",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
-    title:"Consumer Electronics Repair: A Low-Competition Outreach Niche Worth Targeting",
+    title:"Quality Link Building vs Quantity: Why Fewer Great Backlinks Win in SEO",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
     excerpt:"Consumer electronics repair shops fly under the radar — but they're everywhere, always need new customers, and rarely have strong online competition. Here's why this niche works.",
     content:`<p>Electronics and appliance repair rarely makes headlines, yet demand for it never really goes away. As long as people own devices and appliances, some of them will break, and someone needs to fix them. That steadiness makes repair a quietly reliable niche to work in.</p>
@@ -1022,7 +1022,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"quality-over-quantity-backlinks",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g6", icon:"📈",
-    title:"Quality Link Building vs Quantity: Why Fewer Great Backlinks Win in SEO",
+    title:"How Much Does a Solar Guest Post Cost in 2026?",
     author:"OutreachNest", date:"July 2026", read:"8 min read",
     excerpt:"Quality link building beats bulk every time. 100 weak backlinks won't beat 5 relevant links from real, trusted sites — here's the data-backed reason quality always wins, and how to put it into practice.",
     content:`<p>If you've ever been pitched a package of "500 backlinks for $99," you already know something is off. But most site owners can't articulate exactly <em>why</em> it's a bad deal — only that it feels wrong. The reality is more specific than gut instinct: link quality and link quantity operate through completely different mechanisms in Google's algorithm, and confusing them is one of the most expensive mistakes in SEO.</p>
@@ -1135,7 +1135,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"solar-guest-post-cost-2026",
     type:"research",
     cat:"Guest Posting, Solar, Research", cover:"g3", icon:"☀️",
-    title:"How Much Does a Solar Guest Post Cost in 2026?",
+    title:"5 Signs a Guest Post Site Will Hurt Your Rankings",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"Solar guest post prices range from $25 to $500+. Here's what drives the price difference, what each tier actually delivers",
     content:`<p>If you've started researching solar guest posts, you've probably noticed that prices vary enormously — from $25 to $500 or more for a single placement. That range isn't random, and knowing what drives it will save you from paying too much for too little, or accidentally buying links that quietly hurt rather than help your site.</p><div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:18px;margin:22px 0;"><div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#9ca3af;margin-bottom:14px;">2026 Pricing Tiers</div><div style="display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:8px;background:#fff5f5;margin-bottom:10px;"><div style="min-width:70px;font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:#1c1c1e;">$25–$50</div><div><div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;color:#6b7280;margin-bottom:4px;">DA 10–20 · Near-zero traffic</div><div style="font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:#374151;">Low-quality sites, often PBN-adjacent, thin or AI content, no real editorial review. These do neutral to negative things for your rankings.</div></div></div><div style="display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:8px;background:#fffbeb;margin-bottom:10px;"><div style="min-width:70px;font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:#1c1c1e;">$50–$100</div><div><div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;color:#6b7280;margin-bottom:4px;">DA 25–35 · Some real traffic</div><div style="font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:#374151;">Genuine solar/renewable niche sites with basic editorial review. The starting point for any placement you'd consider keeping long-term.</div></div></div><div style="display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:8px;background:#f0fdf4;margin-bottom:10px;"><div style="min-width:70px;font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:#1c1c1e;">$100–$200</div><div><div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;color:#6b7280;margin-bottom:4px;">DA 35–50 · Consistent organic traffic</div><div style="font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:#374151;">Established solar blogs, strict editorial standards, real audience. These move the needle — worth the extra spend for competitive terms.</div></div></div><div style="display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:8px;background:#eff6ff;margin-bottom:10px;"><div style="min-width:70px;font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:#1c1c1e;">$200+</div><div><div style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;color:#6b7280;margin-bottom:4px;">DA 50+ · Real editorial staff</div><div style="font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:#374151;">High-authority renewable energy publishers competing with brand PR budgets. Worth it for tough head terms; overkill for local SEO goals.</div></div></div></div>
@@ -1156,7 +1156,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"signs-guest-post-site-hurt-rankings",
     type:"resource",
     cat:"Guest Posting, SEO & Tools, Resources", cover:"g4", icon:"🚨",
-    title:"5 Signs a Guest Post Site Will Hurt Your Rankings",
+    title:"How Electrical Contractors Can Build SEO Backlinks",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"Some guest post sites do more harm than good. Here are five warning signs — thin content, PBN patterns, unnatural link profiles ",
     content:`<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 16px;margin:18px 0;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.6;color:#9a3412;">⚠️ Before you pay for any guest post placement, run through every check below. Skipping even one is how agencies end up cleaning up bad links six months later — often at more cost than the original placement.</div><p>Not every guest post helps your rankings. Some placements actively harm them — and the worst part is it often takes months to realize it, long after you've moved on to other campaigns. Before you place a link on any site, run through these five checks.</p>
@@ -1175,7 +1175,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"electrical-contractor-seo-backlinks",
     type:"resource",
     cat:"Electrical, SEO & Tools, Resources", cover:"g1", icon:"⚡",
-    title:"How Electrical Contractors Can Build SEO Backlinks",
+    title:"How to Vet an Electronics Repair Guest Post Site",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"Electrical contractors rarely do link building — which creates a real opportunity. Here's where backlinks in this niche come from",
     content:`<p>Most electrical contractors build their business on word of mouth and repeat commercial relationships, which works until it doesn't — when a referral slows down, or a new competitor enters the market with a visible online presence. Backlinks are one of the most durable things an electrical business can invest in for online visibility, and the good news is the bar in this niche is still relatively low.</p><div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:18px 20px;margin:24px 0;font-family:'Inter',sans-serif;"><div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#1d4ed8;margin-bottom:12px;">⚡ Starting Priority List</div><ol style="margin:0;padding-left:20px;list-style-type:decimal;"><li style="padding:5px 0;font-size:13.5px;line-height:1.6;color:#1e3a5f;"><strong>Trade association listings</strong> — NICEIC, ECA, IET, regional equivalents. Clean, relevant, easy.</li><li style="padding:5px 0;font-size:13.5px;line-height:1.6;color:#1e3a5f;"><strong>Manufacturer/supplier directories</strong> — Approved installer pages on brand sites carry real authority.</li><li style="padding:5px 0;font-size:13.5px;line-height:1.6;color:#1e3a5f;"><strong>Local citation consistency</strong> — Same name, address, phone on every directory. NAP consistency matters.</li><li style="padding:5px 0;font-size:13.5px;line-height:1.6;color:#1e3a5f;"><strong>2–3 niche guest posts</strong> — Real electrical/construction editorial sites. More value than ten directory links.</li></ol></div>
@@ -1195,7 +1195,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"vet-electronics-repair-guest-post-site",
     type:"resource",
     cat:"Electronics Repair, Guest Posting, Resources", cover:"g6", icon:"🔧",
-    title:"How to Vet an Electronics Repair Guest Post Site",
+    title:"High DA, Zero Traffic: How Does That Actually Happen?",
     author:"OutreachNest", date:"September 2026", read:"4 min read",
     excerpt:"Electronics repair blogs can be link farms in disguise. Here is a fast checklist to spot real sites worth publishing on versus ones to avoid ",
     content:`<p>The electronics repair niche has some genuinely good sites for guest posting — local repair shop blogs, device maintenance publications, consumer tech guides — and some that are link farms in disguise. The difference isn't always obvious at first glance. Here's how to tell them apart before you spend time writing a pitch.</p>
@@ -1215,7 +1215,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"high-da-zero-traffic-explained",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g4", icon:"📉",
-    title:"High DA, Zero Traffic: How Does That Actually Happen?",
+    title:"DA vs DR vs Traffic: Which SEO Metric Matters Most?",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"A website with Domain Authority 45 and barely 30 monthly visitors. No real rankings, no audience — but a strong metric.",
     content:`<p>If you spend any time evaluating websites for guest posts or link placements, you've seen the pattern: a site with Domain Authority in the 40s, a clean spam score, and organic traffic that's effectively zero. No blog audience, no search rankings, barely any visitors at all — but by one widely-used metric, it looks authoritative. So how does that happen?</p>
@@ -1243,7 +1243,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"da-dr-traffic-which-matters-guest-posting",
     featured: true, type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g3", icon:"📊",
-    title:"DA vs DR vs Traffic: Which SEO Metric Matters Most?",
+    title:"How to Build a B2B Lead List From Scratch in 2026",
     author:"OutreachNest", date:"September 2026", read:"6 min read",
     excerpt:"Three numbers every link builder watches — but they measure different things and rarely agree. Here's what each one actually tells you, when it matters",
     content:`<p>Open any conversation about link building and within a few messages, someone mentions DA. Open the next one, it's DR. A third person says neither matters — traffic is what counts. They're all partly right, which is why these conversations go in circles. The more useful question is: what does each metric actually measure, and which one should you weight when they disagree?</p>
@@ -1270,7 +1270,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"build-b2b-lead-list-from-scratch-2026",
     cat:"Outreach", cover:"g2", icon:"📋",
-    title:"How to Build a B2B Lead List From Scratch in 2026",
+    title:"Industrial Automation SEO: Untapped Potential for B2B Link Building",
     author:"OutreachNest", date:"September 2026", read:"6 min read",
     excerpt:"Buying a generic database gets you bad emails and wasted outreach. Building your own takes more time upfront — but delivers the right contacts",
     content:`<p>There's a reason most purchased B2B lead databases underperform: they're built for scale, not relevance. A list of 50,000 "business owners" sounds powerful until you notice it includes dentists, landscapers, freight brokers, and every other category that has nothing to do with what you're selling. Segmenting it into something usable takes hours, and by the time you're done, half the emails have bounced or gone cold. Building your own list from scratch is slower at the start — but the time compounds in the right direction: better targeting, higher response rates, and a list that actually reflects the niche you're working in.</p>
@@ -1293,7 +1293,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   {
     slug:"industrial-automation-seo-untapped-potential",
     cat:"Automation, SEO & Tools", cover:"g4", icon:"⚙️",
-    title:"Industrial Automation SEO: Untapped Potential for B2B Link Building",
+    title:"Guest Post Niche Relevance: What Most Buyers Get Wrong",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"PLC integrators, SCADA vendors, and panel builders rank on Google — but almost none have a real link building strategy.",
     content:`<p>Industrial automation is one of those niches where the businesses are real, the contracts are large, and the digital marketing is still stuck a decade behind. PLC integrators, SCADA system vendors, control panel builders, and industrial instrumentation companies often run websites that look like they were designed around 2014 — contact forms that may or may not work, no blog, no content strategy, and no backlinks beyond a few trade directories. For SEO professionals and link builders, that underdevelopment isn't a barrier. It's a structural opportunity.</p>
@@ -1314,7 +1314,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"niche-relevance-guest-posts-explained",
     type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g1", icon:"🎯",
-    title:"Guest Post Niche Relevance: What Most Buyers Get Wrong",
+    title:"Guest Posting vs PBN Links: What's the Real Difference?",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"A solar company placing a link on a home improvement blog — high DA, clean metrics, but not exactly solar. Does relevance matter?",
     content:`<p>Ask ten link builders about niche relevance and you get ten different answers. One says the host site must be in exactly the same industry — a solar company should only place links on solar sites. Another says topical relevance at the article level is what counts, regardless of the site's overall category. A third says it barely matters if the DA is high enough. All three are overconfident about a question that's more nuanced than any single rule handles.</p>
@@ -1336,7 +1336,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
     slug:"guest-posting-vs-pbn-links-difference",
     type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g2", icon:"🌱",
-    title:"Guest Posting vs PBN Links: What's the Real Difference?",
+    title:"Electrical Contractor Lead Generation Guide",
     author:"OutreachNest", date:"September 2026", read:"5 min read",
     excerpt:"Both place links on external sites, but the risks and long-term results are completely different. Here is what actually separates a real guest post link.",
     content:`<p>Guest posting and PBN links are often compared as if they're two ways of achieving the same thing. They're not. They have different risk profiles, different editorial signals, different longevity, and they work differently in practice. Understanding the real distinction matters more than any metric comparison.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0;font-family:'Inter',sans-serif;"><div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:16px;"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#dc2626;margin-bottom:12px;">PBN Links</div><ul style="margin:0;padding:0;list-style:none;"><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#dc2626;font-weight:700;flex-shrink:0">✗</span>Built to pass link juice, not serve readers</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#dc2626;font-weight:700;flex-shrink:0">✗</span>Ownership hidden from search engines</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#dc2626;font-weight:700;flex-shrink:0">✗</span>Risk of sudden devaluation when detected</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#dc2626;font-weight:700;flex-shrink:0">✗</span>No editorial standard — money decides placement</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#dc2626;font-weight:700;flex-shrink:0">✗</span>Often disappear or lose value in core updates</li></ul></div><div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px;"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#16a34a;margin-bottom:12px;">Genuine Guest Posts</div><ul style="margin:0;padding:0;list-style:none;"><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#16a34a;font-weight:700;flex-shrink:0">✓</span>Published on independently-operated editorial sites</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#16a34a;font-weight:700;flex-shrink:0">✓</span>Link appears in context a real reader encounters</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#16a34a;font-weight:700;flex-shrink:0">✓</span>Stable value — persists through algorithm updates</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#16a34a;font-weight:700;flex-shrink:0">✓</span>Editorial review: the host approves the content</li><li style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13.5px;line-height:1.5;display:flex;gap:8px;align-items:flex-start;"><span style="color:#16a34a;font-weight:700;flex-shrink:0">✓</span>Host site continues regardless of your placement</li></ul></div></div>
@@ -1357,7 +1357,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 {
 slug:"electrical-contractor-lead-generation",
 cat:"Electrical, Industry", cover:"g2", icon:"⚡",
-title:"Electrical Contractor Lead Generation Guide",
+title:"How to Choose the Right Solar Panel — What Most Buyers Get Wrong",
 author:"OutreachNest", date:"November 2026", read:"7 min read",
 excerpt:"Electrical contractor lead generation is different from most B2B outreach. Here's what works, what doesn't, and how to build a consistent pipeline.",
 content:`<h3>Why Electrical Contractor Lead Generation Is Different</h3>

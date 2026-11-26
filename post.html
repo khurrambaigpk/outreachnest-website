@@ -117,7 +117,13 @@ document.getElementById('aAuthor').textContent=post.author;
 document.getElementById('aDate').textContent=post.date;
 document.getElementById('aRead').textContent=post.read;
 const cover=document.getElementById('aCover');
-cover.className='art-cover '+post.cover; cover.textContent=post.icon;
+if(post.img){
+  cover.className='art-cover';
+  cover.style.cssText='padding:0;overflow:hidden;background:#f0f0ec';
+  cover.innerHTML='<img src="'+post.img+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:18px" loading="eager" decoding="async">';
+}else{
+  cover.className='art-cover '+post.cover; cover.textContent=post.icon;
+}
 document.getElementById('aBody').innerHTML=post.content;
 
 // Per-post SEO tags: without this every article shared the same canonical URL/description,

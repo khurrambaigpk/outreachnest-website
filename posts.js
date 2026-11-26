@@ -432,7 +432,7 @@ content:`<p>The solar industry has a dirty little secret: most people choose the
 },
 {
 slug:"topcon-vs-perc-vs-hjt-solar-panel-technology",
-img:"https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=75&fit=crop&auto=format",
+img:"https://images.unsplash.com/photo-1548337138-e87d889cc369?w=600&q=75&fit=crop&auto=format",
 cat:"Solar, Industry", cover:"g4", icon:"🔬",
 title:"TOPCon vs PERC vs HJT Solar Panels",
 author:"OutreachNest", date:"September 2026", read:"7 min read",
@@ -692,7 +692,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"electrical-contractors-panel-builders",
-    img:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&q=75&fit=crop&auto=format",
     cat:"Electrical", cover:"g1", icon:"⚡",
     title:"Find Electrical Contractors for Outreach",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -711,7 +711,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"solar-guest-post-sites",
-    img:"https://images.unsplash.com/photo-1497435334941-8c899a9bd33c?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1466611653911-0265b2b3f675?w=600&q=75&fit=crop&auto=format",
     cat:"Solar", cover:"g1", icon:"☀️",
     title:"How to Find Solar Guest Post Sites & Leads in Minutes",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -754,7 +754,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"lead-list-google-sheet",
-    img:"https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1517842645738-ddd3fda0a1c1?w=600&q=75&fit=crop&auto=format",
     cat:"SEO & Tools, Google Sheets", cover:"g3", icon:"📊",
     title:"How to Export Your Lead List to Google Sheets Automatically",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
@@ -796,7 +796,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"outreachnest-finder-features",
-    img:"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=75&fit=crop&auto=format",
     cat:"Product, Features, SEO & Tools", cover:"g1", icon:"📘",
     title:"OutreachNest Finder Features: Complete Guide (2026)",
     author:"OutreachNest", date:"August 2026", read:"6 min read",
@@ -871,7 +871,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"how-to-check-da-pa-dr-without-paying-for-tools",
-    img:"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=75&fit=crop&auto=format",
     cat:"SEO Tools, Link Building", cover:"g1", icon:"🎯",
     title:"How to Check DA, PA & DR Without Paying for Tools",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
@@ -912,7 +912,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"b2b-lead-list-worth-buying",
-    img:"https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=75&fit=crop&auto=format",
     cat:"SEO & Tools", cover:"g2", icon:"📇",
     title:"What Makes a B2B Lead List Worth Buying in 2026",
     author:"OutreachNest", date:"July 2026", read:"4 min read",
@@ -929,7 +929,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"solar-niche-goldmine",
-    img:"https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1473341304170-9756549a9c08?w=600&q=75&fit=crop&auto=format",
     cat:"Solar Niche", cover:"g3", icon:"☀️",
     title:"Why the Solar Niche Is a Goldmine for Link Building",
     author:"OutreachNest", date:"July 2026", read:"6 min read",
@@ -946,7 +946,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"cold-email-that-gets-replies",
-    img:"https://images.unsplash.com/photo-1596526131083-e8c633964948?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1526280760714-f9e8a0973f43?w=600&q=75&fit=crop&auto=format",
     cat:"Outreach", cover:"g4", icon:"✉️",
     title:"Cold Email That Gets Replies: A Practical Framework",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
@@ -963,7 +963,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"warm-up-new-email-domain",
-    img:"https://images.unsplash.com/photo-1484807352052-23338990c6c6?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=75&fit=crop&auto=format",
     cat:"Deliverability", cover:"g5", icon:"🔥",
     title:"How to Warm Up a New Email Domain Before Cold Outreach",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
@@ -981,7 +981,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"choosing-solar-installer-guide",
-    img:"https://images.unsplash.com/photo-1497435334941-8c899a9bd33c?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=75&fit=crop&auto=format",
     cat:"Solar", cover:"g3", icon:"☀️",
     title:"How Homeowners Choose a Solar Installer: What Marketers Need to Know",
     author:"OutreachNest", date:"November 2026", read:"6 min read",
@@ -998,7 +998,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"electrical-contractors-online-growth",
-    img:"https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=75&fit=crop&auto=format",
     cat:"Electrical", cover:"g4", icon:"⚡",
     title:"Why Electrical Contractors Are an Underrated Online Marketing Niche",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
@@ -1015,7 +1015,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"industrial-automation-high-value-niche",
-    img:"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=75&fit=crop&auto=format",
     cat:"SEO & Tools", cover:"g5", icon:"🤖",
     title:"Industrial Automation: A High-Value Outreach Niche",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
@@ -1032,7 +1032,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"electronics-repair-steady-demand",
-    img:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1588508065123-287b28a1e9b3?w=600&q=75&fit=crop&auto=format",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
     title:"Consumer Electronics Repair Market: Why It's a Reliable Outreach Niche in 2026",
     author:"OutreachNest", date:"November 2026", read:"5 min read",
@@ -1049,7 +1049,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"quality-over-quantity-backlinks",
-    img:"https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1562577308-c3a77abf7169?w=600&q=75&fit=crop&auto=format",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g6", icon:"📈",
     title:"Quality Link Building vs Quantity: Why Fewer Great Backlinks Always Win",
@@ -1163,7 +1163,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   ,
   {
     slug:"solar-guest-post-cost-2026",
-    img:"https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1559302504-240efde33b8b?w=600&q=75&fit=crop&auto=format",
     type:"research",
     cat:"Guest Posting, Solar, Research", cover:"g3", icon:"☀️",
     title:"How Much Does a Solar Guest Post Cost in 2026?",
@@ -1185,7 +1185,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"signs-guest-post-site-hurt-rankings",
-    img:"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&q=75&fit=crop&auto=format",
     type:"resource",
     cat:"Guest Posting, SEO & Tools, Resources", cover:"g4", icon:"🚨",
     title:"5 Signs a Guest Post Site Will Hurt Your Rankings (Not Help)",
@@ -1205,7 +1205,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"electrical-contractor-seo-backlinks",
-    img:"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&q=75&fit=crop&auto=format",
     type:"resource",
     cat:"Electrical, SEO & Tools, Resources", cover:"g1", icon:"⚡",
     title:"How Electrical Contractors Can Build SEO Backlinks: A Practical Guide",
@@ -1226,7 +1226,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"vet-electronics-repair-guest-post-site",
-    img:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=75&fit=crop&auto=format",
     type:"resource",
     cat:"Electronics Repair, Guest Posting, Resources", cover:"g6", icon:"🔧",
     title:"How to Vet an Electronics Repair Guest Post Site (Fast Checklist)",
@@ -1247,7 +1247,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"high-da-zero-traffic-explained",
-    img:"https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=75&fit=crop&auto=format",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g4", icon:"📉",
     title:"High DA, Zero Traffic: How Does That Actually Happen?",
@@ -1276,7 +1276,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"da-dr-traffic-which-matters-guest-posting",
-    img:"https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1543286386-713bdd548da4?w=600&q=75&fit=crop&auto=format",
     featured: true, type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g3", icon:"📊",
     title:"DA vs DR vs Traffic: Which SEO Metric Actually Matters for Guest Posting?",
@@ -1305,7 +1305,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"build-b2b-lead-list-from-scratch-2026",
-    img:"https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=75&fit=crop&auto=format",
     cat:"Outreach", cover:"g2", icon:"📋",
     title:"B2B List Building From Scratch: The 2026 Step-by-Step Guide",
     author:"OutreachNest", date:"November 2026", read:"7 min read",
@@ -1330,7 +1330,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"industrial-automation-seo-untapped-potential",
-    img:"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1521737604579-40f5ad51af84?w=600&q=75&fit=crop&auto=format",
     cat:"Automation, SEO & Tools", cover:"g4", icon:"⚙️",
     title:"Industrial Automation SEO: The Untapped Potential for B2B Link Building",
     author:"OutreachNest", date:"November 2026", read:"5 min read",
@@ -1351,7 +1351,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"niche-relevance-guest-posts-explained",
-    img:"https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&q=75&fit=crop&auto=format",
+    img:"https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=75&fit=crop&auto=format",
     type:"research",
     cat:"Guest Posting, SEO & Tools, Research", cover:"g1", icon:"🎯",
     title:"Guest Post Niche Relevance: What Most Buyers Get Wrong",
@@ -1397,7 +1397,7 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 
 {
 slug:"electrical-contractor-lead-generation",
-img:"https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=600&q=75&fit=crop&auto=format",
+img:"https://images.unsplash.com/photo-1562564055-8dd394ac7205?w=600&q=75&fit=crop&auto=format",
 cat:"Electrical, Industry", cover:"g2", icon:"⚡",
 title:"Electrical Contractor Lead Generation: Complete 2026 Guide",
 author:"OutreachNest", date:"November 2026", read:"7 min read",
@@ -1435,7 +1435,7 @@ content:`<h3>Why Electrical Contractor Lead Generation Is Different</h3>
   },
 {
 slug:"how-to-choose-solar-panel-guide",
-img:"https://images.unsplash.com/photo-1497435334941-8c899a9bd33c?w=600&q=75&fit=crop&auto=format",
+img:"https://images.unsplash.com/photo-1536183922588-ddd297f5a06a?w=600&q=75&fit=crop&auto=format",
 featured:true,
 cat:"Industry, Solar", cover:"g3", icon:"☀️",
 title:"How to Choose the Right Solar Panel in 2026 — What Most Buyers Get Wrong",

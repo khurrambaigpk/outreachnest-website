@@ -144,7 +144,6 @@ content:`<h3>The Solar SEO Problem Most Companies Don't Realise They Have</h3>
   },
 {
 slug:"longi-vs-canadian-solar-vs-jinko-panel-brand-comparison",
-img:"https://images.unsplash.com/photo-1497435334941-8c899a9bd33c?w=600&q=75&fit=crop&auto=format",
 cat:"Industry, Solar", cover:"g3", icon:"☀️",
 title:"Longi vs Canadian Solar vs Jinko: Comparison",
 author:"OutreachNest", date:"September 2026", read:"7 min read",
@@ -633,7 +632,6 @@ content:`<p>In 2022, virtually every solar panel sold used PERC technology. By 2
 },
  {
 slug:"the-awkward-truth-about-cold-outreach-nobody-tells",
-img:"https://images.unsplash.com/photo-1596526131083-e8c633964948?w=600&q=75&fit=crop&auto=format",
 cat:"Outreach, Cold Outreach", cover:"g5", icon:"🎯",
 title:"Why Cold Outreach Fails: Hidden Mistakes",
 author:"OutreachNest", date:"August 2026", read:"3 min read",
@@ -711,7 +709,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"solar-guest-post-sites",
-    img:"https://images.unsplash.com/photo-1466611653911-0265b2b3f675?w=600&q=75&fit=crop&auto=format",
     cat:"Solar", cover:"g1", icon:"☀️",
     title:"How to Find Solar Guest Post Sites & Leads in Minutes",
     author:"OutreachNest", date:"August 2026", read:"4 min read",
@@ -754,7 +751,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"lead-list-google-sheet",
-    img:"https://images.unsplash.com/photo-1517842645738-ddd3fda0a1c1?w=600&q=75&fit=crop&auto=format",
     cat:"SEO & Tools, Google Sheets", cover:"g3", icon:"📊",
     title:"How to Export Your Lead List to Google Sheets Automatically",
     author:"OutreachNest", date:"August 2026", read:"5 min read",
@@ -929,7 +925,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"solar-niche-goldmine",
-    img:"https://images.unsplash.com/photo-1473341304170-9756549a9c08?w=600&q=75&fit=crop&auto=format",
     cat:"Solar Niche", cover:"g3", icon:"☀️",
     title:"Why the Solar Niche Is a Goldmine for Link Building",
     author:"OutreachNest", date:"July 2026", read:"6 min read",
@@ -946,7 +941,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"cold-email-that-gets-replies",
-    img:"https://images.unsplash.com/photo-1526280760714-f9e8a0973f43?w=600&q=75&fit=crop&auto=format",
     cat:"Outreach", cover:"g4", icon:"✉️",
     title:"Cold Email That Gets Replies: A Practical Framework",
     author:"OutreachNest", date:"July 2026", read:"5 min read",
@@ -1032,7 +1026,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"electronics-repair-steady-demand",
-    img:"https://images.unsplash.com/photo-1588508065123-287b28a1e9b3?w=600&q=75&fit=crop&auto=format",
     cat:"Electronics Repair", cover:"g6", icon:"🔧",
     title:"Consumer Electronics Repair Market: Why It's a Reliable Outreach Niche in 2026",
     author:"OutreachNest", date:"November 2026", read:"5 min read",
@@ -1049,7 +1042,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"quality-over-quantity-backlinks",
-    img:"https://images.unsplash.com/photo-1562577308-c3a77abf7169?w=600&q=75&fit=crop&auto=format",
     type:"research",
     cat:"SEO & Tools, Research", cover:"g6", icon:"📈",
     title:"Quality Link Building vs Quantity: Why Fewer Great Backlinks Always Win",
@@ -1163,7 +1155,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   ,
   {
     slug:"solar-guest-post-cost-2026",
-    img:"https://images.unsplash.com/photo-1559302504-240efde33b8b?w=600&q=75&fit=crop&auto=format",
     type:"research",
     cat:"Guest Posting, Solar, Research", cover:"g3", icon:"☀️",
     title:"How Much Does a Solar Guest Post Cost in 2026?",
@@ -1330,7 +1321,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
   },
   {
     slug:"industrial-automation-seo-untapped-potential",
-    img:"https://images.unsplash.com/photo-1521737604579-40f5ad51af84?w=600&q=75&fit=crop&auto=format",
     cat:"Automation, SEO & Tools", cover:"g4", icon:"⚙️",
     title:"Industrial Automation SEO: The Untapped Potential for B2B Link Building",
     author:"OutreachNest", date:"November 2026", read:"5 min read",
@@ -1397,7 +1387,6 @@ content:`<p>Cold outreach has a reputation problem, and it's earned. The inbox o
 
 {
 slug:"electrical-contractor-lead-generation",
-img:"https://images.unsplash.com/photo-1562564055-8dd394ac7205?w=600&q=75&fit=crop&auto=format",
 cat:"Electrical, Industry", cover:"g2", icon:"⚡",
 title:"Electrical Contractor Lead Generation: Complete 2026 Guide",
 author:"OutreachNest", date:"November 2026", read:"7 min read",
@@ -1435,7 +1424,6 @@ content:`<h3>Why Electrical Contractor Lead Generation Is Different</h3>
   },
 {
 slug:"how-to-choose-solar-panel-guide",
-img:"https://images.unsplash.com/photo-1536183922588-ddd297f5a06a?w=600&q=75&fit=crop&auto=format",
 featured:true,
 cat:"Industry, Solar", cover:"g3", icon:"☀️",
 title:"How to Choose the Right Solar Panel in 2026 — What Most Buyers Get Wrong",

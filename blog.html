@@ -325,6 +325,8 @@ body { background: var(--bg); color: var(--text); }
   flex-shrink: 0;
   box-shadow: 0 8px 28px rgba(0,0,0,.15);
 }
+.feat-visual-img { overflow: hidden; padding: 0; }
+.feat-visual-img img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 14px; }
 
 /* ── Section labels ───────────────────────────────────── */
 .sec-label {
@@ -484,6 +486,9 @@ body { background: var(--bg); color: var(--text); }
 .pc-cover.g4 { background: linear-gradient(135deg, #e4efe8, #f6ecd4); }
 .pc-cover.g5 { background: linear-gradient(135deg, #eae4f0, #e9f3ef); }
 .pc-cover.g6 { background: linear-gradient(135deg, #f0e2da, #f6ecd4); }
+.pc-cover-img { background: #f0f0ec; padding: 0; overflow: hidden; }
+.pc-cover-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+.post-card:hover .pc-cover-img img { transform: scale(1.04); }
 
 .pc-body {
   flex: 1;
@@ -830,7 +835,7 @@ function featHTML(p) {
     +     '<span class="feat-cta">Read the research &nbsp;→</span>'
     +   '</div>'
     + '</div>'
-    + '<div class="feat-visual ' + (p.cover || '') + '">' + (p.icon || '✦') + '</div>'
+    + (p.img ? '<div class="feat-visual feat-visual-img"><img src="' + p.img + '" alt="" loading="lazy" decoding="async"></div>' : '<div class="feat-visual ' + (p.cover || '') + '">' + (p.icon || '✦') + '</div>')
     + '</a>';
 }
 
@@ -840,7 +845,7 @@ function cardHTML(p) {
   var newBadge = isNew(p.date) ? '<span class="pc-new">New</span>' : '';
   var tbadge = typeBadge(p.type) || '';
   return '<a class="post-card" href="/blog/' + encodeURIComponent(p.slug) + '" data-cat="' + (p.cat || '') + '">'
-    + '<div class="pc-cover ' + (p.cover || 'g1') + '" aria-hidden="true">' + (p.icon || '✦') + '</div>'
+    + (p.img ? '<div class="pc-cover pc-cover-img" aria-hidden="true"><img src="' + p.img + '" alt="" loading="lazy" decoding="async"></div>' : '<div class="pc-cover ' + (p.cover || 'g1') + '" aria-hidden="true">' + (p.icon || '✦') + '</div>')
     + '<div class="pc-body">'
     +   '<div class="pc-top">' + tbadge + newBadge + '</div>'
     +   '<h3 class="pc-title">' + p.title + '</h3>'

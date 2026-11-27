@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     btn.addEventListener('click', ()=>{
       const isOpen = btn.classList.toggle('open');
       menu.classList.toggle('open');
-      if(badges){ badges.style.display = isOpen ? 'none' : ''; }
+      if(badges){ badges.style.display = isOpen ? 'none' : 'flex'; }
     });
   }
 });

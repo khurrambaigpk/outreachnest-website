@@ -1724,7 +1724,8 @@ footer a{color:var(--leaf);text-decoration:none}
 (function(){
   var btn=document.getElementById('menu-btn');
   var menu=document.getElementById('mobile-menu');
-  if(btn&&menu){btn.addEventListener('click',function(){menu.classList.toggle('open');});}
+  var badges=document.querySelector('.nav-badges-row');
+  if(btn&&menu){btn.addEventListener('click',function(){var isOpen=btn.classList.toggle('open');menu.classList.toggle('open');if(badges){badges.style.display=isOpen?'none':'flex';}});}
 })();
 </script>
 </body>

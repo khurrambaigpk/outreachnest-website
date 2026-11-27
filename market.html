@@ -727,11 +727,8 @@ function renderFuel(d){
 }
 
 // ── Fuel Price History ────────────────────────────────────────────────
-// OGRA announces prices on 1st and 16th of each month
-// Update this list whenever OGRA makes a new announcement
-// Pakistan fuel price history — only dates when price actually CHANGED (skip unchanged days)
-// Newest first. Sources: autoones.com, OGRA notifications
-// LPG: OGRA notifies monthly (1st of month). Per kg rate.
+// Fuel prices loaded from Google Sheet — edit Sheet to update, no code change needed
+// Sheet: https://docs.google.com/spreadsheets/d/15Qzjr9tgA5gYz3QnHBuhEJPp9VGyu6hgNaG1pV7m2fk
 var FUEL_HISTORY = [
   { date:'27 Nov 2026', petrol:313.00, diesel:346.00, kerosene:329.54, lpg:279.34 },
   { date:'26 Nov 2026', petrol:314.00, diesel:348.00, kerosene:329.54, lpg:279.34 },
@@ -753,12 +750,50 @@ var FUEL_HISTORY = [
   { date:'03 Nov 2026', petrol:374.51, diesel:395.20, kerosene:177.59, lpg:294.00 },
   { date:'31 Oct 2026', petrol:377.91, diesel:402.96, kerosene:177.59, lpg:296.00 },
 ];
+
 // Auto-derive FUEL_FALLBACK from latest history entry — never edit FUEL_FALLBACK manually
 (function(){
   var h = FUEL_HISTORY[0];
-  var d = new Date(h.date); // "25 Nov 2026" → Date
+  var d = new Date(h.date);
   var yyyy = d.getFullYear(), mm = ('0'+(d.getMonth()+1)).slice(-2), dd = ('0'+d.getDate()).slice(-2);
   FUEL_FALLBACK = { petrol: h.petrol, diesel: h.diesel, kerosene: h.kerosene || 177.59, lpg: h.lpg || 294, effective: yyyy+'-'+mm+'-'+dd };
+})();
+
+// Load latest data from Google Sheet and merge into FUEL_HISTORY
+(function(){
+  var SHEET_ID = '15Qzjr9tgA5gYz3QnHBuhEJPp9VGyu6hgNaG1pV7m2fk';
+  var url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=Sheet1';
+  fetch(url)
+    .then(function(r){ return r.text(); })
+    .then(function(csv){
+      var lines = csv.trim().split('\n').slice(1); // skip header
+      var sheetData = [];
+      lines.forEach(function(line){
+        var cols = line.replace(/"/g,'').split(',');
+        if(cols.length < 5) return;
+        var entry = {
+          date: cols[0].trim(),
+          petrol: parseFloat(cols[1]) || 0,
+          diesel: parseFloat(cols[2]) || 0,
+          kerosene: parseFloat(cols[3]) || 0,
+          lpg: parseFloat(cols[4]) || 0
+        };
+        if(entry.date && entry.petrol) sheetData.push(entry);
+      });
+      if(!sheetData.length) return;
+      // Sort newest first
+      sheetData.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+      FUEL_HISTORY = sheetData;
+      // Update fallback
+      var h = FUEL_HISTORY[0];
+      var d = new Date(h.date);
+      var yyyy = d.getFullYear(), mm = ('0'+(d.getMonth()+1)).slice(-2), dd = ('0'+d.getDate()).slice(-2);
+      FUEL_FALLBACK = { petrol: h.petrol, diesel: h.diesel, kerosene: h.kerosene || 177.59, lpg: h.lpg || 294, effective: yyyy+'-'+mm+'-'+dd };
+      // Re-render
+      renderFuelCard();
+      renderFuelHistory();
+    })
+    .catch(function(){ /* fallback to hardcoded data */ });
 })();
 function chgBadge(cur, prv){
   if(prv == null) return '';

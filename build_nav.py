@@ -146,6 +146,33 @@ def bump_cache_version():
         f.write(updated)
     print(f'  ✅  _worker.js: CACHE_VERSION v{old_v} → v{new_v} (Workers cache cleared)')
 
+def bump_main_js_version():
+    """Sab HTML files mein main.js?v=N version bump karo taake browser cache clear ho."""
+    html_files = [f for f, _ in PAGES] + ['solar-calculator.html', 'activate.html']
+    bumped = False
+    new_v = None
+    for html_file in html_files:
+        try:
+            with open(html_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            match = re.search(r'main\.js\?v=(\d+)', content)
+            if match and new_v is None:
+                new_v = int(match.group(1)) + 1
+            if new_v and re.search(r'main\.js(\?v=\d+)?', content):
+                updated = re.sub(r'main\.js(\?v=\d+)?', f'main.js?v={new_v}', content)
+                if updated != content:
+                    with open(html_file, 'w', encoding='utf-8') as f:
+                        f.write(updated)
+                    bumped = True
+        except FileNotFoundError:
+            pass
+    if bumped and new_v:
+        print(f'  ✅  main.js: ?v={new_v-1} → ?v={new_v} (browser cache cleared for all pages)')
+    elif new_v:
+        print(f'  ✓   main.js: already v{new_v} in all pages')
+    else:
+        print('  ⚠️  main.js version not found in any HTML')
+
 if __name__ == '__main__':
     print('\n1. Nav inject kar raha hoon sab pages mein...')
     for filename, path in PAGES:
@@ -156,5 +183,8 @@ if __name__ == '__main__':
 
     print('\n2. Workers cache bust kar raha hoon...')
     bump_cache_version()
+
+    print('\n3. Browser cache bust kar raha hoon (main.js version)...')
+    bump_main_js_version()
 
     print('\nDone! Ab sirf git add -A && git commit && git push karo.\n')

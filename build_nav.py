@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""
+OutreachNest — Nav Builder
+==========================
+Sirf YE file edit karo nav change karne ke liye, phir run karo:
+  python3 build_nav.py
+
+Ye script sab HTML pages mein nav inject kar deti hai automatically.
+"""
+
+import re
+
+# ═══════════════════════════════════════════════════════
+#  NAV LINKS — yahan add/remove/change karo
+# ═══════════════════════════════════════════════════════
+
+PLAIN_LINKS = [
+    ('/',           'Home'),
+    ('/services',   'Services'),
+    ('/niches',     'Niches'),
+    ('/download',   'Download'),
+    ('/blog',       'Blog'),
+]
+
+BADGE_LINKS = [
+    ('/marketplace', '🛒 Marketplace', '#d1fae5', '#065f46', '#10b981'),
+    ('/market',      '📈 Market',      '#1e3a5f', '#60a5fa', '#3b82f6'),
+    ('/solar-calculator', '☀️ Free Tools', '#fef3c7', '#92400e', '#f59e0b'),
+]
+
+# ═══════════════════════════════════════════════════════
+#  PAGES — yahan naya page add karo
+# ═══════════════════════════════════════════════════════
+
+PAGES = [
+    ('index.html',       '/'),
+    ('services.html',    '/services'),
+    ('niches.html',      '/niches'),
+    ('blog.html',        '/blog'),
+    ('download.html',    '/download'),
+    ('contact.html',     '/contact'),
+    ('marketplace.html', '/marketplace'),
+    ('market.html',      '/market'),
+    ('post.html',        '/blog'),
+]
+
+# ═══════════════════════════════════════════════════════
+#  BUILD — yahan mat chheyna
+# ═══════════════════════════════════════════════════════
+
+BADGE_STYLE = 'display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px;text-decoration:none;'
+
+def make_nav(current_path):
+    def active(href):
+        if href == '/':
+            return current_path == '/'
+        return current_path == href or current_path.startswith(href + '/')
+
+    # Desktop plain links
+    desktop_plain = ''.join(
+        f'<a href="{href}" class="{"active" if active(href) else ""}">{label}</a>'
+        for href, label in PLAIN_LINKS
+    )
+
+    # Desktop badge links
+    desktop_badges = ''.join(
+        f'<a href="{href}" style="{BADGE_STYLE}background:{bg};color:{fg};border:1.5px solid {border};"'
+        f'{" class=\"active\"" if active(href) else ""}>{label}</a>'
+        for href, label, bg, fg, border in BADGE_LINKS
+    )
+
+    # Mobile plain links
+    mobile_plain = ''.join(
+        f'<a href="{href}" class="{"active" if active(href) else ""}">{label}</a>'
+        for href, label in PLAIN_LINKS
+    )
+
+    # Mobile badge links
+    mobile_badges = ''.join(
+        f'<a href="{href}" class="{"active" if active(href) else ""}">{label}</a>'
+        for href, label, bg, fg, border in BADGE_LINKS
+    )
+
+    return (
+        '<div id="nav-holder"><nav>'
+        '<div class="wrap nav-inner">'
+        '<a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a>'
+        f'<div class="nav-links">{desktop_plain}{desktop_badges}</div>'
+        '<a href="/contact" class="nav-cta">Get in touch</a>'
+        '<button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>'
+        '</div>'
+        f'<div class="mobile-menu" id="mobile-menu">{mobile_plain}{mobile_badges}'
+        '<a href="/contact" class="m-cta">Get in touch</a></div>'
+        f'<div class="nav-badges-row">{desktop_badges}</div>'
+        '</nav></div>'
+    )
+
+def inject(filename, current_path):
+    with open(filename, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    new_nav = make_nav(current_path)
+
+    # Replace existing nav-holder block
+    updated = re.sub(
+        r'<div id="nav-holder">.*?</nav></div>',
+        new_nav,
+        content,
+        flags=re.DOTALL
+    )
+
+    # Also handle empty nav-holder + nav.js script tag (old format)
+    updated = re.sub(
+        r'<div id="nav-holder"></div><script src="/nav\.js[^"]*"></script>',
+        new_nav,
+        updated,
+        flags=re.DOTALL
+    )
+
+    if updated == content:
+        print(f'  ⚠️  {filename}: nav-holder not found — skipped')
+        return
+
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(updated)
+    print(f'  ✅  {filename}')
+
+if __name__ == '__main__':
+    print('Building nav...')
+    for filename, path in PAGES:
+        try:
+            inject(filename, path)
+        except FileNotFoundError:
+            print(f'  —   {filename}: file not found, skipped')
+    print('Done! Commit and push karo.')

@@ -30,10 +30,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 /* NAV */
 nav{background:#0d1a10;border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:99}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.logo{font-weight:800;font-size:18px;color:var(--green);text-decoration:none;letter-spacing:-.3px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px;color:var(--green);text-decoration:none;letter-spacing:-.3px}
 .nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .nav-links a{color:var(--dim);text-decoration:none;font-size:14px;font-weight:500;padding:5px 10px;border-radius:8px;transition:.15s}
 .nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(74,222,128,.08)}
+.nav-links a[style]{color:unset!important;background:none!important;padding:0!important;transition:none}
 .nav-cta{background:var(--green)!important;color:#0a1a0f!important;font-weight:700!important;padding:6px 14px!important;border-radius:20px!important}
 .nav-cta:hover{opacity:.88!important}
 

@@ -2540,7 +2540,7 @@ export default {
       // "Slow server response for AI crawlers" warnings on those pages.
       // Static assets (CSS/JS/images) are cached natively by Cloudflare Pages CDN
       // and never reach this Worker, so we only need to cache HTML pages here.
-      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact", "/solar-calculator", "/market", "/activate"]);
+      const HTML_PAGES = new Set(["/", "/index.html", "/blog", "/download", "/services", "/niches", "/contact", "/solar-calculator", "/market", "/marketplace", "/activate"]);
       if (HTML_PAGES.has(url.pathname) && request.method === "GET") {
         const cache = caches.default;
         // v26: include CACHE_VERSION in the key so bumping the version busts the Workers cache.

@@ -51,7 +51,7 @@ PAGES = [
 #  BUILD — yahan mat chheyna
 # ═══════════════════════════════════════════════════════
 
-BADGE_STYLE = 'display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:3px 9px;font-weight:700;font-size:12px;text-decoration:none;'
+BADGE_STYLE = 'display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:4px 11px;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;'
 
 def make_nav(current_path):
     def active(href):

@@ -87,8 +87,11 @@ body { background: var(--bg); color: var(--text); }
 .listing-footer { display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border); }
 .listing-price { font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:700;color:var(--brand); }
 .listing-price small { font-family:'Inter',sans-serif;font-size:12px;color:var(--text-2);font-weight:400; }
+.contact-options { display:flex;gap:8px; }
 .contact-btn { background:var(--brand);color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .15s; }
 .contact-btn:hover { background:var(--brand-mid); }
+.contact-btn-wa { background:#25D366; }
+.contact-btn-wa:hover { background:#1ebe5d; }
 .verified-badge { position:absolute;top:14px;right:14px;background:#d1fae5;color:#065f46;font-family:'Inter',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:20px;text-transform:uppercase; }
 
 /* ── Empty / loading state ── */
@@ -313,7 +316,10 @@ function renderListings(list) {
       '<p class="listing-desc">' + l.desc + '</p>' +
       '<div class="listing-footer">' +
         '<div class="listing-price">$' + l.price + ' <small>/ placement</small></div>' +
-        '<a class="contact-btn" href="' + l.contact + '">Contact →</a>' +
+        '<div class="contact-options">' +
+          '<a class="contact-btn" href="mailto:queries@getoutreachnest.com?subject=Guest Post Enquiry — ' + l.name + '">✉️ Email</a>' +
+          '<a class="contact-btn contact-btn-wa" href="https://wa.me/923006321406?text=Hi, I am interested in a guest post on ' + encodeURIComponent(l.name) + '" target="_blank" rel="noopener">💬 WhatsApp</a>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }).join('');

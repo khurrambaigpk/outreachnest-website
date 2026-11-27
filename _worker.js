@@ -2566,7 +2566,7 @@ export default {
           let bodyText = await resp.text();
           // v122: Worker injects nav directly — guarantees Marketplace tab on all pages
           // regardless of cached HTML. Replaces entire nav-holder block.
-          const NAV_BADGE_STYLE = 'display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px;text-decoration:none;';
+          const NAV_BADGE_STYLE = 'display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:5px 12px;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;line-height:1.2;vertical-align:middle;';
           const activePath = normPath;
           function navLink(href, label) {
             const a = activePath === href || (href !== '/' && activePath.startsWith(href + '/'));

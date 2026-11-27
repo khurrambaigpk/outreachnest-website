@@ -2554,7 +2554,7 @@ export default {
         // Previously `if (cached) return cached` bypassed injection on cache hits.
         // V13.1: fetch .html file directly — avoids redirect loop
         // (/download.html → /download → /download.html → 404)
-        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html","/solar-calculator":"/solar-calculator.html","/market":"/market.html","/activate":"/activate.html"};
+        const _HTML_MAP = {"/":"/index.html","/index.html":"/index.html","/blog":"/blog.html","/download":"/download.html","/services":"/services.html","/niches":"/niches.html","/contact":"/contact.html","/solar-calculator":"/solar-calculator.html","/market":"/market.html","/marketplace":"/marketplace.html","/activate":"/activate.html"};
         const _assetUrl = new URL(request.url);
         _assetUrl.pathname = _HTML_MAP[url.pathname] || url.pathname;
         const resp = await env.ASSETS.fetch(new Request(_assetUrl.toString(), {method:"GET",headers:request.headers}));

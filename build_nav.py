@@ -35,15 +35,16 @@ BADGE_LINKS = [
 # ═══════════════════════════════════════════════════════
 
 PAGES = [
-    ('index.html',       '/'),
-    ('services.html',    '/services'),
-    ('niches.html',      '/niches'),
-    ('blog.html',        '/blog'),
-    ('download.html',    '/download'),
-    ('contact.html',     '/contact'),
-    ('marketplace.html', '/marketplace'),
-    ('market.html',      '/market'),
-    ('post.html',        '/blog'),
+    ('index.html',            '/'),
+    ('services.html',         '/services'),
+    ('niches.html',           '/niches'),
+    ('blog.html',             '/blog'),
+    ('download.html',         '/download'),
+    ('contact.html',          '/contact'),
+    ('marketplace.html',      '/marketplace'),
+    ('market.html',           '/market'),
+    ('post.html',             '/blog'),
+    ('solar-calculator.html', '/solar-calculator'),
 ]
 
 # ═══════════════════════════════════════════════════════

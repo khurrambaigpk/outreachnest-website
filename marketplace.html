@@ -80,8 +80,6 @@ body { background: var(--bg); color: var(--text); }
 .badge-electronics { background:#fee2e2;color:#991b1b; }
 .badge-general { background:var(--brand-soft);color:var(--brand); }
 .listing-card h3 { font-family:'Fraunces',Georgia,serif;font-size:18px;font-weight:600;margin:0 0 6px;color:var(--text); }
-.listing-card .site-url { font-family:'Inter',sans-serif;font-size:13px;color:var(--brand);margin-bottom:14px;display:block;text-decoration:none; }
-.listing-card .site-url:hover { text-decoration:underline; }
 .metrics-row { display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px; }
 .metric-chip { background:var(--surface-2,#f4f6f4);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--text-2); }
 .metric-chip span { color:var(--text);font-weight:700; }
@@ -307,7 +305,6 @@ function renderListings(list) {
       (l.verified ? '<span class="verified-badge">✓ Verified</span>' : '') +
       '<span class="niche-badge ' + (NICHE_BADGE[l.niche]||'badge-general') + '">' + (NICHE_LABEL[l.niche]||l.niche) + '</span>' +
       '<h3>' + l.name + '</h3>' +
-      '<a class="site-url" href="https://' + l.url + '" target="_blank" rel="noopener nofollow">' + l.url + '</a>' +
       '<div class="metrics-row">' +
         '<div class="metric-chip">DA <span>' + l.da + '</span></div>' +
         '<div class="metric-chip">DR <span>' + l.dr + '</span></div>' +

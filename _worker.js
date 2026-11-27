@@ -2564,7 +2564,28 @@ export default {
           const normPath = url.pathname === "/index.html" ? "/" : url.pathname;
           const schema = PAGE_SCHEMAS[normPath];
           let bodyText = await resp.text();
-          // v79: Market nav link now hardcoded in all HTML files — no Worker injection needed.
+          // v122: Worker injects nav directly — guarantees Marketplace tab on all pages
+          // regardless of cached HTML. Replaces entire nav-holder block.
+          const NAV_BADGE_STYLE = 'display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 11px;font-weight:700;font-size:13px;text-decoration:none;';
+          const activePath = normPath;
+          function navLink(href, label) {
+            const a = activePath === href || (href !== '/' && activePath.startsWith(href + '/'));
+            return `<a href="${href}" class="${a ? 'active' : ''}">${label}</a>`;
+          }
+          function badgeLink(href, label, bg, fg, border) {
+            const a = activePath === href || (href !== '/' && activePath.startsWith(href + '/'));
+            return `<a href="${href}" style="${NAV_BADGE_STYLE}background:${bg};color:${fg};border:1.5px solid ${border};"${a ? ' class="active"' : ''}>${label}</a>`;
+          }
+          const dPlain = ['/', '/services', '/niches', '/download', '/blog'].map((h, i) => navLink(h, ['Home','Services','Niches','Download','Blog'][i])).join('');
+          const dBadge = [
+            badgeLink('/marketplace','🛒 Marketplace','#d1fae5','#065f46','#10b981'),
+            badgeLink('/market','📈 Market','#1e3a5f','#60a5fa','#3b82f6'),
+            badgeLink('/solar-calculator','☀️ Free Tools','#fef3c7','#92400e','#f59e0b'),
+          ].join('');
+          const mPlain = ['/', '/services', '/niches', '/download', '/blog'].map((h, i) => navLink(h, ['Home','Services','Niches','Download','Blog'][i])).join('');
+          const mBadge = ['/marketplace','/market','/solar-calculator'].map((h,i) => navLink(h, ['🛒 Marketplace','📈 Market','☀️ Free Tools'][i])).join('');
+          const newNav = `<div id="nav-holder"><nav><div class="wrap nav-inner"><a href="/" class="logo"><span class="logo-mark"></span>OutreachNest</a><div class="nav-links">${dPlain}${dBadge}</div><a href="/contact" class="nav-cta">Get in touch</a><button class="menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span><span></span></button></div><div class="mobile-menu" id="mobile-menu">${mPlain}${mBadge}<a href="/contact" class="m-cta">Get in touch</a></div><div class="nav-badges-row">${dBadge}</div></nav></div>`;
+          bodyText = bodyText.replace(/<div id="nav-holder">[\s\S]*?<\/nav>\s*<\/div>/, newNav);
           if (schema) {
             const schemaTag = `<script type="application/ld+json">${schema}</script>`;
             // v26: strip ALL existing JSON-LD blocks (global g flag), then insert ours

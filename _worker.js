@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v144"; // always overwrite KV on manual save
+const CACHE_VERSION = "v145"; // cron never overwrites manual KV data
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2864,9 +2864,8 @@ async function fetchAndSaveFuelRates(env) {
     const existing = await env.LICENSE_KV.get('fuel_rates');
     if (existing) {
       const ex = JSON.parse(existing);
-      const exAge = ex.savedAt ? (Date.now() - ex.savedAt) : Infinity;
-      if (ex.manualUpdate && exAge < 86400000 * 15) {
-        return; // manual update is fresh — cron must not overwrite it
+      if (ex.manualUpdate) {
+        return; // manual update present — cron must never overwrite it
       }
     }
   } catch(e) {}

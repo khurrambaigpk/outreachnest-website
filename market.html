@@ -1776,7 +1776,7 @@ async function fadmSave(){
     var resp = await fetch('/api/fuel-update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Referer': window.location.href },
-      body: JSON.stringify({ petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294, effective: dateVal.toISOString().slice(0,10), source: 'manual' })
+      body: JSON.stringify({ petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294, effective: dateVal, source: 'manual' })
     });
     var result = await resp.json();
     if(!result.ok) throw new Error(result.error || 'Save failed');

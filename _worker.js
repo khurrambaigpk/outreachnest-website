@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v143"; // fix fuel modal date: Pakistan timezone
+const CACHE_VERSION = "v144"; // always overwrite KV on manual save
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2104,19 +2104,9 @@ export default {
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const [yr,mo,dy] = effective.split('-');
         const humanDate = parseInt(dy) + ' ' + months[parseInt(mo)-1] + ' ' + yr;
-        // Duplicate check: if same date + same rates already in KV, skip KV write but still sync sheet
-        const existing = await env.LICENSE_KV.get('fuel_rates');
-        let alreadySaved = false;
-        if (existing) {
-          const ex = JSON.parse(existing);
-          if (ex.effective === effective && ex.petrol === petrol && ex.diesel === diesel) {
-            alreadySaved = true;
-          }
-        }
-        if (!alreadySaved) {
-          const data = { petrol, diesel, kerosene, lpg, effective, source, savedAt: Date.now(), manualUpdate: true };
-          await env.LICENSE_KV.put('fuel_rates', JSON.stringify(data), { expirationTtl: 86400 * 15 });
-        }
+        // Always save to KV (overwrite) — sheet handles its own duplicate detection
+        const data = { petrol, diesel, kerosene, lpg, effective, source, savedAt: Date.now(), manualUpdate: true };
+        await env.LICENSE_KV.put('fuel_rates', JSON.stringify(data), { expirationTtl: 86400 * 15 });
         // Always sync to Google Sheet (handles duplicate detection on its end)
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVck5HSDjcMs3FdB1rpJe0xMOPeuAuUEJo1hENEMTpzRxmutKlSJ26fiOdScu1S8m8/exec';
         try {

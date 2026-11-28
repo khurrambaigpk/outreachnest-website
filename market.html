@@ -1780,13 +1780,7 @@ async function fadmSave(){
     });
     var result = await resp.json();
     if(!result.ok) throw new Error(result.error || 'Save failed');
-    // Also try Google Sheet in background (non-blocking)
-    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyOX5KxiCswALiH_i6Z5pLW7774Ypo5kCfPgCEL8o5jtQ__yUeS4cBGrOJMmI4tIgE/exec';
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ date: dateStr, petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294 })
-    }).catch(function(){});
+    // Google Sheet sync is now handled server-side by Worker (no CORS issues)
 
     // Insert into FUEL_HISTORY at correct sorted position (newest first)
     var newEntry = { date: dateStr, petrol, diesel, kerosene, lpg };

@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v146"; // fix date sort + dedup in fuel history
+const CACHE_VERSION = "v147"; // new Apps Script URL with fixed duplicate check
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2108,7 +2108,7 @@ export default {
         const data = { petrol, diesel, kerosene, lpg, effective, source, savedAt: Date.now(), manualUpdate: true };
         await env.LICENSE_KV.put('fuel_rates', JSON.stringify(data), { expirationTtl: 86400 * 15 });
         // Always sync to Google Sheet (handles duplicate detection on its end)
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVck5HSDjcMs3FdB1rpJe0xMOPeuAuUEJo1hENEMTpzRxmutKlSJ26fiOdScu1S8m8/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3U1zXDFL31yVYWOxpkAJAfFa6Ha-6Di3kAtyoGeHS7sc33i7nyRBmBbdl27M0UfzM/exec';
         try {
           await fetch(APPS_SCRIPT_URL, {
             method: 'POST',

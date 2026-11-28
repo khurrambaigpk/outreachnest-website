@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v140"; // remove browser-side Apps Script call, Worker handles sheet sync
+const CACHE_VERSION = "v141"; // duplicate save prevention + consistent date format in sheet
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2100,15 +2100,29 @@ export default {
         if (!petrol || !diesel || petrol < 100 || diesel < 100) {
           return new Response('{"error":"invalid prices"}', { status:400, headers:{'Content-Type':'application/json'} });
         }
+        // Duplicate check: if same date + same rates already saved, skip
+        const existing = await env.LICENSE_KV.get('fuel_rates');
+        if (existing) {
+          const ex = JSON.parse(existing);
+          if (ex.effective === effective && ex.petrol === petrol && ex.diesel === diesel) {
+            return new Response(JSON.stringify({ ok: true, skipped: true, msg: 'Same rates already saved for this date' }), {
+              status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+            });
+          }
+        }
         const data = { petrol, diesel, kerosene, lpg, effective, source, savedAt: Date.now(), manualUpdate: true };
         await env.LICENSE_KV.put('fuel_rates', JSON.stringify(data), { expirationTtl: 86400 * 15 }); // 15 days
         // Also sync to Google Sheet (server-side, no CORS issues)
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVck5HSDjcMs3FdB1rpJe0xMOPeuAuUEJo1hENEMTpzRxmutKlSJ26fiOdScu1S8m8/exec';
         try {
+          // Format date as "28 Nov 2026" to match sheet's existing format
+          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const [yr,mo,dy] = effective.split('-');
+          const humanDate = parseInt(dy) + ' ' + months[parseInt(mo)-1] + ' ' + yr;
           await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({ date: effective, petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294 })
+            body: JSON.stringify({ date: humanDate, petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294 })
           });
         } catch(sheetErr) { /* non-blocking: KV save already succeeded */ }
         return new Response(JSON.stringify({ ok: true, petrol, diesel, kerosene, lpg, effective }), {

@@ -387,7 +387,7 @@ function postDateToISO(dateStr) {
   if (!m || !MONTHS[m[1]]) return SITE_PUB_DATE;
   return m[2] + "-" + MONTHS[m[1]] + "-01";
 } // Publication date used in BlogPosting schema
-const CACHE_VERSION = "v137"; // fuel update via Worker KV
+const CACHE_VERSION = "v138"; // fuel update syncs to Google Sheet via Worker
 
 // v24: Related posts map — 2-3 relevant slugs per post, grouped by topic.
 // Injected as a "Read Next" section before </body> to fix Ahrefs warning
@@ -2102,6 +2102,15 @@ export default {
         }
         const data = { petrol, diesel, kerosene, lpg, effective, source, savedAt: Date.now(), manualUpdate: true };
         await env.LICENSE_KV.put('fuel_rates', JSON.stringify(data), { expirationTtl: 86400 * 15 }); // 15 days
+        // Also sync to Google Sheet (server-side, no CORS issues)
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyOX5KxiCswALiH_i6Z5pLW7774Ypo5kCfPgCEL8o5jtQ__yUeS4cBGrOJMmI4tIgE/exec';
+        try {
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ date: effective, petrol, diesel, kerosene: kerosene||177.59, lpg: lpg||294 })
+          });
+        } catch(sheetErr) { /* non-blocking: KV save already succeeded */ }
         return new Response(JSON.stringify({ ok: true, petrol, diesel, kerosene, lpg, effective }), {
           status: 200,
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }

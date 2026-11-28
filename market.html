@@ -1773,7 +1773,7 @@ async function fadmSave(){
     // Save latest date entry to KV (only if it's today or newer)
     var todayStr = (function(){ var n=new Date(); return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2)+'-'+('0'+n.getDate()).slice(-2); })();
     // Save to Google Sheet via Apps Script
-    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbzo4nBaJYDqbgvMMAr5aNYOkNF21AUFCTAJzgh2hhfst-ovxORUKz1T4hz9VEFgzb/exec';
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyOX5KxiCswALiH_i6Z5pLW7774Ypo5kCfPgCEL8o5jtQ__yUeS4cBGrOJMmI4tIgE/exec';
     var resp = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

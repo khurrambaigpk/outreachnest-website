@@ -731,6 +731,7 @@ function renderFuel(d){
 // Fuel prices loaded from Google Sheet — edit Sheet to update, no code change needed
 // Sheet: https://docs.google.com/spreadsheets/d/15Qzjr9tgA5gYz3QnHBuhEJPp9VGyu6hgNaG1pV7m2fk
 var FUEL_HISTORY = [
+  { date:'28 Nov 2026', petrol:312.00, diesel:346.00, kerosene:329.54, lpg:279.34 },
   { date:'27 Nov 2026', petrol:313.00, diesel:346.00, kerosene:329.54, lpg:279.34 },
   { date:'26 Nov 2026', petrol:314.00, diesel:348.00, kerosene:329.54, lpg:279.34 },
   { date:'25 Nov 2026', petrol:318.00, diesel:353.00, kerosene:329.54, lpg:279.34 },
@@ -782,8 +783,22 @@ var FUEL_HISTORY = [
         if(entry.date && entry.petrol) sheetData.push(entry);
       });
       if(!sheetData.length) return;
-      // Sort newest first
-      sheetData.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+      // Sort newest first — parse "28 Nov 2026" format correctly
+      var MON = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+      function parseDate(s){
+        var m = s.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
+        if(m) return new Date(parseInt(m[3]), MON[m[2]]||0, parseInt(m[1]));
+        return new Date(s);
+      }
+      // Deduplicate by date — keep first occurrence (newest data)
+      var seen = {};
+      sheetData = sheetData.filter(function(e){
+        var key = e.date.trim();
+        if(seen[key]) return false;
+        seen[key] = true;
+        return true;
+      });
+      sheetData.sort(function(a,b){ return parseDate(b.date) - parseDate(a.date); });
       FUEL_HISTORY = sheetData;
       // Update fallback
       var h = FUEL_HISTORY[0];
